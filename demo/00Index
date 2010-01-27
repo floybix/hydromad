@@ -1,0 +1,6 @@
+ACTCatchments  Model calibration for a set of 4 catchments in the ACT.
+CalibrationMethods Testing calibration methods on simulated data.
+Canning        Model calibration for an intermittent (semi arid?) catchment.
+Murrindindi    Model calibration for a high baseflow catchment.
+Wye            Model calibration on hourly data for a very wet catchment.
+tfFit          Simulation study for testing transfer function estimators.

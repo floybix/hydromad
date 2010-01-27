@@ -1,0 +1,153 @@
+\name{SCEoptim}
+\alias{SCEoptim}
+\title{
+  Shuffled Complex Evolution (SCE) optimisation.
+}
+\description{
+  Shuffled Complex Evolution (SCE) optimisation.
+  Designed to have a similar interface to the standard
+  \code{\link{optim}} function.
+}
+\usage{
+SCEoptim(FUN, par, ..., lower = -Inf, upper = Inf, control = list())
+}
+\arguments{
+  \item{FUN}{
+    function to optimise (to minimise by default), or the name of one.
+    This should return a scalar numeric value.
+  }
+  \item{par}{
+    a numeric vector of initial parameter values.
+  }
+  \item{\dots}{
+    further arguments passed to \code{FUN}.
+  }
+  \item{lower, upper}{
+    lower and upper bounds on the parameters.
+    Should be the same length as \code{par},
+    or length 1 if a bound applies to all parameters.
+  }
+  \item{control}{
+    a list of options as in \code{optim()}, see Details.
+  }
+}
+\details{
+  This is an evolutionary algorithm combined with a simplex algorithm.
+
+  Options can be given in the list \code{control}, in the same way as
+  with \code{\link{optim}}:
+
+  \describe{
+    \item{\code{ncomplex}}{
+      number of complexes. Defaults to \code{5}.
+    }
+    \item{\code{cce.iter}}{
+      number of iteration in inner loop (CCE algorithm).
+      Defaults to \code{NA}, in which case it is taken as
+      \code{2 * NDIM + 1}, as recommended by Duan et al (1994).
+    }
+    \item{\code{fnscale}}{
+      function scaling factor (set to -1 for a maximisation problem).
+      By default it is a minimisation problem.
+    }
+    \item{\code{elitism}}{
+      influences sampling of parents from each complex. Duan et al
+      (1992) describe a 'trapezoidal' (i.e. linear weighting) scheme,
+      which corresponds to \code{elitism = 1}.
+      Higher values give more weight towards the better parameter sets.
+      Defaults to \code{2}.
+    }
+    \item{\code{initsample}}{
+      sampling scheme for initial values: "latin" (hypercube) or "random".
+      Defaults to \code{"latin"}.
+    }
+    \item{\code{reltol}, \code{tolsteps}}{
+      \code{reltol} is the convergence threshold: relative improvement
+      factor required in an SCE iteration (in same sense as
+      \code{optim}), and defaults to \code{1e-5}.
+
+      \code{tolsteps} is the number of iterations where the improvement
+      is within \code{reltol} required to confirm convergence. This
+      defaults to \code{7}.
+    }
+    \item{\code{maxit}}{
+      maximum number of iterations. Defaults to \code{Inf}.
+    }
+    \item{\code{maxeval}}{
+      maximum number of function evaluations. Defaults to \code{Inf}.
+    }
+    \item{\code{maxtime}}{
+      maximum duration of optimization in seconds. Defaults to \code{60}.
+    }
+    \item{\code{returnpop}}{
+      whether to return populations from all iterations. Defaults to \code{FALSE}.
+    }
+    \item{\code{trace}}{
+      an integer specifying the level of user feedback. Defaults to \code{0}.
+    }
+    \item{\code{REPORT}}{
+      number of iterations between reports when trace >= 1. Defaults to \code{10}.
+    }
+  }
+}
+\value{
+  a list of class \code{"SCEoptim"}.
+  \item{par}{ optimal parameter set.}
+  \item{value}{ value of objective function at optimal point.}
+  \item{convergence}{ code, where 0 indicates successful covergence. }
+  \item{message}{ (non-)convergence message. }
+  \item{counts}{ number of function evaluations. }
+  \item{iterations}{ number of iterations of the CCE algorithm. }
+  \item{time}{ number of seconds taken. }
+  \item{POP.ALL, POP.FIT.ALL}{
+    if \code{(control$returnpop = TRUE)}, the parameter sets and their
+    objective function values from each iteration are returned in a
+    three dimensional array.
+  }
+  \item{control}{ the list of options settings in effect. }
+}
+\references{
+  Qingyun Duan, Soroosh Sorooshian and Vijai Gupta (1992).
+  Effective and Efficient Global Optimization for Conceptual
+  Rainfall-Runoff Models,
+  \emph{Water Resources Research} 28(4), pp. 1015-1031.
+
+  Qingyun Duan, Soroosh Sorooshian and Vijai Gupta (1994).
+  Optimal use of the SCE-UA global optimization method for
+  calibrating watershed models,
+  \emph{Journal of Hydrology} 158, pp. 265-284.
+}
+\author{
+  Felix Andrews \email{felix@nfrac.org}
+
+  This was adapted, and substantially revised, from
+  Brecht Donckels' MATLAB code, which was in turn adapted from
+  Qingyun Duan's MATLAB code:
+
+  \url{http://biomath.ugent.be/~brecht/downloads.html}
+}
+\seealso{
+  \code{\link{optim}}, \pkg{DEoptim} package, \pkg{rgenoud} package
+}
+\examples{
+## reproduced from help("optim")
+
+## Rosenbrock Banana function
+Rosenbrock <- function(x){
+  x1 <- x[1]
+  x2 <- x[2]
+  100 * (x2 - x1 * x1)^2 + (1 - x1)^2
+}
+#lower <- c(-10,-10)
+#upper <- -lower
+ans <- SCEoptim(Rosenbrock, c(-1.2,1), control = list(trace = 1))
+str(ans)
+
+## 'Wild' function, global minimum at about -15.81515
+Wild <- function(x)
+  10*sin(0.3*x)*sin(1.3*x^2) + 0.00001*x^4 + 0.2*x+80
+ans <- SCEoptim(Wild, 0, lower = -50, upper = 50,
+                control = list(trace = 1))
+ans$par
+}
+\keyword{ optimize }

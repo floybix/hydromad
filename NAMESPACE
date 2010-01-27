@@ -1,0 +1,226 @@
+
+## CORE FUNCTIONS
+
+## hydromad.R
+export(hydromad)
+export(isFullySpecified)
+export(coef.hydromad)
+## ihacres.R
+export(ihacres,
+       isFullySpecified,
+       coef.ihacres,
+       getU, getP)
+S3method(print, ihacres)
+S3method(fitted, ihacres)
+S3method(residuals, ihacres)
+S3method(observed, ihacres)
+S3method(getU, ihacres)
+S3method(getP, ihacres)
+S3method(vcov, ihacres)
+S3method(deviance, ihacres)
+
+export(ihacres.sim)
+
+export(update.ihacres)
+export(absorbScale)
+export(absorbScale.ihacres)
+
+export(predict.ihacres)
+
+export(simulate.ihacres)
+
+export(summary.ihacres)
+S3method(print, summary.ihacres)
+S3method(print, summaryWithBreaks.ihacres)
+
+export(xyplot.ihacres)
+export(errormasscurve)
+export(errormasscurve.default)
+export(xyplot.tf)
+export(qqmath.ihacres)
+export(tsdiag.ihacres)
+
+
+## ROUTING MODELS
+
+export(uh.sim,
+       ssg.uh,
+       normalise.uh,
+       uh.ls.fit,
+       uh.sriv.fit,
+       uh.inverse.fit)
+
+export(expuh.sim,
+       ssg.expuh,
+       normalise.expuh,
+       expuh.ls.fit,
+       expuh.sriv.fit,
+       expuh.inverse.fit)
+
+
+## TF: TRANSFER FUNCTIONS
+
+## tfUtils.R: (no exports)
+
+## tf.R
+export(tf,
+       update.tf,
+       predict.tf,
+       coef.tf,
+       summary.tf,
+       normalise.tf,
+       vcov.tf,
+       isValidModel,
+       isValidModel.default)
+S3method(print, tf)
+S3method(print, summary.tf)
+S3method(print, summaryWithBreaks.ihacres)
+S3method(fitted, tf)
+S3method(observed, tf)
+S3method(getU, tf)
+S3method(isValidModel, ihacres)
+S3method(isValidModel, tf)
+
+export(tf.sim)
+
+export(filter_loss) # export?
+useDynLib(ihacreslab, filter_constloss)
+
+export(tf.fit,
+       makePrefilter,
+       estimateDelay)
+
+export(tf.ls.fit)
+
+export(tf.riv.fit)
+export(tf.sriv.fit)
+useDynLib(ihacreslab, sriv_system)
+
+export(tf.lambda.fit)
+
+export(tf.inverse.fit,
+       tf.fft.inverse.fit,
+       tf.lambda.inverse.fit,
+       tf.pars.init)
+
+export(tf.inverse.sim,
+       tf.fft.inverse.sim,
+       wiener)
+useDynLib(ihacreslab, inverse_filter)
+useDynLib(ihacreslab, inverse_filter_lambda)
+
+export(tryModelOrders,
+       ordersSummary)
+
+
+## SOIL MOISTURE ACCOUNTING MODELS
+
+export(cwi.sim)
+export(absorbScale.cwi)
+
+export(filter_tv)
+useDynLib(ihacreslab, ar1_tv)
+
+export(cmd.sim)
+useDynLib(ihacreslab, sma_cmd)
+
+export(bucket.sim)
+#useDynLib(ihacreslab, sma_bucket)
+
+export(simhyd.sim)
+export(simhydOptions)
+useDynLib(ihacreslab, sma_simhyd)
+
+
+## CALIBRATION METHODS
+
+export(fitBySampling)
+
+export(fitByOptim)
+
+export(fitBySCE)
+
+export(fitByDE)
+
+## TODO: fitByGenoud?
+
+## fitStat.R
+export(objFunVal,
+       bestByObjFun,
+       tsFitStat,
+       fitStat,
+       fitBias)
+
+export(parameterSets)
+
+## sce.R
+export(SCEoptim)
+
+
+## RUNLIST
+
+## runlist.R
+export(runlist,
+       as.runlist,
+       errormasscurve.runlist,
+       xyplot.runlist,
+       qqmath.runlist,
+       summary.ihacres.runlist,
+       summary.tf.runlist,
+       print.summary.runlist)
+S3method("[", runlist)
+S3method(print, runlist)
+S3method(print, summary.runlist)
+S3method(print, ihacres.runlist)
+S3method(print, tf.runlist)
+
+
+## MISCELLANEOUS
+
+export(convertFlow)
+
+## events.R
+export(event.clusters,
+       eventapply,
+       preInterEventDuration,
+       eventAttributes)
+
+## utilities.R
+export(tsCleanup,
+       na.monthlyavg,
+       na.approx1,
+       na.mean,
+       na.zero,
+       autocorrTime,
+       byDays, byYears, bySecs,
+       observed,
+       observed.default,
+       easysmooth,
+       numericSummary)
+
+## rollccf.R
+export(rollccf,
+       xyplot.rollccf,
+       ccfForLags)
+
+## error.sim.R
+export(flow.inputs.sim,
+       rain.error.sim,
+       flow.error.sim)
+
+
+## options.R
+export(ihacres.options,
+       ihacres.getOption)
+
+#panel.superpose.cycle
+
+
+## SWIMP (TODO: move out)
+
+## swimp.R
+export(swimp)
+useDynLib(ihacreslab, swimp_core)
+
+## poweroid.R
+export(poweroid)
