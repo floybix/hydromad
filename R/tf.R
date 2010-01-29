@@ -1,13 +1,13 @@
-## ihacreslab: rainfall-runoff hydrology models and tools
+## hydromad: Hydrological Modelling and Analysis of Data
 ##
-## Copyright (c) 2008 Felix Andrews <felix@nfrac.org>
+## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
 tf <-
     function(DATA = zoo(),
              pars = numeric(),
-             delay = 0, #ihacres.getOption("delay"),
-             warmup = ihacres.getOption("warmup"),
+             delay = 0, #hydromad.getOption("delay"),
+             warmup = hydromad.getOption("warmup"),
              initX = TRUE,
              na.action = na.pass,
              epsilon = TRUE)
@@ -57,9 +57,9 @@ update.tf <-
         } else {
             pars <- tfParsConvert(pars, "a,b")
             ## check parameters
-            if (isTRUE(ihacres.getOption("catch.errors"))) {
+            if (isTRUE(hydromad.getOption("catch.errors"))) {
                 pcheck <- try(tfParsCheck(pars),
-                              silent = !ihacres.getOption("trace"))
+                              silent = !hydromad.getOption("trace"))
                 if (!isTRUE(pcheck)) {
                     return(pcheck)
                 }
@@ -98,7 +98,7 @@ update.tf <-
         ## determine data resolution from data
         epsilon <- object$epsilon
         if (isTRUE(epsilon)) {
-            epsilon <- ihacres.getOption("sim.epsilon")
+            epsilon <- hydromad.getOption("sim.epsilon")
             Q <- object$data[,"Q"]
             if (any(Q < epsilon, na.rm=TRUE)) {
                 isNonZero <- is.finite(Q) & (Q > 0)
@@ -354,12 +354,6 @@ vcov.tf <- function(object, ...)
     object$cov.mat ## may be NULL
 
 deviance.tf <- stats:::deviance.lm
-
-isValidModel <- function(object, ...)
-    UseMethod("isValidModel")
-
-isValidModel.default <- function(object, ...)
-    return(FALSE)
 
 isValidModel.tf <- function(object, ...)
     (inherits(object, "tf") &&

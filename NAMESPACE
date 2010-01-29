@@ -5,40 +5,39 @@
 export(hydromad)
 export(isFullySpecified)
 export(coef.hydromad)
-## ihacres.R
-export(ihacres,
-       isFullySpecified,
-       coef.ihacres,
-       getU, getP)
-S3method(print, ihacres)
-S3method(fitted, ihacres)
-S3method(residuals, ihacres)
-S3method(observed, ihacres)
-S3method(getU, ihacres)
-S3method(getP, ihacres)
-S3method(vcov, ihacres)
-S3method(deviance, ihacres)
+S3method(print, hydromad)
+S3method(fitted, hydromad)
+S3method(residuals, hydromad)
+S3method(observed, hydromad)
+export(getU, getP)
+S3method(getU, hydromad)
+S3method(getP, hydromad)
+S3method(vcov, hydromad)
+S3method(deviance, hydromad)
+export(isValidModel)
+S3method(isValidModel, default)
+S3method(isValidModel, hydromad)
 
-export(ihacres.sim)
+export(hydromad.sim)
 
-export(update.ihacres)
+export(update.hydromad)
 export(absorbScale)
-export(absorbScale.ihacres)
+export(absorbScale.hydromad)
 
-export(predict.ihacres)
+export(predict.hydromad)
 
-export(simulate.ihacres)
+export(simulate.hydromad)
 
-export(summary.ihacres)
-S3method(print, summary.ihacres)
-S3method(print, summaryWithBreaks.ihacres)
+export(summary.hydromad)
+S3method(print, summary.hydromad)
+S3method(print, summaryWithBreaks.hydromad)
 
-export(xyplot.ihacres)
+export(xyplot.hydromad)
 export(errormasscurve)
 export(errormasscurve.default)
 export(xyplot.tf)
-export(qqmath.ihacres)
-export(tsdiag.ihacres)
+export(qqmath.hydromad)
+export(tsdiag.hydromad)
 
 
 ## ROUTING MODELS
@@ -69,22 +68,18 @@ export(tf,
        coef.tf,
        summary.tf,
        normalise.tf,
-       vcov.tf,
-       isValidModel,
-       isValidModel.default)
+       vcov.tf)
 S3method(print, tf)
 S3method(print, summary.tf)
-S3method(print, summaryWithBreaks.ihacres)
 S3method(fitted, tf)
 S3method(observed, tf)
 S3method(getU, tf)
-S3method(isValidModel, ihacres)
 S3method(isValidModel, tf)
 
 export(tf.sim)
 
 export(filter_loss) # export?
-useDynLib(ihacreslab, filter_constloss)
+useDynLib(hydromad, filter_constloss)
 
 export(tf.fit,
        makePrefilter,
@@ -94,7 +89,7 @@ export(tf.ls.fit)
 
 export(tf.riv.fit)
 export(tf.sriv.fit)
-useDynLib(ihacreslab, sriv_system)
+useDynLib(hydromad, sriv_system)
 
 export(tf.lambda.fit)
 
@@ -106,8 +101,8 @@ export(tf.inverse.fit,
 export(tf.inverse.sim,
        tf.fft.inverse.sim,
        wiener)
-useDynLib(ihacreslab, inverse_filter)
-useDynLib(ihacreslab, inverse_filter_lambda)
+useDynLib(hydromad, inverse_filter)
+useDynLib(hydromad, inverse_filter_lambda)
 
 export(tryModelOrders,
        ordersSummary)
@@ -119,17 +114,17 @@ export(cwi.sim)
 export(absorbScale.cwi)
 
 export(filter_tv)
-useDynLib(ihacreslab, ar1_tv)
+useDynLib(hydromad, ar1_tv)
 
 export(cmd.sim)
-useDynLib(ihacreslab, sma_cmd)
+useDynLib(hydromad, sma_cmd)
 
 export(bucket.sim)
-#useDynLib(ihacreslab, sma_bucket)
+#useDynLib(hydromad, sma_bucket)
 
 export(simhyd.sim)
 export(simhydOptions)
-useDynLib(ihacreslab, sma_simhyd)
+useDynLib(hydromad, sma_simhyd)
 
 
 ## CALIBRATION METHODS
@@ -165,13 +160,13 @@ export(runlist,
        errormasscurve.runlist,
        xyplot.runlist,
        qqmath.runlist,
-       summary.ihacres.runlist,
+       summary.hydromad.runlist,
        summary.tf.runlist,
        print.summary.runlist)
 S3method("[", runlist)
 S3method(print, runlist)
 S3method(print, summary.runlist)
-S3method(print, ihacres.runlist)
+S3method(print, hydromad.runlist)
 S3method(print, tf.runlist)
 
 
@@ -210,8 +205,8 @@ export(flow.inputs.sim,
 
 
 ## options.R
-export(ihacres.options,
-       ihacres.getOption)
+export(hydromad.options,
+       hydromad.getOption)
 
 #panel.superpose.cycle
 
@@ -220,7 +215,7 @@ export(ihacres.options,
 
 ## swimp.R
 export(swimp)
-useDynLib(ihacreslab, swimp_core)
+useDynLib(hydromad, swimp_core)
 
 ## poweroid.R
 export(poweroid)
