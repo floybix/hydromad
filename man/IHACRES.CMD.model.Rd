@@ -80,7 +80,7 @@ Corrigendum to ``A Catchment Moisture Deficit module for the IHACRES rainfall-ru
 }
 \examples{
 data(Canning)
-x <- cmd.sim(Canning["1980"], d = 200, f = 0.7, e = 0.166,
+x <- cmd.sim(Canning[1:1000,], d = 200, f = 0.7, e = 0.166,
              return_state = TRUE)
 xyplot(x)
 }

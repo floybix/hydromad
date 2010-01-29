@@ -6,9 +6,10 @@
 
 simulate.hydromad <-
     function(object, nsim, seed, ...,
-             sampletype = c("random", "latin.hypercube", "all.combinations"),
+             sampletype = c("latin.hypercube", "random", "all.combinations"),
              FUN = NULL)
 {
+    sampletype <- match.arg(sampletype)
     MODEL <- object
     samples <- nsim
     if (!missing(seed))

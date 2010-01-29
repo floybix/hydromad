@@ -28,7 +28,6 @@ rollccf <-
              lags = base.lag + c(0,1,-1),
              base.lag = estimateDelay(DATA, rises = rises, plot = FALSE),
              rises = FALSE,
-             do.smooth = FALSE,
              na.action = na.contiguous,
              na.max.fraction = 1/3)
 {
@@ -62,14 +61,6 @@ rollccf <-
                                  FUN = ccfForLags, lags = lags,
                                  na.action = na.action,
                                  na.max.fraction = na.max.fraction)
-                       if (do.smooth) {
-                           swid <- round(wid / by)
-                           swid <- min(swid, NROW(tmp))
-                           tmp2 <- coredata(tmp)
-                           tmp2 <- rbind(tmp2[1:swid,], tmp2, tmp2[NROW(tmp)+1-1:swid,])
-                           tmp2 <- easysmooth(tmp2, width = swid)
-                           tmp[] <- tmp2[swid + 1:NROW(tmp),]
-                       }
                        tmp
                })
     obj$data <- DATA
@@ -88,12 +79,11 @@ xyplot.rollccf <-
              par.settings = simpleTheme(pch = ".", cex = 2),
              layout = c(1, length(x$rolls) + with.data * 2),
              strip = strip.default,
-             panel = panel.superpose.cycle,
              ylim = c(0, 1), xlab = NULL, as.table = TRUE)
 {
     rollplot <- xyplot.list(x$rolls, x.same = TRUE, y.same = NA,
                             type = type, ylim = ylim,
-                            panel = panel, screens = 1,
+                            superpose = TRUE,
                             par.settings = par.settings, xlab = xlab,
                             as.table = as.table,
                        key = simpleKey(paste("lag", x$lags),
@@ -101,7 +91,7 @@ xyplot.rollccf <-
     if (with.data) {
         rollplot <- c(rollplot,
                       xyplot(x$data, type = type.data,
-                             panel = panel, par.settings = par.settings),
+                             par.settings = par.settings),
                       x.same = TRUE)
     }
     rollplot <- update(rollplot, strip = strip, ...)

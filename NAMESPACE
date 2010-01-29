@@ -122,9 +122,9 @@ useDynLib(hydromad, sma_cmd)
 export(bucket.sim)
 #useDynLib(hydromad, sma_bucket)
 
-export(simhyd.sim)
-export(simhydOptions)
-useDynLib(hydromad, sma_simhyd)
+#export(simhyd.sim)
+#export(simhydOptions)
+#useDynLib(hydromad, sma_simhyd)
 
 
 ## CALIBRATION METHODS
@@ -182,15 +182,10 @@ export(event.clusters,
 
 ## utilities.R
 export(tsCleanup,
-       na.monthlyavg,
-       na.approx1,
-       na.mean,
-       na.zero,
        autocorrTime,
        byDays, byYears, bySecs,
        observed,
        observed.default,
-       easysmooth,
        numericSummary)
 
 ## rollccf.R

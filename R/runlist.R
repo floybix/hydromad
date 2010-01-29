@@ -92,7 +92,6 @@ xyplot.runlist <-
              residuals=FALSE,
              coerce=byDays, trans=NULL,
              superpose=FALSE,
-             panel=panel.superpose.cycle,
              ...)
 {
     if (!missing(data) && !is.null(data))
@@ -114,14 +113,12 @@ xyplot.runlist <-
     if (residuals) {
         foo <- xyplot(x,
                       superpose = superpose,
-                      panel=panel,
                       ...)
 
     } else {
         ## observed vs modelled
         foo <- xyplot(x,
                       superpose = superpose,
-                      panel=panel,
                       ...)
         foo <- foo + layer(panel.lines(Q), data=list(Q=Q), style=if (superpose) (NCOL(x) + 1) else 2)
     }

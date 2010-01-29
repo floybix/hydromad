@@ -66,7 +66,7 @@ hydromad(DATA = xts(), ...,
   not yet.
 }
 \value{
-  the result is a \link[hydromad.object]{\code{hydromad} object}.
+  the result is a \link[=hydromad.object]{hydromad object}.
 }
 \references{
   ... TODO
@@ -78,8 +78,10 @@ hydromad(DATA = xts(), ...,
 }
 \examples{
 data(Canning)
-x <- window(Canning, "1980-01-01", "1981-01-01")
+x <- window(Canning, start = "1980-01-01", end = "1981-01-01")
+## an uncalibrated model, with ranges of possible parameter values
 mod0 <- hydromad(x, f = 1, sma = "cwi")
 mod0
+## then calibrate etc...
 }
 \keyword{ models }

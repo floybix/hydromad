@@ -17,7 +17,6 @@ rollccf(DATA = data.frame(Q = , P = ),
         lags = base.lag + c(0, 1, -1),
         base.lag = estimateDelay(DATA, rises = rises, plot = FALSE),
         rises = FALSE,
-        do.smooth = TRUE,
         na.action = na.contiguous,
         na.max.fraction = 1/3)
 
@@ -51,10 +50,6 @@ rollccf(DATA = data.frame(Q = , P = ),
   \item{rises}{
     if \code{TRUE}, compute the cross correlation with \emph{rises in}
     streamflow. In this case the streamflow series must be named \code{"Q"}.
-  }
-  \item{do.smooth}{
-    if \code{TRUE}, smooth the resulting correlation series with a
-    gaussian filter of same width as the cross correlation window.
   }
   \item{na.action}{
     function to handle missing data in each window (not the whole

@@ -49,9 +49,11 @@ y[ii] <- rev(y[ii])
 ## apply recursive filter and lag
 y <- filter(y, 0.8, method="r")
 y <- lag(y, -2) # true delay is 2
-plot(ts.union(x,y))
-estimateDelay(list(U=x, Q=y))
-estimateDelay(list(U=x, Q=y), rises=FALSE)
+plot(ts.union(y,x))
+## based on cross correlation function:
+estimateDelay(ts.union(y,x), rises = FALSE, plot = TRUE)
+## based on ccf with flow rises only:
+estimateDelay(ts.union(y,x), plot = TRUE)
 }
 \keyword{ ts }
 

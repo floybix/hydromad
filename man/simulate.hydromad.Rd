@@ -50,8 +50,7 @@ simulate.hydromad(object, nsim, seed, ...,
 }
 \examples{
 data(Canning)
-x <- Canning["1980"]
-mod0 <- hydromad(x, sma = "cwi")
+mod0 <- hydromad(Canning[1:500,], sma = "cwi")
 simulate(mod0, nsim = 12, method = "latin")
 }
 \keyword{ iteration }
