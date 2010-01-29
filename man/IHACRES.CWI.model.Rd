@@ -2,8 +2,6 @@
 \alias{IHACRES.CWI.model}
 \alias{cwi.sim}
 \alias{ihacres.cwi}
-\alias{ihacres.api}
-\alias{effrain.cwi.sim}
 \title{ IHACRES Catchment Wetness Index (CWI) model }
 \description{
   The Catchment Wetness Index (CWI) effective rainfall model for
@@ -17,7 +15,7 @@
 cwi.sim(DATA = xts()
 	tw, f = 0, c,
         l = 0, p = 1,
-        t_ref = ihacres.getOption("cwi")$t_ref,
+        t_ref = hydromad.getOption("cwi")$t_ref,
         s_0 = 0,
         return_state = FALSE)
 }
@@ -97,7 +95,7 @@ cwi.sim(DATA = xts()
 }
 \author{ Felix Andrews \email{felix@nfrac.org} }
 \seealso{
-  \code{\link{ihacres}(sma = "cwi")} to work with models as objects (recommended).
+  \code{\link{hydromad}(sma = "cwi")} to work with models as objects (recommended).
 }
 \examples{
 data(Canning)

@@ -1,5 +1,5 @@
 
-library(ihacres)
+library(hydromad)
 
 U <- c(rep(0,10), 1, rep(0,50), 1, rep(0,50)) ## Input signal
 X <- filter(2 * U, 0.8, "recursive")          ## Noise free output

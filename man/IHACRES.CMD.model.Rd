@@ -2,7 +2,6 @@
 \alias{IHACRES.CMD.model}
 \alias{cmd.sim}
 \alias{ihacres.cmd}
-\alias{effrain.cmd.sim}
 \title{ IHACRES Catchment Moisture Deficit (CMD) model }
 \description{
   The Catchment Moisture Deficit (CMD) effective rainfall model for IHACRES.
@@ -77,7 +76,7 @@ Corrigendum to ``A Catchment Moisture Deficit module for the IHACRES rainfall-ru
 }
 \author{ Felix Andrews \email{felix@nfrac.org} }
 \seealso{
-  \code{\link{ihacres}(sma = "cmd")} to work with models as objects (recommended).
+  \code{\link{hydromad}(sma = "cmd")} to work with models as objects (recommended).
 }
 \examples{
 data(Canning)

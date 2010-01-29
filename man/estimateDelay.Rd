@@ -7,7 +7,7 @@
 }
 \usage{
 estimateDelay(DATA = data.frame(U=, Q=), rises = TRUE, rank = FALSE,
-	n.estimates = 1, lag.max = ihacres.getOption("max.delay"),
+	n.estimates = 1, lag.max = hydromad.getOption("max.delay"),
         na.action = na.exclude, plot = TRUE, main = NULL, ...)
 }
 \arguments{

@@ -1,16 +1,16 @@
-library(ihacreslab)
+library(hydromad)
 
 data(SalmonBrook)
 
 obsdat <- window(SalmonBrook, start = "1990-01-01", end = "1992-01-01")
 
 P <- obsdat$P
-simU <- ihacres.sim(obsdat, sma = "cwi", tw = 30, f = 0.5, c = 1/1000,
+simU <- hydromad.sim(obsdat, sma = "cwi", tw = 30, f = 0.5, c = 1/1000,
                     routing = NULL)
-simQ <- ihacres.sim(simU, sma = NULL,
+simQ <- hydromad.sim(simU, sma = NULL,
                     routing = "expuh", tau_s = 30, tau_q = 2, v_s = 0.3)
 
-simQ2 <- ihacres.sim(obsdat, sma = "cwi", tw = 30, f = 0.5, c = 1/1000,
+simQ2 <- hydromad.sim(obsdat, sma = "cwi", tw = 30, f = 0.5, c = 1/1000,
                      routing = "expuh", tau_s = 30, tau_q = 2, v_s = 0.3)
 
 all.equal(simQ, simQ2)
@@ -18,11 +18,11 @@ all.equal(simQ, simQ2)
 
 modDat <- merge(obsdat[,c("P","E")], Q = byDays(simQ))
 specs <-
-    list(cwiLS21 = ihacres(modDat, sma = "cwi",
+    list(cwiLS21 = hydromad(modDat, sma = "cwi",
              routing = "expuh", rfit = list("ls", order = c(2, 1))),
-         cwiSRIV21 = ihacres(modDat, sma = "cwi",
+         cwiSRIV21 = hydromad(modDat, sma = "cwi",
              routing = "expuh", rfit = list("sriv", order = c(2, 1))),
-         cwiExpUH = ihacres(modDat, sma = "cwi",
+         cwiExpUH = hydromad(modDat, sma = "cwi",
              routing = "expuh", tau_q = c(0,3), tau_s = c(3,100), v_s = c(0,1)))
 
 ## objective function surface over parameters
@@ -71,10 +71,10 @@ lapply(fits, function(fit)
 ## TODO: tf.invese.fit
 
 
-modSpec <- ihacres(modDat, sma = "cwi",
+modSpec <- hydromad(modDat, sma = "cwi",
                    routing = "expuh", rfit = list("sriv", order = c(2, 1)))
 
-ihacres.options(trace = TRUE)
+hydromad.options(trace = TRUE)
 
 bfgsFit <- fitByOptim(modSpec, samples = 64, method = "BFGS")
 summary(bfgsFit)

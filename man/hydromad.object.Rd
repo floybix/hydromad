@@ -1,17 +1,17 @@
-\name{ihacres.object}
-\alias{ihacres.object}
+\name{hydromad.object}
+\alias{hydromad.object}
 \alias{isValidModel}
 \alias{isFullySpecified}
-\alias{predict.ihacres}
-\alias{print.ihacres}
-\alias{summary.ihacres}
-\alias{print.summary.ihacres}
-\alias{fitted.ihacres}
-\alias{residuals.ihacres}
-\alias{observed.ihacres}
-\title{ IHACRES model object methods }
+\alias{predict.hydromad}
+\alias{print.hydromad}
+\alias{summary.hydromad}
+\alias{print.summary.hydromad}
+\alias{fitted.hydromad}
+\alias{residuals.hydromad}
+\alias{observed.hydromad}
+\title{ Hydromad model object methods }
 \description{
-  An \code{ihacres} object represents a model, which may be fully
+  A \code{hydromad} object represents a model, which may be fully
   specified (calibrated) or be defined only by parameter ranges.
   The parameter values are stored along with the observed input and
   output time-series data.
@@ -20,16 +20,16 @@
 isValidModel(object)
 isFullySpecified(object)
 
-\method{summary}{ihacres}(object, with_uh = TRUE,
+\method{summary}{hydromad}(object, with_uh = TRUE,
 	breaks = NULL, coerce = byDays, ...)
 
-\method{predict}{ihacres}(object, newdata = NULL,
+\method{predict}{hydromad}(object, newdata = NULL,
 	with_uh = TRUE,
 	return_state = FALSE,
 	return_components = FALSE, ...)
 }
 \arguments{
-  \item{object}{ an object of class \code{ihacres}. }
+  \item{object}{ an object of class \code{hydromad}. }
   \item{breaks}{ if specified, break up the time series and calculate statistics for each chunk.
 	Can be a vector of cut points \emph{or} number of intervals to cut into \emph{or} an interval specification,
 	one of "sec", "min", "hour", "day", "DSTday", "week", "month" or "year",
@@ -48,7 +48,7 @@ isFullySpecified(object)
   \item{\dots}{ further arguments generally passed on to the methods for \code{\link{tf}}. }
 }
 \details{
-  Several standard methods are available for \code{ihacres} objects:
+  Several standard methods are available for \code{hydromad} objects:
   \code{\link{coef}},
   \code{\link{residuals}},
   \code{\link{fitted}},
@@ -59,11 +59,11 @@ isFullySpecified(object)
   etc.
 
   Plot methods include
-  \code{\link{xyplot.ihacres}},
-  \code{\link{qqmath.ihacres}},
+  \code{\link{xyplot.hydromad}},
+  \code{\link{qqmath.hydromad}},
   \code{\link{errormasscurve}}.
 
-  In any \code{ihacres} object, the time series of effective
+  In any \code{hydromad} object, the time series of effective
   rainfall is available as an item \code{"U"} in the model
   object.
 }
@@ -72,7 +72,7 @@ isFullySpecified(object)
 
   \code{predict} returns a time series.
 
-  \code{update} returns a new \code{ihacres} object.
+  \code{update} returns a new \code{hydromad} object.
 }
 \author{ Felix Andrews \email{felix@nfrac.org} }
 \seealso{

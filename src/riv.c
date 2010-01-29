@@ -1,6 +1,6 @@
-// ihacreslab: rainfall-runoff hydrology models and tools
+// hydromad: Hydrological Modelling and Analysis of Data
 //
-// Copyright (c) 2008 Felix Andrews <felix@nfrac.org>
+// Copyright (c) Felix Andrews <felix@nfrac.org>
 
 
 #include <R_ext/Arith.h>
@@ -128,7 +128,7 @@ R_CMethodDef cMethods[] = {
 };
 
 void
-R_init_ihacres(DllInfo *info)
+R_init_hydromad(DllInfo *info)
 {
 	R_registerRoutines(info, cMethods, NULL, NULL, NULL);
 }

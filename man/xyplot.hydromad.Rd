@@ -1,18 +1,18 @@
-\name{xyplot.ihacres}
-\alias{xyplot.ihacres}
-\alias{qqmath.ihacres}
-\alias{tsdiag.ihacres}
+\name{xyplot.hydromad}
+\alias{xyplot.hydromad}
+\alias{qqmath.hydromad}
+\alias{tsdiag.hydromad}
 \alias{errormasscurve}
-\title{ Plot methods for IHACRES models }
+\title{ Plot methods for Hydromad model objects }
 \description{
   Plot methods...
 }
 \usage{
-\method{xyplot}{ihacres}(x, data,
+\method{xyplot}{hydromad}(x, data,
 	coerce = byDays, trans = NULL,
 	...)
 
-\method{qqmath}{ihacres}(x, data,
+\method{qqmath}{hydromad}(x, data,
 	coerce = byDays, trans = NULL,
 	type = c("p", "l"),
 	auto.key = TRUE,
@@ -22,7 +22,7 @@
 errormasscurve(x, ...)
 }
 \arguments{
-  \item{x}{ an object of class \code{ihacres}. }
+  \item{x}{ an object of class \code{hydromad}. }
   \item{data}{ ignored. }
   \item{coerce}{ a function to apply to the time series of observed and modelled values. }
   \item{trans}{ a function to apply to the time series. }
@@ -40,7 +40,7 @@ errormasscurve(x, ...)
 	the trellis functions return a trellis object.
 }
 \author{ Felix Andrews \email{felix@nfrac.org} }
-\seealso{ \code{\link{ihacres.object}}, \code{\link[lattice]{xyplot}} }
+\seealso{ \code{\link{hydromad.object}}, \code{\link[lattice]{xyplot}} }
 \examples{
 
 }

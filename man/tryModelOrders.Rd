@@ -9,11 +9,11 @@
 \usage{
 tryModelOrders(expr, n = 0:3, m = 0:2,
                delay = ihacres.getOption("delay"),
-               verbose = ihacres.getOption("trace"))
+               verbose = hydromad.getOption("trace"))
 }
 \arguments{
   \item{expr}{
-    an expression to calibrate an ihacres type model.
+    an expression to calibrate an hydromad type model.
   }
   \item{n}{
     the set of values of n to try (order of the auto-regressive component).
@@ -32,7 +32,7 @@ tryModelOrders(expr, n = 0:3, m = 0:2,
 
 }
 \value{
-  a list of model objects, of class \code{ihacres.\link{runlist}}.
+  a list of model objects, of class \code{hydromad.\link{runlist}}.
 }
 \references{
   P C Young?

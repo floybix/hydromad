@@ -14,4 +14,4 @@ Depends: zoo, lattice (>= 0.18-1), latticeExtra (>= 0.6-5), polynom
 Imports: stats, utils
 Suggests: testthat, dlm, DEoptim
 License: GPL (>= 2)
-URL: http://hydromad.r-forge.r-project.org/
+URL: http://hydromad.catchment.org/

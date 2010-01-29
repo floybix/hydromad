@@ -1,6 +1,6 @@
 
-library(ihacres)
+library(hydromad)
 
 data(Wye)
 
-stop("under construction")
+warning("under construction")

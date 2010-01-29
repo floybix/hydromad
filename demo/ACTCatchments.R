@@ -1,5 +1,5 @@
 
-library(ihacres)
+library(hydromad)
 
 ## ACT CATCHMENTS
 data(Cotter)
@@ -17,7 +17,7 @@ dsets <- lapply(dsets, get)
 calts <- lapply(dsets, window, start = "1970-01-01", end = "1980-01-01")
 ## calibrations
 mods <- lapply(calts, function(DATA) {
-    ihacres.cwi(DATA, uh = list(order = c(n=2, m=1)))
+    hydromad(DATA, rfit = list(order = c(n=2, m=1)))
 })
 mods <- as.runlist(mods)
 summary(mods)

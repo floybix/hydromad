@@ -1,11 +1,12 @@
-\name{ihacres}
+\name{hydromad}
+\alias{hydromad}
 \alias{ihacres}
-\alias{update.ihacres}
+\alias{update.hydromad}
 \title{
-  Specify IHACRES-type models.
+  Specify rainfall - runoff (hydrology) models.
 }
 \description{
-  The \code{ihacres} function can be used to specify models with their
+  The \code{hydromad} function can be used to specify models with their
   model components, data, parameters and settings. It allows a general
   two-component structure, where the Soil Moisture Accounting
   (\code{sma}) component and the Routing component can be arbitrary
@@ -13,11 +14,11 @@
   component.
 }
 \usage{
-ihacres(DATA = xts(), ...,
+hydromad(DATA = xts(), ...,
         sma = "cwi", routing = "expuh", rfit = NULL,
-        weights = NULL, warmup = ihacres.getOption("warmup"))
+        weights = NULL, warmup = hydromad.getOption("warmup"))
 
-\method{update}{ihacres}(object, ..., newdata,
+\method{update}{hydromad}(object, ..., newdata,
        sma, routing, rfit, warmup, weights, and.rescale)
 }
 \arguments{
@@ -34,7 +35,7 @@ ihacres(DATA = xts(), ...,
 	    }
   \item{\dots}{
     values or ranges for named parameters. Any parameters not given here
-    will be taken from defaults given in \code{ihacres.options(sma)}.
+    will be taken from defaults given in \code{hydromad.options(sma)}.
   }
   \item{sma}{
     name of the Soil Moisture Accounting (SMA) component. May be \code{NULL}, in
@@ -65,20 +66,20 @@ ihacres(DATA = xts(), ...,
   not yet.
 }
 \value{
-  the result is an \link[ihacres.object]{\code{ihacres} object}.
+  the result is a \link[hydromad.object]{\code{hydromad} object}.
 }
 \references{
-  ...
+  ... TODO
 }
 \author{ Felix Andrews \email{felix@nfrac.org} }
 \seealso{
-  \code{\link{ihacres.object}},
+  \code{\link{hydromad.object}},
   \code{\link{cwi.sim}}
 }
 \examples{
 data(Canning)
-x <- Canning["1980"]
-mod0 <- ihacres(x, f = 1, sma = "cwi")
+x <- window(Canning, "1980-01-01", "1981-01-01")
+mod0 <- hydromad(x, f = 1, sma = "cwi")
 mod0
 }
 \keyword{ models }

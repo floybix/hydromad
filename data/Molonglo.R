@@ -4,7 +4,7 @@ Molonglo <- local({
     ## read files from doc directory
     pqdat <- read.table("Molonglo.dat",
                         sep = ",", col.names = c("P", "Q", "Date"), as.is = TRUE)
-    tdat <- read.table(system.file("doc", "t_cotter.csv", package = "ihacreslab"),
+    tdat <- read.table(system.file("doc", "t_cotter.csv", package = "hydromad"),
                        sep = ",", col.names = c("T", "Date"), as.is = TRUE)
     ## convert dates
     pqdat$Date <- as.Date(pqdat$Date, "%d/%m/%Y")

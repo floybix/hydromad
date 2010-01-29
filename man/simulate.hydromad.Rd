@@ -1,19 +1,19 @@
-\name{simulate.ihacres}
-\alias{simulate.ihacres}
+\name{simulate.hydromad}
+\alias{simulate.hydromad}
 \title{
-  Simulate ihacres models by parameter sampling.
+  Simulate hydromad models by parameter sampling.
 }
 \description{
   Run many simulations by sampling within parameter ranges.
 }
 \usage{
-simulate.ihacres(object, nsim, seed, ...,
+simulate.hydromad(object, nsim, seed, ...,
    method = c("all.combinations", "latin.hypercube", "random"),
    FUN = NULL)
 }
 \arguments{
   \item{object}{
-    an \code{ihacres} object (produced by the \code{\link{ihacres}()}
+    a \code{hydromad} object (produced by the \code{\link{hydromad}()}
     function) that is not fully specified (i.e. so some parameter values
     are given as ranges).
   }
@@ -28,8 +28,8 @@ simulate.ihacres(object, nsim, seed, ...,
   }
   \item{FUN}{
     optional function to apply to each simulated model. Typical examples
-    would be \code{\link[summary.ihacres]{summary}} or
-    \code{\link[predict.ihacres]{predict}}.
+    would be \code{\link[summary.hydromad]{summary}} or
+    \code{\link[predict.hydromad]{predict}}.
 }
   \item{\dots}{
     further arguments to \code{FUN}.
@@ -51,7 +51,7 @@ simulate.ihacres(object, nsim, seed, ...,
 \examples{
 data(Canning)
 x <- Canning["1980"]
-mod0 <- ihacres(x, sma = "cwi")
+mod0 <- hydromad(x, sma = "cwi")
 simulate(mod0, nsim = 12, method = "latin")
 }
 \keyword{ iteration }
