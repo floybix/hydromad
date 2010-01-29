@@ -1,13 +1,13 @@
-## ihacreslab: rainfall-runoff hydrology models and tools
+## hydromad: Hydrological Modelling and Analysis of Data
 ##
-## Copyright (c) 2009 Felix Andrews <felix@nfrac.org>
+## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
 
 fitBySampling <-
     function(MODEL,
-             objective = ihacres.getOption("objective"),
-             samples = ihacres.getOption("fit.samples"),
+             objective = hydromad.getOption("objective"),
+             samples = hydromad.getOption("fit.samples"),
              sampletype = c("latin.hypercube", "random", "all.combinations"))
 {
     start_time <- proc.time()
@@ -26,7 +26,7 @@ fitBySampling <-
     bestModel <- MODEL
     bestFunVal <- Inf
     for (i in seq(NROW(psets))) {
-        if (isTRUE(ihacres.getOption("trace"))) {
+        if (isTRUE(hydromad.getOption("trace"))) {
             run_name <- paste(names(psets), format(psets[i,], digits=3),
                               sep = "=", collapse = ",")
             message(run_name)

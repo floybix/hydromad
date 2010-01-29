@@ -1,10 +1,10 @@
-## ihacreslab: rainfall-runoff hydrology models and tools
+## hydromad: Hydrological Modelling and Analysis of Data
 ##
-## Copyright (c) 2008 Felix Andrews <felix@nfrac.org>
+## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
 
-xyplot.ihacres <-
+xyplot.hydromad <-
 xyplot.tf <-
     function(x, data,
              coerce = byDays, trans = NULL,
@@ -38,7 +38,7 @@ errormasscurve.default <-
     foo
 }
 
-qqmath.ihacres <-
+qqmath.hydromad <-
     function(x, data,
              coerce = byDays, trans = NULL,
              type = c("p","l"),
@@ -60,6 +60,6 @@ qqmath.ihacres <-
     foo
 }
 
-tsdiag.ihacres <- function(object, gof.lag, ...)
+tsdiag.hydromad <- function(object, gof.lag, ...)
     stats:::tsdiag.Arima(object$uh, gof.lag=gof.lag, ...)
 

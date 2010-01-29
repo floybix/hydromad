@@ -1,6 +1,6 @@
-## ihacreslab: rainfall-runoff hydrology models and tools
+## hydromad: Hydrological Modelling and Analysis of Data
 ##
-## Copyright (c) 2008 Felix Andrews <felix@nfrac.org>
+## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
 runlist <- function(...)
@@ -37,10 +37,10 @@ print.runlist <-
     invisible(x)
 }
 
-print.ihacres.runlist <-
+print.hydromad.runlist <-
     function(x, digits = max(3, getOption("digits") - 3), ...)
 {
-    cat("\nList of IHACRES model runs:\n")
+    cat("\nList of Hydromad model runs:\n")
     print.default(lapply(x, function(obj) {
         if (!is.null(obj$msg)) {
             list(call = obj$call, message = obj$msg)
@@ -194,7 +194,7 @@ qqmath.runlist <-
     foo
 }
 
-summary.ihacres.runlist <-
+summary.hydromad.runlist <-
 summary.tf.runlist <-
     function(object,
              pars=TRUE,

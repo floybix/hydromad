@@ -1,6 +1,6 @@
-## ihacreslab: rainfall-runoff hydrology models and tools
+## hydromad: Hydrological Modelling and Analysis of Data
 ##
-## Copyright (c) 2008 Felix Andrews <felix@nfrac.org>
+## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
 
@@ -56,7 +56,7 @@ perfStats <-
     ans
 }
 
-objFunVal <- function(model, objective = ihacres.getOption("objective"))
+objFunVal <- function(model, objective = hydromad.getOption("objective"))
 {
     if (inherits(objective, "formula"))
         objective <- objective[[2]]
@@ -77,7 +77,7 @@ objFunVal <- function(model, objective = ihacres.getOption("objective"))
 
 bestByObjFun <-
     function(models,
-             objective = ihacres.getOption("objective"),
+             objective = hydromad.getOption("objective"),
              maximum = TRUE,
              orStop = FALSE)
 {

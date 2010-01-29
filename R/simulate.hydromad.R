@@ -1,10 +1,10 @@
-## ihacreslab: rainfall-runoff hydrology models and tools
+## hydromad: Hydrological Modelling and Analysis of Data
 ##
-## Copyright (c) 2008 Felix Andrews <felix@nfrac.org>
+## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
 
-simulate.ihacres <-
+simulate.hydromad <-
     function(object, nsim, seed, ...,
              sampletype = c("random", "latin.hypercube", "all.combinations"),
              FUN = NULL)
@@ -32,7 +32,7 @@ simulate.ihacres <-
     for (i in seq(NROW(psets))) {
         run_name <- paste(names(psets), format(psets[i,], digits=3),
                           sep = "=", collapse = ",")
-        if (isTRUE(ihacres.getOption("trace"))) {
+        if (isTRUE(hydromad.getOption("trace"))) {
             message(run_name)
         }
         thisPars <- as.list(psets[i,])

@@ -1,13 +1,13 @@
-## ihacreslab: rainfall-runoff hydrology models and tools
+## hydromad: Hydrological Modelling and Analysis of Data
 ##
-## Copyright (c) 2008 Felix Andrews <felix@nfrac.org>
+## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
 ## local environment to store user options
-.IhacresEnv <- new.env()
-.IhacresEnv$options <- list()
+.HydromadEnv <- new.env()
+.HydromadEnv$options <- list()
 
 .onLoad <- function(libname, pkgname)
 {
-    ihacres.options(.defaultIhacresOptions())
+    hydromad.options(.defaultHydromadOptions())
 }

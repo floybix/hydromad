@@ -1,6 +1,6 @@
-## ihacreslab: rainfall-runoff hydrology models and tools
+## hydromad: Hydrological Modelling and Analysis of Data
 ##
-## Copyright (c) 2008 Felix Andrews <felix@nfrac.org>
+## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
 
@@ -22,7 +22,7 @@ filter_loss <-
     ## define function for a single (univariate) time series
     filter_loss_onecol <- function(x)
     {
-        if (ihacres.getOption("pure.R.code")) {
+        if (hydromad.getOption("pure.R.code")) {
             nn <- length(a)
             y <- c(init, x*0)
             x <- c(init*0, x)
@@ -42,7 +42,7 @@ filter_loss <-
                     as.integer(length(a)),
                     as.double(loss),
                     out = as.double(yi),
-                    DUP=FALSE, PACKAGE="ihacreslab")$out
+                    DUP=FALSE, PACKAGE="hydromad")$out
             y <- y[-(1:nn)]
         }
         y

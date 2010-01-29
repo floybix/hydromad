@@ -1,6 +1,6 @@
-## ihacreslab: rainfall-runoff hydrology models and tools
+## hydromad: Hydrological Modelling and Analysis of Data
 ##
-## Copyright (c) 2008 Felix Andrews <felix@nfrac.org>
+## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
 
@@ -84,7 +84,7 @@ tf.inverse.sim <-
     } else
 
     ######TODO
-    if (TRUE || ihacres.getOption("pure.R.code")) {
+    if (TRUE || hydromad.getOption("pure.R.code")) {
         ## slow version in R for cross-checking
         if ("lambda" %in% parSymbols) {
             pars.tv <- tfParsConvert(pars, "tau,v")
@@ -196,7 +196,7 @@ tf.inverse.sim <-
                     as.double(pars.tv["lambda"]),
                     as.double(P),
                     U = double(length(Q)),
-                    DUP=FALSE, PACKAGE="ihacreslab")$U
+                    DUP=FALSE, PACKAGE="hydromad")$U
         } else {
             U <- .C(inverse_filter,
                     as.double(Q),
@@ -207,7 +207,7 @@ tf.inverse.sim <-
                     as.integer(m),
                     as.double(P),
                     U = double(length(Q)),
-                    DUP=FALSE, PACKAGE="ihacreslab")$U
+                    DUP=FALSE, PACKAGE="hydromad")$U
         }
         ## make it a time series object again
         attributes(U) <- attributes(Q)

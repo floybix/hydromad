@@ -1,6 +1,6 @@
-## ihacreslab: rainfall-runoff hydrology models and tools
+## hydromad: Hydrological Modelling and Analysis of Data
 ##
-## Copyright (c) 2008 Felix Andrews <felix@nfrac.org>
+## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
 
@@ -16,7 +16,7 @@ filter_tv <-
     bad <- is.na(x) | is.na(a)
     x[bad] <- 0
     a[bad] <- 1
-    if (ihacres.getOption("pure.R.code")) {
+    if (hydromad.getOption("pure.R.code")) {
         y <- x
         y[1] <- x[1] + a[1] * init
         for (i in 2:length(x)) {
@@ -29,7 +29,7 @@ filter_tv <-
                 as.integer(length(x)),
                 as.double(init),
                 out = double(length(x)),
-                DUP=FALSE, PACKAGE="ihacreslab")$out
+                DUP=FALSE, PACKAGE="hydromad")$out
         ## make it a time series object again
         attributes(y) <- attributes(x)
     }

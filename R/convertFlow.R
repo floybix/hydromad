@@ -1,5 +1,6 @@
 ##
-## Copyright (c) 2008 Felix Andrews <felix@nfrac.org>
+## Copyright (c) Felix Andrews <felix@nfrac.org>
+##
 
 convertFlow <-
     function(x, from = "mm", to = "mm", area.km2 = -1,

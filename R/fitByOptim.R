@@ -1,16 +1,16 @@
-## ihacreslab: rainfall-runoff hydrology models and tools
+## hydromad: Hydrological Modelling and Analysis of Data
 ##
-## Copyright (c) 2009 Felix Andrews <felix@nfrac.org>
+## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
 
 fitByOptim <-
     function(MODEL,
-             objective = ihacres.getOption("objective"),
-             method = ihacres.getOption("optim.method"),
-             control = ihacres.getOption("optim.control"),
+             objective = hydromad.getOption("objective"),
+             method = hydromad.getOption("optim.method"),
+             control = hydromad.getOption("optim.control"),
              hessian = TRUE,
-             samples = ihacres.getOption("fit.samples"),
+             samples = hydromad.getOption("fit.samples"),
              sampletype = c("latin.hypercube", "random", "all.combinations"),
              multistart = FALSE,
              initpars = NULL)
@@ -77,9 +77,9 @@ fitByOptim <-
             initpars <- sapply(parlist, mean)
         }
         ## now optimise
-        control <- modifyList(ihacres.getOption("optim.control"),
+        control <- modifyList(hydromad.getOption("optim.control"),
                               control)
-        if (isTRUE(ihacres.getOption("quiet")))
+        if (isTRUE(hydromad.getOption("quiet")))
             control$trace <- 0
         bestModel <- MODEL
         bestFunVal <- Inf
@@ -108,7 +108,7 @@ fitByOptim <-
             }
             thisVal
         }
-        if (!isTRUE(ihacres.getOption("catch.errors.optim")))
+        if (!isTRUE(hydromad.getOption("catch.errors.optim")))
             try <- force ## i.e. skip the try()
         lowerb <- if (method == "L-BFGS-B") lower else -Inf
         upperb <- if (method == "L-BFGS-B") upper else Inf
@@ -129,7 +129,7 @@ fitByOptim <-
                 paste("optim() returned convergence code",
                       ans$convergence)
             }
-            if (!isTRUE(ihacres.getOption("quiet"))) {
+            if (!isTRUE(hydromad.getOption("quiet"))) {
                 warning(msg)
             }
             bestModel$msg <- msg

@@ -1,6 +1,6 @@
-## ihacreslab: rainfall-runoff hydrology models and tools
+## hydromad: Hydrological Modelling and Analysis of Data
 ##
-## Copyright (c) 2008 Felix Andrews <felix@nfrac.org>
+## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
 
@@ -17,7 +17,7 @@ cwi.sim <-
     function(DATA,
              tw, f = 0, c,
              l = 0, p = 1,
-             t_ref = ihacres.getOption("cwi")$t_ref,
+             t_ref = hydromad.getOption("cwi")$t_ref,
              s_0 = 0,
              return_state = FALSE)
 {
@@ -73,69 +73,5 @@ absorbScale.cwi <- function(object, gain)
     c <- max(c, 0)
     object$parlist[["c"]] <- c
     object$U <- (c ^ p) * object$U
-    object
-}
-
-
-DISABLED_update.ihacres.cwi <-
-    function(object, newdata = NULL, ..., c, uh)
-{
-    ## we want to estimate the c (scale) parameter unless it has been specified
-    if (!missing(c)) {
-        object$estimateScale <- is.na(c)
-    } else {
-        c <- coef(object)[["c"]]
-    }
-    if (!isTRUE(object$estimateScale)) {
-        ## fall back to default method
-        return(NextMethod("update"))
-    }
-    if (missing(uh))
-        uh <- object$uh
-    ## the CWI model allows gain to be folded into 'c' parameter
-    ## so we do not want to normalise the UH (yet)
-    cFromGain <- FALSE
-    if (is.character(uh))
-        uh <- list(uh)
-    if (!inherits(uh, "tf") && is.list(uh)) {
-        uh$normalise <- FALSE
-        cFromGain <- TRUE
-    }
-    ## first run with nominal c value
-    if (is.na(c)) c <- 1
-    object <- update.ihacres(object, newdata = newdata, ..., c = c, uh = uh)
-    p <- coef(object)[["p"]]
-    if (cFromGain && inherits(object$uh, "tf")) {
-        ## estimate scale from gain of UH
-        ssg <- ssg.tf(object$uh)
-        if (abs(ssg - 1) < sqrt(.Machine$double.eps)) {
-            ## UH is already normalised (unit volume)
-            return(object)
-        }
-        c <- c * (ssg ^ p)
-    } else {
-        ## estimate scale by mass balance
-        Q <- object$data[,"Q"]
-        U <- object$U
-        ok <- complete.cases(Q, U)
-        c <- (sum(Q[ok]) / sum(U[ok])) ^ (1/p)
-        if (!is.finite(c)) {
-            warning("could not estimate mass balance factor")
-            return(object)
-        }
-    }
-    c <- max(c, 0)
-    Q <- object$data[,"Q"]
-    U <- object$U
-    object$U <- (c ^ p) * U
-    object$coefficients["c"] <- c
-#    object$estimateScale <- FALSE
-    if (inherits(object$uh, "tf")) {
-        ## now run the UH
-        uhData <- list(U = object$U, Q = object$data[,"Q"])
-        normPars <- normalise.tf.coef(coef(object$uh))
-        object$uh <- update(object$uh, newdata = uhData,
-                            pars = normPars)
-    }
     object
 }

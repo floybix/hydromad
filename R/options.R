@@ -1,9 +1,9 @@
-## ihacreslab: rainfall-runoff hydrology models and tools
+## hydromad: Hydrological Modelling and Analysis of Data
 ##
-## Copyright (c) 2008 Felix Andrews <felix@nfrac.org>
+## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
-.defaultIhacresOptions <- function()
+.defaultHydromadOptions <- function()
     list(
          sma = "cwi",
          routing = "uh",
@@ -56,12 +56,12 @@
 
 ## code below copied from lattice
 
-ihacres.getOption <- function(name)
+hydromad.getOption <- function(name)
 {
-    .IhacresEnv$options[[name]]
+    .HydromadEnv$options[[name]]
 }
 
-ihacres.options <- function(...)
+hydromad.options <- function(...)
 {
     ## this would have been really simple if only form allowed were
     ## lattice.options("foo", "bar") and
@@ -70,7 +70,7 @@ ihacres.options <- function(...)
 
     new <- list(...)
     if (is.null(names(new)) && length(new) == 1 && is.list(new[[1]])) new <- new[[1]]
-    old <- .IhacresEnv$options
+    old <- .HydromadEnv$options
 
     ## if no args supplied, returns full options list
     if (length(new) == 0) return(old)
@@ -99,7 +99,7 @@ ihacres.options <- function(...)
         if (is.null(x)) x <- list()
         utils::modifyList(x, val)
     }
-    .IhacresEnv$options <- updateList(old, new[nm])
+    .HydromadEnv$options <- updateList(old, new[nm])
 
     ## return changed entries invisibly
     invisible(retVal)

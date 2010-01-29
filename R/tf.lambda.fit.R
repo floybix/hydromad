@@ -1,22 +1,22 @@
-## ihacreslab: rainfall-runoff hydrology models and tools
+## hydromad: Hydrological Modelling and Analysis of Data
 ##
-## Copyright (c) 2008 Felix Andrews <felix@nfrac.org>
+## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
 tf.lambda.fit <-
     function(DATA = list(U=, Q=),
              order = c(m = 2, n = 1), ## ignored
-             delay = ihacres.getOption("delay"),
+             delay = hydromad.getOption("delay"),
              which.pars = c("lambda", "tau_s", "tau_q"), ## tau_q or v_s?
              lambda.init = -0.25,
-             fit.method = ihacres.getOption("inverse.fit.method"),
+             fit.method = hydromad.getOption("inverse.fit.method"),
              ...,
              uhParTrans = alist(v_s = list(trans = log,
                                 inverse = function(x) min(exp(x), 5))),
-             objective = ihacres.getOption("objective"),
-             optim.method = ihacres.getOption("optim.method"),
-             optim.control = ihacres.getOption("optim.control"),
-             trace = ihacres.getOption("trace"),
+             objective = hydromad.getOption("objective"),
+             optim.method = hydromad.getOption("optim.method"),
+             optim.control = hydromad.getOption("optim.control"),
+             trace = hydromad.getOption("trace"),
              na.action = na.pass,
              hessian = FALSE)
 {
@@ -24,9 +24,9 @@ tf.lambda.fit <-
         objective <- objective[[2]]
     stopifnot(is.language(objective))
 
-    ## TODO: merge this function with ihacres.fit.default?
+    ## TODO: merge this function with hydromad.fit.default?
 
-    optim.control <- modifyList(ihacres.getOption("optim.control"),
+    optim.control <- modifyList(hydromad.getOption("optim.control"),
                                 optim.control)
     ## get data into the right form
     if (is.list(DATA)) DATA <- do.call(ts.intersect, lapply(DATA, as.ts))
@@ -52,7 +52,7 @@ tf.lambda.fit <-
     flowpars <- init.pars[which.pars]
 
     ## set up uh parameter transformations
-    uhParTrans <- modifyList(lapply(ihacres.getOption("uhParTrans"), eval),
+    uhParTrans <- modifyList(lapply(hydromad.getOption("uhParTrans"), eval),
                              lapply(uhParTrans, eval))
     ## apply transformations
     for (nm in names(flowpars)) {
@@ -111,17 +111,17 @@ tf.lambda.fit <-
 tf.lambda.part.fit <-
     function(DATA = list(U=, Q=),
              order = c(m = 2, n = 1), ## ignored
-             delay = ihacres.getOption("delay"),
+             delay = hydromad.getOption("delay"),
              which.pars = c("lambda", "tau_s", "tau_q"), ## tau_q or v_s?
              lambda.init = -0.25,
-             fit.method = ihacres.getOption("inverse.fit.method"),
+             fit.method = hydromad.getOption("inverse.fit.method"),
              ...,
              uhParTrans = alist(v_s = list(trans = log,
                                 inverse = function(x) min(exp(x), 5))),
-             objective = ihacres.getOption("objective"),
-             optim.method = ihacres.getOption("optim.method"),
-             optim.control = ihacres.getOption("optim.control"),
-             trace = ihacres.getOption("trace"),
+             objective = hydromad.getOption("objective"),
+             optim.method = hydromad.getOption("optim.method"),
+             optim.control = hydromad.getOption("optim.control"),
+             trace = hydromad.getOption("trace"),
              na.action = na.pass,
              hessian = FALSE)
 {
@@ -129,9 +129,9 @@ tf.lambda.part.fit <-
         objective <- objective[[2]]
     stopifnot(is.language(objective))
 
-    ## TODO: merge this function with ihacres.fit.default?
+    ## TODO: merge this function with hydromad.fit.default?
 
-    optim.control <- modifyList(ihacres.getOption("optim.control"),
+    optim.control <- modifyList(hydromad.getOption("optim.control"),
                                 optim.control)
     ## get data into the right form
     if (is.list(DATA)) DATA <- do.call(ts.intersect, lapply(DATA, as.ts))
@@ -195,7 +195,7 @@ tf.lambda.part.fit <-
     flowpars <- init.pars[which.pars]
 
     ## set up uh parameter transformations
-    uhParTrans <- modifyList(lapply(ihacres.getOption("uhParTrans"), eval),
+    uhParTrans <- modifyList(lapply(hydromad.getOption("uhParTrans"), eval),
                              lapply(uhParTrans, eval))
     ## apply transformations
     for (nm in names(flowpars)) {
@@ -256,17 +256,17 @@ tf.lambda.part.fit <-
 tf.lambda.alt.fit <-
     function(DATA = list(U=, Q=),
              order = c(m = 2, n = 1), ## ignored
-             delay = ihacres.getOption("delay"),
+             delay = hydromad.getOption("delay"),
              which.pars = c("lambda", "tau_s", "tau_q"), ## tau_q or v_s?
              lambda.init = -0.25,
-             fit.method = ihacres.getOption("uh.method"),
+             fit.method = hydromad.getOption("uh.method"),
              ...,
              uhParTrans = alist(v_s = list(trans = log,
                                 inverse = function(x) min(exp(x), 5))),
-             objective = ihacres.getOption("objective"),
-             optim.method = ihacres.getOption("optim.method"),
-             optim.control = ihacres.getOption("optim.control"),
-             trace = ihacres.getOption("trace"),
+             objective = hydromad.getOption("objective"),
+             optim.method = hydromad.getOption("optim.method"),
+             optim.control = hydromad.getOption("optim.control"),
+             trace = hydromad.getOption("trace"),
              na.action = na.pass,
              hessian = FALSE)
 {
@@ -274,9 +274,9 @@ tf.lambda.alt.fit <-
         objective <- objective[[2]]
     stopifnot(is.language(objective))
 
-    ## TODO: merge this function with ihacres.fit.default?
+    ## TODO: merge this function with hydromad.fit.default?
 
-    optim.control <- modifyList(ihacres.getOption("optim.control"),
+    optim.control <- modifyList(hydromad.getOption("optim.control"),
                                 optim.control)
     ## get data into the right form
     if (is.list(DATA)) DATA <- do.call(ts.intersect, lapply(DATA, as.ts))
@@ -307,7 +307,7 @@ tf.lambda.alt.fit <-
     maskflow <- rollmax(maskflow, arTime, na.pad = TRUE, align = "right") #correct?
     maskflow[is.na(maskflow)] <- TRUE
     maskflow <- rollmax(maskflow, 2, na.pad = TRUE, align = "left")
-    #minN <- max(ihacres.getOption("warmup") * 1.5, 100)
+    #minN <- max(hydromad.getOption("warmup") * 1.5, 100)
     #if (sum(maskflow == FALSE, na.rm=TRUE) < minN) {
     #    warning("could not identify low flows (masked by high flow reccessions)")
         alpha_s <- quantile(recc, 0.7, na.rm = TRUE, names = FALSE)
@@ -335,7 +335,7 @@ tf.lambda.alt.fit <-
     flowpars <- init.pars[which.pars]
 
     ## set up uh parameter transformations
-    uhParTrans <- modifyList(lapply(ihacres.getOption("uhParTrans"), eval),
+    uhParTrans <- modifyList(lapply(hydromad.getOption("uhParTrans"), eval),
                              lapply(uhParTrans, eval))
     ## apply transformations
     for (nm in names(flowpars)) {
@@ -397,9 +397,9 @@ tf.lambda.fit_OLD <-
              ...,
              lambda.init = -0.1,
              which.pars = c("v_s", "lambda", "tau_q"),
-             objective = ihacres.getOption("objective"),
-             optim.method = ihacres.getOption("optim.method"),
-             optim.control = ihacres.getOption("optim.control"),
+             objective = hydromad.getOption("objective"),
+             optim.method = hydromad.getOption("optim.method"),
+             optim.control = hydromad.getOption("optim.control"),
              hessian = FALSE)
 {
     stopifnot(inherits(object, "tf"))
@@ -444,6 +444,6 @@ tf.lambda.fit_OLD <-
     ans <- optim(init.par, ih_optim, method = optim.method,
                  control = optim.control, hessian = hessian)
     if (hessian) return(ans)
-    ## return ihacres object
+    ## return hydromad object
     ih_fn(ans$par)
 }

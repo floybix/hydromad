@@ -1,20 +1,20 @@
-## ihacreslab: rainfall-runoff hydrology models and tools
+## hydromad: Hydrological Modelling and Analysis of Data
 ##
-## Copyright (c) 2008 Felix Andrews <felix@nfrac.org>
+## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
 tf.ls.fit <-
     function(DATA,
-             order = ihacres.getOption("order"),
-             delay = ihacres.getOption("delay"),
-             prefilter = ihacres.getOption("prefilter"),
-             warmup = ihacres.getOption("warmup"),
-             normalise = ihacres.getOption("normalise"),
+             order = hydromad.getOption("order"),
+             delay = hydromad.getOption("delay"),
+             prefilter = hydromad.getOption("prefilter"),
+             warmup = hydromad.getOption("warmup"),
+             normalise = hydromad.getOption("normalise"),
              fixed.ar = NULL,
              weights = NULL,
              initX = TRUE,
              na.action = na.pass,
-             trace = ihacres.getOption("trace"))
+             trace = hydromad.getOption("trace"))
 {
     ## get data into the right form
     DATA <- as.ts(DATA)

@@ -1,6 +1,6 @@
-## ihacreslab: rainfall-runoff hydrology models and tools
+## hydromad: Hydrological Modelling and Analysis of Data
 ##
-## Copyright (c) 2008 Felix Andrews <felix@nfrac.org>
+## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
 tf.lambda.inverse.fit <-
@@ -23,21 +23,21 @@ tf.fft.inverse.fit <-
 
 tf.inverse.fit <-
     function(DATA,
-             order = ihacres.getOption("order"),
-             delay = ihacres.getOption("delay"),
-             normalise = ihacres.getOption("normalise"),
-             fit.method = ihacres.getOption("inverse.fit.method"),
+             order = hydromad.getOption("order"),
+             delay = hydromad.getOption("delay"),
+             normalise = hydromad.getOption("normalise"),
+             fit.method = hydromad.getOption("inverse.fit.method"),
              init.U = TRUE,
              pars = NULL,
              use.Qm = TRUE,
              fft.inverse.sim = FALSE,
              rises.only = FALSE,
              ...,
-             max.iterations = ihacres.getOption("inverse.iterations"),
-             rel.tolerance = ihacres.getOption("inverse.tolerance"),
-             par.epsilon = ihacres.getOption("inverse.epsilon"),
+             max.iterations = hydromad.getOption("inverse.iterations"),
+             rel.tolerance = hydromad.getOption("inverse.tolerance"),
+             par.epsilon = hydromad.getOption("inverse.epsilon"),
              init.attempt = 0,
-             trace = ihacres.getOption("trace"))
+             trace = hydromad.getOption("trace"))
 {
     DATA <- as.ts(DATA)
     if ("Q" %in% colnames(DATA)) {
@@ -103,7 +103,7 @@ tf.inverse.fit <-
                                       with.lambda = with.lambda,
                                       init.attempt = init.attempt)
         }
-        ## TODO: ihacres.getOption("catch.errors")
+        ## TODO: hydromad.getOption("catch.errors")
         pcheck <- try(tfParsCheck(pars))
         if (!isTRUE(pcheck))
             return(pcheck)
@@ -179,7 +179,7 @@ tf.inverse.fit <-
 
 tf.pars.init <-
     function(DATA, order = NA, delay = NA,
-             normalise = ihacres.getOption("normalise"),
+             normalise = hydromad.getOption("normalise"),
              with.lambda = FALSE, init.attempt = 0)
 {
     if (with.lambda)

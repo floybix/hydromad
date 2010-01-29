@@ -1,6 +1,6 @@
-## ihacreslab: rainfall-runoff hydrology models and tools
+## hydromad: Hydrological Modelling and Analysis of Data
 ##
-## Copyright (c) 2008 Felix Andrews <felix@nfrac.org>
+## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
 ## the linear flow routing module
@@ -18,7 +18,7 @@ tf.sim <-
              delay = 0, Xs_0 = 0, Xq_0 = 0, X3_0 = 0,
              return_components = FALSE,
              na.action = na.pass,
-             epsilon = ihacres.getOption("sim.epsilon"))
+             epsilon = hydromad.getOption("sim.epsilon"))
 {
     ## note U is allowed to be multi-variate, i.e. multiple columns
     if (!is.ts(U)) U <- as.ts(U)

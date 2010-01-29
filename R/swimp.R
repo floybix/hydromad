@@ -43,7 +43,7 @@ swimp <-
     undrainedV <- poweroid(H = drainLevel, alpha = alpha, beta = beta)$V
 
     ## TODO: start from t=1 (add dummy row to time series?)
-    if (isTRUE(ihacres.getOption("pure.code"))) {
+    if (isTRUE(hydromad.getOption("pure.code"))) {
         ## slower version in R for cross-checking
         storedV <- poweroid(H = drainLevel, alpha = alpha, beta = beta)$V
         for (t in 2:NROW(overflow)) {
@@ -94,7 +94,7 @@ swimp <-
                   H = H,
                   M = M,
                   Iw = Iw,
-                  DUP = FALSE, PACKAGE = "ihacreslab")
+                  DUP = FALSE, PACKAGE = "hydromad")
         V <- ans$V
         A <- ans$A
         H <- ans$H

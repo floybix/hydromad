@@ -1,6 +1,6 @@
-## ihacreslab: rainfall-runoff hydrology models and tools
+## hydromad: Hydrological Modelling and Analysis of Data
 ##
-## Copyright (c) 2008 Felix Andrews <felix@nfrac.org>
+## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
 ## from Farmer et al 2003, WRR
@@ -35,7 +35,7 @@ bucket.sim <-
     P[bad] <- 0
     E[bad] <- 0
     ## TODO: return state from C code
-    COMPILED <- (ihacres.getOption("pure.R.code") == FALSE)
+    COMPILED <- (hydromad.getOption("pure.R.code") == FALSE)
     if (FALSE && COMPILED && !return_state) {
         U <- .C(NA, #sma_bucket, TODO
                 as.double(P),
@@ -48,7 +48,7 @@ bucket.sim <-
                 as.double(a.ss),
                 as.double(S_0),
                 U = double(NROW(DATA)),
-                NAOK=FALSE, DUP=FALSE, PACKAGE="ihacreslab")$U
+                NAOK=FALSE, DUP=FALSE, PACKAGE="hydromad")$U
         ## make it a time series object again
         mostattributes(U) <- attributes(DATA)
         class(U) <- "ts"

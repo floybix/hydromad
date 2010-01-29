@@ -1,6 +1,6 @@
-## ihacreslab: rainfall-runoff hydrology models and tools
+## hydromad: Hydrological Modelling and Analysis of Data
 ##
-## Copyright (c) 2008 Felix Andrews <felix@nfrac.org>
+## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
 
@@ -62,13 +62,13 @@ normalise.expuh <- function(theta)
 
 expuh.ls.fit <-
     function(DATA,
-             order = ihacres.getOption("order"),
-             delay = ihacres.getOption("delay"),
+             order = hydromad.getOption("order"),
+             delay = hydromad.getOption("delay"),
              warmup = stop("ignored"),
              normalise = stop("ignored"),
              ...,
-             method = ihacres.getOption("optim.method"),
-             control = ihacres.getOption("optim.control"),
+             method = hydromad.getOption("optim.method"),
+             control = hydromad.getOption("optim.control"),
              hessian = TRUE)
 {
     model <- tf.ls.fit(DATA, order = order, delay = delay,
@@ -96,13 +96,13 @@ expuh.ls.fit <-
 
 expuh.sriv.fit <-
     function(DATA,
-             order = ihacres.getOption("order"),
-             delay = ihacres.getOption("delay"),
+             order = hydromad.getOption("order"),
+             delay = hydromad.getOption("delay"),
              warmup = stop("ignored"),
              normalise = stop("ignored"),
              ...,
-             method = ihacres.getOption("optim.method"),
-             control = ihacres.getOption("optim.control"),
+             method = hydromad.getOption("optim.method"),
+             control = hydromad.getOption("optim.control"),
              hessian = TRUE)
 {
     model <- tf.sriv.fit(DATA, order = order, delay = delay,
@@ -130,8 +130,8 @@ expuh.sriv.fit <-
 
 expuh.inverse.fit <-
     function(DATA,
-             order = ihacres.getOption("order"),
-             delay = ihacres.getOption("delay"),
+             order = hydromad.getOption("order"),
+             delay = hydromad.getOption("delay"),
              ...)
 {
     model <- tf.inverse.fit(DATA, order = order, delay = delay,
@@ -158,7 +158,7 @@ tfFitWithPoleConstraints <- function(DATA, tf.fit, poles, ...,
     bestVal <- Inf
     optFun <- function(logpol) {
         pol <- exp(logpol)
-        if (isTRUE(ihacres.getOption("catch.errors"))) {
+        if (isTRUE(hydromad.getOption("catch.errors"))) {
             thisMod <- try(tf.fit(DATA, ..., fixed.ar = polesToAr(pol)))
         } else {
             thisMod <- tf.fit(DATA, ..., fixed.ar = polesToAr(pol))
@@ -170,7 +170,7 @@ tfFitWithPoleConstraints <- function(DATA, tf.fit, poles, ...,
             model <<- thisMod
         val
     }
-    if (!isTRUE(ihacres.getOption("catch.errors.optim")))
+    if (!isTRUE(hydromad.getOption("catch.errors.optim")))
         try <- force ## i.e. skip the try()
     ans <- try(optim(logpol0, optFun, method = method,
                      control = control, hessian = hessian))
@@ -185,7 +185,7 @@ tfFitWithPoleConstraints <- function(DATA, tf.fit, poles, ...,
             paste("optim() returned convergence code",
                   ans$convergence)
         }
-        if (!isTRUE(ihacres.getOption("quiet"))) {
+        if (!isTRUE(hydromad.getOption("quiet"))) {
             warning(msg)
         }
     }

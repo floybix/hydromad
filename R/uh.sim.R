@@ -1,6 +1,6 @@
-## ihacreslab: rainfall-runoff hydrology models and tools
+## hydromad: Hydrological Modelling and Analysis of Data
 ##
-## Copyright (c) 2008 Felix Andrews <felix@nfrac.org>
+## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
 
@@ -27,8 +27,8 @@ normalise.uh <- function(theta)
 
 uh.ls.fit <-
     function(DATA,
-             order = ihacres.getOption("order"),
-             delay = ihacres.getOption("delay"),
+             order = hydromad.getOption("order"),
+             delay = hydromad.getOption("delay"),
              warmup = stop("ignored"),
              normalise = stop("ignored"),
              ...)
@@ -44,8 +44,8 @@ uh.ls.fit <-
 
 uh.sriv.fit <-
     function(DATA,
-             order = ihacres.getOption("order"),
-             delay = ihacres.getOption("delay"),
+             order = hydromad.getOption("order"),
+             delay = hydromad.getOption("delay"),
              warmup = stop("ignored"),
              normalise = stop("ignored"),
              ...)
@@ -61,8 +61,8 @@ uh.sriv.fit <-
 
 uh.inverse.fit <-
     function(DATA,
-             order = ihacres.getOption("order"),
-             delay = ihacres.getOption("delay"),
+             order = hydromad.getOption("order"),
+             delay = hydromad.getOption("delay"),
              ...)
 {
     model <- tf.inverse.fit(DATA, order = order, delay = delay,

@@ -1,11 +1,11 @@
-## ihacreslab: rainfall-runoff hydrology models and tools
+## hydromad: Hydrological Modelling and Analysis of Data
 ##
-## Copyright (c) 2008 Felix Andrews <felix@nfrac.org>
+## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
 
 tf.fit <-
-    function(..., method = ihacres.getOption("uh.method"))
+    function(..., method = hydromad.getOption("uh.method"))
 {
     stopifnot(is.character(method))
     fnName <- paste("tf", method, "fit", sep = ".")
@@ -29,7 +29,7 @@ defaultPrefilters <- function()
 
 makePrefilter <-
     function(DATA = list(Q=),
-             order = ihacres.getOption("order"),
+             order = hydromad.getOption("order"),
              pureAR = FALSE,
              na.action = na.exclude)
 {
@@ -154,7 +154,7 @@ estimateOrder.heuristic <-
 estimateDelay <-
     function(DATA = data.frame(U=, Q=),
              rises=TRUE, rank=FALSE, n.estimates=1,
-             lag.max = ihacres.getOption("max.delay"),
+             lag.max = hydromad.getOption("max.delay"),
              na.action=na.exclude, plot=FALSE, main=NULL, ...)
 {
     ## get data into the right form

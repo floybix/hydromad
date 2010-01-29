@@ -1,11 +1,11 @@
-## ihacreslab: rainfall-runoff hydrology models and tools
+## hydromad: Hydrological Modelling and Analysis of Data
 ##
-## Copyright (c) 2008 Felix Andrews <felix@nfrac.org>
+## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
 
 ## TODO: rework this
-summary.ihacres <-
+summary.hydromad <-
     function(object, breaks = NULL, coerce = byDays,
              which = c("rel.bias", "r.squared", "r.sq.sqrt", "r.sq.log", "r.sq.monthly"),
              ...)
@@ -60,7 +60,7 @@ summary.ihacres <-
                             overall=perfStats(DATA, warmup=0, na.action=na.exclude, ...))
         ans <- cbind(basicstats, chunkstats)
         ans <- data.frame(ans)
-        class(ans) <- c("summaryWithBreaks.ihacres", class(ans))
+        class(ans) <- c("summaryWithBreaks.hydromad", class(ans))
         return(ans)
     }
 
@@ -93,11 +93,11 @@ summary.ihacres <-
     ## call perfStats for the rest
     ans <- c(ans, perfStats(DATA, warmup = object$warmup, which = which, ...))
 
-    class(ans) <- "summary.ihacres"
+    class(ans) <- "summary.hydromad"
     ans
 }
 
-print.summaryWithBreaks.ihacres <-
+print.summaryWithBreaks.hydromad <-
     function(x, digits = max(3, getOption("digits") - 3), ...)
 {
     ## just simplify the printed output by rounding
@@ -105,7 +105,7 @@ print.summaryWithBreaks.ihacres <-
     invisible(x)
 }
 
-print.summary.ihacres <-
+print.summary.hydromad <-
     function(x, digits = max(3, getOption("digits") - 3), ...)
 {
     with(x, {

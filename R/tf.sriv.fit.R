@@ -1,18 +1,18 @@
-## ihacreslab: rainfall-runoff hydrology models and tools
+## hydromad: Hydrological Modelling and Analysis of Data
 ##
-## Copyright (c) 2008 Felix Andrews <felix@nfrac.org>
+## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
 tf.riv.fit <-
     function(DATA,
-             order = ihacres.getOption("order"),
-             delay = ihacres.getOption("delay"),
-             noise.order = ihacres.getOption("riv.noise.order"),
+             order = hydromad.getOption("order"),
+             delay = hydromad.getOption("delay"),
+             noise.order = hydromad.getOption("riv.noise.order"),
              fixed.ar = NULL,
              ...,
              na.action = na.pass,
-             epsilon = ihacres.getOption("sriv.epsilon"),
-             max.iterations = ihacres.getOption("sriv.iterations"))
+             epsilon = hydromad.getOption("sriv.epsilon"),
+             max.iterations = hydromad.getOption("sriv.iterations"))
 {
     ## get data into the right form
     DATA <- as.ts(DATA)
@@ -48,16 +48,16 @@ tf.rivfit <-
     function(DATA,
              init.model,
              order, delay,
-             prefilter = ihacres.getOption("prefilter"),
-             noise.order = ihacres.getOption("riv.noise.order"),
+             prefilter = hydromad.getOption("prefilter"),
+             noise.order = hydromad.getOption("riv.noise.order"),
              fixed.ar = NULL,
-             warmup = ihacres.getOption("warmup"),
-             normalise = ihacres.getOption("normalise"),
+             warmup = hydromad.getOption("warmup"),
+             normalise = hydromad.getOption("normalise"),
              initX = TRUE,
              na.action = na.pass,
-             epsilon = ihacres.getOption("sriv.epsilon"),
-             max.iterations = ihacres.getOption("sriv.iterations"),
-             trace = ihacres.getOption("trace"))
+             epsilon = hydromad.getOption("sriv.epsilon"),
+             max.iterations = hydromad.getOption("sriv.iterations"),
+             trace = hydromad.getOption("trace"))
 {
     stopifnot(c("U","Q") %in% colnames(DATA))
     ## check values
@@ -113,7 +113,7 @@ tf.rivfit <-
         }
         colnames(DATAf) <- c("U", "Q", "X")
 
-        if (ihacres.getOption("pure.R.code") == FALSE) {
+        if (hydromad.getOption("pure.R.code") == FALSE) {
             ## TODO... handle NA / NaN / Inf
             ans <- .C(sriv_system,
                       as.double(DATAf[,"U"]),
@@ -126,7 +126,7 @@ tf.rivfit <-
                       xz = double( (n+m+1)^2 ),
                       xy = double( (n+m+1) ),
                       xx = double( (n+m+1)^2 ),
-                      NAOK=TRUE, DUP=FALSE, PACKAGE="ihacreslab")
+                      NAOK = TRUE, DUP = FALSE, PACKAGE="hydromad")
             xz <- matrix(ans$xz, ncol=(n+m+1))
             xx <- matrix(ans$xx, ncol=(n+m+1))
             xQ <- ans$xy
@@ -181,9 +181,9 @@ tf.rivfit <-
             ## and remove them from model matrix
             xz <- xz[,-(1:n)]
         }
-        #if (isTRUE(ihacres.getOption("catch.errors"))) {
+        #if (isTRUE(hydromad.getOption("catch.errors"))) {
             theta <- try(solve(xz, xQ),
-                         silent = !ihacres.getOption("trace"))
+                         silent = !hydromad.getOption("trace"))
             if (inherits(theta, "try-error"))
                 return(theta)
         #} else {
@@ -227,7 +227,7 @@ tf.rivfit <-
     try({
         cov.mat <- solve(info.mat) ## symmetric -- use chol?
         colnames(cov.mat) <- rownames(cov.mat) <- names(theta)[mask]
-    }, silent = !ihacres.getOption("trace"))
+    }, silent = !hydromad.getOption("trace"))
     if (trace) {
         if (converged)
             message("converged after ", iteration, " iterations")

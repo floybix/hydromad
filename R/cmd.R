@@ -1,6 +1,6 @@
-## ihacreslab: rainfall-runoff hydrology models and tools
+## hydromad: Hydrological Modelling and Analysis of Data
 ##
-## Copyright (c) 2008 Felix Andrews <felix@nfrac.org>
+## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
 ## Catchment Moisture Deficit (CMD) soil moisture accounting
@@ -32,7 +32,7 @@ cmd.sim <-
     P[bad] <- 0
     E[bad] <- 0
     ## TODO: return state from C code
-    COMPILED <- (ihacres.getOption("pure.R.code") == FALSE)
+    COMPILED <- (hydromad.getOption("pure.R.code") == FALSE)
     if (COMPILED && !return_state) {
         U <- .C(sma_cmd,
                 as.double(P),
@@ -43,7 +43,7 @@ cmd.sim <-
                 as.double(e),
                 as.double(M_0),
                 U = double(NROW(DATA)),
-                NAOK=FALSE, DUP=FALSE, PACKAGE="ihacreslab")$U
+                NAOK=FALSE, DUP=FALSE, PACKAGE="hydromad")$U
         ## make it a time series object again
         mostattributes(U) <- attributes(DATA)
         class(U) <- "ts"

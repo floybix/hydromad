@@ -1,10 +1,10 @@
-## ihacreslab: rainfall-runoff hydrology models and tools
+## hydromad: Hydrological Modelling and Analysis of Data
 ##
-## Copyright (c) 2008 Felix Andrews <felix@nfrac.org>
+## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
 
-predict.ihacres <-
+predict.hydromad <-
     function(object, newdata = NULL,
              with_routing = TRUE,
              return_state = FALSE,
@@ -21,7 +21,7 @@ predict.ihacres <-
         stop("model parameters are not fully specified")
     ## construct call to simulation function
     simpars <- coef(object, which = which)
-    ucall <- quote(ihacres.sim(newdata))
+    ucall <- quote(hydromad.sim(newdata))
     ucall <- as.call(c(as.list(ucall),
                        as.list(simpars)))
     ucall["sma"] <- list(object$sma)

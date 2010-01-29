@@ -1,12 +1,12 @@
-## ihacreslab: rainfall-runoff hydrology models and tools
+## hydromad: Hydrological Modelling and Analysis of Data
 ##
-## Copyright (c) 2009 Felix Andrews <felix@nfrac.org>
+## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
 
 fitBySCE <-
     function(MODEL, ...,
-             objective = ihacres.getOption("objective"),
+             objective = hydromad.getOption("objective"),
              control = list())
 {
     start_time <- proc.time()
@@ -22,7 +22,7 @@ fitBySCE <-
     }
     ## remove any fixed parameters
     parlist <- parlist[!isfixed]
-    if (isTRUE(ihacres.getOption("trace")))
+    if (isTRUE(hydromad.getOption("trace")))
             control$trace <- 1
     lower <- sapply(parlist, min)
     upper <- sapply(parlist, max)
@@ -43,7 +43,7 @@ fitBySCE <-
     ans <- SCEoptim(do_sce, initpars, lower = lower, upper = upper,
                     control = control)
     if (ans$convergence != 0) {
-        if (!isTRUE(ihacres.getOption("quiet"))) {
+        if (!isTRUE(hydromad.getOption("quiet"))) {
             warning(ans$message)
         }
         bestModel$msg <- ans$message

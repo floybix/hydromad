@@ -1,6 +1,5 @@
-## ihacreslab: rainfall-runoff hydrology models and tools
 ##
-## Copyright (c) 2008 Felix Andrews <felix@nfrac.org>
+## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
 

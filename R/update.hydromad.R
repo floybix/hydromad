@@ -1,9 +1,9 @@
-## ihacreslab: rainfall-runoff hydrology models and tools
+## hydromad: Hydrological Modelling and Analysis of Data
 ##
-## Copyright (c) 2008 Felix Andrews <felix@nfrac.org>
+## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
-update.ihacres <-
+update.hydromad <-
     function(object, ..., newdata = NULL,
              sma, routing, rfit, warmup, weights,
              and.rescale = TRUE)
@@ -187,7 +187,7 @@ update.ihacres <-
 absorbScale <- function(object, gain)
     UseMethod("absorbScale")
 
-absorbScale.ihacres <- function(object, gain)
+absorbScale.hydromad <- function(object, gain)
     return(NULL)
 
 doParseRfit <-
@@ -215,7 +215,7 @@ doParseRfit <-
     ## prefilter is relevant to these routing modules:
     if (routing %in% c("expuh", "uh")) {
         if (is.null(rfit$prefilter) &&
-            isTRUE(ihacres.getOption("prefilter")))
+            isTRUE(hydromad.getOption("prefilter")))
         {
             rfit$prefilter <-
                 makePrefilter(object$data, order = c(2,1))
@@ -239,7 +239,7 @@ doRoutingFit <-
     ## we should remove any existing routing parameters
     object$parlist <- as.list(coef(object, which = "sma", warn = FALSE))
     object$vcov.rfit <- NULL
-    doRfit <- function(method = ihacres.getOption("rfit.method"), ...)
+    doRfit <- function(method = hydromad.getOption("rfit.method"), ...)
     {
         if (!is.character(method))
             stop("unrecognised 'method' in 'rfit' specification")
@@ -254,7 +254,7 @@ doRoutingFit <-
         }
         fnName <- paste(routing, method, "fit", sep = ".")
         force(get(fnName, mode = "function"))
-        if (isInverseMethod && !isTRUE(ihacres.getOption("quiet")))
+        if (isInverseMethod && !isTRUE(hydromad.getOption("quiet")))
             message("== fitting routing by ", fnName, " method ==")
         fcall <- quote(RFIT(DATA, ...))
         fcall[[1]] <- as.symbol(fnName)

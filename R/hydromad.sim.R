@@ -1,10 +1,10 @@
-## ihacreslab: rainfall-runoff hydrology models and tools
+## hydromad: Hydrological Modelling and Analysis of Data
 ##
-## Copyright (c) 2008 Felix Andrews <felix@nfrac.org>
+## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
 
-ihacres.sim <-
+hydromad.sim <-
     function(DATA,
              ...,
              sma = NULL,

@@ -1,30 +1,30 @@
-## ihacreslab: rainfall-runoff hydrology models and tools
+## hydromad: Hydrological Modelling and Analysis of Data
 ##
-## Copyright (c) 2008 Felix Andrews <felix@nfrac.org>
+## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
 
 tryModelOrders <-
     function(expr, n = 0:3, m = 0:2,
-             delay = ihacres.getOption("delay"),
-             verbose = ihacres.getOption("trace"))
+             delay = hydromad.getOption("delay"),
+             verbose = hydromad.getOption("trace"))
 {
     expr <- substitute(expr)
     allOrders <- expand.grid(m = m, n = n, delay = delay)
     allOrders <- subset(allOrders, n >= m)
     results <- list()
-    beSilent <- ihacres.getOption("quiet")
+    beSilent <- hydromad.getOption("quiet")
     ## restore previous setting when finished
-    oopt <- ihacres.options("order", "delay", "quiet")
-    on.exit(ihacres.options(oopt))
-    ihacres.options(quiet = !verbose)
+    oopt <- hydromad.options("order", "delay", "quiet")
+    on.exit(hydromad.options(oopt))
+    hydromad.options(quiet = !verbose)
     for (i in 1:NROW(allOrders)) {
         orderSpec <- allOrders[i,]
         order <- c(n = orderSpec$n, m = orderSpec$m)
         d <- orderSpec$delay
-        ihacres.options(order = order, delay = d)
+        hydromad.options(order = order, delay = d)
         if (any(!is.na(delay))) {
-            ihacres.options(delay = d)
+            hydromad.options(delay = d)
             nm <- paste("(n=", order[1], ", m=", order[2],
                         ", d=", d, ")", sep = "")
         } else {
