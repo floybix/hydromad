@@ -1,0 +1,13 @@
+README
+
+Regarding the files
+Sac_sma.c
+Fland1.c
+
+These files were originally part of the MOSCEM package developed at University of Arizona by Yuqiong Liu and others. Permission to use and distribute these files was granted by Professor Hoshin Gupta (University of Arizona) on 2009-08-28.
+
+The Sacramento SMA model was originally developed by the US National Weather Service.
+
+Files were downloaded from Google's cached copy of
+http://info.science.uva.nl/ibed/research/Research_Fields/cbpg/software/code/moscem.0.tar.gz
+2009-08-20 by Felix Andrews
