@@ -42,6 +42,8 @@ fitBySCE <-
     }
     ans <- SCEoptim(do_sce, initpars, lower = lower, upper = upper,
                     control = control)
+    if (isTRUE(control$returnpop))
+        return(ans)
     if (ans$convergence != 0) {
         if (!isTRUE(hydromad.getOption("quiet"))) {
             warning(ans$message)

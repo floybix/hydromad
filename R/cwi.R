@@ -58,6 +58,13 @@ cwi.sim <-
     return(U)
 }
 
+cwi.ranges <- function()
+    list(tw = c(0, 100),
+         f = c(0, 8),
+         c = NA,
+         l = 0,
+         p = 1,
+         t_ref = 20)
 
 absorbScale.cwi <- function(object, gain)
 {

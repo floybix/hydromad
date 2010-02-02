@@ -3,12 +3,27 @@
 ## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
-## from Farmer et al 2003, WRR
-## general mass balance structure:
-## dS/dt = p - q(S) - e(S, Ep)
-## slightly modified forms as given in Bai et al 2009, EMS
-
-
+#' Bucket-type Soil Moisture Accounting models.
+#' 
+#' From Farmer et al 2003, Water Resources Research.
+#' The general mass balance structure is:
+#' \deqn{dS/dt = p - q(S) - e(S, Ep)}
+#'
+#' This functions uses the slightly modified forms given in
+#' Bai et al 2009, Environmental Modelling and Software.
+#' 
+#' @aliases bucket.sim bucket
+#' @keywords models
+#' @param DATA time-series-like object with columns P (precipitation, mm) and E (potential evapo-transpiration, mm).
+#' @param Sb Maximum soil water storage (mm).
+#' @param fc Field capacity (0 - 1).
+#' @param a.ei Interception coefficient (\eqn{\alpha_{ei}}). 
+#' @param M Fraction of catchment area covered by deep rooted vegetation.
+#' @param a.ss Recession coefficients for subsurface flow from saturated zone (\eqn{\alpha_{ss}}).
+#' @param S_0 Initial soil moisture level (mm).
+#' @param return_state to return the series U, S and ET (evapotranspiration).
+#' @return the simulated effective rainfall, a time series of the same length as the input series.
+#' export
 bucket.sim <-
     function(DATA,
              Sb, fc, a.ei = 0, M = 1, a.ss = 0, S_0 = 0,
@@ -80,3 +95,10 @@ bucket.sim <-
     if (return_state) return(ts.union(U=U, S=S, ET=ET))
     return(U)
 }
+
+bucket.ranges <- function()
+    list(Sb = c(0, 1200),
+         fc = c(0, 1),
+         a.ei = c(0, 0.49),
+         M = c(0, 1),
+         a.ss = c(0.05, 0.5))

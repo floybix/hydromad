@@ -7,7 +7,7 @@
 simulate.hydromad <-
     function(object, nsim, seed, ...,
              sampletype = c("latin.hypercube", "random", "all.combinations"),
-             FUN = NULL)
+             FUN = NULL, bind = FALSE)
 {
     sampletype <- match.arg(sampletype)
     MODEL <- object
@@ -42,6 +42,15 @@ simulate.hydromad <-
         result[[i]] <-
             if (is.null(FUN)) thisMod else FUN(thisMod, ...)
         names(result)[i] <- run_name
+    }
+    if (bind) {
+        if (is.null(FUN)) stop("bind requires the 'FUN' argument")
+        lens <- range(unlist(lapply(result, length)))
+        if (max(lens) != min(lens))
+            result <- lapply(result, function(x)
+                             { length(x) <- max(lens); x })
+        result <- do.call(rbind, result)
+        return(cbind(psets, result))
     }
     if (is.null(FUN))
         result <- as.runlist(result)

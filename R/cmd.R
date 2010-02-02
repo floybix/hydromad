@@ -79,3 +79,8 @@ cmd.sim <-
     if (return_state) return(ts.union(U=U, CMD=M, ET=ET))
     return(U)
 }
+
+cmd.ranges <- function()
+    list(d = c(50, 550),
+         f = c(0.01, 3),
+         e = c(0.01, 1.5))

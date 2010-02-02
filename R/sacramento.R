@@ -17,6 +17,7 @@
 #' Revised edition, Highlands Ranch, Colo. : Water Resources Publications, c1995.
 #' \url{http://www.wrpllc.com/books/cmwh.html}.
 #'
+#' @aliases bucket.sim bucket
 #' @keywords models
 #' @param DATA time-series-like object with columns P (precipitation, mm) and E (potential evapo-transpiration, mm).
 #' @param uztwm Upper zone tension water maximum capacity (mm).
@@ -78,3 +79,18 @@ sacramento.sim <-
     U[bad] <- NA
     return(U)
 }
+
+sacramento.ranges <- function()
+    list(uztwm = c(1, 150),
+         uzfwm = c(1, 150),
+         uzk = c(0.1, 0.5),
+         pctim = c(0.00001, 0.1),
+         adimp = c(0, 0.4),
+         zperc = c(1, 250),
+         rexp = c(0, 5),
+         lztwm = c(1, 500),
+         lzfsm = c(1, 1000),
+         lzfpm = c(1, 1000),
+         lzsk = c(0.01, 0.25),
+         lzpk = c(0.0001, 0.25),
+         pfree = c(0, 0.6))

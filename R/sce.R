@@ -390,7 +390,7 @@ SCEoptim <- function(FUN, par, ...,
     if (returnpop) {
         ## store information on the population at each iteration
         obj$POP.ALL <- POP.ALL[,,1:i]
-        dimnames(obj$POP.ALL)[3] <- paste("iteration", 1:i)
+        dimnames(obj$POP.ALL)[[3]] <- paste("iteration", 1:i)
         obj$POP.FIT.ALL <- POP.FIT.ALL[,1:i]
     }
 
