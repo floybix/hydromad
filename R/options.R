@@ -6,7 +6,7 @@
 .defaultHydromadOptions <- function()
     list(
          sma = NULL,
-         routing = "uh",
+         routing = NULL,
          cwi = cwi.ranges(),
          cmd = cmd.ranges(),
          sacramento = sacramento.ranges(),

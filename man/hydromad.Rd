@@ -150,10 +150,21 @@ hydromad(DATA = zoo(), ...,
 }
 \author{ Felix Andrews \email{felix@nfrac.org} }
 \seealso{
-  \code{\link{hydromad.object}},
-  \code{\link{cwi.sim}}
+  \code{\link{hydromad.object}}
 }
 \examples{
+data(Cotter)
+x <- Cotter[1:1000]
+## an unfitted model, with ranges of possible parameter values
+modx <- hydromad(x, sma = "cwi", routing = "expuh",
+                 tau_s = c(2,100), v_s = c(0,1))
+modx
+## now try to fit it
+fitx <- fitByOptim(modx)
+fitx
+summary(fitx)
+xyplot(fitx)
+
 data(Canning)
 x <- window(Canning, start = "1980-01-01", end = "1981-01-01")
 ## an unfitted model, with ranges of possible parameter values
