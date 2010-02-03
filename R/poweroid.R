@@ -10,6 +10,7 @@
 ## poweroid(V, r, alpha) --> beta
 ## poweroid(V, r, beta) --> alpha
 ## poweroid(V[:], A[:]) --> alpha, beta (fit)
+
 poweroid <-
     function(alpha = NULL, beta = NULL,
              V = NULL, H = NULL,
@@ -17,11 +18,14 @@ poweroid <-
              r = if (!missing(A)) sqrt(A / pi),
              ...,
              rel.error = FALSE,
-             objective = if (rel.error) ~ mean(abs((obs - mod)/obs))
-                         else ~ mean(abs((obs - mod))),
              polish = FALSE, details = FALSE)
 {
     force(list(A, r))
+    objective <-
+        if (rel.error)
+            ~ mean(abs((obs - mod)/obs))
+        else
+            ~ mean(abs((obs - mod)))
     if (!is.null(alpha) && !is.null(beta)) {
         ## geometry specified parametrically
         if (!is.null(V)) {

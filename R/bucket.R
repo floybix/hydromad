@@ -13,17 +13,20 @@
 #' Bai et al 2009, Environmental Modelling and Software.
 #' 
 #' @aliases bucket.sim bucket
-#' @keywords models
-#' @param DATA time-series-like object with columns P (precipitation, mm) and E (potential evapo-transpiration, mm).
+#' @param DATA time-series-like object with columns P (precipitation,
+#'   mm) and E (potential evapo-transpiration, mm). 
 #' @param Sb Maximum soil water storage (mm).
 #' @param fc Field capacity (0 - 1).
 #' @param a.ei Interception coefficient (\eqn{\alpha_{ei}}). 
 #' @param M Fraction of catchment area covered by deep rooted vegetation.
-#' @param a.ss Recession coefficients for subsurface flow from saturated zone (\eqn{\alpha_{ss}}).
+#' @param a.ss Recession coefficients for subsurface flow from
+#'   saturated zone (\eqn{\alpha_{ss}}). 
 #' @param S_0 Initial soil moisture level (mm).
-#' @param return_state to return the series U, S and ET (evapotranspiration).
-#' @return the simulated effective rainfall, a time series of the same length as the input series.
-#' export
+#' @param return_state to return the series U, S and ET (evapotranspiration). 
+#' @return the simulated effective rainfall, a time series of the same
+#'   length as the input series. 
+#' @keywords models
+#' @export
 bucket.sim <-
     function(DATA,
              Sb, fc, a.ei = 0, M = 1, a.ss = 0, S_0 = 0,

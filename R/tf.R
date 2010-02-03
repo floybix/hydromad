@@ -191,9 +191,8 @@ coef.tf <- function(object, form = c("a,b", "tau,v", "alpha,beta"), ...)
 
 summary.tf <-
     function(object,
-             which = c("yic", "arpe", "rel.bias", "bias", "r.squared",
-             "r.sq.sqrt", "r.sq.log", "r.sq.monthly",
-             "ssg", "residuals"),
+             which = c("rel.bias", "r.squared",
+             "r.sq.log", "residuals"),
              ...)
 {
     which <- match.arg(which, several.ok=TRUE)

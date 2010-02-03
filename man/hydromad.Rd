@@ -7,27 +7,29 @@
 }
 \description{
   The \code{hydromad} function can be used to specify models with their
-  model components, data, parameters and settings. It allows a general
+  model equations, data, parameters and settings. It allows a general
   two-component structure, where the Soil Moisture Accounting
-  (\code{sma}) component and the Routing component can be arbitrary
-  functions. A method can be specified for fitting the dependent routing
-  component.
+  (\code{sma}) component and the Routing (\code{routing}) component can
+  be arbitrary functions. A method can be specified for fitting the
+  dependent routing component.
 }
 \usage{
-hydromad(DATA = xts(), ...,
-        sma = "cwi", routing = "expuh", rfit = NULL,
-        weights = NULL, warmup = hydromad.getOption("warmup"))
+hydromad(DATA = zoo(), ...,
+        sma = hydromad.getOption("sma"),
+        routing = hydromad.getOption("routing"),
+        rfit = NULL, weights = NULL,
+        warmup = hydromad.getOption("warmup"))
 
 \method{update}{hydromad}(object, ..., newdata,
        sma, routing, rfit, warmup, weights, and.rescale)
 }
 \arguments{
-  \item{DATA}{
+  \item{DATA, newdata}{
     a \code{\link{ts}}-like object or list with named components:
 	\describe{
 	  \item{\code{P}}{ time series of areal rainfall depths, usually in mm. }
 	  \item{\code{E}}{ time series of potential evapo-transpiration, or more typically,
-		temperature as an indicator of this. Can be omitted if \code{f = 0}. }
+		temperature as an indicator of this. Optional for some models. }
 	  \item{\code{Q}}{ time series of discharge (streamflow) at the catchment outlet.
 		This should usually be in units of mm (averaged over the catchment area).
 		Use \code{\link{convertFlow}} to convert it. }
@@ -63,7 +65,82 @@ hydromad(DATA = xts(), ...,
   }
 }
 \details{
-  not yet.
+  The supplied Soil Moisture Accounting (\code{sma}) models are:
+  \describe{
+    \item{\code{\link{scalar}}}{
+      simple linear model: a constant fraction of rainfall reaches
+      the stream.
+    }
+    \item{\code{\link{cwi}}}{
+      IHACRES Catchment Wetness Index (CWI) model.
+    }
+    \item{\code{\link{cmd}}}{
+      IHACRES Catchment Moisture Deficit (CMD) model.
+    }
+    \item{\code{\link{bucket}}}{
+      single-bucket models with saturated/unsaturated zones and
+      interception. 
+    }
+    \item{\code{\link{multibucket}}}{
+      multiple-bucket models (UNDER DEVELOPMENT).
+    }
+    \item{\code{\link{sacramento}}}{
+      Sacramento Soil Moisture Accounting model (US NWS).
+    }
+  }
+
+  The supplied Routing (\code{routing}) models are:
+  \describe{
+    \item{\code{\link{expuh}}}{
+      A Unit Hydrograph transfer function defined as a combination of
+      exponentially receding components. Each component is defined by
+      its time constant and fractional volume, and if there are multiple
+      (up to 3) such components they may be arranged in parallel or series.
+    }
+    \item{\code{\link{uh}}}{
+      A general Unit Hydrograph transfer function, defined by
+      ARMA (auto-regressive / moving average) coefficients.
+    }
+  }
+  
+  The built-in routing fitting (\code{rfit}) methods are:
+  \describe{
+    \item{\code{\link[tf.ls.fit]{ls}}}{
+      Least Squares fitting (with prefiltering and optional
+      weighting) of the transfer function. 
+    }
+    \item{\code{\link[tf.sriv.fit]{sriv}}}{
+      Simple Refined Instrumental Variables (SRIV) fitting of the
+      transfer function. 
+    }
+    \item{\code{\link[tf.inverse.fit]{inverse}}}{
+      Fitting a transfer function model to the streamflow data,
+      independently of the SMA model.
+    }
+  }
+
+  The built-in model fitting method (for all parameters or just the
+  \code{sma} parameters) are:
+  \describe{
+    \item{\code{\link{fitBySampling}}}{
+      returns best result from sampling in parameter ranges using
+      random, latin hypercube sampling, or a uniform grid (all combinations). 
+    }
+    \item{\code{\link{fitByOptim}}}{
+      fits using R's \code{\link{optim}} function - which includes a
+      Newton type method and a Simplex method. Has multi-start and
+      pre-sampling options.
+    }
+    \item{\code{\link{fitBySCE}}}{
+      fit using the Shuffled Complex Evolution (SCE) algorithm.
+    }
+    \item{\code{\link{fitByDE}}}{
+      fit using the Differential Evolution (DE) algorithm.
+    }
+  }
+  
+  Methods for working with the model objects are listed under
+  \code{\link{hydromad.object}}. 
 }
 \value{
   the result is a \link[=hydromad.object]{hydromad object}.
@@ -79,9 +156,14 @@ hydromad(DATA = xts(), ...,
 \examples{
 data(Canning)
 x <- window(Canning, start = "1980-01-01", end = "1981-01-01")
-## an uncalibrated model, with ranges of possible parameter values
-mod0 <- hydromad(x, f = 1, sma = "cwi")
+## an unfitted model, with ranges of possible parameter values
+mod0 <- hydromad(x, sma = "cwi", l = c(0, 100), 
+             routing = "uh", rfit = list("ls", order = c(1,1)))
 mod0
-## then calibrate etc...
+## now try to fit it
+fit1 <- fitByOptim(mod0)
+fit1
+summary(fit1)
+xyplot(fit1)
 }
 \keyword{ models }

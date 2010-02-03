@@ -98,6 +98,9 @@ cwi.sim(DATA = xts()
   \code{\link{hydromad}(sma = "cwi")} to work with models as objects (recommended).
 }
 \examples{
+## view default parameter ranges:
+str(hydromad.options("cwi"))
+
 data(Canning)
 x <- cwi.sim(Canning[1:1000,], tw = 162, f = 2, l = 300, t_ref = 0, c = 0.000284,
              return_state = TRUE)

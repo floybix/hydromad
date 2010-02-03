@@ -1,7 +1,7 @@
 \name{IHACRES.CMD.model}
 \alias{IHACRES.CMD.model}
 \alias{cmd.sim}
-\alias{ihacres.cmd}
+\alias{cmd}
 \title{ IHACRES Catchment Moisture Deficit (CMD) model }
 \description{
   The Catchment Moisture Deficit (CMD) effective rainfall model for IHACRES.
@@ -18,7 +18,7 @@ cmd.sim(DATA = xts(),
 	\describe{
 	  \item{\code{P}}{ time series of areal rainfall depths, usually in mm. }
 	  \item{\code{E}}{ time series of potential evapo-transpiration, or more typically,
-		temperature as an indicator of this. Can be omitted if \code{f = 0}. }
+		temperature as an indicator of this. }
 	  \item{\code{Q}}{ time series of discharge (streamflow) at the catchment outlet.
 		This should usually be in units of mm (averaged over the catchment area).
 		Use \code{\link{convertFlow}} to convert it. }
@@ -79,6 +79,9 @@ Corrigendum to ``A Catchment Moisture Deficit module for the IHACRES rainfall-ru
   \code{\link{hydromad}(sma = "cmd")} to work with models as objects (recommended).
 }
 \examples{
+## view default parameter ranges:
+str(hydromad.options("cmd"))
+
 data(Canning)
 x <- cmd.sim(Canning[1:1000,], d = 200, f = 0.7, e = 0.166,
              return_state = TRUE)
