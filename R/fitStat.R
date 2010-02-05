@@ -182,11 +182,11 @@ tsFitStat <-
         FUN <- events$FUN
         if (is.null(FUN)) FUN <- "sum"
         events$FUN <- NULL
-        ## compute clusters using first 2 series only (obs & mod)
-        ev <- do.call("event.clusters",
+        ## compute events using first 2 series only (obs & mod)
+        ev <- do.call("eventSeq",
                       c(list(dat[,1:2]), events))
-        ## apply FUN to clusters 'ev', in each series
-        dat <- apply(dat, 2, function(x) tapply(x, ev, FUN))
+        ## apply FUN to events 'ev', in each series
+        dat <- eventapply(dat, ev, FUN = FUN)
     }
     fitStat(dat[,"obs"], dat[,"mod"], ref = dat[,"ref"],
             trans = trans, offset = offset, p = p)

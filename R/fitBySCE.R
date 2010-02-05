@@ -5,7 +5,7 @@
 
 
 fitBySCE <-
-    function(MODEL, ...,
+    function(MODEL, 
              objective = hydromad.getOption("objective"),
              control = list())
 {

@@ -99,6 +99,19 @@ sacramento.sim <-
     stopifnot(c("P","E") %in% colnames(DATA))
     ## check values
     stopifnot(uztwm >= 0)
+    stopifnot(uzfwm >= 0)
+    stopifnot(uzk >= 0)
+    stopifnot(0 <= pctim && pctim <= 1)
+    stopifnot(adimp >= 0)
+    stopifnot(zperc >= 0)
+    stopifnot(lztwm >= 0)
+    stopifnot(lzfsm >= 0)
+    stopifnot(lzfpm >= 0)
+    stopifnot(lzsk >= 0)
+    stopifnot(lzpk >= 0)
+    stopifnot(pfree >= 0)
+    stopifnot(etmult >= 0)
+    stopifnot(dt >= 0)
 
     xpar <-
         c(uztwm, uzfwm, uzk, pctim, adimp, zperc, rexp,

@@ -1,0 +1,45 @@
+\name{fitBySCE}
+\alias{fitBySCE}
+\title{
+  Fit a hydromad model using the SCE algorithm.
+}
+\description{
+  Fit a hydromad model using the SCE algorithm.
+}
+\usage{
+fitBySCE(MODEL, 
+         objective = hydromad.getOption("objective"),
+         control = list())
+}
+\arguments{
+  \item{MODEL}{
+    a model specification created by \code{\link{hydromad}}. It should
+    not be fully specified, i.e one or more parameters should be defined
+    by \emph{ranges} of values rather than exact values.
+  }
+  \item{objective}{
+    objective function to minimise, given as a \code{formula} involving
+    \code{Q}, \code{X} and/or \code{U}. See \code{\link{objFunVal}}.
+  }
+  \item{control}{
+    settings for the SCE algorithm. See \code{\link{SCEoptim}}.
+  }
+}
+\details{
+
+}
+\value{
+  the best model from those sampled, according to the given
+  \code{objective} function.
+}
+\author{
+  Felix Andrews \email{felix@nfrac.org}
+}
+\seealso{
+  \code{\link{SCEoptim}},
+  \code{\link{objFunVal}}
+}
+\examples{
+
+}
+\keyword{ optimization }

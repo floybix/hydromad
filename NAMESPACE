@@ -3,7 +3,6 @@
 
 ## hydromad.R
 export(hydromad)
-export(isFullySpecified)
 export(coef.hydromad)
 S3method(print, hydromad)
 S3method(fitted, hydromad)
@@ -18,13 +17,12 @@ export(isValidModel)
 S3method(isValidModel, default)
 S3method(isValidModel, hydromad)
 
+export(predict.hydromad)
 export(hydromad.sim)
 
 export(update.hydromad)
 export(absorbScale)
 export(absorbScale.hydromad)
-
-export(predict.hydromad)
 
 export(simulate.hydromad)
 
@@ -172,12 +170,13 @@ S3method(print, hydromad.runlist)
 S3method(print, tf.runlist)
 
 
+
 ## MISCELLANEOUS
 
 export(convertFlow)
 
 ## events.R
-export(event.clusters,
+export(eventSeq,
        eventapply,
        preInterEventDuration,
        eventAttributes)
@@ -208,7 +207,7 @@ export(hydromad.options,
 #panel.superpose.cycle
 
 
-## SWIMP (TODO: move out)
+## SWIMP
 
 ## swimp.R
 export(swimp)

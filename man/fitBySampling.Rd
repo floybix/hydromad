@@ -1,0 +1,49 @@
+\name{fitBySampling}
+\alias{fitBySampling}
+\title{
+  Fit a hydromad model by sampling the parameter space.
+}
+\description{
+  Fit a hydromad model by sampling the parameter space.
+}
+\usage{
+fitBySampling(MODEL, objective = hydromad.getOption("objective"),
+              samples = hydromad.getOption("fit.samples"),
+              sampletype = c("latin.hypercube", "random", "all.combinations"))
+}
+\arguments{
+  \item{MODEL}{
+    a model specification created by \code{\link{hydromad}}. It should
+    not be fully specified, i.e one or more parameters should be defined
+    by \emph{ranges} of values rather than exact values.
+  }
+  \item{objective}{
+    objective function to minimise, given as a \code{formula} involving
+    \code{Q}, \code{X} and/or \code{U}. See \code{\link{objFunVal}}.
+  }
+  \item{samples}{
+    number of parameter sets to test.
+  }
+  \item{sampletype}{
+    sampling scheme -- see \code{\link{parameterSets}}.
+  }
+}
+\details{
+
+}
+\value{
+  the best model from those sampled, according to the given
+  \code{objective} function.
+}
+\author{
+  Felix Andrews \email{felix@nfrac.org}
+}
+\seealso{
+  \code{\link{fitByOptim}},
+  \code{\link{parameterSets}},
+  \code{\link{objFunVal}}
+}
+\examples{
+
+}
+\keyword{ optimization }

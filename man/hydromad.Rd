@@ -1,7 +1,6 @@
 \name{hydromad}
 \alias{hydromad}
 \alias{ihacres}
-\alias{update.hydromad}
 \title{
   Specify rainfall - runoff (hydrology) models.
 }
@@ -19,13 +18,10 @@ hydromad(DATA = zoo(), ...,
         routing = hydromad.getOption("routing"),
         rfit = NULL, weights = NULL,
         warmup = hydromad.getOption("warmup"))
-
-\method{update}{hydromad}(object, ..., newdata,
-       sma, routing, rfit, warmup, weights, and.rescale)
 }
 \arguments{
   \item{DATA, newdata}{
-    a \code{\link{ts}}-like object or list with named components:
+    a \code{\link{ts}}-like object with named columns:
 	\describe{
 	  \item{\code{P}}{ time series of areal rainfall depths, usually in mm. }
 	  \item{\code{E}}{ time series of potential evapo-transpiration, or more typically,
@@ -42,8 +38,8 @@ hydromad(DATA = zoo(), ...,
   \item{sma}{
     name of the Soil Moisture Accounting (SMA) component. May be \code{NULL}, in
     which case the input rainfall will be passed directly to
-    \code{routing}. If \code{sma} is specified, a simulation function
-    \code{\emph{<sma>}.sim} must exist.
+    \code{routing}. If \code{sma} is specified, a corresponding
+    simulation function \var{sma}\code{.sim} must exist.
   }
   \item{routing}{
     name of the routing component (i.e. the component which takes in
@@ -53,8 +49,8 @@ hydromad(DATA = zoo(), ...,
   }
   \item{rfit}{
     optional specification for fitting the routing component. If a
-    character string is given, then a function
-    \code{\emph{<routing>.<rfit>}.fit} must exist.
+    character string is given, then a corresponing function
+    \var{routing}\code{.}\var{rfit}\code{.fit} must exist.
   }
   \item{weights}{
     weights associated with data points, or a function to apply to the
@@ -95,25 +91,30 @@ hydromad(DATA = zoo(), ...,
       A Unit Hydrograph transfer function defined as a combination of
       exponentially receding components. Each component is defined by
       its time constant and fractional volume, and if there are multiple
-      (up to 3) such components they may be arranged in parallel or series.
+      (up to 3) such components they may be in a parallel and/or
+      series configuration. 
     }
     \item{\code{\link{uh}}}{
       A general Unit Hydrograph transfer function, defined by
       ARMA (auto-regressive / moving average) coefficients.
     }
+%    \item{\code{\link{powerlaw}}}{
+%      [TODO]
+%    }
   }
   
-  The built-in routing fitting (\code{rfit}) methods are:
+  The built-in routing fitting (\code{rfit}) methods are (for \code{uh}
+  and \code{expuh} routing):
   \describe{
-    \item{\code{\link[tf.ls.fit]{ls}}}{
+    \item{\code{\link[uh.ls.fit]{ls}}}{
       Least Squares fitting (with prefiltering and optional
       weighting) of the transfer function. 
     }
-    \item{\code{\link[tf.sriv.fit]{sriv}}}{
+    \item{\code{\link[uh.sriv.fit]{sriv}}}{
       Simple Refined Instrumental Variables (SRIV) fitting of the
       transfer function. 
     }
-    \item{\code{\link[tf.inverse.fit]{inverse}}}{
+    \item{\code{\link[uh.inverse.fit]{inverse}}}{
       Fitting a transfer function model to the streamflow data,
       independently of the SMA model.
     }
@@ -137,6 +138,9 @@ hydromad(DATA = zoo(), ...,
     \item{\code{\link{fitByDE}}}{
       fit using the Differential Evolution (DE) algorithm.
     }
+%    \item{\code{\link{fitByDREAM}}}{
+%      fit using the DiffeRential Evolution Adaptive Metropolis (DREAM) algorithm.
+%    }
   }
   
   Methods for working with the model objects are listed under
@@ -155,6 +159,8 @@ hydromad(DATA = zoo(), ...,
 \examples{
 data(Cotter)
 x <- Cotter[1:1000]
+xyplot(x)
+## IHACRES CWI model with exponential unit hydrograph
 ## an unfitted model, with ranges of possible parameter values
 modx <- hydromad(x, sma = "cwi", routing = "expuh",
                  tau_s = c(2,100), v_s = c(0,1))
@@ -167,6 +173,8 @@ xyplot(fitx)
 
 data(Canning)
 x <- window(Canning, start = "1980-01-01", end = "1981-01-01")
+xyplot(x)
+## IHACRES CWI model with extra parameter l, fit UH by Least Squares
 ## an unfitted model, with ranges of possible parameter values
 mod0 <- hydromad(x, sma = "cwi", l = c(0, 100), 
              routing = "uh", rfit = list("ls", order = c(1,1)))

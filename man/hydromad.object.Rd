@@ -1,7 +1,8 @@
 \name{hydromad.object}
 \alias{hydromad.object}
+\alias{update.hydromad}
+\alias{coef.hydromad}
 \alias{isValidModel}
-\alias{isFullySpecified}
 \alias{predict.hydromad}
 \alias{print.hydromad}
 \alias{summary.hydromad}
@@ -9,16 +10,21 @@
 \alias{fitted.hydromad}
 \alias{residuals.hydromad}
 \alias{observed.hydromad}
-\title{ Hydromad model object methods }
+\title{ Hydromad model objects and methods }
 \description{
   A \code{hydromad} object represents a model, which may be fully
   specified (calibrated) or be defined only by parameter ranges.
-  The parameter values are stored along with the observed input and
-  output time-series data.
+  The model specification and parameter values are stored along with the
+  observed input and output time-series data.
 }
 \usage{
 isValidModel(object)
-isFullySpecified(object)
+
+\method{coef}{hydromad}(object, which = c("both", "sma", "routing"), ..., warn = TRUE)
+
+\method{update}{hydromad}(object, ..., newdata,
+       sma, routing, rfit, warmup, weights, and.rescale)
+
 
 \method{summary}{hydromad}(object, with_uh = TRUE,
 	breaks = NULL, coerce = byDays, ...)
@@ -76,9 +82,7 @@ isFullySpecified(object)
 }
 \author{ Felix Andrews \email{felix@nfrac.org} }
 \seealso{
-  \code{\link{cwi.sim}},
-  \code{\link{cmd.sim}},
-  \code{\link{bucket.sim}}
+  \code{\link{hydromad}}
 }
 \examples{
 

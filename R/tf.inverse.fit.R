@@ -90,7 +90,7 @@ tf.inverse.fit <-
         ## estimate U as scaled P, scaled in a moving window
         ## (runoff coefficient)
         scale.window <- min(autocorrTime(Q) * 1.5, 10)
-        sc <- easysmooth(cbind(Q, U), width = scale.window)
+        sc <- simpleSmoothTs(cbind(Q, U), width = scale.window)
         sc <- sc[,"Q"] / sc[,"U"]
         sc <- na.locf(na.locf(sc, na.rm = FALSE), fromLast = TRUE, na.rm = FALSE)
         sc[!is.finite(sc)] <- 0

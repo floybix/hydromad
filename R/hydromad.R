@@ -15,7 +15,7 @@ hydromad <-
     ## TODO: keep zoo attributes?
     DATA <- as.ts(DATA)
     ## dots `...` may contain arguments for sma and/or routing.
-    ## parlist stores these -- and may be ranges (!isFullySpecified).
+    ## parlist stores these -- and they may be ranges.
     ## take defaults from hydromad.options()
     parlist <- list()
     if (is.character(routing)) {
@@ -44,11 +44,8 @@ hydromad <-
     return(obj)
 }
 
-isFullySpecified <-
-    function(object, which = c("both", "sma", "routing"))
-{
-    !is.list(coef(object, which = which, warn = FALSE))
-}
+isFullySpecified <- function(object, ...)
+    !is.list(coef(object, ..., warn = FALSE))
 
 coef.hydromad <-
     function(object, which = c("both", "sma", "routing"), ..., warn = TRUE)

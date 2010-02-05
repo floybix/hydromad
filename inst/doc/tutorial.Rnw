@@ -258,7 +258,7 @@ functions, only one simple check will be demonstrated here.
 
 Table \ref{tab:datasumm} shows the mean and quartiles of each input
 data series. One measure that is of key interest in hydrology is the
-\emph{runoff ratio}, the proportion of the areal rainfall which flows
+\emph{runoff ratio}, the proportion of the rainfall which flows
 out of the catchment. In a simple case this is just \code{sum(Q) /
   sum(P)}, but as we have missing values, we should only compare the
 common observations:

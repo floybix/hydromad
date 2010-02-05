@@ -5,14 +5,14 @@
 \title{ IHACRES Catchment Wetness Index (CWI) model }
 \description{
   The Catchment Wetness Index (CWI) effective rainfall model for
-  IHACRES. This is sometimes called the ``classic'' model,
+  IHACRES. This is the ``classic'' model of Jakeman and Hornberger (1993),
   with the extensions to ephemeral catchments of Ye et. al. (1997).
   It is a metric-type model, where rainfall effectiveness is proportional to
   a simple antecedent moisture index, and the output is scaled
   to enforce mass balance.
 }
 \usage{
-cwi.sim(DATA = xts()
+cwi.sim(DATA,
 	tw, f = 0, c,
         l = 0, p = 1,
         t_ref = hydromad.getOption("cwi")$t_ref,
@@ -36,9 +36,9 @@ cwi.sim(DATA = xts()
 	The case of \code{f=0} describes an invariant drying rate model,
 	in which case the input data \code{E} is not required. }
   \item{c}{ mass balance term.
-	If this is \code{NA}, it will be set to ensure that \eqn{\sum{U} = \sum{Q}},
-	in which case \code{Q} must be included in \code{DATA}.
-	It can not be omitted for the simulation function \code{effrain.cwi.sim}.}
+	If this is missing, it will be set to ensure that
+	\eqn{\sum{U} = \sum{Q}}.
+	It can not be omitted in the simulation function \code{cwi.sim}.}
   \item{l}{ moisture threshold for producing flow (in units of \var{s}).
   	This can be used together with \code{p} for ephemeral rivers. }
   \item{p}{ power on soil moisture (above the threshold \code{l}). }

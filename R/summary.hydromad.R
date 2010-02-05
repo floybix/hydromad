@@ -8,6 +8,7 @@
 summary.hydromad <-
     function(object, breaks = NULL, coerce = byDays,
              which = c("rel.bias", "r.squared", "r.sq.sqrt", "r.sq.log", "r.sq.monthly"),
+             na.action = na.exclude,
              ...)
 {
     if (!isFullySpecified(object))
@@ -57,7 +58,7 @@ summary.hydromad <-
         ## TODO: ensure equal lengths of rows / intact names?
         chunkstats <- do.call(rbind, chunkstats)
         chunkstats <- rbind(chunkstats,
-                            overall=perfStats(DATA, warmup=0, na.action=na.exclude, ...))
+                            overall=perfStats(DATA, warmup=0, na.action=na.action, ...))
         ans <- cbind(basicstats, chunkstats)
         ans <- data.frame(ans)
         class(ans) <- c("summaryWithBreaks.hydromad", class(ans))

@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <title>hydromad R package</title>
+  <link href="fonts.css" media="screen" rel="stylesheet" type="text/css" />
+  <link href="main.css" media="screen" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
+  <script type="text/javascript" src="site.js"></script>
+</head>
+<body>
+
+<div id="banner">
+  <img class="title" src="hydromad_title.png" alt="hydromad" />
+  <div class="subtitle">Hydrological Modelling and Analysis of Data</div>
+</div>
+
+<div id="nav">
+<ul>
+<li>
+  <a href="#"
+     title="Information about the hydromad package"
+     class="navitem active"
+     id="nav_intro">introduction</a>
+</li>
+@NAV
+</ul>
+</div>
+
+<div id="content">
+
+  <div class="item" id="intro">
+    <h2 class="itemname">introduction</h2>
+
+    <p><strong>hydromad</strong> is an R package (i.e. a software
+    package for the <a href="http://www.R-project.org/">R statistical
+    computing environment</a>), providing:
+      <ul>
+	<li>Simulation, estimation, assessment and visualisation 
+	  of catchment response to time series of rainfall and other
+	  drivers.</li> 
+	<li>Spatially-lumped models and tools for environmental
+	  hydrology (focusing on rainfall and streamflow time series
+	  data).</li> 
+	<li>A modelling framework for water balance accounting and
+	  flow routing.</li> 
+      </ul>
+    </p>
+
+    <p>The IHACRES framework is used, where areal rainfall is passed
+      through a <em>soil moisture accounting</em> model to
+      estimate <em>effective rainfall</em>; this is then passed
+      through a <em>routing model</em> to estimate
+      streamflow. Included are mature implementations of models
+      designed for this framework, notably the IHACRES <em>CWI</em>
+      and <em>CMD</em> soil moisture accounting models, and unit
+      hydrograph transfer functions for the routing.</p>
+
+    <p>This site serves as a reference for the R functions and datasets
+    in the package. A gentler introduction can be found in the
+    vignettes <a href="#"><b>hydromad</b> Tutorial</a> and <a href="#">Data
+    checking with <b>hydromad</b></a>. The package is described in the paper
+      <blockquote>
+    <a href="#"><em><b>hydromad</b>: an open software environment for
+	top-down modelling of catchment hydrology</em></a>.
+      </blockquote>
+    </p>
+
+    <p>The package is maintained by Felix
+    Andrews <a href="mailto:felix.andrews@anu.edu.au"><tt>&lt;felix.andrews@anu.edu.au&gt;</tt></a>.
+    The general modelling approach is based on work by Tony Jakeman 
+    and Barry Croke at The Australian National University. </p>
+
+    <p>For more information, see
+    <ul>
+      <li>
+	<a href="http://github.com/floybix/hydromad">hydromad project repository</a>
+      </li>
+    </ul>
+    </p>
+
+  </div>
+
+@CONTENT
+
+</div>
+
+<div id="versiontag">
+@VERSIONTAG
+</div>
+
+</div>
+
+<div id="tagline">
+  web dev by 
+  <a href="http://www.neurofractal.org/felix/">felix andrews</a></p>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,477 @@
+\documentclass[11pt,a4paper]{article}
+\pagestyle{headings}
+%% link style
+\usepackage{hyperref,color}
+\definecolor{Red}{rgb}{0.5,0,0}
+\definecolor{Blue}{rgb}{0,0,0.5}
+  \hypersetup{%
+    hyperindex = {true},
+    colorlinks = {true},
+    linktocpage = {true},
+    plainpages = {false},
+    linkcolor = {Blue},
+    citecolor = {Blue},
+    urlcolor = {Red},
+    pdfstartview = {FitH},
+    pdfpagemode = {UseOutlines},
+    pdfview = {XYZ null null null}
+  }
+%% custom markup
+\newcommand{\pkg}[1]{{\fontseries{b}\selectfont #1}}
+\let\code=\texttt
+\let\proglang=\textsf
+\def\ihacres{\textsc{ihacres}}
+\def\Ihacres{\textsc{Ihacres}}
+%% box the figures
+\usepackage{float}
+\floatstyle{boxed}
+\restylefloat{figure}
+
+\title{Data checking with the \pkg{hydromad} package}
+\author{Felix Andrews\\The Australian National University}
+
+%\VignetteIndexEntry{Handling missing values, runoff coefficient, seasonality, etc}
+%\VignettePackage{hydromad}
+
+\begin{document}
+
+\SweaveOpts{engine=R,eps=FALSE,echo=FALSE,prefix.string=figs/dataChecking}
+
+<<preliminaries, echo=FALSE, results=hide>>=
+library(hydromad)
+library(xtable)
+library(lattice)
+library(latticeExtra)
+ltheme <- canonical.theme("pdf")
+ltheme$strip.background$col <- grey(7/8)
+ltheme$strip.shingle$col <- grey(6/8)
+ltheme$fontsize = list(text = 11)
+lattice.options(default.theme = ltheme) ## set as default
+ps.options(pointsize=11)
+options(width=60, continue=" ")
+set.seed(0)
+@
+
+\maketitle
+
+\section{Introduction}
+
+This tutorial describes time series data checking using functions
+in the \pkg{hydromad} \proglang{R} package.
+It covers the handling of missing values, calculating the runoff
+coefficient, cross correlation, assessing seasonality, and trends.
+
+The example we will look at is
+the Molonglo River catchment at Burbong Bridge (gauge 410705) near the
+Australian Capital Territory, Australia. This is a 505 km$^2$ catchment
+for a river that runs through Canberra. Areal rainfall was estimated from
+several rain gauges operated by the Bureau of Meteorology and
+EcoWise. The temperature records come from Canberra Airport.
+
+The data can be loaded with:
+<<load-package, echo=TRUE>>=
+library(hydromad)
+data(Molonglo)
+@
+
+
+
+\section{Runoff coefficient}
+
+One measure that is of key interest in hydrology is the
+\emph{runoff ratio}, the proportion of the rainfall which flows
+out of the catchment. In a simple case this is just \code{sum(Q) /
+  sum(P)}, but if we are interested in variations over time, we must
+first define the time window and degree of smoothing to use in the
+calculations. 
+
+The following code first aggregates the streamflow and rainfall series
+to monthly time steps, then smooths them over windows of 1 and 3
+years (using a triangular smoothing kernel) and finally calculates the
+time series of estimated runoff ratios.
+
+<<simpleSmoothTs, echo=FALSE>>=
+
+simpleSmoothTs <- 
+    function(x, width = NROW(x) %/% 10 + 1,
+             c = 1, sides = 2, circular = FALSE,
+             kern = kernel("daniell", rep(floor((width/sides)/sqrt(c)), c)))
+{
+    if (sides == 2) {
+        ii <- -kern$m:kern$m
+        filter <- kern[ii]
+    } else if (sides == 1) {
+        ii <- -kern$m:0
+        filter <- kern[ii] / sum(kern[ii]) ## normalise
+    } else stop("unrecognised value of 'sides'")
+    xf <- x
+    xf[] <- filter(as.matrix(x), filter, sides = sides, circular = circular)
+    xf
+}
+
+@ 
+
+<<runoffcoef, echo=TRUE>>=
+mthdat <- aggregate(Molonglo[,c("Q","P")], as.yearmon, mean, na.rm = TRUE)
+#mthdat <- na.approx(mthdat, maxGapFilled = 1) ## TODO: should note NA treatment
+sm1y <- simpleSmoothTs(mthdat, width = 12, c = 2) ## 1 year
+sm3y <- simpleSmoothTs(mthdat, width = 36, c = 2) ## 3 year
+rc1y <- sm1y$Q / sm1y$P
+rc3y <- sm3y$Q / sm3y$P
+summary(rc3y)
+@
+
+From this we can calculate the range and inner 90\% range of the
+runoff coefficient variation:
+
+<<>>=
+(rcstats <- quantile(coredata(rc1y), c(0, 1, 0.05, 0.95), na.rm = TRUE))
+@ 
+
+The total runoff in this dataset is about
+\Sexpr{round(100 * mean(rc3y, na.rm = TRUE))}\% of rainfall.
+When the runoff coefficient is allowed to vary over time in a smoothed window
+of about 1 year, it varies between
+\Sexpr{rcstats[1]} and \Sexpr{rcstats[2]}.
+However, 90\% of the time it remains between
+\Sexpr{rcstats[3]} and \Sexpr{rcstats[4]}.
+
+\begin{figure}[hpbt]
+\begin{center}
+<<rcplot, fig=TRUE, width=6, height=5>>=
+csm <- merge(rc1y, rc3y, sm3y)
+print(xyplot(csm, screens = list(Q="P&Q",P="P&Q","runoff ratio"), 
+             col=list(Q=1, rc1y=2, rc3y=1),
+             xlab=NULL))
+@
+\caption{\label{fig:runoffcoef} Runoff coefficent calculated over time using smoothed data. }
+\end{center}
+\end{figure}
+
+
+\begin{figure}[hpbt]
+\begin{center}
+<<rcvspplot, fig=TRUE, width=6, height=5>>=
+print(xyplot(rc3y ~ P, as.data.frame(csm),
+             ylab = "runoff coefficient",
+             xlab = "rainfall (mm/day), 2-year average",
+             type= c("l"), pch=".", cex=2,
+             auto.key=list(columns=3)))
+@
+\caption{\label{fig:runoffcoefvsp} Runoff coefficent versus rainfall (calculated over
+  time using 3-year smoothed data). }
+\end{center}
+\end{figure}
+
+
+
+
+
+\section{Cross Correlation}
+
+Cross correlation analysis reveals the strength of correlation between
+rainfall and streamflow, at different lag (delay) times.
+This may vary over time; also the delay may vary
+depending on the magnitude of a rainfall event. However, \ihacres{}
+works with a single constant delay time.
+
+\proglang{R}'s cross-correlation and auto-correlation functions are called
+\code{ccf} and \code{acf}. For example, to calculate and plot the
+auto-correlation and cross-correlation of Q and P:
+<<ccf-code, echo=TRUE, eval=FALSE>>=
+acf(Molonglo[,2:1], na.action = na.exclude,
+    lag.max = 30) #, lwd = 1.5, mar = c(5,2,3,1))
+@
+
+The delay time, based on cross-correlation between rainfall and \emph{rises
+  in} streamflow can be calculated as shown in Figure \ref{fig:delay-plot}.
+
+\begin{figure}[H]
+\begin{center}
+<<delay-plot-code, echo=TRUE, eval=FALSE>>=
+estimateDelay(Molonglo, plot = TRUE)
+@
+<<delay-plot, fig=TRUE, height=3.5>>=
+estimateDelay(Molonglo, plot = TRUE, lwd = 1.5)
+@
+\caption{\label{fig:delay-plot}
+  Cross-correlation between rainfall and \emph{rises in} streamflow. }
+\end{center}
+\end{figure}
+
+A good way to detect transient errors in the data is to look at how
+the cross-correlation changes over time. The \pkg{hydromad} package includes
+a convenient function for this, called \code{rollccf}, which is based
+on \code{rollapply} in the \pkg{zoo} package.
+
+\begin{figure}[hpbt]
+\begin{center}
+<<rollccf-plot-code, echo=TRUE, results=hide>>=
+rolls <- rollccf(window(Molonglo, start = "1990-01-01"))
+xyplot(rolls)
+@
+<<rollccf-plot, fig=TRUE, height=8>>=
+print(trellis.last.object())
+@
+\caption{\label{fig:rollccf} Rolling cross-correlation
+  between rainfall and streamflow in a 90-day and 365-day window,
+  for three lags. Note that the \emph{rises in} streamflow could be
+  used instead, as the \code{rises} argument to \code{rollccf}. }
+\end{center}
+\end{figure}
+
+The rolling cross-correlation -- shown in Figure
+\ref{fig:rollccf} for the 1980s -- contains a lot of information. To
+track down problems in the data, one would need to zoom in on
+sections of the time series where (a) the cross correlation is low, indicating a
+mis-match between rainfall and streamflow; or (b) the optimal lag
+switches, indicating a possible timing error.
+
+The \pkg{playwith} package provides an interface for zooming and
+scrolling around time series plots.
+
+
+\begin{figure}[hpbt]
+\begin{center}
+<<rolldelayplot, fig=TRUE, width=6, height=3>>=
+ccfdat <- rollapply(Molonglo[,c("Q","P")], width = 6 * 30, by = 2 * 30,
+                    by.column = FALSE, estimateDelay, plot = FALSE)
+print(xyplot(ccfdat, type = "h", ylab="Delay (days)"))
+@
+\caption{\label{fig:rolldelayplot} Delay in rolling 6 month window }
+\end{center}
+\end{figure}
+
+
+\begin{figure}[hpbt]
+\begin{center}
+<<qdelayplot, fig=TRUE, width=6, height=3>>=
+#rollQ <- rollmean(tsQU[,"Q"], width = 6 * 30, by = 2 * 30)
+rollQ <- rollapply(Molonglo$Q, width = 6 * 30, by = 2 * 30, mean)
+ccfbar <- barchart(table(coredata(ccfdat)))
+ccfbox <- bwplot(factor(coredata(ccfdat)) ~ coredata(rollQ[,"Q"]))
+             #type=c("p", "smooth"), jitter.y = TRUE))
+library(latticeExtra)
+print(update(c(ccfbar,ccfbox), ylab="Delay (days)",
+             xlab = c("Frequency", "Flow (mm/day)")))
+@
+\caption{\label{fig:qdelayplot} Delay in rolling 6 month window vs flow }
+\end{center}
+\end{figure}
+
+
+
+
+\section{Seasonality}
+
+Distributions of the input data by calendar months.
+
+\begin{figure}[hpbt]
+\begin{center}
+<<monthplot, fig=TRUE, width=6, height=6>>=
+monthPQE <- aggregate(Molonglo, as.yearmon, mean)
+#flow <- aggregate(tsPQE[,"Q"], as.yearmon, mean)
+#rain <- aggregate(tsPQE[,"P"], as.yearmon, mean)
+month <- factor(months(as.Date(index(monthPQE)), abbrev=TRUE),
+                levels=c("Jan","Feb","Mar","Apr","May","Jun",
+                "Jul","Sep","Oct","Nov","Dec"))
+print(bwplot(sqrt(Q) + sqrt(P) + E ~ month, as.data.frame(monthPQE),
+             outer = TRUE, scales = list(y = "free"),
+             strip = strip.custom(factor.levels =
+                 c("Streamflow", "Rainfall", "Temperature")),
+             ylab = c("sq.rt. mm/day", "sq.rt. mm/day", "deg. C"),
+             layout = c(1, 3)
+             ))
+#rm(flow, month)
+@
+\caption{\label{fig:monthplot} Distribution of mean flows in each
+  calendar month.}
+\end{center}
+\end{figure}
+
+
+
+\section{Deriving unit hydrograph by deconvolution}
+
+
+We estimate effective rainfall (U) from the observed streamflow record,
+by iteratively running the unit hydrograph model in reverse
+(deconvolution) and then using the estimated U as input for
+calibrating the unit hydrograph again. Effective rainfall each day is
+constrained to be no greater than the observed rainfall.
+
+The lambda model gives the best fit to the observed streamflow record.
+
+<<cal, echo=TRUE>>=
+tsCal <- list(#the60s = window(tsPQE, start = "1960-01-01", end = "1969-12-31"),
+              the70s = window(Molonglo, start = "1970-01-01", end = "1979-12-31"),
+              the80s = window(Molonglo, start = "1980-01-01", end = "1989-12-31"),
+              the90s = window(Molonglo, start = "1990-01-01", end = "1999-12-31"))
+@
+
+<<uhCal, results=hide>>=
+uhCal <- as.runlist(lapply(tsCal, tf.inverse.fit)) # order=c(2,1)?
+#uhLamCal <- as.runlist(lapply(tsCal, tf.lambda.inverse.fit))
+uhLamCal <- uhCal
+@
+
+\begin{figure}[hpbt]
+\begin{center}
+<<uhCal-plots, fig=TRUE, width=6, height=10>>=
+uhPlots <- list()
+for (cal in names(tsCal)) {
+    uhPlots[[cal]] <- xyplot(runlist(basic = uhCal[[cal]],
+                                     lambda = uhLamCal[[cal]]),
+                             superpose = FALSE, trans=log10)
+}
+print(do.call("c", uhPlots))
+####print(c(basic = xyplot.list(uhCal, trans = log10),
+####        lambda = xyplot.list(uhLamCal, trans = log10)))
+#umod <- tf.fit(list(U = U, Q = Q), order = c(n=2,m=1))
+#ulammod <- tf.lambda.fit(tf.fit(list(U = Ulam, Q = Q), order = c(n=2,m=1)))
+#print(xyplot(mod ~ obs, as.data.frame(cbind(mod = fitted(umod), obs = observed(umod))), type=c("p", "smooth"), aspect="iso"))
+#print(xyplot(runlist(basic = umod, lambda = ulammod), trans = log10))
+#             ylim=log10(c(0.001, 100))))
+@
+\caption{\label{fig:uhCal-plots} Unit Hydrograph model fitted to deconvolved
+  streamflow (constrained to be less than observed rainfall). The
+  basic transfer function is compared to the $\lambda$ (\emph{lambda})
+  variant in each calibration period. }
+\end{center}
+\end{figure}
+
+\begin{figure}[hpbt]
+\begin{center}
+<<uhCal-qqplots, fig=TRUE, width=6, height=10>>=
+uhPlots <- list()
+for (cal in names(tsCal)) {
+    uhPlots[[cal]] <- qqmath(runlist(basic = uhCal[[cal]],
+                                     lambda = uhLamCal[[cal]]),
+                             superpose = TRUE, trans=log10, type="l")
+}
+print(do.call("c", uhPlots))
+#umod <- tf.fit(list(U = U, Q = Q), order = c(n=2,m=1))
+#ulammod <- tf.lambda.fit(tf.fit(list(U = Ulam, Q = Q), order = c(n=2,m=1)))
+#print(xyplot(mod ~ obs, as.data.frame(cbind(mod = fitted(umod), obs = observed(umod))), type=c("p", "smooth"), aspect="iso"))
+#print(xyplot(runlist(basic = umod, lambda = ulammod), trans = log10))
+#             ylim=log10(c(0.001, 100))))
+@
+\caption{\label{fig:uhCal-qqplots} Unit Hydrograph model fitted to deconvolved
+  streamflow (constrained to be less than observed rainfall). The
+  basic transfer function is compared to the $\lambda$ (\emph{lambda})
+  variant in each calibration period. }
+\end{center}
+\end{figure}
+
+
+Tables of parameter values. Delay times are:
+
+<<delays>>=
+sapply(uhCal, function(x) x$delay)
+@
+
+<<uhcal-params-table, results=tex>>=
+uhPars <- summary(uhCal, pars=TRUE, flowstats = NULL, rainstats = NULL)
+xtable(uhPars, caption="Calibrated parameters in each calibration period.",
+	label="tab:uhcal-params")
+@
+
+<<uhcal-params-lambda-table, results=tex>>=
+uhLamPars <- summary(uhLamCal, pars=TRUE, flowstats = NULL, rainstats = NULL)
+xtable(uhLamPars, caption="Calibrated (lambda) parameters in each calibration period.",
+	label="tab:uhcal-params-lambda")
+@
+
+Table of performance statistics for each model.
+
+<<uhcal-summary-table, results=tex>>=
+allmods <- as.runlist(c(basic = uhCal, lambda = uhLamCal))
+allmods <- allmods[sapply(allmods, isValidModel)]
+perfstats <- summary(allmods, pars=FALSE)
+xtable(perfstats, caption="Performance statistics for UH models.",
+	label="tab:uhcal-stats")
+@
+
+
+\section{Comparing rainfall and streamflow event volumes}
+
+<<event-volumes>>=
+calEvents <- list()
+for (cal in names(tsCal)) {
+    calEvents[[cal]] <-
+        eventAttributes(merge(P = tsCal[[cal]][,"P"],
+                              U = uhLamCal[[cal]]$data[,"U"]),
+                        thresh = 1, inter = 2,
+                        FUN = sum)
+}
+@
+
+
+\begin{figure}[hpbt]
+\begin{center}
+<<event-runoff-plot, fig=TRUE>>=
+print(xyplot(I(Value.U/Value.P) ~ Value.P, do.call(make.groups, calEvents), groups = which,
+             scales = list(x = list(log = TRUE)),
+             auto.key = list(lines=TRUE, columns=3), cex = 0.7, type=c("g","p","smooth"), span = 1/3))
+@
+\caption{\label{fig:event-volumes-plot} Comparison of rainfall and
+  streamflow event volumes, all periods. }
+\end{center}
+\end{figure}
+
+\begin{figure}[hpbt]
+\begin{center}
+<<event-runoff-log-plot, fig=TRUE, height=12>>=
+print(xyplot(Value.U ~ Value.P, do.call(make.groups, calEvents), groups = which,
+             scales = list(log = TRUE), aspect="iso",
+             auto.key = list(lines=TRUE, columns=3), cex = 0.7, type=c("g","p","smooth"), span = 1/3) +
+      layer(panel.abline(a=0,b=1,col="red",lwd=2)))
+@
+\caption{\label{fig:event-runoff-log-plot} Comparison of rainfall and
+  streamflow event volumes, all periods, log scales. }
+\end{center}
+\end{figure}
+
+\begin{figure}[hpbt]
+\begin{center}
+<<event-runoff-vs-dryperiod-plot, fig=TRUE>>=
+foo <- do.call(rbind, calEvents)
+tmp <- equal.count(foo$DryPeriod, 3, overlap = 0)
+print(bwplot(I(Value.U/Value.P) ~ tmp, foo,
+             scales = list(y = list(log=TRUE), x = list(labels = as.character(levels(tmp)))),
+             auto.key = TRUE, cex = 0.7))
+@
+\caption{\label{fig:event-runoff-vs-dryperiod-plot} Event runoff vs preceding dry period length, all periods. }
+\end{center}
+\end{figure}
+
+\begin{figure}[hpbt]
+\begin{center}
+<<event-runoff-vs-season-plot, fig=TRUE>>=
+foo <- do.call(rbind, calEvents)
+MonthGroups <- cut(foo$Month, c(1, 3, 6, 9, 12), include.lowest=TRUE)
+print(bwplot(I(Value.U/Value.P) ~ MonthGroups, foo,
+             scales = list(y = list(log=TRUE)),
+             auto.key = TRUE, cex = 0.7))
+@
+\caption{\label{fig:event-runoff-vs-season-plot} Event runoff vs season, all periods. }
+\end{center}
+\end{figure}
+
+
+
+
+\newpage
+
+\section*{Computational details}
+
+The results in this paper were obtained using \proglang{R}
+\Sexpr{paste(R.Version()[6:7], collapse = ".")} with the packages
+\pkg{hydromad} \Sexpr{gsub("-", "--", packageDescription("hydromad")$Version)},
+\pkg{zoo} \Sexpr{gsub("-", "--", packageDescription("zoo")$Version)} and
+\pkg{latticeExtra} \Sexpr{gsub("-", "--", packageDescription("latticeExtra")$Version)}.
+\proglang{R} itself and all packages used are (or will be) available from
+CRAN at \code{http://CRAN.R-project.org/}.
+
+
+\end{document}

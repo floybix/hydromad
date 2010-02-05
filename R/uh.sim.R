@@ -29,10 +29,11 @@ uh.ls.fit <-
     function(DATA,
              order = hydromad.getOption("order"),
              delay = hydromad.getOption("delay"),
-             warmup = stop("ignored"),
-             normalise = stop("ignored"),
              ...)
 {
+    dots <- list(...)
+    if (!is.null(dots$warmup)) stop("'warmup' can not be given here")
+    if (!is.null(dots$normalise)) stop("'normalise' can not be given here")
     model <- tf.ls.fit(DATA, order = order, delay = delay,
               warmup = 0, normalise = FALSE, ...)
     if (!inherits(model, "tf"))
@@ -46,10 +47,11 @@ uh.sriv.fit <-
     function(DATA,
              order = hydromad.getOption("order"),
              delay = hydromad.getOption("delay"),
-             warmup = stop("ignored"),
-             normalise = stop("ignored"),
              ...)
 {
+    dots <- list(...)
+    if (!is.null(dots$warmup)) stop("'warmup' can not be given here")
+    if (!is.null(dots$normalise)) stop("'normalise' can not be given here")
     model <- tf.sriv.fit(DATA, order = order, delay = delay,
                 warmup = 0, normalise = FALSE, ...)
     if (!inherits(model, "tf"))
