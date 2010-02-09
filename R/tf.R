@@ -322,14 +322,18 @@ normalise.tf <-
 
 fitted.tf <- function(object, ..., all = FALSE)
 {
-    if (all)
-        return(object$fitted.values)
-    stripWarmup(object$fitted.values, object$warmup)
+    tmp <- object$fitted.values
+    if (length(tmp) == 0)
+        return(tmp)
+    if (all) return(tmp)
+    stripWarmup(tmp, object$warmup)
 }
 
 residuals.tf <- function(object, ..., all = FALSE)
 {
-    tmp <- object$data[,"Q"] - object$fitted.values
+    f <- fitted(object, all = TRUE)
+    if (length(f) == 0) return(f)
+    tmp <- (object$data[,"Q"] - f)
     if (all) return(tmp)
     stripWarmup(tmp, object$warmup)
 }
@@ -337,9 +341,9 @@ residuals.tf <- function(object, ..., all = FALSE)
 observed.tf <- function(object, ..., all = FALSE)
 {
     ## observed.default will work, but this may be slightly faster
-    if (all)
-        return(object$data[,"Q"])
-    stripWarmup(object$data[,"Q"], object$warmup)
+    tmp <- object$data[,"Q"]
+    if (all) return(tmp)
+    stripWarmup(tmp, object$warmup)
 }
 
 getU.tf <- function(object, ..., all = FALSE)

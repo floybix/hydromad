@@ -93,18 +93,22 @@ coef.hydromad <-
     }
 }
 
-fitted.hydromad <- function(object, ..., all = FALSE)
+fitted.hydromad <- function(object, ..., U = FALSE, all = FALSE)
 {
-    tmp <- object$fitted.values
     if (is.null(object$routing))
-        tmp <- object$U
+        U <- TRUE
+    tmp <- if (U) object$U else object$fitted.values
+    if (length(tmp) == 0)
+        return(tmp)
     if (all) return(tmp)
     stripWarmup(tmp, object$warmup)
 }
 
 residuals.hydromad <- function(object, ..., all = FALSE)
 {
-    tmp <- (object$data[,"Q"] - fitted(object, all = TRUE))
+    f <- fitted(object, all = TRUE)
+    if (length(f) == 0) return(f)
+    tmp <- (object$data[,"Q"] - f)
     if (all) return(tmp)
     stripWarmup(tmp, object$warmup)
 }

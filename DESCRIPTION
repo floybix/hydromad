@@ -1,6 +1,6 @@
 Package: hydromad
-Version: 0.5-3
-Date: 2010-02-08
+Version: 0.5-4
+Date: 2010-02-09
 Title: Hydrological Modelling and Analysis of Data (rain + flow)
 Author: Felix Andrews <felix@nfrac.org>
 Maintainer: Felix Andrews <felix@nfrac.org>

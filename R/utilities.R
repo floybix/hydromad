@@ -188,3 +188,23 @@ numericSummary <- function(x) {
     #if (all(foo["NA's",] == 0)) ...
     foo
 }
+
+
+
+## TODO remove this when latticeExtra 0.6-7 released
+simpleSmoothTs <- 
+    function(x, width = NROW(x) %/% 10 + 1,
+             c = 1, sides = 2, circular = FALSE,
+             kern = kernel("daniell", rep(floor((width/sides)/sqrt(c)), c)))
+{
+    if (sides == 2) {
+        ii <- -kern$m:kern$m
+        filter <- kern[ii]
+    } else if (sides == 1) {
+        ii <- -kern$m:0
+        filter <- kern[ii] / sum(kern[ii]) ## normalise
+    } else stop("unrecognised value of 'sides'")
+    xf <- x
+    xf[] <- filter(as.matrix(x), filter, sides = sides, circular = circular)
+    xf
+}

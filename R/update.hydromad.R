@@ -245,7 +245,7 @@ doRoutingFit <-
             stop("unrecognised 'method' in 'rfit' specification")
         isInverseMethod <- (any(grep("inverse", method)))
         if (isInverseMethod) {
-            DATA <- object$DATA
+            DATA <- object$data
         } else {
             if (inverseFitOnly)
                 return(NULL)

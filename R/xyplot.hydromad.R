@@ -4,19 +4,21 @@
 ##
 
 
-xyplot.hydromad <-
 xyplot.tf <-
-    function(x, data,
-             coerce = byDays, trans = NULL,
+xyplot.hydromad <-
+    function(x, data = NULL,
+             coerce = byDays, all = FALSE,
              superpose = TRUE,
+             with.P = FALSE,
+             screens = list(P = "rainfall", "streamflow"),
              ...)
 {
-    if (!missing(data) && !is.null(data))
-        warning("'data' argument ignored.")
-    tsdat <- cbind(obs=observed(x), mod=fitted(x))
+    stopifnot(is.null(data))
+    tsdat <- cbind(obs = observed(x, all = all), mod = fitted(x, all = all))
+    if (with.P)
+        tsdat <- cbind(tsdat, P = x$data[,"P"])
     tsdat <- coerce(tsdat)
-    ## TODO: trans?
-    foo <- xyplot(tsdat, superpose = superpose, ...)
+    foo <- xyplot(tsdat, superpose = superpose, screens = screens, ...)
     foo$call <- match.call()
     foo
 }

@@ -19,7 +19,7 @@ runlist <- function(...)
     }
     if (length(object) > 0)
         class(object) <- paste(class(object[[1]]), "runlist", sep = ".")
-    class(object) <- unique(c(class(object), "runlist"))
+    class(object) <- unique(c(class(object), "runlist", "list"))
     object
 }
 
@@ -88,53 +88,41 @@ errormasscurve.runlist <-
 }
 
 xyplot.runlist <-
-    function(x, data,
-             residuals=FALSE,
-             coerce=byDays, trans=NULL,
-             superpose=FALSE,
-             ...)
+    function(x, data = NULL,
+             residuals. = FALSE,
+             coerce = byDays, #trans = NULL,
+             superpose = FALSE,
+             with.P = FALSE,
+             ...,
+             x.same = TRUE, y.same = TRUE, layout = c(1, NA))
 {
-    if (!missing(data) && !is.null(data))
-        warning("'data' argument ignored.")
+    stopifnot(is.null(data))
 
-    Q <- if (!residuals) coerce(observed(x[[1]]))
-    if (residuals) x <- lapply(x, residuals)
-    else x <- lapply(x, fitted)
-    x <- do.call(cbind, x)
-    x <- coerce(x)
-
-    transfn <- eval(trans)
-    if (is.character(transfn)) transfn <- get(trans)
-    if (!is.null(trans)) {
-        x <- transfn(x)
-        if (!residuals) Q <- transfn(Q)
-    }
-
-    if (residuals) {
-        foo <- xyplot(x,
-                      superpose = superpose,
-                      ...)
-
+    xdat <- lapply(x, if (residuals.) residuals else fitted)
+    xdat <- lapply(xdat, coerce)
+    
+    if (superpose) {
+        xm <- do.call(cbind, xdat)
+        if (!residuals.) {
+            ## include observed series from item 1 (assuming all are the same!)
+            xm <- cbind(obs = coerce(observed(x[[1]])), xm)
+        }
+        foo <- xyplot(xm, superpose = TRUE, ...)
     } else {
-        ## observed vs modelled
-        foo <- xyplot(x,
-                      superpose = superpose,
-                      ...)
-        foo <- foo + layer(panel.lines(Q), data=list(Q=Q), style=if (superpose) (NCOL(x) + 1) else 2)
+        ## juxtapose, not superpose: just call xyplot on each item
+        foo <- xyplot.list(xdat, ...,
+                           x.same = x.same, y.same = y.same, layout = layout)
     }
-
-                                        #if (FALSE &&             residuals == FALSE) {
-                                        #	scales$y$limits <- extendrange(Q[is.finite(Q)])
-                                        #	if (identical(trans, "log")) {
-                                        #		# limit scales
-                                        #		minQ <- min(Q[is.finite(Q)]) - 1 # log scale
-                                        #		data[ (data[] < minQ) ] <- minQ
-                                        #		Q[is.infinite(Q)] <- minQ
-                                        #		scales$y$limits[1] <- minQ
-                                        #		#c(minQ, max(c(Q[], data[]), na.rm=T) + 0.5)
-                                        #	}
-                                        #}
-
+    if (with.P) {
+        foo <- c(foo, rainfall = xyplot(coerce(x[[1]]$data[,"P"]), ...),
+                 x.same = x.same, y.same = NA, layout = layout)
+    }
+    #if (!residuals) {
+    #    ## observed vs modelled: add 
+    #    foo <- foo +
+    #        layer(panel.lines(Q), data=list(Q=Q), style=if (superpose) (NCOL(x) + 1) else 2)
+    #}
+    
     foo$call <- sys.call(sys.parent())
     foo
 }

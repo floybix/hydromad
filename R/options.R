@@ -27,7 +27,7 @@
          inverse.iterations = 30,
          inverse.tolerance = 1e-5,
          inverse.epsilon = 0.001,
-         optim.method = "BFGS",
+         optim.method = "Nelder-Mead",
          optim.control = list(fnscale = 1, reltol = 1e-5, maxit = 150,
                 trace = if (interactive()) 4 else 0, REPORT = 4),
          uhParTrans =

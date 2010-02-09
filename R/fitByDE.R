@@ -49,7 +49,7 @@ fitByDE <-
     #    }
     #    bestModel$msg <- ans$message
     #}
-    bestModel$funevals <- ans$nfeval
+    bestModel$funevals <- ans$optim$nfeval
     bestModel$timing <- proc.time() - start_time
     return(bestModel)
 }

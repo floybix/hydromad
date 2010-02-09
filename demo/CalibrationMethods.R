@@ -17,13 +17,35 @@ all.equal(simQ, simQ2)
 
 
 modDat <- merge(obsdat[,c("P","E")], Q = byDays(simQ))
-specs <-
-    list(cwiLS21 = hydromad(modDat, sma = "cwi",
-             routing = "expuh", rfit = list("ls", order = c(2, 1))),
-         cwiSRIV21 = hydromad(modDat, sma = "cwi",
-             routing = "expuh", rfit = list("sriv", order = c(2, 1))),
-         cwiExpUH = hydromad(modDat, sma = "cwi",
-             routing = "expuh", tau_q = c(0,3), tau_s = c(3,100), v_s = c(0,1)))
+spec0 <- hydromad(modDat, sma = "cwi", routing = "uh")
+rspecs <-
+    list(ls21 = update(spec0, rfit = list("ls", order = c(2, 1))),
+         sriv21 = update(spec0, rfit = list("sriv", order = c(2, 1))),
+         inverse = update(spec0, rfit = list("inverse", order = c(2,1)))
+         )
+#         sriv11 = update(spec0, rfit = list("sriv", order = c(1, 1))),
+#         sriv20 = update(spec0, rfit = list("sriv", order = c(2, 0))),
+#         sriv32 = update(spec0, rfit = list("sriv", order = c(3, 2))))
+#cmdspecs <- lapply(cwispecs, update, sma = "cmd")
+
+## first just test routing fitting with exact U given
+fits <- as.runlist(lapply(rspecs, update, tw = 30, f = 0.5, c = 1/1000))
+## now test fitting of all parameters (SMA + expuh routing)
+fullspec <- update(spec0, routing = "expuh", tau_q = c(0,3), tau_s = c(3,100), v_s = c(0,1))
+fits$Optim <- fitByOptim(fullspec)
+fits$OptimBFGS <- fitByOptim(fullspec, method = "BFGS")
+fits$Sampling <- fitBySampling(fullspec)
+fits$SCE <- fitBySCE(fullspec)
+fits$DE <- fitByDE(fullspec)
+
+## OK, all fit correctly
+
+## now test robustness of methods to:
+## 1. error in input P (carries through to U via correct SMA)
+## 2. error in SMA parameters or model structure
+## 3. error in transfer function model order
+## 4. error in streamflow Q
+
 
 ## objective function surface over parameters
 sampLS21 <- simulate(specs$cwiLS21, 200, sampletype = "random", FUN = objFunVal)
