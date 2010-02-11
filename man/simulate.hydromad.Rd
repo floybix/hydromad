@@ -9,8 +9,8 @@
 \usage{
 simulate.hydromad(object, nsim, seed, ...,
    method = c("all.combinations", "latin.hypercube", "random"),
-   FUN = NULL)
-}
+   FUN = NULL, bind = FALSE)
+x}
 \arguments{
   \item{object}{
     a \code{hydromad} object (produced by the \code{\link{hydromad}()}
@@ -23,6 +23,9 @@ simulate.hydromad(object, nsim, seed, ...,
   \item{seed}{
     optional random seed, for repeatability.
   }
+  \item{\dots}{
+    further arguments to \code{FUN}.
+  }
   \item{method}{
     sampling method; see \code{\link{parameterSets}}.
   }
@@ -30,9 +33,10 @@ simulate.hydromad(object, nsim, seed, ...,
     optional function to apply to each simulated model. Typical examples
     would be \code{\link[summary.hydromad]{summary}} or
     \code{\link[predict.hydromad]{predict}}.
-}
-  \item{\dots}{
-    further arguments to \code{FUN}.
+  }
+  \item{bind}{
+    to bind the result from \code{FUN} as one or more columns onto the
+    matrix of parameter values, and return as a data frame.
   }
 }
 \details{
@@ -42,6 +46,8 @@ simulate.hydromad(object, nsim, seed, ...,
   a list of results, where each element is named by its parameter
   set. The result also has an attribute \code{"psets"} which gives the
   parameter values used in each simulation (as a data frame).
+
+  If \code{bind = TRUE}, a data frame.
 }
 \author{ Felix Andrews \email{felix@nfrac.org} }
 \seealso{
@@ -51,6 +57,12 @@ simulate.hydromad(object, nsim, seed, ...,
 \examples{
 data(Canning)
 mod0 <- hydromad(Canning[1:500,], sma = "cwi")
-simulate(mod0, nsim = 12, method = "latin")
+simulate(mod0, nsim = 5, method = "latin")
+
+## plot the objective function surface over two parameters
+mod1 <- update(mod0, routing = "uh", rfit = "ls")
+sim1 <- simulate(mod1, FUN = objFunVal, bind = TRUE)
+levelplot(result ~ tw * f, sim1, cex = 2,
+          panel = panel.levelplot.points)
 }
 \keyword{ iteration }

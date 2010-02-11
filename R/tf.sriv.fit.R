@@ -3,7 +3,9 @@
 ## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
-tf.riv.fit <-
+tf.riv.fit <- tf.sriv.fit
+
+tf.sriv.fit <-
     function(DATA,
              order = hydromad.getOption("order"),
              delay = hydromad.getOption("delay"),
@@ -30,21 +32,19 @@ tf.riv.fit <-
     if (!inherits(init.model, "tf"))
         return(init.model)
 
-    obj <- tf.rivfit(DATA, init.model = init.model,
-                     noise.order = noise.order,
-                     order = order, delay = delay,
-                     fixed.ar = fixed.ar,
-                     ...,
-                     epsilon = epsilon,
-                     max.iterations = max.iterations)
+    obj <- tf.srivfit(DATA, init.model = init.model,
+                      noise.order = noise.order,
+                      order = order, delay = delay,
+                      fixed.ar = fixed.ar,
+                      ...,
+                      epsilon = epsilon,
+                      max.iterations = max.iterations)
     if (inherits(obj, "tf"))
         obj$call <- match.call()
     obj
 }
 
-tf.sriv.fit <- tf.riv.fit
-
-tf.rivfit <-
+tf.srivfit <-
     function(DATA,
              init.model,
              order, delay,

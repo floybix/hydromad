@@ -66,7 +66,7 @@ objFunVal <- function(model, objective = hydromad.getOption("objective"))
     ## these can be referred to in `objective`
     Q <- observed(model)
     X <- fitted(model)
-    U <- getU(model)
+    U <- fitted(model, U = TRUE)
     tmp <- eval(objective)
     if (is.function(tmp)) ## experimental
         tmp <- tmp(Q=Q, X=X)
@@ -183,7 +183,7 @@ tsFitStat <-
         if (is.null(FUN)) FUN <- "sum"
         events$FUN <- NULL
         ## compute events using first 2 series only (obs & mod)
-        ev <- do.call("eventSeq",
+        ev <- do.call("eventseq",
                       c(list(dat[,1:2]), events))
         ## apply FUN to events 'ev', in each series
         dat <- eventapply(dat, ev, FUN = FUN)

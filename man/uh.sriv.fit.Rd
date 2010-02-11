@@ -1,8 +1,9 @@
-\name{uh.riv.fit}
-\alias{uh.riv.fit}
-\alias{expuh.riv.fit}
+\name{uh.sriv.fit}
+\alias{uh.sriv.fit}
+\alias{expuh.sriv.fit}
+\alias{tf.sriv.fit}
 \alias{tf.riv.fit}
-\title{ Estimate transfer function models by Refined Instrumental
+\title{ Estimate transfer function models by Simple Refined Instrumental
   Variables method. }
 \description{
   Calibrate unit hydrograph transfer function models (\code{\link{uh}}
@@ -11,18 +12,18 @@
   Variables (SRIV) method.
 }
 \usage{
-uh.riv.fit(DATA,
-          order = hydromad.getOption("order"),
-          delay = hydromad.getOption("delay"),
-          ...)
+uh.sriv.fit(DATA,
+           order = hydromad.getOption("order"),
+           delay = hydromad.getOption("delay"),
+           ...)
 
-expuh.riv.fit(DATA,
-             order = hydromad.getOption("order"),
-             delay = hydromad.getOption("delay"),
-             ...,
-             method = hydromad.getOption("optim.method"),
-             control = hydromad.getOption("optim.control"),
-             hessian = TRUE)
+expuh.sriv.fit(DATA,
+              order = hydromad.getOption("order"),
+              delay = hydromad.getOption("delay"),
+              ...,
+              method = hydromad.getOption("optim.method"),
+              control = hydromad.getOption("optim.control"),
+              hessian = TRUE)
 }
 \arguments{
   \item{DATA}{
@@ -39,6 +40,11 @@ expuh.riv.fit(DATA,
     further arguments may include
     \describe{
       \item{prefilter}{ ~~Describe \code{prefilter} here~~ }
+      \item{noise.order}{ }
+      \item{fixed.ar}{ }
+      \item{epsilon}{ }
+      \item{max.iterations}{ }
+      \item{initX}{ }
       \item{na.action}{ ~~Describe \code{na.action} here~~ }
       \item{trace}{ ~~Describe \code{trace} here~~ }
     }
@@ -57,11 +63,11 @@ expuh.riv.fit(DATA,
   using that function's \code{rfit} argument. E.g. to specify fitting an
   \code{expuh} routing model by least squares one could write
   
-  \code{hydromad(..., routing = "expuh", rfit = "riv")}
+  \code{hydromad(..., routing = "expuh", rfit = "sriv")}
 
   or
   
-  \code{hydromad(..., routing = "expuh", rfit = list("riv", order = c(2,1)))}.
+  \code{hydromad(..., routing = "expuh", rfit = list("sriv", order = c(2,1)))}.
 }
 \value{
   a list with components

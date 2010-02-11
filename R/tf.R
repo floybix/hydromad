@@ -346,13 +346,6 @@ observed.tf <- function(object, ..., all = FALSE)
     stripWarmup(tmp, object$warmup)
 }
 
-getU.tf <- function(object, ..., all = FALSE)
-{
-    if (all)
-        return(object$data[,"U"])
-    stripWarmup(object$data[,"U"], object$warmup)
-}
-
 vcov.tf <- function(object, ...)
     object$cov.mat ## may be NULL
 

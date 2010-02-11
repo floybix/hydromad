@@ -75,7 +75,7 @@ Jakeman
 \seealso{
   \code{\link{uh}},
   \code{\link{expuh}},
-  \code{\link{uh.riv.fit}},
+  \code{\link{uh.sriv.fit}},
   \code{\link{arima}}
 }
 \examples{

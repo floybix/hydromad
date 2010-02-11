@@ -1,0 +1,8 @@
+
+
+Changes in Version 0.5-4 (in development)
+
+  o event.clusters() renamed to eventseq()
+
+  o functions getU() and getP() removed; 
+    use fitted(U = TRUE) and observed(item = "P").

@@ -69,6 +69,7 @@ tf.inverse.fit <-
     U <- NULL
     ## option to initialise from U (as rises(Q)), rather than pars.init
     if (init.U) {
+        
         if (!is.null(P)) {
             zeros <- mean(zapsmall(P, 2) == 0, na.rm = TRUE)
         } else {
@@ -84,7 +85,10 @@ tf.inverse.fit <-
         if (!is.null(P)) {
             U <- P
         } else {
-            U <- rises(Q)
+            #U <- rises(Q)
+            ## positive innovations from an ar1 model:
+            ar1 <- coef(arima(Q, order = c(1,0,0), include.mean = FALSE))
+            U <- pmax(Q - ar1 * lag(Q), 0)
         }
 
         ## estimate U as scaled P, scaled in a moving window

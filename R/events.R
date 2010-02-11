@@ -2,9 +2,13 @@
 ## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
+event.clusters <- function(...) {
+    .Deprecated("event.clusters")
+    eventseq(...)
+}
+
 ## based on the arguments of evd::clusters
-event.clusters <-
-eventSeq <-
+eventseq <-
     function(x, thresh = 0, inter = 1, mindur = 1, below = FALSE)
                                         #, ulow = -Inf, rlow = 1)
 {
@@ -53,7 +57,7 @@ eventSeq <-
 
 eventapply <-
     function(X,
-             events = eventSeq(X, thresh = thresh, inter = inter, mindur = mindur, below = below),
+             events = eventseq(X, thresh = thresh, inter = inter, mindur = mindur, below = below),
              FUN = sum, ...,
              thresh = 0, inter = 1, mindur = 1, below = FALSE,
              TIMING = c("start", "middle", "end"),
@@ -111,7 +115,7 @@ preInterEventDuration <- function(x)
 
 eventAttributes <-
     function(X,
-             events = eventSeq(X, thresh = thresh, inter = inter, mindur = mindur, below = below),
+             events = eventseq(X, thresh = thresh, inter = inter, mindur = mindur, below = below),
              FUN = mean, ...,
              thresh = 0, inter = 1, mindur = 1, below = FALSE)
 {

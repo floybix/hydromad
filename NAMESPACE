@@ -8,9 +8,6 @@ S3method(print, hydromad)
 S3method(fitted, hydromad)
 S3method(residuals, hydromad)
 S3method(observed, hydromad)
-export(getU, getP)
-S3method(getU, hydromad)
-S3method(getP, hydromad)
 S3method(vcov, hydromad)
 S3method(deviance, hydromad)
 export(isValidModel)
@@ -71,7 +68,6 @@ S3method(print, tf)
 S3method(print, summary.tf)
 S3method(fitted, tf)
 S3method(observed, tf)
-S3method(getU, tf)
 S3method(isValidModel, tf)
 
 export(tf.sim)
@@ -176,7 +172,7 @@ S3method(print, tf.runlist)
 export(convertFlow)
 
 ## events.R
-export(eventSeq,
+export(eventseq, event.clusters,
        eventapply,
        preInterEventDuration,
        eventAttributes)
@@ -194,17 +190,9 @@ export(rollccf,
        xyplot.rollccf,
        ccfForLags)
 
-## error.sim.R
-export(flow.inputs.sim,
-       rain.error.sim,
-       flow.error.sim)
-
-
 ## options.R
 export(hydromad.options,
        hydromad.getOption)
-
-#panel.superpose.cycle
 
 
 ## SWIMP

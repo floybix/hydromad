@@ -32,9 +32,9 @@ summary.hydromad <-
         ans
     }
 
-    DATA <- ts.intersect(P = getP(object, all = TRUE),
+    DATA <- ts.intersect(P = P = observed(object, item = "P", all = TRUE),
                              Q = observed(object, all = TRUE),
-                             U = getU(object, all = TRUE),
+                             U = fitted(object, U = TRUE, all = TRUE),
                              X = fitted(object, all = TRUE))
 
     if (!is.null(breaks)) {

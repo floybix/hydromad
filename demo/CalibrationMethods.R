@@ -5,15 +5,13 @@ data(SalmonBrook)
 obsdat <- window(SalmonBrook, start = "1990-01-01", end = "1992-01-01")
 
 P <- obsdat$P
-simU <- hydromad.sim(obsdat, sma = "cwi", tw = 30, f = 0.5, c = 1/1000,
-                    routing = NULL)
+simU <- hydromad.sim(obsdat, routing = NULL,
+                     sma = "cwi", tw = 30, f = 0.5, c = 1/1000)
 simQ <- hydromad.sim(simU, sma = NULL,
-                    routing = "expuh", tau_s = 30, tau_q = 2, v_s = 0.3)
-
-simQ2 <- hydromad.sim(obsdat, sma = "cwi", tw = 30, f = 0.5, c = 1/1000,
                      routing = "expuh", tau_s = 30, tau_q = 2, v_s = 0.3)
 
-all.equal(simQ, simQ2)
+simQ <- hydromad.sim(obsdat, sma = "cwi", tw = 30, f = 0.5, c = 1/1000,
+                     routing = "expuh", tau_s = 30, tau_q = 2, v_s = 0.3)
 
 
 modDat <- merge(obsdat[,c("P","E")], Q = byDays(simQ))
@@ -41,17 +39,15 @@ fits$DE <- fitByDE(fullspec)
 ## OK, all fit correctly
 
 ## now test robustness of methods to:
-## 1. error in input P (carries through to U via correct SMA)
+## 1. error in input P (carries through to U via [correct] SMA)
 ## 2. error in SMA parameters or model structure
 ## 3. error in transfer function model order
 ## 4. error in streamflow Q
 
 
 ## objective function surface over parameters
-sampLS21 <- simulate(specs$cwiLS21, 200, sampletype = "random", FUN = objFunVal)
-sampLS21 <- cbind(attr(sampLS21, "psets"), value = unlist(sampLS21))
-levelplot(value ~ tw * f, sampLS21, panel = panel.levelplot.points)
-tileplot(value ~ tw * f, sampLS21, aspect = "fill")
+sampLS21 <- simulate(rspecs$ls21, 200, sampletype = "random", FUN = objFunVal, bind = TRUE)
+levelplot(result ~ tw * f, sampLS21, cex = 2, panel = panel.levelplot.points)
 
 ## NOTE: sampling is random, so results can vary!
 set.seed(0)

@@ -113,10 +113,10 @@ residuals.hydromad <- function(object, ..., all = FALSE)
     stripWarmup(tmp, object$warmup)
 }
 
-observed.hydromad <- function(object, ..., all = FALSE)
+observed.hydromad <- function(object, ..., item = "Q", all = FALSE)
 {
-    ## observed.default will work, but this may be slightly faster
-    tmp <- object$data[,"Q"]
+    ## observed.default will work (for Q), but this may be slightly faster
+    tmp <- object$data[,item]
     if (all) return(tmp)
     stripWarmup(tmp, object$warmup)
 }
@@ -143,28 +143,6 @@ vcov.hydromad <- function(object, ...)
 }
 
 deviance.hydromad <- stats:::deviance.lm
-
-getU <- function(object, ...)
-    UseMethod("getU")
-
-getU.hydromad <- function(object, ..., all = FALSE)
-{
-    tmp <- object$U
-    if (all) return(tmp)
-    stripWarmup(tmp, object$warmup)
-}
-
-getP <- function(object, ...)
-    UseMethod("getP")
-
-getP.hydromad <- function(object, ..., all = FALSE)
-{
-    if (!("P" %in% colnames(object$data)))
-        return(NULL)
-    tmp <- object$data[,"P"]
-    if (all) return(tmp)
-    stripWarmup(tmp, object$warmup)
-}
 
 print.hydromad <-
     function(x, digits = max(3, getOption("digits") - 3), ...)
@@ -204,7 +182,8 @@ print.hydromad <-
                 ## one or more parameters specified as ranges only
                 parlist <- coef(x, which = which, warn = FALSE)
                 print(t(sapply(parlist,
-                               function(p) c(lower = min(p), upper = max(p)))),
+                               function(p) c(lower = min(p), upper = max(p),
+                                             fixed = if (identical(min(p),max(p))) '==' else '' ))),
                       digits = digits)
             }
             cat("\n")

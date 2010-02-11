@@ -51,7 +51,7 @@ spec[["routing fitting"]] <-
 
 spec[["event-based analysis"]] <-
     list(
-         "event.clusters" = list(),
+         "eventseq" = list(),
          "eventAttributes" = list()
          )
 
