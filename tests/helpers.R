@@ -1,5 +1,5 @@
 library(testthat)
-library_if_available(hydromad)
+library(hydromad)
 
 context("Helper functions")
 

@@ -7,6 +7,7 @@
     list(
          sma = NULL,
          routing = NULL,
+         scalar = scalar.ranges(),
          cwi = cwi.ranges(),
          cmd = cmd.ranges(),
          sacramento = sacramento.ranges(),

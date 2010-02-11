@@ -31,8 +31,8 @@ x}
   }
   \item{FUN}{
     optional function to apply to each simulated model. Typical examples
-    would be \code{\link[summary.hydromad]{summary}} or
-    \code{\link[predict.hydromad]{predict}}.
+    would be \code{\link{objFunVal}}, \code{\link[=summary.hydromad]{summary}} or
+    \code{\link[=predict.hydromad]{predict}}.
   }
   \item{bind}{
     to bind the result from \code{FUN} as one or more columns onto the
@@ -61,7 +61,7 @@ simulate(mod0, nsim = 5, method = "latin")
 
 ## plot the objective function surface over two parameters
 mod1 <- update(mod0, routing = "uh", rfit = "ls")
-sim1 <- simulate(mod1, FUN = objFunVal, bind = TRUE)
+sim1 <- simulate(mod1, 300, FUN = objFunVal, bind = TRUE)
 levelplot(result ~ tw * f, sim1, cex = 2,
           panel = panel.levelplot.points)
 }

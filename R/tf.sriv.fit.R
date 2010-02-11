@@ -3,8 +3,7 @@
 ## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
-tf.riv.fit <- tf.sriv.fit
-
+tf.riv.fit <-
 tf.sriv.fit <-
     function(DATA,
              order = hydromad.getOption("order"),

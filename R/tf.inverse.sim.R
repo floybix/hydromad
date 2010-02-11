@@ -218,8 +218,9 @@ tf.inverse.sim <-
         if (is.na(scale.window)) {
             U <- U * sum(Q[!isna]) / sum(U[!isna])
         } else {
-            sc <- rollratio(cbind(Q, U), width = scale.window)
-            sc <- na.locf(na.locf(sc), fromLast = TRUE)
+            sc <- simpleSmoothTs(cbind(Q, U), width = scale.window)
+            sc <- sc[,"Q"] / sc[,"U"]
+            sc <- na.locf(na.locf(sc, na.rm = FALSE), fromLast = TRUE, na.rm = FALSE)
             U <- U * sc
         }
     }

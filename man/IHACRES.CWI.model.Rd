@@ -1,5 +1,6 @@
 \name{IHACRES.CWI.model}
 \alias{IHACRES.CWI.model}
+\alias{cwi}
 \alias{cwi.sim}
 \alias{ihacres.cwi}
 \title{ IHACRES Catchment Wetness Index (CWI) model }

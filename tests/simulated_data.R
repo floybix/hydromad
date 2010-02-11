@@ -1,5 +1,5 @@
 library(testthat)
-library_if_available(hydromad)
+library(hydromad)
 
 set.seed(0)
 
@@ -39,7 +39,7 @@ test_that("Routing fitting methods work with exact inputs", {
 
 test_that("SMA joint fitting methods work with exact inputs", {
     spec <- update(spec0, routing = "expuh", tau_q = c(0,3), tau_s = c(3,100), v_s = c(0,1))
-    expect_that(summary(fitByOptim(fullspec))$r.squared > 0.99, is_true())
-    expect_that(summary(fitBySCE(fullspec))$r.squared > 0.9999, is_true())
-    expect_that(summary(fitByDE(fullspec))$r.squared > 0.9999, is_true())
+    expect_that(summary(fitByOptim(spec))$r.squared > 0.99, is_true())
+    expect_that(summary(fitBySCE(spec))$r.squared > 0.9999, is_true())
+    expect_that(summary(fitByDE(spec))$r.squared > 0.999, is_true())
 })

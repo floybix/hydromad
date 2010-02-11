@@ -7,8 +7,8 @@
 hydromad.sim <-
     function(DATA,
              ...,
-             sma = NULL,
-             routing = "expuh",
+             sma = hydromad.getOption("sma"),
+             routing = hydromad.getOption("routing"),
              return_state = FALSE)
 {
     DATA <- as.ts(DATA)

@@ -1,5 +1,6 @@
 \name{hydromad}
 \alias{hydromad}
+\alias{hydromad.sim}
 \alias{ihacres}
 \title{
   Specify rainfall - runoff (hydrology) models.
@@ -18,6 +19,11 @@ hydromad(DATA = zoo(), ...,
         routing = hydromad.getOption("routing"),
         rfit = NULL, weights = NULL,
         warmup = hydromad.getOption("warmup"))
+
+hydromad.sim(DATA, ...,
+        sma = hydromad.getOption("sma"),
+        routing = hydromad.getOption("routing"),
+        return_state = FALSE)
 }
 \arguments{
   \item{DATA, newdata}{
@@ -106,15 +112,15 @@ hydromad(DATA = zoo(), ...,
   The built-in routing fitting (\code{rfit}) methods are (for \code{uh}
   and \code{expuh} routing):
   \describe{
-    \item{\code{\link[uh.ls.fit]{ls}}}{
+    \item{\code{\link[=uh.ls.fit]{ls}}}{
       Least Squares fitting (with prefiltering and optional
       weighting) of the transfer function. 
     }
-    \item{\code{\link[uh.sriv.fit]{sriv}}}{
+    \item{\code{\link[=uh.sriv.fit]{sriv}}}{
       Simple Refined Instrumental Variables (SRIV) fitting of the
       transfer function. 
     }
-    \item{\code{\link[uh.inverse.fit]{inverse}}}{
+    \item{\code{\link[=uh.inverse.fit]{inverse}}}{
       Fitting a transfer function model to the streamflow data,
       independently of the SMA model.
     }
@@ -147,7 +153,10 @@ hydromad(DATA = zoo(), ...,
   \code{\link{hydromad.object}}. 
 }
 \value{
-  the result is a \link[=hydromad.object]{hydromad object}.
+  the result from \code{hydromad()} is a
+  \link[=hydromad.object]{hydromad object}.
+
+  the result from \code{hydromad.sim()} is a simulated time series.
 }
 \references{
   ... TODO
@@ -169,18 +178,19 @@ modx
 fitx <- fitByOptim(modx)
 fitx
 summary(fitx)
-xyplot(fitx)
+xyplot(fitx, with.P = TRUE, type = c("l", "g"))
 
 data(Canning)
-x <- window(Canning, start = "1980-01-01", end = "1981-01-01")
+x <- window(Canning, start = "1980-01-01", end = "1982-01-01")
 xyplot(x)
-## IHACRES CWI model with extra parameter l, fit UH by Least Squares
+## IHACRES CWI model with extra parameter l
+## Fixed UH (fit once) by inverse method
 ## an unfitted model, with ranges of possible parameter values
 mod0 <- hydromad(x, sma = "cwi", l = c(0, 100), 
-             routing = "uh", rfit = list("ls", order = c(1,1)))
+             routing = "uh", rfit = list("inverse", order = c(1,1)))
 mod0
 ## now try to fit it
-fit1 <- fitByOptim(mod0)
+fit1 <- fitBySCE(mod0)
 fit1
 summary(fit1)
 xyplot(fit1)

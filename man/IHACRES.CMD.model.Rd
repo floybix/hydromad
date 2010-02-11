@@ -1,7 +1,7 @@
 \name{IHACRES.CMD.model}
 \alias{IHACRES.CMD.model}
-\alias{cmd.sim}
 \alias{cmd}
+\alias{cmd.sim}
 \title{ IHACRES Catchment Moisture Deficit (CMD) model }
 \description{
   The Catchment Moisture Deficit (CMD) effective rainfall model for IHACRES.

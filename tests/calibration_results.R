@@ -1,5 +1,6 @@
 library(testthat)
-library_if_available(hydromad)
+#library_if_available(hydromad)
+library(hydromad)
 
 
 context("Calibration results with real data")

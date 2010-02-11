@@ -5,8 +5,6 @@
 \alias{isValidModel}
 \alias{predict.hydromad}
 \alias{print.hydromad}
-\alias{summary.hydromad}
-\alias{print.summary.hydromad}
 \alias{fitted.hydromad}
 \alias{residuals.hydromad}
 \alias{observed.hydromad}
