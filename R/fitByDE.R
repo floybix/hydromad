@@ -7,9 +7,10 @@
 fitByDE <-
     function(MODEL, ...,
              objective = hydromad.getOption("objective"),
-             control = DEoptim.control(itermax = 50))
+             control = hydromad.getOption("de.control"))
 {
     library(DEoptim)
+    control <- do.call("DEoptim.control", control)
     start_time <- proc.time()
     parlist <- as.list(coef(MODEL, warn = FALSE))
     ## remove any missing parameters

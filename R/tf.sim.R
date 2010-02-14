@@ -58,9 +58,9 @@ tf.sim <-
             a_init <- rep(Xs_0, n)
             X <- filter(U, b, sides = 1)
             if (NCOL(U) > 1) {
-                X[seq_len(m),] <- U[seq_len(m),] * b[1]
+                X[seq_len(m),] <- 0 #U[seq_len(m),] * b[1]
             } else {
-                X[seq_len(m)] <- U[seq_len(m)] * b[1]
+                X[seq_len(m)] <- 0 #U[seq_len(m)] * b[1]
             }
             if (length(a) > 0)
                 X <- filter(X, a, method = "recursive", init = a_init)
@@ -85,27 +85,33 @@ tf.sim <-
     tau_3 <- 0
     v_s <- 1
     v_3 <- 0
+    v_q <- NA
     series <- 0
     lambda <- 0
     loss <- 0
-    with(as.list(pars), {
-        if (("v_q" %in% names(pars)) == FALSE)
-            v_q <- max(1 - v_s - v_3, 0)
-        stopifnot(all(c(tau_s, tau_q, Xs_0, Xq_0) >= 0))
-        ## convert from 'tau' and 'v' to 'alpha' and 'beta'
-        alpha_s <- exp(-1 / tau_s)
-        alpha_q <- exp(-1 / tau_q)
-        alpha_3 <- exp(-1 / tau_3)
-        ## lambda parameter defines dependence of v_s on U
-        if (lambda != 0) {
-            v_s <- v_s * (U ^ lambda)
-            v_s <- pmax(0, pmin(1, v_s)) ## ensure (0 <= v_s <= 1)
-            v_q <- pmax(0, 1 - v_s - v_3)
-        }
-        ## note: here v_s, v_q can be either scalars or vectors!
-        beta_s <- v_s * (1 - alpha_s)
-        beta_q <- v_q * (1 - alpha_q)
-        beta_3 <- v_3 * (1 - alpha_3)
+    ## TODO: this should all be extracted into a expuh.sim function!
+    for (n in names(pars))
+        assign(n, pars[[n]])
+    if (is.na(v_q))
+        v_q <- max(1 - v_s - v_3, 0)
+    stopifnot(all(c(tau_s, tau_q, tau_3) >= 0))
+    stopifnot(all(c(Xs_0, Xq_0, X3_0) >= 0))
+    ## convert from 'tau' and 'v' to 'alpha' and 'beta'
+    alpha_s <- exp(-1 / tau_s)
+    alpha_q <- exp(-1 / tau_q)
+    alpha_3 <- exp(-1 / tau_3)
+    ## lambda parameter defines dependence of v_s on U
+    if (lambda != 0) {
+        v_s <- v_s * (U ^ lambda)
+        v_s <- pmax(0, pmin(1, v_s)) ## ensure (0 <= v_s <= 1)
+        v_q <- pmax(0, 1 - v_s - v_3)
+    }
+    ## note: here v_s, v_q can be either scalars or vectors!
+    beta_s <- v_s * (1 - alpha_s)
+    beta_q <- v_q * (1 - alpha_q)
+    beta_3 <- v_3 * (1 - alpha_3)
+    if ((series == 0) || return_components) {
+        ## components in parallel.
         ## apply exponential decay filter to each component
         ## note filter_loss is equivalent to filter if loss = 0
         ## convert loss from G[k] model into a Q[k] formulation
@@ -113,29 +119,58 @@ tf.sim <-
         Xs <- filter_loss(beta_s * U, alpha_s, loss = lossVal, init = Xs_0)
         Xq <- filter(beta_q * U, alpha_q, method = "recursive", init = Xq_0)
         X3 <- if (v_3) filter(beta_3 * U, alpha_3, method = "recursive", init = X3_0)
-
-        ## align results to original input
-        Xs <- shiftWindow(Xs, delay)
-        Xq <- shiftWindow(Xq, delay)
-        X3 <- if (v_3) shiftWindow(X3, delay)
-
-        ## zap simulated values smaller than epsilon
-        Xs[Xs < epsilon] <- 0
-        Xq[Xq < epsilon] <- 0
-        if (v_3) X3[X3 < epsilon] <- 0
-
-        ## can only simulate stores in parallel here (TODO)
-        if (series > 0)
-            warning("simulation not correct: series=", series,
-                    " but assumed stores in parallel")
-
-        if (return_components) {
-            if (v_3) return(ts.union(Xs = Xs, Xq = Xq))
-            else return(ts.union(Xs = Xs, Xq = Xq, X3 = X3))
+    } else {
+        if (v_3 == 0) {
+            ## second-order model
+            Xs <- filter(beta_s * U, alpha_s, method = "recursive", init = Xs_0)
+            Xq <- filter(Xs * beta_q * U, alpha_q, method = "recursive", init = Xq_0)
+            Xs[] <- X3 <- 0
         } else {
-            if (v_3) return(Xs + Xq + X3)
-            else return(Xs + Xq)
+            ## third-order model
+            Xs <- filter(beta_s * U, alpha_s, method = "recursive", init = Xs_0)
+            if (series == 1) {
+                ## two components in series and one in parallel
+                ## (s & 3 are in series; q in parallel)
+                X3 <- filter(beta_3 * U, alpha_3, method = "recursive", init = X3_0)
+                Xs <- filter(X3 * beta_s * U, alpha_s, method = "recursive", init = Xs_0)
+                X3[] <- 0
+                Xq <- filter(beta_q * U, alpha_q, method = "recursive", init = Xq_0)
+            } else if (series == 2) {
+                ## one component in series with two in parallel
+                ## (3 in series; s & q in parallel)
+                X3 <- filter(beta_3 * U, alpha_3, method = "recursive", init = X3_0)
+                Xs <- filter(X3 * beta_s * U, alpha_s, method = "recursive", init = Xs_0)
+                Xq <- filter(X3 * beta_q * U, alpha_q, method = "recursive", init = Xq_0)
+                X3[] <- 0
+            } else if (series == 3) {
+                ## three components in series
+                X3 <- filter(beta_3 * U, alpha_3, method = "recursive", init = X3_0)
+                Xs <- filter(X3 * beta_s * U, alpha_s, method = "recursive", init = Xs_0)
+                X3[] <- 0
+                Xq <- filter(Xs * beta_q * U, alpha_q, method = "recursive", init = Xq_0)
+                Xs[] <- 0
+            } else {
+                stop("unrecognised values of 'series': ", series)
+            }
         }
-    })
+    }
+
+    ## align results to original input
+    Xs <- shiftWindow(Xs, delay)
+    Xq <- shiftWindow(Xq, delay)
+    X3 <- if (v_3) shiftWindow(X3, delay)
+
+    ## zap simulated values smaller than epsilon
+    Xs[Xs < epsilon] <- 0
+    Xq[Xq < epsilon] <- 0
+    if (v_3) X3[X3 < epsilon] <- 0
+
+    if (return_components) {
+        if (v_3) return(ts.union(Xs = Xs, Xq = Xq, X3 = X3))
+        else return(ts.union(Xs = Xs, Xq = Xq))
+    } else {
+        if (v_3) return(Xs + Xq + X3)
+        else return(Xs + Xq)
+    }
 }
 

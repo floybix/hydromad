@@ -152,8 +152,7 @@ cwi.ranges <- function()
 absorbScale.cwi <- function(object, gain)
 {
     #if (!isTRUE(object$estimateScale)) {
-    coeff <- coef(object)
-    c <- coeff[["c"]]
+    c <- coef(object)[["c"]]
     ## we only want to do this when c is NA (special value)
     if (is.null(c) || !is.na(c))
         return(NULL)
@@ -161,7 +160,10 @@ absorbScale.cwi <- function(object, gain)
     p <- coef(object)[["p"]]
     c <- c * (gain ^ p)
     c <- max(c, 0)
-    object$parlist[["c"]] <- c
-    object$U <- (c ^ p) * object$U
+    object <- update(object, c = c, and.rescale = FALSE)
+    ## TODO - may be significatly faster:
+    #object$parlist[["c"]] <- c
+    #object$call$c <- signif(c, 6)
+    #object$U <- (c ^ p) * object$U
     object
 }

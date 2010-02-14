@@ -103,6 +103,7 @@ export(tryModelOrders,
 ## SOIL MOISTURE ACCOUNTING MODELS
 
 export(scalar.sim)
+export(absorbScale.scalar)
 
 export(cwi.sim)
 export(absorbScale.cwi)
@@ -117,6 +118,9 @@ export(bucket.sim)
 
 export(sacramento.sim)
 useDynLib(hydromad, sma_sac)
+
+export(dbm.sim)
+export(absorbScale.dbm)
 
 #export(simhyd.sim)
 #export(simhydOptions)

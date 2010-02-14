@@ -6,11 +6,11 @@
   Simple constant runoff proportion.
 }
 \usage{
-scalar.sim(DATA, frac, return_state = FALSE)
+scalar.sim(DATA, c, return_state = FALSE)
 }
 \arguments{
   \item{DATA}{time-series-like object with a column P (precipitation).}
-  \item{frac}{fraction of rainfall that becomes effective.}
+  \item{c}{fraction of rainfall that becomes effective.}
   \item{return_state}{ignored.}
 }
 \value{

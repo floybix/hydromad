@@ -7,7 +7,7 @@
 fitBySCE <-
     function(MODEL, 
              objective = hydromad.getOption("objective"),
-             control = list())
+             control = hydromad.getOption("sce.control"))
 {
     start_time <- proc.time()
     parlist <- as.list(coef(MODEL, warn = FALSE))
@@ -50,6 +50,7 @@ fitBySCE <-
         }
         bestModel$msg <- ans$message
     }
+    bestModel$sce.iterations <- ans$iterations
     bestModel$funevals <- ans$counts
     bestModel$timing <- proc.time() - start_time
     return(bestModel)

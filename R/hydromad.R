@@ -181,9 +181,13 @@ print.hydromad <-
             } else {
                 ## one or more parameters specified as ranges only
                 parlist <- coef(x, which = which, warn = FALSE)
-                print(t(sapply(parlist,
-                               function(p) c(lower = min(p), upper = max(p),
-                                             fixed = if (identical(min(p),max(p))) '==' else '' ))),
+                print(data.frame(lower = sapply(parlist, min),
+                                 upper = sapply(parlist, max),
+                                 ` ` = sapply(parlist, function(p)
+                             {
+                                 ## mark fixed parameters
+                                 if (isTRUE(diff(range(p)) == 0)) '(==)' else ''
+                             }), check.names = FALSE),
                       digits = digits)
             }
             cat("\n")

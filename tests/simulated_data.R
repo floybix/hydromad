@@ -4,7 +4,7 @@ library(hydromad)
 set.seed(0)
 
 
-context("Simulation")
+context("Calibration results on simulated data")
 
 data(SalmonBrook)
 obsdat <- window(SalmonBrook, start = "1990-01-01", end = "1992-01-01")
@@ -12,14 +12,6 @@ obsdat <- window(SalmonBrook, start = "1990-01-01", end = "1992-01-01")
 ## joint simulation of SMA and routing
 simQ <- hydromad.sim(obsdat, sma = "cwi", tw = 30, f = 0.5, c = 1/1000,
                      routing = "expuh", tau_s = 30, tau_q = 2, v_s = 0.3)
-
-test_that("cwi+expuh simulation looks reasonable", {
-    expect_that(NROW(simQ) == NROW(obsdat), is_true())
-    expect_that(all(is.finite(simQ)), is_true())
-})
-
-
-context("Calibration results on simulated data")
 
 modDat <- merge(obsdat[,c("P","E")], Q = byDays(simQ))
 spec0 <- hydromad(modDat, sma = "cwi", routing = "uh")

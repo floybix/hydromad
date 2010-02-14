@@ -29,7 +29,7 @@
 #' @export
 bucket.sim <-
     function(DATA,
-             Sb, fc, a.ei = 0, M = 1, a.ss = 0, S_0 = 0,
+             Sb, fc = 1, a.ei = 0, M = 0, a.ss = 0, S_0 = 0,
              return_state = FALSE)
 {
     ## get data into the right form
@@ -104,4 +104,4 @@ bucket.ranges <- function()
          fc = c(0, 1),
          a.ei = c(0, 0.49),
          M = c(0, 1),
-         a.ss = c(0.05, 0.5))
+         a.ss = c(0, 0.5))

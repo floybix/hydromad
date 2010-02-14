@@ -70,11 +70,11 @@ tf.inverse.fit <-
     ## option to initialise from U (as rises(Q)), rather than pars.init
     if (init.U) {
         
-        if (!is.null(P)) {
-            zeros <- mean(zapsmall(P, 2) == 0, na.rm = TRUE)
-        } else {
-            zeros <- mean(zapsmall(diff(Q), 2) <= 0, na.rm = TRUE)
-        }
+#        if (!is.null(P)) {
+#            zeros <- mean(zapsmall(P, 2) == 0, na.rm = TRUE)
+#        } else {
+#            zeros <- mean(zapsmall(diff(Q), 2) <= 0, na.rm = TRUE)
+#        }
         ## backwards difference, i.e. rises are placed at their end time
         rises <- function(x) { x[] <- c(0, pmax(diff(x), 0)); x }
         ## estimate U as the rises in Q, scaled
@@ -85,16 +85,16 @@ tf.inverse.fit <-
         if (!is.null(P)) {
             U <- P
         } else {
-            #U <- rises(Q)
+            U <- rises(Q)
             ## positive innovations from an ar1 model:
-            ar1 <- coef(arima(Q, order = c(1,0,0), include.mean = FALSE))
-            U <- pmax(Q - ar1 * lag(Q), 0)
+            #ar1 <- coef(arima(Q, order = c(1,0,0), include.mean = FALSE))
+            #U <- pmax(Q - ar1 * lag(Q), 0)
         }
 
         ## estimate U as scaled P, scaled in a moving window
         ## (runoff coefficient)
-        scale.window <- min(autocorrTime(Q) * 1.5, 10)
-        sc <- simpleSmoothTs(cbind(Q, U), width = scale.window)
+        scale.window <- max(autocorrTime(Q) * 1.5, 16)
+        sc <- simpleSmoothTs(cbind(Q, U), width = scale.window, c = 2)
         sc <- sc[,"Q"] / sc[,"U"]
         sc <- na.locf(na.locf(sc, na.rm = FALSE), fromLast = TRUE, na.rm = FALSE)
         sc[!is.finite(sc)] <- 0

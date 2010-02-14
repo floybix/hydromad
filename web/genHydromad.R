@@ -26,6 +26,7 @@ spec[["soil moisture accounting"]] <-
          "IHACRES.CMD.model" = list(),
          "bucket" = list(),
          "sacramento" = list()
+         #"dbm" = list()
          )
 
 spec[["calibration"]] <-
@@ -34,19 +35,22 @@ spec[["calibration"]] <-
          "fitByOptim" = list(),
          "fitBySCE" = list(),
          "fitByDE" = list()
+         #"fitByDream" = list()
+         #"mcmcByDream" = list()
          )
 
 spec[["routing"]] <-
     list(
          "expuh" = list(),
-         "uh" = list()
+         "armax" = list()
+         #"powuh" = list()
          )
 
 spec[["routing fitting"]] <-
     list(
-         "uh.ls.fit" = list(),
-         "uh.sriv.fit" = list(),
-         "uh.inverse.fit" = list()
+         "armax.ls.fit" = list(),
+         "armax.sriv.fit" = list(),
+         "armax.inverse.fit" = list()
          )
 
 spec[["event-based analysis"]] <-
@@ -80,7 +84,7 @@ spec[["datasets"]] <-
          "BinghamTrib" = list(example = 1),
          "Canning" = list(example = 1),
          "Cotter" = list(example = 1),
-         ##"Molonglo" = list(),
+         #"Molonglo" = list(),
          "Murrindindi" = list(example = 1),
          "Queanbeyan" = list(example = 1),
          "SalmonBrook" = list(example = 1),
