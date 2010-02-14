@@ -3,23 +3,22 @@
 ## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
-tf.lambda.inverse.fit <-
+
+armax.inverse.fit <-
     function(DATA,
-             ..., fit.method = "lambda") #with.lambda = TRUE)
+             order = hydromad.getOption("order"),
+             delay = hydromad.getOption("delay"),
+             ...)
 {
-    obj <- tf.inverse.fit(DATA, ..., fit.method = fit.method)#with.lambda = with.lambda)
-    obj$call <- match.call()
-    obj
+    model <- tf.inverse.fit(DATA, order = order, delay = delay,
+                            ...)
+    if (!inherits(model, "tf"))
+        return(model)
+    model$fitted.values <- NULL
+    model$residuals <- NULL
+    model
 }
 
-tf.fft.inverse.fit <-
-    function(DATA,
-             ..., fft.inverse.sim = TRUE)
-{
-    obj <- tf.inverse.fit(DATA, ..., fft.inverse.sim = fft.inverse.sim)
-    obj$call <- match.call()
-    obj
-}
 
 tf.inverse.fit <-
     function(DATA,

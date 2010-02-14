@@ -3,30 +3,100 @@
 ## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
-
 expuh.sim <-
-    function(U,
+    function(U, delay = 0,
              tau_s = 0, tau_q = 0, tau_3 = 0,
-             v_s = 1, v_3 = 0, v_q = NA,
-             series = 0, lambda = 0, loss = 0,
-             delay = 0, Xs_0 = 0, Xq_0 = 0,
-             return_components = FALSE)
+             v_s = 1, v_q = NA, v_3 = 0, v_4 = 0,
+             series = 0,
+             loss = 0,
+             Xs_0 = 0, Xq_0 = 0, X3_0 = 0,
+             return_components = FALSE,
+             na.action = na.pass,
+             epsilon = hydromad.getOption("sim.epsilon"))
 {
     delay <- round(delay)
+    ## note U is allowed to be multi-variate, i.e. multiple columns
+    if (!is.ts(U)) U <- as.ts(U)
+    U <- na.action(U)
+    ## apply 'U' delay in reverse to 'X' (i.e. lag by 'delay' steps)
+    ## so can take delay as 0 for simulation purposes
+    if (delay != 0)
+        U <- lag(U, -delay)
+
+    ## TODO: this should depend on 'series'
     if (is.na(v_q))
         v_q <- max(0, min(1, 1 - v_s - v_3))
-    pars <- c(tau_s = tau_s,
-              tau_q = tau_q,
-              tau_3 = tau_3,
-              v_s = v_s,
-              v_q = v_q,
-              v_3 = v_3,
-              if (series != 0) c(series = series),
-              if (lambda != 0) c(lambda = lambda),
-              if (loss != 0) c(loss = loss))
-    tf.sim(U, pars = pars, delay = delay,
-           Xs_0 = Xs_0, Xq_0 = Xq_0,
-           return_components = return_components)
+
+    stopifnot(all(c(tau_s, tau_q, tau_3) >= 0))
+    ## convert from 'tau' and 'v' to 'alpha' and 'beta'
+    alpha_s <- exp(-1 / tau_s)
+    alpha_q <- exp(-1 / tau_q)
+    alpha_3 <- exp(-1 / tau_3)
+    beta_s <- v_s * (1 - alpha_s)
+    beta_q <- v_q * (1 - alpha_q)
+    beta_3 <- v_3 * (1 - alpha_3)
+    if ((series == 0) || return_components) {
+        ## components in parallel.
+        ## apply exponential decay filter to each component
+        ## note filter_loss is equivalent to filter if loss = 0
+        ## convert loss from G[k] model into a Q[k] formulation
+        lossVal <- (1 - alpha_s) * loss
+        Xs <- filter_loss(beta_s * U, alpha_s, loss = lossVal, init = Xs_0)
+        Xq <- filter(beta_q * U, alpha_q, method = "recursive", init = Xq_0)
+        X3 <- if (v_3) filter(beta_3 * U, alpha_3, method = "recursive", init = X3_0)
+    } else {
+        if (v_3 == 0) {
+            ## second-order model
+            Xs <- filter(beta_s * U, alpha_s, method = "recursive", init = Xs_0)
+            Xq <- filter(Xs * beta_q * U, alpha_q, method = "recursive", init = Xq_0)
+            Xs[] <- X3 <- 0
+        } else {
+            ## third-order model
+            Xs <- filter(beta_s * U, alpha_s, method = "recursive", init = Xs_0)
+            if (series == 1) {
+                ## two components in series and one in parallel
+                ## (s & 3 are in series; q in parallel)
+                X3 <- filter(beta_3 * U, alpha_3, method = "recursive", init = X3_0)
+                Xs <- filter(X3 * beta_s * U, alpha_s, method = "recursive", init = Xs_0)
+                X3[] <- 0
+                Xq <- filter(beta_q * U, alpha_q, method = "recursive", init = Xq_0)
+            } else if (series == 2) {
+                ## one component in series with two in parallel
+                ## (3 in series; s & q in parallel)
+                X3 <- filter(beta_3 * U, alpha_3, method = "recursive", init = X3_0)
+                Xs <- filter(X3 * beta_s * U, alpha_s, method = "recursive", init = Xs_0)
+                Xq <- filter(X3 * beta_q * U, alpha_q, method = "recursive", init = Xq_0)
+                X3[] <- 0
+            } else if (series == 3) {
+                ## three components in series
+                X3 <- filter(beta_3 * U, alpha_3, method = "recursive", init = X3_0)
+                Xs <- filter(X3 * beta_s * U, alpha_s, method = "recursive", init = Xs_0)
+                X3[] <- 0
+                Xq <- filter(Xs * beta_q * U, alpha_q, method = "recursive", init = Xq_0)
+                Xs[] <- 0
+            } else {
+                stop("unrecognised values of 'series': ", series)
+            }
+        }
+    }
+
+    ## align results to original input
+    Xs <- shiftWindow(Xs, delay)
+    Xq <- shiftWindow(Xq, delay)
+    X3 <- if (v_3) shiftWindow(X3, delay)
+
+    ## zap simulated values smaller than epsilon
+    Xs[Xs < epsilon] <- 0
+    Xq[Xq < epsilon] <- 0
+    if (v_3) X3[X3 < epsilon] <- 0
+
+    if (return_components) {
+        if (v_3) return(ts.union(Xs = Xs, Xq = Xq, X3 = X3))
+        else return(ts.union(Xs = Xs, Xq = Xq))
+    } else {
+        if (v_3) return(Xs + Xq + X3)
+        else return(Xs + Xq)
+    }
 }
 
 
@@ -58,138 +128,4 @@ normalise.expuh <- function(theta)
     theta <- tfParsConvert(theta, "a,b")
     tmp <- normalise.tf.coef(theta)
     tfParsConvert(tmp, "tau,v")
-}
-
-expuh.ls.fit <-
-    function(DATA,
-             order = hydromad.getOption("order"),
-             delay = hydromad.getOption("delay"),
-             ...,
-             method = hydromad.getOption("optim.method"),
-             control = hydromad.getOption("optim.control"),
-             hessian = TRUE)
-{
-    dots <- list(...)
-    if (!is.null(dots$warmup)) stop("'warmup' can not be given here")
-    if (!is.null(dots$normalise)) stop("'normalise' can not be given here")
-    model <- tf.ls.fit(DATA, order = order, delay = delay,
-                       warmup = 0, normalise = FALSE, ...)
-    if (!inherits(model, "tf"))
-        return(model)
-    n <- order[1]
-    poles <- arToPoles(coef(model)[seq_len(n)])
-    eps <- sqrt(.Machine$double.eps)
-    badpoles <- (Re(poles) < -eps) | (abs(Im(poles)) > eps)
-    if (any(badpoles)) {
-        model <- tfFitWithPoleConstraints(DATA, tf.fit = tf.ls.fit, poles = poles,
-                               order = order, delay = delay,
-                               warmup = 0, normalise = FALSE, ...,
-                               method = method, control = control, hessian = hessian)
-    }
-    if (!isValidModel(model))
-        return(model)
-
-    model$coefficients <- c(coef(model, "tau,v"),
-                            delay = model$delay)
-    model
-}
-
-
-expuh.sriv.fit <-
-    function(DATA,
-             order = hydromad.getOption("order"),
-             delay = hydromad.getOption("delay"),
-             ...,
-             method = hydromad.getOption("optim.method"),
-             control = hydromad.getOption("optim.control"),
-             hessian = TRUE)
-{
-    dots <- list(...)
-    if (!is.null(dots$warmup)) stop("'warmup' can not be given here")
-    if (!is.null(dots$normalise)) stop("'normalise' can not be given here")
-    model <- tf.sriv.fit(DATA, order = order, delay = delay,
-                         warmup = 0, normalise = FALSE, ...)
-    if (!inherits(model, "tf"))
-        return(model)
-    n <- order[1]
-    poles <- arToPoles(coef(model)[seq_len(n)])
-    eps <- sqrt(.Machine$double.eps)
-    badpoles <- (Re(poles) < -eps) | (abs(Im(poles)) > eps)
-    if (any(badpoles)) {
-        model <- tfFitWithPoleConstraints(DATA, tf.fit = tf.sriv.fit, poles = poles,
-                               order = order, delay = delay,
-                               warmup = 0, normalise = FALSE, ...,
-                               method = method, control = control, hessian = hessian)
-    }
-    if (!isValidModel(model))
-        return(model)
-    #model$vcov <- vcov(model)
-    model$coefficients <- c(coef(model, "tau,v"),
-                            delay = model$delay)
-    model
-}
-
-
-expuh.inverse.fit <-
-    function(DATA,
-             order = hydromad.getOption("order"),
-             delay = hydromad.getOption("delay"),
-             ...)
-{
-    model <- tf.inverse.fit(DATA, order = order, delay = delay,
-                            ...)
-    if (!inherits(model, "tf"))
-        return(model)
-    #model$vcov <- vcov(model)
-    model$coefficients <- c(coef(model, "tau,v"),
-                            delay = model$delay)
-    model$fitted.values <- NULL
-    model$residuals <- NULL
-    model
-}
-
-tfFitWithPoleConstraints <- function(DATA, tf.fit, poles, ...,
-                                     method, control, hessian)
-{
-    ## non-physical roots; constrain them and fit again
-    poles <- abs(Re(poles))
-    poles <- pmax(poles, 1e-5)
-    logpol0 <- log(poles)
-    model <- structure("failed to fit expuh routing with constrained roots",
-                       class = "try-error")
-    bestVal <- Inf
-    optFun <- function(logpol) {
-        pol <- exp(logpol)
-        if (isTRUE(hydromad.getOption("catch.errors"))) {
-            thisMod <- try(tf.fit(DATA, ..., fixed.ar = polesToAr(pol)))
-        } else {
-            thisMod <- tf.fit(DATA, ..., fixed.ar = polesToAr(pol))
-        }
-        if (!isValidModel(thisMod))
-            return(NA)
-        val <- objFunVal(thisMod)
-        if (val < bestVal)
-            model <<- thisMod
-        val
-    }
-    if (!isTRUE(hydromad.getOption("catch.errors.optim")))
-        try <- force ## i.e. skip the try()
-    ans <- try(optim(logpol0, optFun, method = method,
-                     control = control, hessian = hessian))
-    if (inherits(ans, "try-error")) {
-        return(ans)
-    }
-    if (hessian) {} ## TODO
-    if (ans$convergence != 0) {
-        msg <- if (ans$convergence == 1) {
-            "optim() reached maximum iterations"
-        } else {
-            paste("optim() returned convergence code",
-                  ans$convergence)
-        }
-        if (!isTRUE(hydromad.getOption("quiet"))) {
-            warning(msg)
-        }
-    }
-    model
 }

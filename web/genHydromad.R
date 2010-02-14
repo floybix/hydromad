@@ -41,8 +41,9 @@ spec[["calibration"]] <-
 
 spec[["routing"]] <-
     list(
+         "armax" = list(),
          "expuh" = list(),
-         "armax" = list()
+         "lambda" = list()
          #"powuh" = list()
          )
 
@@ -50,7 +51,9 @@ spec[["routing fitting"]] <-
     list(
          "armax.ls.fit" = list(),
          "armax.sriv.fit" = list(),
-         "armax.inverse.fit" = list()
+         "armax.inverse.fit" = list(),
+         "expuh.sriv.fit" = list
+         #"lambda.inverse.fit"
          )
 
 spec[["event-based analysis"]] <-

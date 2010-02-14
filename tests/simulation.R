@@ -64,27 +64,29 @@ test_that("TF parameter conversions work", {
 
     set.seed(0)
     U <- ts(pmax(rnorm(100), 0))
-    simWith <- function(pars, ...)
-        tf.sim(U, pars, ...)
+    armaxSim <- function(pars, ...)
+        armax.sim(U, pars = pars, ...)
+    expuhSim <- function(pars, ...)
+        do.call("expuh.sim", c(list(U), as.list(pars), ...))
 
-    expect_that(simWith(tfConv(n0m0, "a,b")), equals(simWith(n0m0)))
-    expect_that(simWith(tfConv(n1m0, "a,b")), equals(simWith(n1m0)))
-    expect_that(simWith(tfConv(n1m1, "a,b")), equals(simWith(n1m1)))
-    expect_that(simWith(tfConv(n2m0, "a,b")), equals(simWith(n2m0)))
-    expect_that(simWith(tfConv(n2m1, "a,b")), equals(simWith(n2m1)))
-    expect_that(simWith(tfConv(n2m2, "a,b")), equals(simWith(n2m2)))
-    expect_that(simWith(tfConv(n3s0, "a,b")), equals(simWith(n3s0)))
-    expect_that(simWith(tfConv(n3s1, "a,b")), equals(simWith(n3s1)))
-    expect_that(simWith(tfConv(n3s2, "a,b")), equals(simWith(n3s2)))
-    expect_that(simWith(tfConv(n3s3, "a,b")), equals(simWith(n3s3)))
+    expect_that(armaxSim(tfConv(n0m0, "a,b")), equals(expuhSim(n0m0)))
+    expect_that(armaxSim(tfConv(n1m0, "a,b")), equals(expuhSim(n1m0)))
+    expect_that(armaxSim(tfConv(n1m1, "a,b")), equals(expuhSim(n1m1)))
+    expect_that(armaxSim(tfConv(n2m0, "a,b")), equals(expuhSim(n2m0)))
+    expect_that(armaxSim(tfConv(n2m1, "a,b")), equals(expuhSim(n2m1)))
+    expect_that(armaxSim(tfConv(n2m2, "a,b")), equals(expuhSim(n2m2)))
+    expect_that(armaxSim(tfConv(n3s0, "a,b")), equals(expuhSim(n3s0)))
+    expect_that(armaxSim(tfConv(n3s1, "a,b")), equals(expuhSim(n3s1)))
+    expect_that(armaxSim(tfConv(n3s2, "a,b")), equals(expuhSim(n3s2)))
+    expect_that(armaxSim(tfConv(n3s3, "a,b")), equals(expuhSim(n3s3)))
 
-    xyplot(cbind(simWith(tfConv(n3s0, "a,b")), simWith(n3s0)))
+    xyplot(cbind(armaxSim(tfConv(n3s0, "a,b")), expuhSim(n3s0)))
 
     a <- tfConv(n3s0, "a,b")[(1:3)]
     b <- tfConv(n3s0, "a,b")[-(1:3)]
     xyplot(filter(filter(U, b, sides = 1), a, method="r"))
-    xyplot(tf.sim(U, c(a,b))
+    xyplot(armax.sim(U, pars = c(a,b))
 })
 
-context("UH simulation and inverse simulation")
+context("TF simulation and inverse simulation")
 

@@ -4,7 +4,6 @@
 ##
 
 
-xyplot.tf <-
 xyplot.hydromad <-
     function(x, data = NULL,
              coerce = byDays, all = FALSE,

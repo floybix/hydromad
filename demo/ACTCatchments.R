@@ -16,8 +16,9 @@ dsets <- lapply(dsets, get)
 ## define calibration periods
 calts <- lapply(dsets, window, start = "1970-01-01", end = "1980-01-01")
 ## calibrations
+hydromad.options(order = c(n=2, m=1))
 mods <- lapply(calts, function(DATA) {
-    hydromad(DATA, rfit = list(order = c(n=2, m=1)))
+    hydromad(DATA, rfit = "sriv")
 })
 mods <- as.runlist(mods)
 summary(mods)

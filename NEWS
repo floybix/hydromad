@@ -1,6 +1,12 @@
 
+Changes in Version 0.6-0 (in development)
 
-Changes in Version 0.5-4 (in development)
+  o "uh" routing renamed to "armax".
+
+  o new "lambda" routing option.
+
+
+Changes in Version 0.5-4
 
   o event.clusters() renamed to eventseq()
 

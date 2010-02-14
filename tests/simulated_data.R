@@ -1,10 +1,9 @@
 library(testthat)
 library(hydromad)
 
-set.seed(0)
-
-
 context("Calibration results on simulated data")
+
+set.seed(0)
 
 data(SalmonBrook)
 obsdat <- window(SalmonBrook, start = "1990-01-01", end = "1992-01-01")
@@ -14,7 +13,7 @@ simQ <- hydromad.sim(obsdat, sma = "cwi", tw = 30, f = 0.5, c = 1/1000,
                      routing = "expuh", tau_s = 30, tau_q = 2, v_s = 0.3)
 
 modDat <- merge(obsdat[,c("P","E")], Q = byDays(simQ))
-spec0 <- hydromad(modDat, sma = "cwi", routing = "uh")
+spec0 <- hydromad(modDat, sma = "cwi", routing = "armax")
 
 test_that("Routing fitting methods work with exact inputs", {
     rspecs <-

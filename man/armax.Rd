@@ -1,51 +1,32 @@
-\name{tf}
+\name{armax}
+\alias{armax}
 \alias{tf}
-\alias{xferfun}
-\alias{tf.sim}
-\alias{predict.tf}
-\alias{update.tf}
-\alias{coef.tf}
-\alias{summary.tf}
-\alias{print.summary.tf}
-\alias{print.tf}
+\alias{armax.sim}
 \alias{normalise.tf}
-\alias{vcov.tf}
-\title{ Transfer Function models }
+\alias{ssg.tf}
+\title{ ARMAX Transfer Function models }
 \description{
 	Linear transfer functions
 	(\emph{instantaneous unit hydrograph} or \emph{flow routing} in hydrology),
 	with a single input and single output series.
 }
 \usage{
-tf(DATA = list(U=, Q=),
-	pars = c(tau_s = , tau_q = 0, v_s = 1, v_3 = 0),
-	delay = 0, warmup, initX = TRUE,
-	na.action = na.pass)
+armax.sim(U, a_1 = 0, a_2 = 0, a_3 = 0, a_4 = 0,
+          b_0 = 0, b_1 = 0, b_2 = 0, b_3 = 0, b_4 = 0,
+          pars = NULL,
+	  delay = 0, init = 0, na.action = na.pass,
+          epsilon = hydromad.getOption("sim.epsilon"))
 
-tf.sim(U,
-	pars = c(tau_s = , tau_q = 0, v_s = 1, v_3 = 0),
-	delay = 0, Xs_0 = 0, Xq_0 = 0,
-	return_components = FALSE,
-	na.action = na.pass, epsilon)
 
-% move into tf.object.Rd ?
-% TODO: note methods for coef, residuals, fitted, vcov
-\method{summary}{tf}(object,
-	which = c("arpe", "rel.bias", "abs.bias",
-        "r.squared", "r.sq.sqrt", "r.sq.log", "r.sq.monthly",
-	"ssg", "residuals"), ...)
+TODO TODO TODO TODO
+
 
 \method{coef}{tf}(object, form = c("a,b", "tau,v", "alpha,beta"), ...)
-
-\method{predict}{tf}(object, newdata = NULL,
-	return_components = FALSE, ...)
-
-\method{update}{tf}(object, newdata = NULL, pars, ...)
 
 normalise.tf(object, ...)
 }
 \arguments{
-  \item{DATA, U}{ a \code{\link{ts}}-like object or list with named components:
+  \item{U}{ a \code{\link{ts}}-like object or list with named components:
 	\describe{
 	  \item{\code{U}}{ input time series.
 	  	For IHACRES this is effective rainfall depths, usually in mm. }
@@ -54,7 +35,7 @@ normalise.tf(object, ...)
 		It should usually be in units of mm (averaged over the catchment area).
 		Use \code{\link{convertFlow}} to convert it. }
 	    }
-	    \emph{DATA} may be omitted, to create an empty model object. }
+	  }
   \item{pars}{ specification of the model; see Details section. }
   \item{delay}{ lag (dead time) between input and response, in time steps. }
   \item{warmup}{ number of time steps to remove from start of record when calculating statistics. }

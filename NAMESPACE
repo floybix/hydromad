@@ -1,7 +1,6 @@
 
 ## CORE FUNCTIONS
 
-## hydromad.R
 export(hydromad)
 export(coef.hydromad)
 S3method(print, hydromad)
@@ -30,19 +29,26 @@ S3method(print, summaryWithBreaks.hydromad)
 export(xyplot.hydromad)
 export(errormasscurve)
 export(errormasscurve.default)
-export(xyplot.tf)
 export(qqmath.hydromad)
 export(tsdiag.hydromad)
 
 
 ## ROUTING MODELS
 
-export(uh.sim,
-       ssg.uh,
-       normalise.uh,
-       uh.ls.fit,
-       uh.sriv.fit,
-       uh.inverse.fit)
+export(tryModelOrders,
+       ordersSummary)
+
+export(makePrefilter,
+       estimateDelay)
+
+export(armax.sim,
+       ssg.armax,
+       normalise.armax,
+       armax.ls.fit,
+       armax.sriv.fit,
+       armax.inverse.fit)
+useDynLib(hydromad, sriv_system)
+useDynLib(hydromad, inverse_filter)
 
 export(expuh.sim,
        ssg.expuh,
@@ -51,53 +57,14 @@ export(expuh.sim,
        expuh.sriv.fit,
        expuh.inverse.fit)
 
-
-## TF: TRANSFER FUNCTIONS
-
-## tfUtils.R: (no exports)
-
-## tf.R
-export(tf,
-       update.tf,
-       predict.tf,
-       coef.tf,
-       summary.tf,
-       normalise.tf,
-       vcov.tf)
-S3method(print, tf)
-S3method(print, summary.tf)
-S3method(fitted, tf)
-S3method(observed, tf)
-S3method(isValidModel, tf)
-
-export(tf.sim)
-
 export(filter_loss) # export?
 useDynLib(hydromad, filter_constloss)
 
-export(tf.fit,
-       makePrefilter,
-       estimateDelay)
-
-export(tf.ls.fit)
-
-export(tf.riv.fit)
-export(tf.sriv.fit)
-useDynLib(hydromad, sriv_system)
-
-export(tf.inverse.fit,
-       tf.fft.inverse.fit,
-       tf.lambda.inverse.fit,
-       tf.pars.init)
-
-export(tf.inverse.sim,
-       tf.fft.inverse.sim,
-       wiener)
-useDynLib(hydromad, inverse_filter)
+export(lambda.sim,
+       ssg.lambda,
+       normalise.lambda)
+export(lambda.inverse.fit)
 useDynLib(hydromad, inverse_filter_lambda)
-
-export(tryModelOrders,
-       ordersSummary)
 
 
 ## SOIL MOISTURE ACCOUNTING MODELS
@@ -161,13 +128,11 @@ export(runlist,
        xyplot.runlist,
        qqmath.runlist,
        summary.hydromad.runlist,
-       summary.tf.runlist,
        print.summary.runlist)
 S3method("[", runlist)
 S3method(print, runlist)
 S3method(print, summary.runlist)
 S3method(print, hydromad.runlist)
-S3method(print, tf.runlist)
 
 
 

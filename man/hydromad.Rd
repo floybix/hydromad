@@ -83,9 +83,9 @@ hydromad.sim(DATA, ...,
       single-bucket models with saturated/unsaturated zones and
       interception. 
     }
-    \item{\code{\link{multibucket}}}{
-      multiple-bucket models (UNDER DEVELOPMENT).
-    }
+%    \item{\code{\link{multibucket}}}{
+%      multiple-bucket models (UNDER DEVELOPMENT).
+%    }
     \item{\code{\link{sacramento}}}{
       Sacramento Soil Moisture Accounting model (US NWS).
     }
@@ -93,34 +93,37 @@ hydromad.sim(DATA, ...,
 
   The supplied Routing (\code{routing}) models are:
   \describe{
+    \item{\code{\link{armax}}}{
+      A general Unit Hydrograph transfer function, defined by
+      ARMA (auto-regressive / moving average) coefficients.
+    }
     \item{\code{\link{expuh}}}{
-      A Unit Hydrograph transfer function defined as a combination of
+      A Unit Hydrograph transfer function defined as a system of
       exponentially receding components. Each component is defined by
       its time constant and fractional volume, and if there are multiple
       (up to 3) such components they may be in a parallel and/or
       series configuration. 
     }
-    \item{\code{\link{uh}}}{
-      A general Unit Hydrograph transfer function, defined by
-      ARMA (auto-regressive / moving average) coefficients.
+    \item{\code{\link{lambda}}}{
+      lambda
     }
 %    \item{\code{\link{powerlaw}}}{
 %      [TODO]
 %    }
   }
   
-  The built-in routing fitting (\code{rfit}) methods are (for \code{uh}
-  and \code{expuh} routing):
+  The built-in routing fitting (\code{rfit}) methods are
+  (for \code{armax} and \code{expuh} routing):
   \describe{
-    \item{\code{\link[=uh.ls.fit]{ls}}}{
+    \item{\code{\link[=armax.ls.fit]{ls}}}{
       Least Squares fitting (with prefiltering and optional
       weighting) of the transfer function. 
     }
-    \item{\code{\link[=uh.sriv.fit]{sriv}}}{
+    \item{\code{\link[=armax.sriv.fit]{sriv}}}{
       Simple Refined Instrumental Variables (SRIV) fitting of the
       transfer function. 
     }
-    \item{\code{\link[=uh.inverse.fit]{inverse}}}{
+    \item{\code{\link[=armax.inverse.fit]{inverse}}}{
       Fitting a transfer function model to the streamflow data,
       independently of the SMA model.
     }
@@ -187,7 +190,7 @@ xyplot(x)
 ## Fixed UH (fit once) by inverse method
 ## an unfitted model, with ranges of possible parameter values
 mod0 <- hydromad(x, sma = "cwi", l = c(0, 100), 
-             routing = "uh", rfit = list("inverse", order = c(1,1)))
+             routing = "armax", rfit = list("inverse", order = c(1,1)))
 mod0
 ## now try to fit it
 fit1 <- fitBySCE(mod0)

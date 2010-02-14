@@ -51,17 +51,6 @@ print.hydromad.runlist <-
     invisible(x)
 }
 
-print.tf.runlist <-
-    function(x, digits = max(3, getOption("digits") - 3), ...)
-{
-    cat("\nList of transfer function model runs:\n")
-    print.default(lapply(x, function(obj) {
-        if (inherits(obj, "tf"))
-            coef(obj) else obj
-    }), digits=digits, ...)
-    invisible(x)
-}
-
 errormasscurve.runlist <-
     function(x,
              coerce=byDays,
@@ -180,7 +169,6 @@ qqmath.runlist <-
 }
 
 summary.hydromad.runlist <-
-summary.tf.runlist <-
     function(object,
              pars=TRUE,
              flowstats=c("rel.bias","r.squared","r.sq.sqrt","r.sq.log","r.sq.monthly"),

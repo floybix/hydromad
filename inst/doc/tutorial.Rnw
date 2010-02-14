@@ -394,12 +394,7 @@ use the square root.
 
 The unit hydrograph module in \ihacres{} is a linear \emph{transfer
   function}, i.e. a set of exponentially receding stores, which may be in a
-parallel or series configuration. If the transfer function
-\emph{order} is not specified it defaults to a single exponential
-store.\footnote{This default can be changed using
-  \code{hydromad.options()} -- see the user manual.}
-The unit hydrograph type and calibration method can be specified
-through the argument \code{uh}.
+parallel or series configuration. 
 
 We will specify a \emph{second-order} transfer function for the unit
 hydrograph, which can be interpreted as two
@@ -681,7 +676,7 @@ Jakeman et. al. (1990) and Young (2003).
 \begin{table}[hpbt]
 \begin{center}
 <<try-model-orders-table-code, echo=TRUE, results=hide>>=
-ihSpec <- hydromad(ts90s, sma = "cwi", routing = "uh", rfit = "sriv")
+ihSpec <- hydromad(ts90s, sma = "cwi", routing = "armax", rfit = "sriv")
 osumm <- tryModelOrders(fitByOptim(ihSpec),
                         n = 1:3, m = 0:3, delay = 0)
 ordersSummary(osumm)
@@ -739,7 +734,8 @@ Some other things to try are
 \begin{itemize}
   \item using different calibration periods;
   \item changing the warmup period length;
-%  \item using a different prefilter (for \code{tf.ls.fit} and \code{tf.sriv.fit});
+%  \item using a different prefilter (for \code{"ls"} and
+%  \code{"sriv"} fitting methods);
   \item changing the optimisation method and/or settings: see \code{hydromad.options()}.
 \end{itemize}
 

@@ -213,7 +213,7 @@ doParseRfit <-
 
 
     ## prefilter is relevant to these routing modules:
-    if (routing %in% c("expuh", "uh")) {
+    if (routing %in% c("armax", "expuh")) {
         if (is.null(rfit$prefilter) &&
             isTRUE(hydromad.getOption("prefilter")))
         {
@@ -239,8 +239,10 @@ doRoutingFit <-
     ## we should remove any existing routing parameters
     object$parlist <- as.list(coef(object, which = "sma", warn = FALSE))
     object$vcov.rfit <- NULL
-    doRfit <- function(method = hydromad.getOption("rfit.method"), ...)
+    doRfit <- function(method, ...)
     {
+        if (missing(method))
+            stop("missing 'method' in 'rfit' specification")
         if (!is.character(method))
             stop("unrecognised 'method' in 'rfit' specification")
         isInverseMethod <- (any(grep("inverse", method)))

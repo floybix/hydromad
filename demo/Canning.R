@@ -14,21 +14,21 @@ cannRef <- hydromad(cannCal, sma = "cwi", tw = 102, f = 1, l = 300, t_ref = 0,
                     routing = "expuh", tau_s = 3.788, delay = 1, warmup = 200)
 summary(cannRef)
 ## 3. calibration with defined parameter ranges
-cannMod <- hydromad(cannCal, sma = "cwi", objective = ~ fitStat(Q, X),
-                    fit = FALSE, #list(polish = FALSE),
-                    routing = "uh",
-                    rfit = list("sriv", warmup = 200),
+cannMod <- hydromad(cannCal, sma = "cwi", routing = "armax",
+                    rfit = list("sriv", order = c(1,0)), warmup = 200,
                     tw = seq(2, 200, by = 20),
                     f = seq(0, 10, by = 1),
                     l = seq(0, 400, by = 50),
-                    samples = 100,
                     t_ref = 0)
+cannMod <- fitBySampling(cannMod, sampletype = "all",
+                         objective = ~ fitStat(Q, X))
 summary(cannMod)
 ## breakdown of performance in simulation over whole dataset
 summary(update(cannMod, newdata = Canning), breaks = "2 years")
 
 ## CMD version
-cannMod2 <- hydromad(cannCal, sma = "cmd", objective = ~ fitStat(Q, X),
-                     routing = "uh",
-                     rfit = list("sriv", warmup = 200, order=c(1,1)))
+cannMod2 <- hydromad(cannCal, sma = "cmd", routing = "armax",
+                     rfit = list("sriv", order = c(1,1)), warmup = 200)
+cannMod2 <- fitBySampling(cannMod, sampletype = "all",
+                          objective = ~ fitStat(Q, X))
 summary(cannMod2)

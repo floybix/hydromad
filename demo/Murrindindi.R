@@ -11,10 +11,10 @@ murrRef <- hydromad(murrCal, sma = "cwi", tw = 11, f = 1.2, c = 0.003147,
                     delay = 0, warmup = 200)
 summary(murrRef)
 ## 2. calibration
-murrMod <- hydromad(murrCal, sma = "cwi", objective = ~ fitStat(Q, X),
-                    fit = list(polish = FALSE),
-                    rouing = "uh",
-                    rfit = list("sriv", order = c(2,1), warmup = 200))
+murrMod <- hydromad(murrCal, sma = "cwi", routing = "armax",
+                    rfit = list("sriv", order = c(2,1)), warmup = 200)
+murrMod <- fitBySampling(murrMod, sampletype = "all",
+                         objective = ~ fitStat(Q, X))
 summary(murrMod)
 ## breakdown of performance in simulation over whole dataset
 summary(update(murrMod, newdata = Murrindindi), breaks = "years")
