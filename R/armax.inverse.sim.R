@@ -6,7 +6,7 @@
 
 armax.inverse.sim <-
     function(Q, P = NULL,
-             pars = c(tau_s = 0, tau_q = 0, v_s = 1, v_3 = 0),
+             pars = c(a_1 = 0, b_0 = 1),
              delay = 0, Xs_0 = 0, Xq_0 = 0,
              rain.factor = 1.1,
              rises.only = FALSE,
@@ -41,10 +41,9 @@ armax.inverse.sim <-
         P <- P * rain.factor
         ## apply delay
         if (delay > 0) {
-            P <- shiftWindow(P, delay = delay)
-            ## (and fix up time series attributes)
-            P <- lag(P, -delay)
+            P <- shiftWindow(P, delay = delay, and.lag = TRUE)
         }
+        P <- window(P, start = start(Q), end = end(Q), extend = TRUE)
     } else {
         P <- Q
         P[] <- 1e12                     #Inf
@@ -74,8 +73,7 @@ armax.inverse.sim <-
             U <- pmin(U, P)
     } else
 
-######TODO
-    if (TRUE || hydromad.getOption("pure.R.code")) {
+    if (hydromad.getOption("pure.R.code")) {
         ## slow version in R for cross-checking
         Qm <- Q
         for (t in seq(max(n,m)+1, length(Q))) {
@@ -134,9 +132,7 @@ armax.inverse.sim <-
     ## inverse.sim should be in sync with P not Q,
     ## so delay still applies
     if (delay > 0) {
-        U <- shiftWindow(U, delay = -delay)
-        ## (and fix up time series attributes)
-        U <- lag(U, delay)
+        U <- shiftWindow(U, delay = -delay, and.lag = TRUE)
     }
     U
 }

@@ -35,12 +35,12 @@ n3s1 <- c(tau_s = 30, tau_q = 5, tau_3 = 1, v_s = 0.3, v_3 = 0.1, series = 1) ##
 ## (3 in series; s & q in parallel)
 n3s2 <- c(tau_s = 30, tau_q = 5, tau_3 = 1, v_s = 0.3, v_3 = 0.1, series = 2) ## v_q = 1 - v_s
 ## "series = 3": three components in series
-n3s3 <- c(tau_s = 30, tau_q = 5, tau_3 = 1, series = 3) ## v_q = 1
-    
+n3s3 <- c(tau_s = 30, tau_q = 5, tau_3 = 1, v_3 = 1, series = 3) ## v_q = 1
+
+tfConv <- hydromad:::tfParsConvert
 
 test_that("TF parameter conversions are consistent", {
 
-    tfConv <- hydromad:::tfParsConvert
     toAbAndBack <- function(tv)
         tfConv(tfConv(tv, "a,b"), "tau,v")[names(tv)]
     expect_that(toAbAndBack(n0m0), equals(n0m0))
@@ -56,31 +56,58 @@ test_that("TF parameter conversions are consistent", {
     expect_that(toAbAndBack(n3s3), equals(n3s3))
 
     set.seed(0)
-    U <- ts(pmax(rnorm(100), 0))
-    armaxSim <- function(pars, ...)
-        armax.sim(U, pars = pars, ...)
+    warmup <- 100
+    U <- ts(pmax(rnorm(200), 0))
+    armaxSim <- function(pars, ..., init = 0)
+        window(armax.sim(U, pars = pars, ..., init = init),
+               start = warmup, end = 198)
     expuhSim <- function(pars, ...)
-        do.call("expuh.sim", c(list(U), as.list(pars), ...))
+        window(do.call("expuh.sim", c(list(U), as.list(pars), ...)),
+               start = warmup, end = 198)
 
-    expect_that(armaxSim(tfConv(n0m0, "a,b")), equals(expuhSim(n0m0)))
-    expect_that(armaxSim(tfConv(n1m0, "a,b")), equals(expuhSim(n1m0)))
-    expect_that(armaxSim(tfConv(n1m1, "a,b")), equals(expuhSim(n1m1)))
-    expect_that(armaxSim(tfConv(n2m0, "a,b")), equals(expuhSim(n2m0)))
-    expect_that(armaxSim(tfConv(n2m1, "a,b")), equals(expuhSim(n2m1)))
-    expect_that(armaxSim(tfConv(n2m2, "a,b")), equals(expuhSim(n2m2)))
-    expect_that(armaxSim(tfConv(n3s0, "a,b")), equals(expuhSim(n3s0)))
-    expect_that(armaxSim(tfConv(n3s1, "a,b")), equals(expuhSim(n3s1)))
-    expect_that(armaxSim(tfConv(n3s2, "a,b")), equals(expuhSim(n3s2)))
-    expect_that(armaxSim(tfConv(n3s3, "a,b")), equals(expuhSim(n3s3)))
-
-    #xyplot(cbind(armaxSim(tfConv(n3s0, "a,b")), expuhSim(n3s0)))
-    #a <- tfConv(n3s0, "a,b")[(1:3)]
-    #b <- tfConv(n3s0, "a,b")[-(1:3)]
-    #xyplot(filter(filter(U, b, sides = 1), a, method="r"))
-    #xyplot(armax.sim(U, pars = c(a,b)))
+    ## there are small(ish) differences due to initialisation
+    tol <- 0.05
+    expect_that(armaxSim(tfConv(n0m0, "a,b")), equals(expuhSim(n0m0), tol = tol))
+    expect_that(armaxSim(tfConv(n1m0, "a,b")), equals(expuhSim(n1m0), tol = tol))
+    expect_that(armaxSim(tfConv(n1m1, "a,b")), equals(expuhSim(n1m1), tol = tol))
+    expect_that(armaxSim(tfConv(n2m0, "a,b")), equals(expuhSim(n2m0), tol = tol))
+    expect_that(armaxSim(tfConv(n2m1, "a,b")), equals(expuhSim(n2m1), tol = tol))
+    expect_that(armaxSim(tfConv(n2m2, "a,b")), equals(expuhSim(n2m2), tol = tol))
+    expect_that(armaxSim(tfConv(n3s0, "a,b")), equals(expuhSim(n3s0), tol = tol))
+    expect_that(armaxSim(tfConv(n3s1, "a,b")), equals(expuhSim(n3s1), tol = tol))
+    expect_that(armaxSim(tfConv(n3s2, "a,b")), equals(expuhSim(n3s2), tol = tol))
+    expect_that(armaxSim(tfConv(n3s3, "a,b")), equals(expuhSim(n3s3), tol = tol))
+    #xyplot(cbind(armaxSim(tfConv(n2m2, "a,b")), expuhSim(n2m2)), superpose = TRUE)
 })
 
 
 test_that("TF simulation and inverse simulation are consistent", {
-    
+    set.seed(0)
+    warmup <- 100
+    U <- ts(pmax(rnorm(200), 0))
+    P <- U + abs(rnorm(U))
+    Uw <- window(U, start = warmup, end = end(U)[1]-2)
+    Pw <- window(P, start = warmup, end = end(U)[1]-2)
+    expuhSim <- function(pars, ...)
+        window(do.call("expuh.sim", c(list(U), as.list(pars), ...)),
+               start = warmup, end = end(U)[1]-2)
+    expect_that(armax.inverse.sim(expuhSim(n0m0), P = Pw, pars = tfConv(n0m0))[-1], equals(Uw[-1]))
+    expect_that(armax.inverse.sim(expuhSim(n1m0), P = Pw, pars = tfConv(n1m0))[-1], equals(Uw[-1]))
+    expect_that(armax.inverse.sim(expuhSim(n1m1), P = Pw, pars = tfConv(n1m1))[-1], equals(Uw[-1]))
+    expect_that(armax.inverse.sim(expuhSim(n2m0), P = Pw, pars = tfConv(n2m0))[-1], equals(Uw[-1]))
+    expect_that(armax.inverse.sim(expuhSim(n2m1), P = Pw, pars = tfConv(n2m1))[-1], equals(Uw[-1]))
+    expect_that(armax.inverse.sim(expuhSim(n2m2), P = Pw, pars = tfConv(n2m2))[-1], equals(Uw[-1]))
+    ## third order models seem to need a longer warmup
+    set.seed(0)
+    warmup <- 200
+    U <- ts(pmax(rnorm(300), 0))
+    P <- U + abs(rnorm(U))
+    Uw <- window(U, start = warmup, end = end(U)[1]-2)
+    Pw <- window(P, start = warmup, end = end(U)[1]-2)
+    expect_that(armax.inverse.sim(expuhSim(n3s0), P = Pw, pars = tfConv(n3s0))[-1], equals(Uw[-1]))
+    expect_that(armax.inverse.sim(expuhSim(n3s1), P = Pw, pars = tfConv(n3s1))[-1], equals(Uw[-1]))
+    expect_that(armax.inverse.sim(expuhSim(n3s2), P = Pw, pars = tfConv(n3s2))[-1], equals(Uw[-1]))
+    expect_that(armax.inverse.sim(expuhSim(n3s3), P = Pw, pars = tfConv(n3s3))[-1], equals(Uw[-1]))
+    #armax.inverse.sim(expuhSim(n3s0), P = Pw, pars = tfConv(n3s0)) - Uw
+    #xyplot(cbind(armax.inverse.sim(expuhSim(n3s0), P = Pw, pars = tfConv(n3s0)), Uw), superpose = TRUE)
 })

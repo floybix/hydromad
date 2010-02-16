@@ -1,10 +1,13 @@
 
-Changes in Version 0.6-0 (in development)
+Changes in Version 0.6-0
 
   o "uh" routing renamed to "armax".
 
   o new "lambda" routing option.
 
+  o better simulation of third order transfer function models.
+
+  o unit tests for transfer functions.
 
 Changes in Version 0.5-4
 

@@ -327,10 +327,13 @@ abToTauV <-
 
 tauVToAB <-
     function(tau_s = 0, tau_q = 0, tau_3 = 0,
-             v_s = 1, v_q = max(1 - v_s - v_3, 0), v_3 = 0,
+             v_s = 1, v_q = NA, v_3 = 0,
              ..., series = 0, alphabeta = FALSE)
 {
     series <- round(series)
+    stopifnot(series %in% 0:3)
+    if ((series > 1) && (v_3 == 0))
+        stop("series > 1 is only valid with v_3 > 0")
     ## fix ridiculous values (avoid numerical problems when converting back)
     tau_s <- min(tau_s, 1e10)
     tau_q <- min(tau_q, 1e4)
@@ -338,6 +341,25 @@ tauVToAB <-
     if (tau_s < (-1 / log(1e-6))) tau_s <- 0
     if (tau_q < (-1 / log(1e-6))) tau_q <- 0
     if (tau_3 < (-1 / log(1e-6))) tau_3 <- 0
+    ## default value of v_q depends on 'series'
+    ## (by convention only, this defines configuration of the system)
+    if (is.na(v_q)) {
+        if (series == 0) {
+            ## all in parallel
+            v_q <- 1 - v_s - v_3
+        }
+        if (series == 1) {
+            ## note for (2,0) model: v_3 = 0, v_q = 1
+            v_q <- 1 - v_s * v_3
+        }
+        if (series == 2) {
+            v_q <- 1 - v_s
+        }
+        if (series == 3) {
+            v_q <- 1
+        }
+        v_q <- max(0, min(1, v_q))
+    }
     ## convert from 'tau' and 'v' to 'alpha' and 'beta'
     alpha_s <- exp(-1 / tau_s)
     alpha_q <- exp(-1 / tau_q)

@@ -14,7 +14,12 @@ expuh.sim <-
              na.action = na.pass,
              epsilon = hydromad.getOption("sim.epsilon"))
 {
+    if (v_4 > 0) stop("v_4 not supported yet")
     delay <- round(delay)
+    series <- round(series)
+    stopifnot(series %in% 0:3)
+    if ((series > 1) && (v_3 == 0))
+        stop("series > 1 is only valid with v_3 > 0")
     ## note U is allowed to be multi-variate, i.e. multiple columns
     if (!is.ts(U)) U <- as.ts(U)
     U <- na.action(U)
@@ -25,26 +30,22 @@ expuh.sim <-
 
     ## default value of v_q depends on 'series'
     ## (by convention only, this defines configuration of the system)
-    
-    ## TODO: use this in tfUtils also!
-    
     if (is.na(v_q)) {
-        if (round(series) == 0) {
-            v_q <- max(0, min(1, 1 - v_s - v_3))
+        if (series == 0) {
+            ## all in parallel
+            v_q <- 1 - v_s - v_3
         }
-        if (round(series) == 1) {
-            if (v_3 == 0) {
-                v_q <- 1
-            } else {
-                v_q <- max(0, min(1, 1 - v_s * v_3))
-            }
+        if (series == 1) {
+            ## note for (2,0) model: v_3 = 0, v_q = 1
+            v_q <- 1 - v_s * v_3
         }
-        if (round(series) == 2) {
-            v_q <- max(0, min(1, 1 - v_s))
+        if (series == 2) {
+            v_q <- 1 - v_s
         }
-        if (round(series) == 3) {
+        if (series == 3) {
             v_q <- 1
         }
+        v_q <- max(0, min(1, v_q))
     }
 
     stopifnot(all(c(tau_s, tau_q, tau_3) >= 0))
@@ -55,45 +56,43 @@ expuh.sim <-
     beta_s <- v_s * (1 - alpha_s)
     beta_q <- v_q * (1 - alpha_q)
     beta_3 <- v_3 * (1 - alpha_3)
-    if ((round(series) == 0) || return_components) {
+    ## apply exponential decay filter to each flow component.
+    ## default ('slow') flow component optionally includes loss term.
+    ## note filter_loss is equivalent to filter if loss = 0
+    ## convert loss from G[k] model into a Q[k] formulation
+    lossVal <- (1 - alpha_s) * loss
+    Xs <- filter_loss(beta_s * U, alpha_s, loss = lossVal, init = Xs_0)
+    ## components will be added together at the end.
+    X3 <- NULL
+    if ((series == 0) || return_components) {
         ## components in parallel.
-        ## apply exponential decay filter to each component
-        ## note filter_loss is equivalent to filter if loss = 0
-        ## convert loss from G[k] model into a Q[k] formulation
-        lossVal <- (1 - alpha_s) * loss
-        Xs <- filter_loss(beta_s * U, alpha_s, loss = lossVal, init = Xs_0)
         Xq <- filter(beta_q * U, alpha_q, method = "recursive", init = Xq_0)
-        X3 <- if (v_3) filter(beta_3 * U, alpha_3, method = "recursive", init = X3_0)
+        if (v_3)
+            X3 <- filter(beta_3 * U, alpha_3, method = "recursive", init = X3_0)
     } else {
         if (v_3 == 0) {
-            ## second-order model
-            Xs <- filter(beta_s * U, alpha_s, method = "recursive", init = Xs_0)
-            Xq <- filter(Xs * beta_q * U, alpha_q, method = "recursive", init = Xq_0)
-            Xs[] <- X3 <- 0
+            ## second-order model in series (s --> q)
+            Xq <- filter(beta_q * Xs, alpha_q, method = "recursive", init = Xq_0)
+            Xs[] <- 0
         } else {
             ## third-order model
-            Xs <- filter(beta_s * U, alpha_s, method = "recursive", init = Xs_0)
-            if (round(series) == 1) {
+            if (series == 1) {
                 ## two components in series and one in parallel
                 ## (s & 3 are in series; q in parallel)
-                X3 <- filter(beta_3 * U, alpha_3, method = "recursive", init = X3_0)
-                Xs <- filter(X3 * beta_s * U, alpha_s, method = "recursive", init = Xs_0)
-                X3[] <- 0
+                Xs <- filter(beta_3 * Xs, alpha_3, method = "recursive", init = X3_0)
                 Xq <- filter(beta_q * U, alpha_q, method = "recursive", init = Xq_0)
-            } else if (round(series) == 2) {
+            } else if (series == 2) {
                 ## one component in series with two in parallel
                 ## (3 in series; s & q in parallel)
-                X3 <- filter(beta_3 * U, alpha_3, method = "recursive", init = X3_0)
-                Xs <- filter(X3 * beta_s * U, alpha_s, method = "recursive", init = Xs_0)
-                Xq <- filter(X3 * beta_q * U, alpha_q, method = "recursive", init = Xq_0)
-                X3[] <- 0
-            } else if (round(series) == 3) {
+                Xq <- filter(beta_q * U, alpha_q, method = "recursive", init = Xq_0)
+                Xq <- filter(beta_3 * Xq, alpha_3, method = "recursive", init = X3_0)
+                Xs <- filter(beta_3 * Xs, alpha_3, method = "recursive", init = X3_0)
+            } else if (series == 3) {
                 ## three components in series
-                X3 <- filter(beta_3 * U, alpha_3, method = "recursive", init = X3_0)
-                Xs <- filter(X3 * beta_s * U, alpha_s, method = "recursive", init = Xs_0)
-                X3[] <- 0
-                Xq <- filter(Xs * beta_q * U, alpha_q, method = "recursive", init = Xq_0)
+                Xq <- filter(beta_q * Xs, alpha_q, method = "recursive", init = Xq_0)
+                X3 <- filter(beta_3 * Xq, alpha_3, method = "recursive", init = X3_0)
                 Xs[] <- 0
+                Xq[] <- 0
             } else {
                 stop("unrecognised values of 'series': ", series)
             }
@@ -103,18 +102,18 @@ expuh.sim <-
     ## align results to original input
     Xs <- shiftWindow(Xs, delay)
     Xq <- shiftWindow(Xq, delay)
-    X3 <- if (v_3) shiftWindow(X3, delay)
+    X3 <- if (!is.null(X3)) shiftWindow(X3, delay)
 
     ## zap simulated values smaller than epsilon
     Xs[Xs < epsilon] <- 0
     Xq[Xq < epsilon] <- 0
-    if (v_3) X3[X3 < epsilon] <- 0
+    if (!is.null(X3)) X3[X3 < epsilon] <- 0
 
     if (return_components) {
         if (v_3) return(ts.union(Xs = Xs, Xq = Xq, X3 = X3))
         else return(ts.union(Xs = Xs, Xq = Xq))
     } else {
-        if (v_3) return(Xs + Xq + X3)
+        if (!is.null(X3)) return(Xs + Xq + X3)
         else return(Xs + Xq)
     }
 }
@@ -130,21 +129,6 @@ ssg.expuh <- function(theta)
 
 normalise.expuh <- function(theta)
 {
-#    v_s <- 1
-#    v_3 <- 0
-#    v_q <- NA
-#    if ("v_s" %in% names(theta))
-#        v_s <- theta[["v_s"]]
-#    if ("v_3" %in% names(theta))
-#        v_3 <- theta[["v_3"]]
-#    if ("v_q" %in% names(theta))
-#        v_q <- theta[["v_q"]]
-#    if (is.na(v_q)) {
-#        ## unit volume is enforced anyway
-#        return(theta)
-#    }
-#    vv <- v_s + v_q + v_3
-
     theta <- tfParsConvert(theta, "a,b")
     tmp <- normalise.tf.coef(theta)
     tfParsConvert(tmp, "tau,v")
