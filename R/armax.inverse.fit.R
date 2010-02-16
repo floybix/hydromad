@@ -8,22 +8,6 @@ armax.inverse.fit <-
     function(DATA,
              order = hydromad.getOption("order"),
              delay = hydromad.getOption("delay"),
-             ...)
-{
-    model <- tf.inverse.fit(DATA, order = order, delay = delay,
-                            ...)
-    if (!inherits(model, "tf"))
-        return(model)
-    model$fitted.values <- NULL
-    model$residuals <- NULL
-    model
-}
-
-
-tf.inverse.fit <-
-    function(DATA,
-             order = hydromad.getOption("order"),
-             delay = hydromad.getOption("delay"),
              normalise = hydromad.getOption("normalise"),
              fit.method = hydromad.getOption("inverse.fit.method"),
              init.U = TRUE,
@@ -53,9 +37,6 @@ tf.inverse.fit <-
         if ("P" %in% colnames(DATA))
             delay <- estimateDelay(DATA, plot = FALSE)
     }
-    with.lambda <- any(grepl("lambda", fit.method)) #(fit.method == "lambda")
-    if (with.lambda)
-        order <- c(n = 2, m = 1)
     if (!is.null(pars)) {
         pars <- tfParsConvert(pars, "a,b")
         tfParsCheck(pars)
@@ -103,7 +84,6 @@ tf.inverse.fit <-
         ## generate starting parameters
         if (is.null(pars)) {
             pars <- tf.pars.init(DATA, order = order, delay = delay,
-                                      with.lambda = with.lambda,
                                       init.attempt = init.attempt)
         }
         ## TODO: hydromad.getOption("catch.errors")
@@ -118,23 +98,20 @@ tf.inverse.fit <-
         if (init.U && (i == 1)) {
             ## we already have an estimate for U
         } else {
-            U <- tf.inverse.sim(Q, P = P,
+            U <- armax.inverse.sim(Q, P = P,
                                      pars = pars, delay = delay,
                                      use.Qm = use.Qm,
                                      use.fft.method = fft.inverse.sim,
                                      rises.only = rises.only)
         }
-        ## tf.inverse.sim should be in sync with P not Q,
+        ## inverse.sim should be in sync with P not Q,
         ## so delay still applies
-        if (with.lambda && !is.null(pars)) {
-            mod <- tf.fit(cbind(Q = Q, U = U), method = fit.method,
-                               order = order, delay = delay,
-                               lambda.init = pars[["lambda"]], ...)
-        } else {
-            mod <- tf.fit(cbind(Q = Q, U = U), method = fit.method,
-                               order = order, delay = delay, normalise = FALSE,
-                               ...)
-        }
+        fnName <- paste("armax", fit.method, "fit", sep = ".")
+        modCall <- quote(FUN(cbind(Q = Q, U = U),
+                             order = order, delay = delay, normalise = FALSE,
+                             ...))
+        modCall[[1]] <- as.symbol(fnName)
+        mod <- eval(modCall)
         if (!inherits(mod, "tf"))
             return(mod)
 

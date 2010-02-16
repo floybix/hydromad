@@ -1,7 +1,7 @@
 library(testthat)
 library(hydromad)
 
-context("Helper functions")
+context("Utility functions")
 
 test_that("flow conversions work correctly on known cases", {
     expect_that(convertFlow(10, from = "cm", to = "in"), equals(3.93700787))

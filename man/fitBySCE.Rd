@@ -9,7 +9,7 @@
 \usage{
 fitBySCE(MODEL, 
          objective = hydromad.getOption("objective"),
-         control = list())
+         control = hydromad.getOption("sce.control"))
 }
 \arguments{
   \item{MODEL}{

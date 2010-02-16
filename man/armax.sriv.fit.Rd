@@ -1,18 +1,18 @@
-\name{uh.sriv.fit}
-\alias{uh.sriv.fit}
+\name{armax.sriv.fit}
+\alias{armax.sriv.fit}
 \alias{expuh.sriv.fit}
 \alias{tf.sriv.fit}
 \alias{tf.riv.fit}
 \title{ Estimate transfer function models by Simple Refined Instrumental
   Variables method. }
 \description{
-  Calibrate unit hydrograph transfer function models (\code{\link{uh}}
+  Calibrate unit hydrograph transfer function models (\code{\link{armax}}
   or \code{\link{expuh}}) using Refined Instrumental
   Variables (RIV) or Simple Refined Instrumental
   Variables (SRIV) method.
 }
 \usage{
-uh.sriv.fit(DATA,
+armax.sriv.fit(DATA,
            order = hydromad.getOption("order"),
            delay = hydromad.getOption("delay"),
            ...)

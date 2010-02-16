@@ -12,6 +12,6 @@ Description: Spatially-lumped models and tools for environmental hydrology.
   (including SRIV - Simplified Refined Instrumental Variable), etc.
 Depends: zoo, lattice (>= 0.18-1), latticeExtra (>= 0.6-6), polynom
 Imports: stats, utils
-Suggests: dream, DEoptim, testthat
+Suggests: DEoptim, testthat
 License: GPL (>= 2)
 URL: http://hydromad.catchment.org/

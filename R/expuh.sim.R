@@ -23,9 +23,29 @@ expuh.sim <-
     if (delay != 0)
         U <- lag(U, -delay)
 
-    ## TODO: this should depend on 'series'
-    if (is.na(v_q))
-        v_q <- max(0, min(1, 1 - v_s - v_3))
+    ## default value of v_q depends on 'series'
+    ## (by convention only, this defines configuration of the system)
+    
+    ## TODO: use this in tfUtils also!
+    
+    if (is.na(v_q)) {
+        if (round(series) == 0) {
+            v_q <- max(0, min(1, 1 - v_s - v_3))
+        }
+        if (round(series) == 1) {
+            if (v_3 == 0) {
+                v_q <- 1
+            } else {
+                v_q <- max(0, min(1, 1 - v_s * v_3))
+            }
+        }
+        if (round(series) == 2) {
+            v_q <- max(0, min(1, 1 - v_s))
+        }
+        if (round(series) == 3) {
+            v_q <- 1
+        }
+    }
 
     stopifnot(all(c(tau_s, tau_q, tau_3) >= 0))
     ## convert from 'tau' and 'v' to 'alpha' and 'beta'
@@ -35,7 +55,7 @@ expuh.sim <-
     beta_s <- v_s * (1 - alpha_s)
     beta_q <- v_q * (1 - alpha_q)
     beta_3 <- v_3 * (1 - alpha_3)
-    if ((series == 0) || return_components) {
+    if ((round(series) == 0) || return_components) {
         ## components in parallel.
         ## apply exponential decay filter to each component
         ## note filter_loss is equivalent to filter if loss = 0
@@ -53,21 +73,21 @@ expuh.sim <-
         } else {
             ## third-order model
             Xs <- filter(beta_s * U, alpha_s, method = "recursive", init = Xs_0)
-            if (series == 1) {
+            if (round(series) == 1) {
                 ## two components in series and one in parallel
                 ## (s & 3 are in series; q in parallel)
                 X3 <- filter(beta_3 * U, alpha_3, method = "recursive", init = X3_0)
                 Xs <- filter(X3 * beta_s * U, alpha_s, method = "recursive", init = Xs_0)
                 X3[] <- 0
                 Xq <- filter(beta_q * U, alpha_q, method = "recursive", init = Xq_0)
-            } else if (series == 2) {
+            } else if (round(series) == 2) {
                 ## one component in series with two in parallel
                 ## (3 in series; s & q in parallel)
                 X3 <- filter(beta_3 * U, alpha_3, method = "recursive", init = X3_0)
                 Xs <- filter(X3 * beta_s * U, alpha_s, method = "recursive", init = Xs_0)
                 Xq <- filter(X3 * beta_q * U, alpha_q, method = "recursive", init = Xq_0)
                 X3[] <- 0
-            } else if (series == 3) {
+            } else if (round(series) == 3) {
                 ## three components in series
                 X3 <- filter(beta_3 * U, alpha_3, method = "recursive", init = X3_0)
                 Xs <- filter(X3 * beta_s * U, alpha_s, method = "recursive", init = Xs_0)

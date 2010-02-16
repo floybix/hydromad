@@ -1,14 +1,14 @@
-\name{uh.ls.fit}
-\alias{uh.ls.fit}
+\name{armax.ls.fit}
+\alias{armax.ls.fit}
 \alias{expuh.ls.fit}
 \alias{tf.ls.fit}
 \title{ Estimate transfer function models by Least Squares. }
 \description{
-  Calibrate unit hydrograph transfer function models (\code{\link{uh}}
-  or \code{\link{expuh}}) using Least Squares (LS).
+  Calibrate unit hydrograph transfer function models (\code{\link{armax}}
+  or \code{\link{expuh}}) using Least Squares.
 }
 \usage{
-uh.ls.fit(DATA,
+armax.ls.fit(DATA,
           order = hydromad.getOption("order"),
           delay = hydromad.getOption("delay"),
           ...)
@@ -26,7 +26,7 @@ expuh.ls.fit(DATA,
     
   }
   \item{order}{
-    the transfer function order. See \code{\link{uh}}.
+    the transfer function order. See \code{\link{armax}}.
   }
   \item{delay}{
     delay (lag time / dead time) in number of time steps. If missing,
@@ -73,9 +73,9 @@ Jakeman
 }
 \author{ Felix Andrews \email{felix@nfrac.org} }
 \seealso{
-  \code{\link{uh}},
+  \code{\link{armax}},
   \code{\link{expuh}},
-  \code{\link{uh.sriv.fit}},
+  \code{\link{armax.sriv.fit}},
   \code{\link{arima}}
 }
 \examples{

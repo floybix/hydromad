@@ -1,9 +1,7 @@
 \name{hydromad.runlist}
 \alias{hydromad.runlist}
-\alias{tf.runlist}
 \alias{print.hydromad.runlist}
 \alias{summary.hydromad.runlist}
-\alias{summary.tf.runlist}
 \alias{print.summary.hydromad.runlist}
 \title{ Work with a set of Hydromad model runs }
 \description{
@@ -16,15 +14,13 @@
 }
 \usage{
 \method{summary}{hydromad.runlist}(object, pars = TRUE,
-        form = "tau,v",
 	flowstats = c("rel.bias", "r.squared", "r.sq.sqrt", "r.sq.log", "r.sq.monthly"),
-	rainstats = c("mod.runoff"), ...)
+	...)
 }
 \arguments{
   \item{object}{ an \code{hydromad.runlist} object, i.e. a list of \code{\link{hydromad}} objects. }
   \item{pars}{ whether to include parameter values in the result. }
-  \item{flowstats}{ which statistics to extract from \code{\link{summary.tf}}. }
-  \item{rainstats}{ which statistics to extract from \code{\link{summary.hydromad}}. }
+  \item{flowstats}{ which statistics to extract from \code{\link{summary.hydromad}}. }
   \item{\dots}{ further arguments are passed to ... }
 }
 \details{

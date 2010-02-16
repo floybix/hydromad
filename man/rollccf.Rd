@@ -12,7 +12,7 @@
 }
 \usage{
 rollccf(DATA = data.frame(Q = , P = ),
-        width = list(Qtrs = 91, Yrs = 365),
+        width = list(365, 90),
         by = 28,
         lags = base.lag + c(0, 1, -1),
         base.lag = estimateDelay(DATA, rises = rises, plot = FALSE),
@@ -27,8 +27,7 @@ rollccf(DATA = data.frame(Q = , P = ),
        par.settings = simpleTheme(pch = ".", cex = 2),
        layout = c(1, length(x$rolls) + with.data * 2),
        strip = strip.default,
-       panel = panel.superpose.cycle,
-       ylim = c(0, 1), xlab = NULL)
+       ylim = c(0, 1), xlab = NULL, as.table = TRUE)
 }
 \arguments{
   \item{DATA}{
@@ -73,7 +72,7 @@ rollccf(DATA = data.frame(Q = , P = ),
     drawing styles for the cross correlation series and input data
     series. See \code{\link[lattice]{panel.xyplot}}.
   }
-  \item{par.settings, layout, strip, panel, ylim, xlab, ...}{
+  \item{par.settings, layout, strip, ylim, xlab, as.table, ...}{
     passed to \code{\link[lattice]{xyplot}}.
   }
 }

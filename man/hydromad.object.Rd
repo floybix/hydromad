@@ -24,9 +24,6 @@ isValidModel(object)
        sma, routing, rfit, warmup, weights, and.rescale)
 
 
-\method{summary}{hydromad}(object, with_uh = TRUE,
-	breaks = NULL, coerce = byDays, ...)
-
 \method{predict}{hydromad}(object, newdata = NULL,
 	with_uh = TRUE,
 	return_state = FALSE,

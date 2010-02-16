@@ -12,11 +12,7 @@ expuh.ls.fit <-
              control = hydromad.getOption("optim.control"),
              hessian = TRUE)
 {
-    dots <- list(...)
-    if (!is.null(dots$warmup)) stop("'warmup' can not be given here")
-    if (!is.null(dots$normalise)) stop("'normalise' can not be given here")
-    model <- tf.ls.fit(DATA, order = order, delay = delay,
-                       warmup = 0, normalise = FALSE, ...)
+    model <- armax.ls.fit(DATA, order = order, delay = delay, ...)
     if (!inherits(model, "tf"))
         return(model)
     n <- order[1]
@@ -24,16 +20,14 @@ expuh.ls.fit <-
     eps <- sqrt(.Machine$double.eps)
     badpoles <- (Re(poles) < -eps) | (abs(Im(poles)) > eps)
     if (any(badpoles)) {
-        model <- tfFitWithPoleConstraints(DATA, tf.fit = tf.ls.fit, poles = poles,
-                               order = order, delay = delay,
-                               warmup = 0, normalise = FALSE, ...,
-                               method = method, control = control, hessian = hessian)
+        model <-
+            fitWithPoleConstraints(DATA, fitfun = armax.ls.fit, poles = poles,
+                                   order = order, delay = delay, ...,
+                                   method = method, control = control, hessian = hessian)
     }
-    if (!isValidModel(model))
+    if (!inherits(model, "tf"))
         return(model)
-
-    model$coefficients <- c(coef(model, "tau,v"),
-                            delay = model$delay)
+    model$coefficients <- coef(model, "tau,v")
     model
 }
 
@@ -47,11 +41,7 @@ expuh.sriv.fit <-
              control = hydromad.getOption("optim.control"),
              hessian = TRUE)
 {
-    dots <- list(...)
-    if (!is.null(dots$warmup)) stop("'warmup' can not be given here")
-    if (!is.null(dots$normalise)) stop("'normalise' can not be given here")
-    model <- tf.sriv.fit(DATA, order = order, delay = delay,
-                         warmup = 0, normalise = FALSE, ...)
+    model <- armax.sriv.fit(DATA, order = order, delay = delay, ...)
     if (!inherits(model, "tf"))
         return(model)
     n <- order[1]
@@ -59,16 +49,14 @@ expuh.sriv.fit <-
     eps <- sqrt(.Machine$double.eps)
     badpoles <- (Re(poles) < -eps) | (abs(Im(poles)) > eps)
     if (any(badpoles)) {
-        model <- tfFitWithPoleConstraints(DATA, tf.fit = tf.sriv.fit, poles = poles,
-                               order = order, delay = delay,
-                               warmup = 0, normalise = FALSE, ...,
-                               method = method, control = control, hessian = hessian)
+        model <-
+            fitWithPoleConstraints(DATA, fitfun = armax.sriv.fit, poles = poles,
+                                   order = order, delay = delay, ...,
+                                   method = method, control = control, hessian = hessian)
     }
-    if (!isValidModel(model))
+    if (!inherits(model, "tf"))
         return(model)
-    #model$vcov <- vcov(model)
-    model$coefficients <- c(coef(model, "tau,v"),
-                            delay = model$delay)
+    model$coefficients <- coef(model, "tau,v")
     model
 }
 
@@ -79,20 +67,17 @@ expuh.inverse.fit <-
              delay = hydromad.getOption("delay"),
              ...)
 {
-    model <- tf.inverse.fit(DATA, order = order, delay = delay,
-                            ...)
+    ## TODO: can do this directly?
+    model <- armax.inverse.fit(DATA, order = order, delay = delay, ...)
     if (!inherits(model, "tf"))
         return(model)
     #model$vcov <- vcov(model)
-    model$coefficients <- c(coef(model, "tau,v"),
-                            delay = model$delay)
-    model$fitted.values <- NULL
-    model$residuals <- NULL
+    model$coefficients <- coef(model, "tau,v")
     model
 }
 
-tfFitWithPoleConstraints <- function(DATA, tf.fit, poles, ...,
-                                     method, control, hessian)
+fitWithPoleConstraints <- function(DATA, fitfun, poles, ...,
+                                   method, control, hessian)
 {
     ## non-physical roots; constrain them and fit again
     poles <- abs(Re(poles))
@@ -104,9 +89,9 @@ tfFitWithPoleConstraints <- function(DATA, tf.fit, poles, ...,
     optFun <- function(logpol) {
         pol <- exp(logpol)
         if (isTRUE(hydromad.getOption("catch.errors"))) {
-            thisMod <- try(tf.fit(DATA, ..., fixed.ar = polesToAr(pol)))
+            thisMod <- try(fitfun(DATA, ..., fixed.ar = polesToAr(pol)))
         } else {
-            thisMod <- tf.fit(DATA, ..., fixed.ar = polesToAr(pol))
+            thisMod <- fitfun(DATA, ..., fixed.ar = polesToAr(pol))
         }
         if (!isValidModel(thisMod))
             return(NA)

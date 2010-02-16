@@ -8,25 +8,6 @@ armax.sriv.fit <-
     function(DATA,
              order = hydromad.getOption("order"),
              delay = hydromad.getOption("delay"),
-             ...)
-{
-    dots <- list(...)
-    if (!is.null(dots$warmup)) stop("'warmup' can not be given here")
-    if (!is.null(dots$normalise)) stop("'normalise' can not be given here")
-    model <- tf.sriv.fit(DATA, order = order, delay = delay,
-                warmup = 0, normalise = FALSE, ...)
-    if (!inherits(model, "tf"))
-        return(model)
-    model$coefficients <- c(coef(model),
-                            delay = model$delay)
-    model
-}
-
-tf.riv.fit <-
-tf.sriv.fit <-
-    function(DATA,
-             order = hydromad.getOption("order"),
-             delay = hydromad.getOption("delay"),
              noise.order = hydromad.getOption("riv.noise.order"),
              fixed.ar = NULL,
              ...,
@@ -43,16 +24,15 @@ tf.sriv.fit <-
 
     ## first fit by least squares
     init.model <-
-        tf.ls.fit(DATA,
+        armax.ls.fit(DATA,
                   order = order, delay = delay,
                   fixed.ar = fixed.ar,
                   ...)
     if (!inherits(init.model, "tf"))
         return(init.model)
 
-    obj <- tf.srivfit(DATA, init.model = init.model,
+    obj <- do_srivfit(DATA, init.model = init.model,
                       noise.order = noise.order,
-                      order = order, delay = delay,
                       fixed.ar = fixed.ar,
                       ...,
                       epsilon = epsilon,
@@ -62,15 +42,14 @@ tf.sriv.fit <-
     obj
 }
 
-tf.srivfit <-
+do_srivfit <-
     function(DATA,
              init.model,
-             order, delay,
              prefilter = hydromad.getOption("prefilter"),
              noise.order = hydromad.getOption("riv.noise.order"),
              fixed.ar = NULL,
              warmup = hydromad.getOption("warmup"),
-             normalise = hydromad.getOption("normalise"),
+             normalise = FALSE,
              initX = TRUE,
              na.action = na.pass,
              epsilon = hydromad.getOption("sriv.epsilon"),

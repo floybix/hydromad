@@ -8,9 +8,9 @@
 }
 \usage{
 simulate.hydromad(object, nsim, seed, ...,
-   method = c("all.combinations", "latin.hypercube", "random"),
+   sampletype = c("all.combinations", "latin.hypercube", "random"),
    FUN = NULL, bind = FALSE)
-x}
+}
 \arguments{
   \item{object}{
     a \code{hydromad} object (produced by the \code{\link{hydromad}()}
@@ -26,7 +26,7 @@ x}
   \item{\dots}{
     further arguments to \code{FUN}.
   }
-  \item{method}{
+  \item{sampletype}{
     sampling method; see \code{\link{parameterSets}}.
   }
   \item{FUN}{
@@ -60,7 +60,7 @@ mod0 <- hydromad(Canning[1:500,], sma = "cwi")
 simulate(mod0, nsim = 5, method = "latin")
 
 ## plot the objective function surface over two parameters
-mod1 <- update(mod0, routing = "uh", rfit = "ls")
+mod1 <- update(mod0, routing = "armax", rfit = "ls")
 sim1 <- simulate(mod1, 300, FUN = objFunVal, bind = TRUE)
 levelplot(result ~ tw * f, sim1, cex = 2,
           panel = panel.levelplot.points)

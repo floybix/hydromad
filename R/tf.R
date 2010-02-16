@@ -85,14 +85,14 @@ update.tf <-
         stopifnot("Q" %in% colnames(newdata))
         object$data <- newdata
     }
+    
+    initX <- if (!is.null(object$initX)) object$initX else 0
     if (length(coef(object)) > 0) {
         ## take starting value of filter from data
-        initX <- object$initX
-        Xs_0 <- if (is.logical(initX)) 0 else initX
         if (isTRUE(initX)) {
             Q <- object$data[,"Q"]
             if (any(is.finite(Q[1:10]))) {
-                Xs_0 <- min(Q[1:10], na.rm=TRUE)
+                initX <- min(Q[1:10], na.rm=TRUE)
             }
         }
         ## determine data resolution from data
@@ -112,16 +112,14 @@ update.tf <-
         }
     }
     ## run model
-    X <- predict(object, Xs_0 = Xs_0, epsilon = epsilon)
+    X <- predict(object, init = initX, epsilon = object$epsilon)
     object$fitted.values <- X
-    object$residuals <- stripWarmup(object$data[,"Q"] - X, object$warmup)
     return(object)
 }
 
 predict.tf <-
     function(object,
              newdata = NULL,
-             return_components = FALSE,
              ...)
 {
     if (is.null(newdata))
@@ -131,9 +129,9 @@ predict.tf <-
     if (NCOL(newdata) > 1)
         newdata <- newdata[,"U"]
     ## simulate
-    tf.sim(newdata, pars = coef(object),
+    armax.sim(newdata, pars = coef(object),
                 delay = object$delay,
-                return_components = return_components, ...)
+                ...)
 }
 
 print.tf <-
@@ -218,7 +216,7 @@ summary.tf <-
                                         #	mod <- unclass(mod)[-(1:warmup)]
     ## Residuals
     if ("residuals" %in% which)
-        ans$residuals <- object$residuals
+        ans$residuals <- residuals(object)
     ## ARPE
     if ("arpe" %in% which) {
         if (is.null(vcov(object))) ans$arpe <- NA else

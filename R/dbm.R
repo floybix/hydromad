@@ -14,7 +14,7 @@ fitDbmByGam <-
     Q <- MODEL$data[,"Q"]
     P <- MODEL$data[,"P"]
     ## TODO: should use a time-varying parameter model?
-    pqTf <- uh.sriv.fit(cbind(U = P, Q = Q), order = c(1,0))
+    pqTf <- armax.sriv.fit(cbind(U = P, Q = Q), order = c(1,0))
     tfc <- coef(pqTf)
     ar1 <- tfc[["a_1"]]
     bb <- pmax(Q - ar1 * lag(Q,-1), 0) / lag(P, qlag)

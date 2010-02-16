@@ -16,12 +16,12 @@ runlist(...)
 as.runlist(x, ...)
 
 \method{xyplot}{runlist}(x, data,
-             residuals=FALSE,
-             coerce=byDays, trans=NULL,
-             superpose=FALSE,
-             panel=panel.superpose.cycle,
-             auto.key=(!residuals || superpose),
-             ...)
+             residuals. = FALSE,
+             coerce = byDays, 
+             superpose = FALSE,
+             with.P = FALSE, ...,
+             x.same = TRUE, y.same = TRUE,
+             layout = c(1, NA))
 
 \method{qqmath}{runlist}(x, data,
              residuals=FALSE,
@@ -46,6 +46,7 @@ as.runlist(x, ...)
   \item{x}{
     for \code{as.runlist}, a simple \code{list}; in other cases, a
     \code{runlist} object. }
+  \item{with.P}{ to include the input rainfall series in the plot. }  
 }
 \details{
 

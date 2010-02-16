@@ -8,7 +8,7 @@
 }
 \usage{
 tryModelOrders(expr, n = 0:3, m = 0:2,
-               delay = ihacres.getOption("delay"),
+               delay = hydromad.getOption("delay"),
                verbose = hydromad.getOption("trace"))
 }
 \arguments{

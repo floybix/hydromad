@@ -11,8 +11,8 @@
 	with a single input and single output series.
 }
 \usage{
-armax.sim(U, a_1 = 0, a_2 = 0, a_3 = 0, a_4 = 0,
-          b_0 = 0, b_1 = 0, b_2 = 0, b_3 = 0, b_4 = 0,
+armax.sim(U, a_1 = 0, a_2 = 0, a_3 = 0,
+          b_0 = 1, b_1 = 0, b_2 = 0, b_3 = 0,
           pars = NULL,
 	  delay = 0, init = 0, na.action = na.pass,
           epsilon = hydromad.getOption("sim.epsilon"))

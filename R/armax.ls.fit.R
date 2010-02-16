@@ -3,31 +3,14 @@
 ## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
-armax.ls.fit <-
-    function(DATA,
-             order = hydromad.getOption("order"),
-             delay = hydromad.getOption("delay"),
-             ...)
-{
-    dots <- list(...)
-    if (!is.null(dots$warmup)) stop("'warmup' can not be given here")
-    if (!is.null(dots$normalise)) stop("'normalise' can not be given here")
-    model <- tf.ls.fit(DATA, order = order, delay = delay,
-              warmup = 0, normalise = FALSE, ...)
-    if (!inherits(model, "tf"))
-        return(model)
-    model$coefficients <- c(coef(model),
-                            delay = model$delay)
-    model
-}
 
-tf.ls.fit <-
+armax.ls.fit <-
     function(DATA,
              order = hydromad.getOption("order"),
              delay = hydromad.getOption("delay"),
              prefilter = hydromad.getOption("prefilter"),
              warmup = hydromad.getOption("warmup"),
-             normalise = hydromad.getOption("normalise"),
+             normalise = FALSE,
              fixed.ar = NULL,
              weights = NULL,
              initX = TRUE,

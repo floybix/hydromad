@@ -4,49 +4,42 @@ library(hydromad)
 set.seed(0)
 
 
-context("Simulation")
+context("Transfer Functions")
 
-data(SalmonBrook)
-obsdat <- window(SalmonBrook, start = "1990-01-01", end = "1992-01-01")
-
-## joint simulation of SMA and routing
-simQ <- hydromad.sim(obsdat, sma = "cwi", tw = 30, f = 0.5, c = 1/1000,
-                     routing = "expuh", tau_s = 30, tau_q = 2, v_s = 0.3)
 
 test_that("cwi+expuh(2,1) simulation looks reasonable", {
+    data(SalmonBrook)
+    obsdat <- window(SalmonBrook, start = "1990-01-01", end = "1992-01-01")
+    ## joint simulation of SMA and routing
+    simQ <- hydromad.sim(obsdat, sma = "cwi", tw = 30, f = 0.5, c = 1/1000,
+                         routing = "expuh", tau_s = 30, tau_q = 2, v_s = 0.3)
     expect_that(NROW(simQ) == NROW(obsdat), is_true())
     expect_that(all(is.finite(simQ)), is_true())
 })
 
 
-context("Transfer function parameters and simulation")
+## Transfer function specifications of various orders
+n0m0 <- c(v_s = 1.1)
+n1m0 <- c(tau_s = 2)
+n1m1 <- c(tau_s = 2, v_s = 0.9)
+n2m0 <- c(tau_s = 30, tau_q = 2, series = 1) ## v_q = 1
+n2m1 <- c(tau_s = 30, tau_q = 2, v_s = 0.3)
+n2m2 <- c(tau_s = 30, tau_q = 2, v_s = 0.3, v_3 = 0.1)
+## third order models.
+## "series = 0": three components in parallel
+n3s0 <- c(tau_s = 30, tau_q = 5, tau_3 = 1, v_s = 0.3, v_3 = 0.1) ## v_q = 1 - v_s - v_3
+## "series = 1": two components in series and one in parallel
+## (s & 3 are in series; q in parallel)
+n3s1 <- c(tau_s = 30, tau_q = 5, tau_3 = 1, v_s = 0.3, v_3 = 0.1, series = 1) ## v_q = 1 - (v_s * v_3)
+## "series = 2": one component in series with two in parallel
+## (3 in series; s & q in parallel)
+n3s2 <- c(tau_s = 30, tau_q = 5, tau_3 = 1, v_s = 0.3, v_3 = 0.1, series = 2) ## v_q = 1 - v_s
+## "series = 3": three components in series
+n3s3 <- c(tau_s = 30, tau_q = 5, tau_3 = 1, series = 3) ## v_q = 1
+    
 
-test_that("TF parameter conversions work", {
-    n0m0 <- c(v_s = 1.1)
-    n1m0 <- c(tau_s = 2)
-    n1m1 <- c(tau_s = 2, v_s = 0.9)
-    n2m0 <- c(tau_s = 30, tau_q = 2, series = 1)
-    n2m1 <- c(tau_s = 30, tau_q = 2, v_s = 0.3)
-    n2m2 <- c(tau_s = 30, tau_q = 2, v_s = 0.3, v_3 = 0.1)
-    ## third order models.
-    ## "series = 0"
-    ## three components in parallel
-    n3s0 <- c(tau_s = 30, tau_q = 5, tau_3 = 1, v_s = 0.3, v_3 = 0.1)
-    ## "series = 1"
-    ## two components in series and one in parallel
-    ## (s & 3 are in series; q in parallel)
-    ## TODO: v_q should be (1 - v_s * v_3) in this case!
-    n3s1 <- c(tau_s = 30, tau_q = 5, tau_3 = 1, v_s = 0.3, v_3 = 0.1, series = 1)
-    
-    ## "series = 2"
-    ## one component in series with two in parallel
-    ## (3 in series; s & q in parallel)
-    ## TODO: v_q should be (1 - v_s) in this case!
-    n3s2 <- c(tau_s = 30, tau_q = 5, tau_3 = 1, v_s = 0.3, v_3 = 0.1, series = 2)
-    ## "series = 3"
-    ## three components in series
-    n3s3 <- c(tau_s = 30, tau_q = 5, tau_3 = 1, series = 3)
-    
+test_that("TF parameter conversions are consistent", {
+
     tfConv <- hydromad:::tfParsConvert
     toAbAndBack <- function(tv)
         tfConv(tfConv(tv, "a,b"), "tau,v")[names(tv)]
@@ -80,13 +73,14 @@ test_that("TF parameter conversions work", {
     expect_that(armaxSim(tfConv(n3s2, "a,b")), equals(expuhSim(n3s2)))
     expect_that(armaxSim(tfConv(n3s3, "a,b")), equals(expuhSim(n3s3)))
 
-    xyplot(cbind(armaxSim(tfConv(n3s0, "a,b")), expuhSim(n3s0)))
-
-    a <- tfConv(n3s0, "a,b")[(1:3)]
-    b <- tfConv(n3s0, "a,b")[-(1:3)]
-    xyplot(filter(filter(U, b, sides = 1), a, method="r"))
-    xyplot(armax.sim(U, pars = c(a,b))
+    #xyplot(cbind(armaxSim(tfConv(n3s0, "a,b")), expuhSim(n3s0)))
+    #a <- tfConv(n3s0, "a,b")[(1:3)]
+    #b <- tfConv(n3s0, "a,b")[-(1:3)]
+    #xyplot(filter(filter(U, b, sides = 1), a, method="r"))
+    #xyplot(armax.sim(U, pars = c(a,b)))
 })
 
-context("TF simulation and inverse simulation")
 
+test_that("TF simulation and inverse simulation are consistent", {
+    
+})

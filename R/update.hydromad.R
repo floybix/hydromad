@@ -209,7 +209,7 @@ doParseRfit <-
     if (!is.list(rfit))
         stop("unrecognised value of 'rfit'")
 
-    ## TODO: set normalise = FALSE for expuh/uh if an absorbScale is available
+    ## TODO: set normalise = FALSE for armax/expuh if an absorbScale is available
 
 
     ## prefilter is relevant to these routing modules:
@@ -277,9 +277,11 @@ doRoutingFit <-
         return(object)
     }
     rcoef <- coef(rans)
+    if (!is.null(rans$delay))
+        rcoef <- c(rcoef, delay = rans$delay)
     object$parlist <- modifyList(object$parlist, as.list(rcoef))
-    object$fitted.values <- fitted(rans)
-    object$residuals <- residuals(rans)
+    object$fitted.values <- fitted(rans, all = TRUE)
+    object$residuals <- residuals(rans, all = TRUE)
     tmp <- try(vcov(rans), silent = TRUE)
     if (inherits(tmp, "try-error"))
         tmp <- rans$vcov

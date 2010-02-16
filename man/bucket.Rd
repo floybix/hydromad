@@ -6,7 +6,7 @@
   Single-bucket Soil Moisture Accounting models.
 }
 \usage{
-bucket.sim(DATA, Sb, fc, a.ei = 0, M = 1, a.ss = 0, S_0 = 0,
+bucket.sim(DATA, Sb, fc = 1, a.ei = 0, M = 0, a.ss = 0, S_0 = 0,
            return_state = FALSE)
 }
 \arguments{

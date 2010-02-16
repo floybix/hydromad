@@ -8,8 +8,9 @@
   Plot methods...
 }
 \usage{
-\method{xyplot}{hydromad}(x, data,
-	coerce = byDays, trans = NULL,
+\method{xyplot}{hydromad}(x, data = NULL,
+	coerce = byDays, with.P = FALSE,
+        screens = list(P = "rainfall", "streamflow"),
 	...)
 
 \method{qqmath}{hydromad}(x, data,
@@ -26,6 +27,7 @@ errormasscurve(x, ...)
   \item{data}{ ignored. }
   \item{coerce}{ a function to apply to the time series of observed and modelled values. }
   \item{trans}{ a function to apply to the time series. }
+  \item{with.P}{ to include the input rainfall series in the plot. }
   \item{screens}{ panels specification, passed to \code{\link[zoo]{xyplot.zoo}}. }
   \item{col}{ colours. }
   \item{\dots}{ further arguments passed on to \code{\link[zoo]{xyplot.zoo}} or \code{\link[lattice]{qqmath}}. }

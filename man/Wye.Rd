@@ -1,5 +1,4 @@
 \name{Wye}
-\Rdversion{1.1}
 \alias{Wye}
 \docType{data}
 \title{
@@ -31,7 +30,7 @@
   Centre for Ecology and Hydrology (CEH) (e.g. Robinson and Dupeyrat,
   2005). The hydrometric data used in this paper for the Wye comprise
   15-min flow data and hourly catchment rainfall data, from which 1-,
-  2-, 4-, 6-, 12- and 24-hourly rainfallœôòóstreamflow data sets were
+  2-, 4-, 6-, 12- and 24-hourly rainfall-streamflow data sets were
   prepared. Streamflow for the Wye is measured at a weir. The rainfall
   and streamflow data, extracted from the CEH Plynlimon data archive,
   are considered to be of excellent quality.}
@@ -55,8 +54,8 @@ Littlewood, I.G. and Croke, B.F.W. (2008). Data time-step dependency of conceptu
 data(Wye)
 
 ## note: first three months of rainfall data are daily averages
-plot(window(Wye, start = as.POSIXct("1987-01-01"),
-                         end = as.POSIXct("1987-09-01")))
+xyplot(window(Wye, start = as.POSIXct("1987-01-01"),
+                     end = as.POSIXct("1987-09-01")))
 
 ## auto- and cross-correlation
 acf(coredata(Wye[,2:1]))

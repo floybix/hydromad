@@ -9,9 +9,8 @@
   drainage, evapo-transpiration, and changes in catchment moisture.
 }
 \usage{
-cmd.sim(DATA = xts(),
-	d, f, e, M_0 = d/2,
-	return_state = FALSE)
+cmd.sim(DATA, d, f, e, M_0 = d/2,
+        return_state = FALSE)
 }
 \arguments{
   \item{DATA}{ a \code{\link{ts}}-like object or list with named components:
