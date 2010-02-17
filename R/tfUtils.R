@@ -256,7 +256,7 @@ abToTauV <-
         } else {
             ## third-order model
             if (series == 1) {
-                ## two components in series and one in parallel
+                ## one component in parallel with two in series
                 ## (s & 3 are in series; q in parallel)
                 beta_q <- b[3] / (alpha_s * alpha_3)
                 beta_s <- sqrt((-b[2] - beta_q * (alpha_s + alpha_3)) /
@@ -267,21 +267,25 @@ abToTauV <-
                 ## one component in series with two in parallel
                 ## (3 in series; s & q in parallel)
                 beta_3 <- (1 - alpha_3)
-                beta_q <- (-(b[2] + b[1] * alpha_q) /
-                           (alpha_s - alpha_q) * beta_3)
+                beta_q <- ((b[2] - alpha_q * b[1]) /
+                           (beta_3 * (alpha_s - alpha_q)))
+                ## TODO - changed - test!
+                #beta_q <- (-(b[2] + b[1] * alpha_q) /
+                #           (alpha_s - alpha_q) * beta_3)
                 beta_s <- (b[1] / beta_3) - beta_q
 
             } else if (series == 3) {
                 ## three components in series
-                ## distribute gain equally among stores
                 beta_s <- (1 - alpha_s)
                 beta_q <- (1 - alpha_q)
                 beta_3 <- (1 - alpha_3)
+                ## apply gain to v_3 only
+                beta_3 <- beta_3 * (b[1] / (beta_s * beta_q * beta_3))
                 ## TODO: use a 'gain' parameter?
-                scal <- (b[1] / (beta_s * beta_q * beta_3)) ^ (1/3)
-                beta_s <- beta_s * scal
-                beta_q <- beta_q * scal
-                beta_3 <- beta_3 * scal
+                #scal <- (b[1] / (beta_s * beta_q * beta_3)) ^ (1/3)
+                #beta_s <- beta_s * scal
+                #beta_q <- beta_q * scal
+                #beta_3 <- beta_3 * scal
 
             } else {
                 stop("unrecognised values of 'series': ", series)

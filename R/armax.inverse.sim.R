@@ -105,12 +105,13 @@ armax.inverse.sim <-
         }
     } else {
         U <- .C(inverse_filter,
-                as.double(Q),
+                as.double(Q[]), ## force copy
                 as.integer(length(Q)),
                 as.double(a),
                 as.double(b),
                 as.integer(n),
                 as.integer(m),
+                as.integer(use.Qm),
                 as.double(P),
                 U = double(length(Q)),
                 DUP=FALSE, PACKAGE="hydromad")$U

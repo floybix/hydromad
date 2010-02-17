@@ -18,21 +18,39 @@
 
 void
 inverse_filter(double *Q, int *nQ,
-	       double *a, double *b, int *n, int *m,
+	       double *a, double *b, 
+               int *n, int *m, int *useQm,
 	       double *P, double *U)
 {
-    int t;
+    int t, i;
     double Ut;
-    for (t = *n; t < *nQ; t++) {
+    for (t = max(*n,*m); t < *nQ; t++) {
 	Ut = Q[t];
+	for (i = 1; i <= *n; i++) {
+	    Ut -= a[i-1] * Q[t-i];
+	}
+	for (i = 1; i <= *m; i++) {
+	    Ut -= b[i] * U[t-i];
+	}
+/*
 	if (*n >= 1) Ut = Ut - a[0] * Q[t-1];
 	if (*n >= 2) Ut = Ut - a[1] * Q[t-2];
 	if (*n >= 3) Ut = Ut - a[2] * Q[t-3];
 	if (*m >= 1) Ut = Ut - b[1] * U[t-1];
 	if (*m >= 2) Ut = Ut - b[2] * U[t-2];
 	if (*m >= 3) Ut = Ut - b[3] * U[t-3];
+*/
 	Ut = Ut / b[0];
 	U[t] = max(0, min(Ut, P[t]));
+	if (*useQm > 0) {
+	    Q[t] = 0;
+	    for (i = 1; i <= *n; i++) {
+		Q[t] += a[i-1] * Q[t-i];
+	    }
+	    for (i = 0; i <= *m; i++) {
+		Q[t] += b[i] * U[t-i];
+	    }
+	}
     }
 }
 

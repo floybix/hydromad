@@ -15,7 +15,9 @@ simQ <- hydromad.sim(obsdat, sma = "cwi", tw = 30, f = 0.5, c = 1/1000,
 modDat <- merge(obsdat[,c("P","E")], Q = byDays(simQ))
 spec0 <- hydromad(modDat, sma = "cwi", routing = "armax")
 
-test_that("Routing fitting methods work with exact inputs", {
+#hydromad.options()
+
+test_that("Routing fitting methods work on (2,1) model with exact inputs", {
     rspecs <-
         list(ls = update(spec0, rfit = list("ls", order = c(2, 1))),
              sriv = update(spec0, rfit = list("sriv", order = c(2, 1))),
@@ -28,6 +30,10 @@ test_that("Routing fitting methods work with exact inputs", {
     expect_that(summary(fits$inv)$r.squared > 0.9999, is_true())
 })
 
+test_that("Routing fitting methods work with exact inputs", {
+    
+})
+
 test_that("SMA joint fitting methods work with exact inputs", {
     set.seed(0)
     spec <- update(spec0, routing = "expuh", tau_q = c(0,3), tau_s = c(3,100), v_s = c(0,1))
@@ -35,3 +41,4 @@ test_that("SMA joint fitting methods work with exact inputs", {
     expect_that(summary(fitBySCE(spec))$r.squared > 0.9999, is_true())
     expect_that(summary(fitByDE(spec))$r.squared > 0.999, is_true())
 })
+

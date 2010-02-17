@@ -41,6 +41,8 @@ export(tryModelOrders,
 export(makePrefilter,
        estimateDelay)
 
+export(tfParsConvert)
+
 export(armax.sim,
        ssg.armax,
        normalise.armax,
@@ -90,10 +92,6 @@ useDynLib(hydromad, sma_sac)
 
 export(dbm.sim)
 export(absorbScale.dbm)
-
-#export(simhyd.sim)
-#export(simhydOptions)
-#useDynLib(hydromad, sma_simhyd)
 
 
 ## CALIBRATION METHODS
