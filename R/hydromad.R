@@ -74,12 +74,18 @@ coef.hydromad <-
     forRouting <- names(parlist) %in% r.argnames
     ## resolve ambiguities / arguments to be passed through
     unmatched <- (!forSMA) & (!forRouting)
+    unmatchedOK <- FALSE
     if ("..." %in% sma.argnames) {
         forSMA <- forSMA | unmatched
+        unmatchedOK <- TRUE
     }
     if ("..." %in% r.argnames) {
         forRouting <- forRouting | unmatched
+        unmatchedOK <- TRUE
     }
+    if (any(unmatched) && !unmatchedOK)
+        warning("unrecognised parameters: ",
+                toString(names(parlist)[unmatched]))
     if (which == "sma")
         result <- parlist[forSMA]
     if (which == "routing")

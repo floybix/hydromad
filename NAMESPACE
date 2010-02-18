@@ -17,6 +17,8 @@ export(predict.hydromad)
 export(hydromad.sim)
 
 export(update.hydromad)
+export("coef<-")
+S3method("coef<-", hydromad)
 export(absorbScale)
 export(absorbScale.hydromad)
 
@@ -93,6 +95,17 @@ useDynLib(hydromad, sma_sac)
 export(dbm.sim)
 export(absorbScale.dbm)
 
+## tf.R
+S3method(print, tf)
+S3method(summary, tf)
+S3method(print, summary.tf)
+S3method(coef, tf)
+S3method(update, tf)
+S3method(predict, tf)
+S3method(fitted, tf)
+S3method(observed, tf)
+S3method(xyplot, tf)
+S3method(vcov, tf)
 
 ## CALIBRATION METHODS
 
@@ -127,8 +140,7 @@ export(runlist,
        errormasscurve.runlist,
        xyplot.runlist,
        qqmath.runlist,
-       summary.hydromad.runlist,
-       print.summary.runlist)
+       summary.hydromad.runlist)
 S3method("[", runlist)
 S3method(print, runlist)
 S3method(print, summary.runlist)

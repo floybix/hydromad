@@ -7,13 +7,20 @@ expuh.sim <-
     function(U, delay = 0,
              tau_s = 0, tau_q = 0, tau_3 = 0,
              v_s = 1, v_q = NA, v_3 = 0, v_4 = 0,
-             series = 0,
-             loss = 0,
+             series = 0, loss = 0,
              Xs_0 = 0, Xq_0 = 0, X3_0 = 0,
+             pars = NULL,
              return_components = FALSE,
              na.action = na.pass,
              epsilon = hydromad.getOption("sim.epsilon"))
 {
+    if (!is.null(pars)) {
+        ccall <- match.call()
+        ccall$pars <- NULL
+        ccall <- as.call(modifyList(as.list(ccall),
+                                    as.list(pars)))
+        return(eval.parent(ccall))
+    }
     if (v_4 > 0) stop("v_4 not supported yet")
     delay <- round(delay)
     series <- round(series)

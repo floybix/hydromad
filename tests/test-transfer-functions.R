@@ -1,11 +1,8 @@
 library(testthat)
 library(hydromad)
-
-set.seed(0)
-
+source("helper-expuh-orders.R")
 
 context("Transfer Functions")
-
 
 test_that("cwi+expuh(2,1) simulation looks reasonable", {
     data(SalmonBrook)
@@ -17,8 +14,6 @@ test_that("cwi+expuh(2,1) simulation looks reasonable", {
     expect_that(all(is.finite(simQ)), is_true())
 })
 
-tfConv <- tfParsConvert
-
 test_that("TF parameter conversions are consistent", {
 
     toAbAndBack <- function(expars)
@@ -29,21 +24,19 @@ test_that("TF parameter conversions are consistent", {
     expect_that(toAbAndBack(n2m0), equals(n2m0))
     expect_that(toAbAndBack(n2m1), equals(n2m1))
     expect_that(toAbAndBack(n2m2), equals(n2m2))
-    ## third-order models.
     expect_that(toAbAndBack(n3s0), equals(n3s0))
-    #expect_that(toAbAndBack(n3s1), equals(n3s1))
+    #expect_that(toAbAndBack(n3s1), equals(n3s1)) ## can't deduce series=1|0
     expect_that(toAbAndBack(n3s2), equals(n3s2))
-    #expect_that(toAbAndBack(n3s2)[["series"]], equals(2))
     expect_that(toAbAndBack(n3s3), equals(n3s3))
 
     set.seed(0)
     warmup <- 100
     U <- ts(pmax(rnorm(200), 0))
     armaxSim <- function(expars, ..., init = 0)
-        window(armax.sim(U, pars = tfParsConvert(pars, "a,b"), ..., init = init),
+        window(armax.sim(U, pars = tfParsConvert(expars, "a,b"), ..., init = init),
                start = warmup, end = 198)
-    expuhSim <- function(pars, ...)
-        window(do.call("expuh.sim", c(list(U), as.list(pars), ...)),
+    expuhSim <- function(expars, ...)
+        window(expuh.sim(U, pars = expars, ...),
                start = warmup, end = 198)
 
     ## there are small(ish) differences due to initialisation
@@ -70,19 +63,18 @@ test_that("TF simulation and inverse simulation are consistent", {
     Uw <- window(U, start = warmup, end = end(U)[1]-2)
     Pw <- window(P, start = warmup, end = end(U)[1]-2)
     expuhSim <- function(expars, ...)
-        window(do.call("expuh.sim", c(list(U), as.list(expars), ...)),
+        window(expuh.sim(U, pars = expars, ...),
                start = warmup, end = end(U)[1]-2)
-    inverseSim <- function(Q, use.Qm, 
     for (pure.R.code in c(TRUE, FALSE)) {
         message(paste("testing with pure.R.code =", pure.R.code))
         hydromad.options(pure.R.code = pure.R.code)
-        expect_that(armax.inverse.sim(expuhSim(n0m0), P = Pw, use.Qm = FALSE, pars = tfConv(n0m0))[-1], equals(Uw[-1]))
-        expect_that(armax.inverse.sim(expuhSim(n1m0), P = Pw, use.Qm = FALSE, pars = tfConv(n1m0))[-1], equals(Uw[-1]))
-        expect_that(armax.inverse.sim(expuhSim(n1m1), P = Pw, use.Qm = FALSE, pars = tfConv(n1m1))[-(1:3)], equals(Uw[-(1:3)]))
-        expect_that(armax.inverse.sim(expuhSim(n2m0), P = Pw, use.Qm = FALSE, pars = tfConv(n2m0))[-(1:3)], equals(Uw[-(1:3)]))
-        expect_that(armax.inverse.sim(expuhSim(n2m1), P = Pw, use.Qm = FALSE, pars = tfConv(n2m1))[-(1:3)], equals(Uw[-(1:3)]))
+        expect_that(armax.inverse.sim(expuhSim(n0m0), pars = tfParsConvert(n0m0), P = Pw, use.Qm = FALSE)[-1], equals(Uw[-1]))
+        expect_that(armax.inverse.sim(expuhSim(n1m0), pars = tfParsConvert(n1m0), P = Pw, use.Qm = FALSE)[-1], equals(Uw[-1]))
+        expect_that(armax.inverse.sim(expuhSim(n1m1), pars = tfParsConvert(n1m1), P = Pw, use.Qm = FALSE)[-(1:3)], equals(Uw[-(1:3)]))
+        expect_that(armax.inverse.sim(expuhSim(n2m0), pars = tfParsConvert(n2m0), P = Pw, use.Qm = FALSE)[-(1:3)], equals(Uw[-(1:3)]))
+        expect_that(armax.inverse.sim(expuhSim(n2m1), pars = tfParsConvert(n2m1), P = Pw, use.Qm = FALSE)[-(1:3)], equals(Uw[-(1:3)]))
     }
-    ## third order models, and simulation with use.Qm = TRUE, seem to need a longer warmup
+    ## third order models, and all simulations with use.Qm = TRUE, seem to need a longer warmup
     set.seed(0)
     warmup <- 200
     U <- ts(pmax(rnorm(300), 0))
@@ -93,26 +85,26 @@ test_that("TF simulation and inverse simulation are consistent", {
         message(paste("testing with pure.R.code =", pure.R.code))
         hydromad.options(pure.R.code = pure.R.code)
         ## higher order models with use.Qm = FALSE (completing the previous section)
-        expect_that(armax.inverse.sim(expuhSim(n2m2), P = Pw, use.Qm = FALSE, pars = tfConv(n2m2))[-1], equals(Uw[-1]))
-        expect_that(armax.inverse.sim(expuhSim(n3s0), P = Pw, use.Qm = FALSE, pars = tfConv(n3s0))[-1], equals(Uw[-1]))
-        expect_that(armax.inverse.sim(expuhSim(n3s1), P = Pw, use.Qm = FALSE, pars = tfConv(n3s1))[-1], equals(Uw[-1]))
-        expect_that(armax.inverse.sim(expuhSim(n3s2), P = Pw, use.Qm = FALSE, pars = tfConv(n3s2))[-1], equals(Uw[-1]))
-        expect_that(armax.inverse.sim(expuhSim(n3s3), P = Pw, use.Qm = FALSE, pars = tfConv(n3s3))[-1], equals(Uw[-1]))
+        expect_that(armax.inverse.sim(expuhSim(n2m2), pars = tfParsConvert(n2m2), P = Pw, use.Qm = FALSE)[-1], equals(Uw[-1]))
+        expect_that(armax.inverse.sim(expuhSim(n3s0), pars = tfParsConvert(n3s0), P = Pw, use.Qm = FALSE)[-1], equals(Uw[-1]))
+        expect_that(armax.inverse.sim(expuhSim(n3s1), pars = tfParsConvert(n3s1), P = Pw, use.Qm = FALSE)[-1], equals(Uw[-1]))
+        expect_that(armax.inverse.sim(expuhSim(n3s2), pars = tfParsConvert(n3s2), P = Pw, use.Qm = FALSE)[-1], equals(Uw[-1]))
+        expect_that(armax.inverse.sim(expuhSim(n3s3), pars = tfParsConvert(n3s3), P = Pw, use.Qm = FALSE)[-1], equals(Uw[-1]))
         ## all models with use.Qm = TRUE
-        expect_that(armax.inverse.sim(expuhSim(n0m0), P = Pw, use.Qm = TRUE, pars = tfConv(n0m0))[-1], equals(Uw[-1]))
-        expect_that(armax.inverse.sim(expuhSim(n1m0), P = Pw, use.Qm = TRUE, pars = tfConv(n1m0))[-1], equals(Uw[-1]))
-        expect_that(armax.inverse.sim(expuhSim(n1m1), P = Pw, use.Qm = TRUE, pars = tfConv(n1m1))[-1], equals(Uw[-1]))
-        expect_that(armax.inverse.sim(expuhSim(n2m0), P = Pw, use.Qm = TRUE, pars = tfConv(n2m0))[-1], equals(Uw[-1]))
-        expect_that(armax.inverse.sim(expuhSim(n2m1), P = Pw, use.Qm = TRUE, pars = tfConv(n2m1))[-1], equals(Uw[-1]))
-        expect_that(armax.inverse.sim(expuhSim(n2m2), P = Pw, use.Qm = TRUE, pars = tfConv(n2m2))[-1], equals(Uw[-1]))
-        expect_that(armax.inverse.sim(expuhSim(n3s0), P = Pw, use.Qm = TRUE, pars = tfConv(n3s0))[-1], equals(Uw[-1]))
-        expect_that(armax.inverse.sim(expuhSim(n3s1), P = Pw, use.Qm = TRUE, pars = tfConv(n3s1))[-1], equals(Uw[-1]))
-        expect_that(armax.inverse.sim(expuhSim(n3s2), P = Pw, use.Qm = TRUE, pars = tfConv(n3s2))[-1], equals(Uw[-1]))
-        expect_that(armax.inverse.sim(expuhSim(n3s3), P = Pw, use.Qm = TRUE, pars = tfConv(n3s3))[-1], equals(Uw[-1]))
+        expect_that(armax.inverse.sim(expuhSim(n0m0), pars = tfParsConvert(n0m0), P = Pw, use.Qm = TRUE)[-1], equals(Uw[-1]))
+        expect_that(armax.inverse.sim(expuhSim(n1m0), pars = tfParsConvert(n1m0), P = Pw, use.Qm = TRUE)[-1], equals(Uw[-1]))
+        expect_that(armax.inverse.sim(expuhSim(n1m1), pars = tfParsConvert(n1m1), P = Pw, use.Qm = TRUE)[-1], equals(Uw[-1]))
+        expect_that(armax.inverse.sim(expuhSim(n2m0), pars = tfParsConvert(n2m0), P = Pw, use.Qm = TRUE)[-1], equals(Uw[-1]))
+        expect_that(armax.inverse.sim(expuhSim(n2m1), pars = tfParsConvert(n2m1), P = Pw, use.Qm = TRUE)[-1], equals(Uw[-1]))
+        expect_that(armax.inverse.sim(expuhSim(n2m2), pars = tfParsConvert(n2m2), P = Pw, use.Qm = TRUE)[-1], equals(Uw[-1]))
+        expect_that(armax.inverse.sim(expuhSim(n3s0), pars = tfParsConvert(n3s0), P = Pw, use.Qm = TRUE)[-1], equals(Uw[-1]))
+        expect_that(armax.inverse.sim(expuhSim(n3s1), pars = tfParsConvert(n3s1), P = Pw, use.Qm = TRUE)[-1], equals(Uw[-1]))
+        expect_that(armax.inverse.sim(expuhSim(n3s2), pars = tfParsConvert(n3s2), P = Pw, use.Qm = TRUE)[-1], equals(Uw[-1]))
+        expect_that(armax.inverse.sim(expuhSim(n3s3), pars = tfParsConvert(n3s3), P = Pw, use.Qm = TRUE)[-1], equals(Uw[-1]))
     }
-    #armax.inverse.sim(expuhSim(n1m1), P = Pw, pars = tfConv(n1m1)) - Uw
-    #armax.inverse.sim(expuhSim(n3s0), P = Pw, pars = tfConv(n3s0)) - Uw
-    #xyplot(cbind(armax.inverse.sim(expuhSim(n1m0), P = Pw, pars = tfConv(n1m0)), Uw), superpose = TRUE)
-    #xyplot(cbind(armax.inverse.sim(expuhSim(n1m1), P = Pw, pars = tfConv(n1m1)), Uw), superpose = TRUE)
-    #xyplot(cbind(armax.inverse.sim(expuhSim(n3s0), P = Pw, pars = tfConv(n3s0)), Uw), superpose = TRUE)
+    #armax.inverse.sim(expuhSim(n1m1), P = Pw, pars = tfParsConvert(n1m1)) - Uw
+    #armax.inverse.sim(expuhSim(n3s0), P = Pw, pars = tfParsConvert(n3s0)) - Uw
+    #xyplot(cbind(armax.inverse.sim(expuhSim(n1m0), P = Pw, pars = tfParsConvert(n1m0)), Uw), superpose = TRUE)
+    #xyplot(cbind(armax.inverse.sim(expuhSim(n1m1), P = Pw, pars = tfParsConvert(n1m1)), Uw), superpose = TRUE)
+    #xyplot(cbind(armax.inverse.sim(expuhSim(n3s0), P = Pw, pars = tfParsConvert(n3s0)), Uw), superpose = TRUE)
 })

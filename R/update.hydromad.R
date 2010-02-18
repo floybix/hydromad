@@ -3,6 +3,27 @@
 ## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
+"coef<-" <- function(object, value)
+    UseMethod("coef<-")
+
+"coef<-.hydromad" <- function(object, value)
+{
+    pars <- as.list(value)
+    ## all elements must have names
+    stopifnot(length(names(pars)) == length(pars))
+    stopifnot(all(sapply(names(pars), nchar) > 0))
+    curNames <- names(coef(object, warn = FALSE))
+    ## find existing parameters not named in 'value', to remove:
+    remNames <- curNames[curNames %in% names(pars) == FALSE]
+    ## set them to NULL to delete them from the coef() list:
+    remList <- rep(list(NULL), length(remNames))
+    names(remList) <- remNames
+    pars <- c(pars, remList)
+    ## use 'update' to make the changes
+    object <- do.call("update.hydromad", c(list(object), pars))
+    object
+}
+
 update.hydromad <-
     function(object, ..., newdata = NULL,
              sma, routing, rfit, warmup, weights,

@@ -295,6 +295,11 @@ print.summary.tf <-
     invisible(x)
 }
 
+xyplot.tf <- function(x, data = NULL, ...)
+{
+    xyplot.hydromad(x, ...)
+}
+
 ssg.tf <-
     function(object, ...)
 {

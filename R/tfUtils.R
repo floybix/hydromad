@@ -266,12 +266,11 @@ abToTauV <-
             } else if (series == 2) {
                 ## one component in series with two in parallel
                 ## (3 in series; s & q in parallel)
-                beta_3 <- (1 - alpha_3)
-                beta_q <- ((b[2] - alpha_q * b[1]) /
-                           (beta_3 * (alpha_s - alpha_q)))
-                ## TODO - changed - test!
-                #beta_q <- (-(b[2] + b[1] * alpha_q) /
-                #           (alpha_s - alpha_q) * beta_3)
+                ## apply gain to v_3 only:
+                gain <- sum(b) / (1 - sum(a))
+                beta_3 <- (1 - alpha_3) * gain
+                beta_q <- ((b[2] + alpha_q * b[1]) /
+                           (beta_3 * (alpha_q - alpha_s)))
                 beta_s <- (b[1] / beta_3) - beta_q
 
             } else if (series == 3) {
@@ -279,13 +278,8 @@ abToTauV <-
                 beta_s <- (1 - alpha_s)
                 beta_q <- (1 - alpha_q)
                 beta_3 <- (1 - alpha_3)
-                ## apply gain to v_3 only
+                ## apply gain to v_3 only:
                 beta_3 <- beta_3 * (b[1] / (beta_s * beta_q * beta_3))
-                ## TODO: use a 'gain' parameter?
-                #scal <- (b[1] / (beta_s * beta_q * beta_3)) ^ (1/3)
-                #beta_s <- beta_s * scal
-                #beta_q <- beta_q * scal
-                #beta_3 <- beta_3 * scal
 
             } else {
                 stop("unrecognised values of 'series': ", series)
@@ -523,9 +517,6 @@ describeTF <- function(theta, ...)
     if ((n == 0) && (m < 0))
         return(NA)
     ans <- NULL
-    series <- -1
-    if ("series" %in% names(theta))
-        series <- pars[["series"]]
     if (n == 0) {
         ans <- "instantaneous"
     } else if (n == 1) {
@@ -538,6 +529,14 @@ describeTF <- function(theta, ...)
         if (m == 2) ans <- "S + Q + inst. (three in parallel)"
         if (m >= 3) ans <- "S + Q + complex MA component"
     } else if (n == 3) {
+        series <- 0
+        if ("series" %in% names(theta)) {
+            series <- round(theta[["series"]])
+        } else {
+            partv <- try(tfParsConvert(pars, "tau,v"))
+            if ("series" %in% names(partv)) 
+                series <- round(partv[["series"]])
+        }
         if (series == 0) ans <- "S + Q + 3 (three in parallel)"
         if (series == 1) ans <- "(S * 3) + Q (two in series, one in parallel)"
         if (series == 2) ans <- "(S + Q) * 3 (two in parallel, one in series)"
@@ -545,7 +544,7 @@ describeTF <- function(theta, ...)
         if ((m == 0) != (series == 3))
             warning("m == ", m, " but series == ", series)
     } else {
-        ans <- "complex (high order)"
+        ans <- "complex (high order?)"
     }
     if (length(a > 1)) {
         poles <- arToPoles(a)
