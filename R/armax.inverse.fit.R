@@ -8,8 +8,8 @@ armax.inverse.fit <-
     function(DATA,
              order = hydromad.getOption("order"),
              delay = hydromad.getOption("delay"),
-             normalise = hydromad.getOption("normalise"),
              fit.method = hydromad.getOption("inverse.fit.method"),
+             normalise = TRUE,
              init.U = TRUE,
              pars = NULL,
              use.Qm = TRUE,
@@ -17,8 +17,8 @@ armax.inverse.fit <-
              rises.only = FALSE,
              ...,
              max.iterations = hydromad.getOption("inverse.iterations"),
-             rel.tolerance = hydromad.getOption("inverse.tolerance"),
-             par.epsilon = hydromad.getOption("inverse.epsilon"),
+             rel.tolerance = hydromad.getOption("inverse.rel.tolerance"),
+             par.epsilon = hydromad.getOption("inverse.par.epsilon"),
              init.attempt = 0,
              trace = hydromad.getOption("trace"))
 {
@@ -45,6 +45,7 @@ armax.inverse.fit <-
     isna <- is.na(Q)
     Q[isna] <- 0
     sumQ <- sum(Q)
+    stopifnot(sumQ > 0)
 
     U <- NULL
     ## option to initialise from U (as rises(Q)), rather than pars.init
@@ -72,13 +73,7 @@ armax.inverse.fit <-
         }
 
         ## estimate U as scaled P, scaled in a moving window
-        ## (runoff coefficient)
-        scale.window <- max(autocorrTime(Q) * 1.5, 16)
-        sc <- simpleSmoothTs(cbind(Q, U), width = scale.window, c = 2)
-        sc <- sc[,"Q"] / sc[,"U"]
-        sc <- na.locf(na.locf(sc, na.rm = FALSE), fromLast = TRUE, na.rm = FALSE)
-        sc[!is.finite(sc)] <- 0
-        U <- U * sc
+        U <- runoffratio.sim(cbind(Q = Q, P = U))
 
     } else {
         ## generate starting parameters
@@ -108,7 +103,7 @@ armax.inverse.fit <-
         ## so delay still applies
         fnName <- paste("armax", fit.method, "fit", sep = ".")
         modCall <- quote(FUN(cbind(Q = Q, U = U),
-                             order = order, delay = delay, normalise = FALSE,
+                             order = order, delay = delay, normalise = normalise,
                              ...))
         modCall[[1]] <- as.symbol(fnName)
         mod <- eval(modCall)
@@ -127,6 +122,7 @@ armax.inverse.fit <-
 
         if (!is.null(oldU)) {
             delta <- sum(abs(U - oldU), na.rm = TRUE) / sumQ
+            #message(paste("delta = ", delta))
             if (delta < rel.tolerance) break
         }
 
@@ -142,7 +138,7 @@ armax.inverse.fit <-
         }
 
         if (i >= max.iterations) {
-            warning("tf.inverse.fit reached maximum number of iterations")
+            warning("reached maximum number of iterations")
             break
         }
         oldU <- U
@@ -150,8 +146,8 @@ armax.inverse.fit <-
         i <- i + 1
     }
 
-    if (normalise)
-        mod <- normalise.tf(mod)
+    #if (normalise)
+    #    mod <- normalise.tf(mod)
     mod$call <- match.call()
     mod
 }

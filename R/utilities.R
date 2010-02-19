@@ -105,7 +105,7 @@ lagbind <-
 }
 
 shiftWindow <-
-    function(x, delay, and.lag = FALSE)
+    function(x, delay, and.lag = FALSE, fill = NA)
 {
     ## this is faster than a full ts.intersect - just shift by delay time steps
     ## a positive delay shifts the window back in time,
@@ -114,12 +114,12 @@ shiftWindow <-
     attribs <- attributes(x)
     if (NCOL(x) == 1) {
         res <- if (delay > 0)
-            c(rep(NA, delay), x[-(length(x)-seq(delay)+1)])
-        else c(x[-seq(abs(delay))], rep(NA, abs(delay)))
+            c(rep(fill, delay), x[-(length(x)-seq(delay)+1)])
+        else c(x[-seq(abs(delay))], rep(fill, abs(delay)))
     } else {
         res <- if (delay > 0)
-            x[ c(rep(NA, delay), seq(1, NCOL(x) - delay)), ]
-        else x[ c(seq(abs(delay)+1, NCOL(x)), rep(NA, abs(delay))), ]
+            x[ c(rep(fill, delay), seq(1, NCOL(x) - delay)), ]
+        else x[ c(seq(abs(delay)+1, NCOL(x)), rep(fill, abs(delay))), ]
     }
     attributes(res) <- attribs
     if (and.lag == FALSE) {

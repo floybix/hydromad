@@ -137,7 +137,7 @@ predict.tf <-
 print.tf <-
     function(x, digits = max(3, getOption("digits") - 3), ...)
 {
-    cat("\nUnit Hydrograph / Linear transfer function model\n")
+    cat("\nUnit Hydrograph / Linear Transfer Function\n")
     cat("\nCall:\n")
     print(x$call)
     cat("\n")
@@ -150,29 +150,7 @@ print.tf <-
     pars.tv <- try(coef(x, "tau,v"), silent = TRUE)
     print.default(pars.tv, digits = digits, print.gap = 2)
     cat("TF Structure: ")
-    series <- -1
-    if (is.numeric(pars.tv) && ("series" %in% names(pars.tv)))
-        series <- pars.tv[["series"]]
-    if (n == 0) {
-        cat("instantaneous")
-    } else if (n == 1) {
-        if (m == 0) cat("single store")
-        if (m == 1) cat("single store + instantaneous in parallel")
-        if (m >= 2) cat("single store + complex MA component")
-    } else if (n == 2) {
-        if (m == 0) cat("S * Q (two stores in series)")
-        if (m == 1) cat("S + Q (two stores in parallel)")
-        if (m == 2) cat("S + Q + inst. (three in parallel)")
-        if (m >= 3) cat("S + Q + complex MA component")
-    } else if (n == 3) {
-        if (series == 0) cat("S + Q + 3 (three in parallel)")
-        if (series == 1) cat("(S * 3) + Q (two in series, one in parallel)")
-        if (series == 2) cat("(S + Q) * 3 (two in parallel, one in series)")
-        if (series == 3) cat("S * Q * 3 in series")
-        stopifnot((m == 0) == (series == 3))
-    } else {
-        cat("complex (high order)")
-    }
+    cat(describeTF(coef(x)))
     cat("\n\n")
     invisible(x)
 }

@@ -42,7 +42,7 @@ armax.sim <-
     init <- rep(init, length = n)
     X <- filter(U, b, sides = 1)
     if (length(a) > 0) {
-        X <- shiftWindow(X, -m)
+        X <- shiftWindow(X, -m, fill = 0)
         X <- filter(X, a, method = "recursive", init = init)
         X <- shiftWindow(X, m)
     }

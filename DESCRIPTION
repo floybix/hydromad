@@ -1,6 +1,6 @@
 Package: hydromad
-Version: 0.6-0
-Date: 2010-02-17
+Version: 0.6-1
+Date: 2010-02-19
 Title: Hydrological Modelling and Analysis of Data (rain + flow)
 Author: Felix Andrews <felix@nfrac.org>
 Maintainer: Felix Andrews <felix@nfrac.org>
@@ -11,7 +11,7 @@ Description: Spatially-lumped models and tools for environmental hydrology.
   Includes IHACRES models (CWI, CMD), transfer function  estimators
   (including SRIV - Simplified Refined Instrumental Variable), etc.
 Depends: zoo, lattice (>= 0.18-1), latticeExtra (>= 0.6-6), polynom
-Imports: stats, utils
+Imports: lattice, stats, utils
 Suggests: DEoptim, testthat
 License: GPL (>= 2)
 URL: http://hydromad.catchment.org/

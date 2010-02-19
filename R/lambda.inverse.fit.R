@@ -7,17 +7,17 @@
 lambda.inverse.fit <-
     function(DATA,
              order = c(n = 2, m = 1),
-             normalise = NA,
              delay = hydromad.getOption("delay"),
              fit.method = hydromad.getOption("inverse.fit.method"),
+             normalise = NA,
              init.U = TRUE,
              pars = NULL,
              use.Qm = TRUE,
              rises.only = FALSE,
              ...,
              max.iterations = hydromad.getOption("inverse.iterations"),
-             rel.tolerance = hydromad.getOption("inverse.tolerance"),
-             par.epsilon = hydromad.getOption("inverse.epsilon"),
+             rel.tolerance = hydromad.getOption("inverse.rel.tolerance"),
+             par.epsilon = hydromad.getOption("inverse.par.epsilon"),
              init.attempt = 0,
              trace = hydromad.getOption("trace"))
 {
@@ -126,19 +126,8 @@ lambda.inverse.fit <-
             if (delta < rel.tolerance) break
         }
 
-        if (FALSE && !is.null(oldpars)) {
-            ## select and order by name for direct comparison
-            pars <- pars[names(oldpars)]
-            names(pars) <- names(oldpars)
-            ## omitted parameter values are assumed to be implicitly 0
-            pars[is.na(pars)] <- 0
-            par.deltas <- abs((pars - oldpars) / oldpars)
-            if (trace) print(par.deltas)
-            if (max(par.deltas) < par.epsilon) break
-        }
-
         if (i >= max.iterations) {
-            warning("lambda.inverse.fit reached maximum number of iterations")
+            warning("reached maximum number of iterations")
             break
         }
         oldU <- U

@@ -1,4 +1,6 @@
 
+importFrom(lattice, xyplot)
+
 ## CORE FUNCTIONS
 
 export(hydromad)
@@ -72,6 +74,18 @@ export(lambda.sim,
        lambda.inverse.fit)
 useDynLib(hydromad, inverse_filter_lambda)
 
+## tf.R
+S3method(print, tf)
+S3method(summary, tf)
+S3method(print, summary.tf)
+S3method(coef, tf)
+S3method(update, tf)
+S3method(predict, tf)
+S3method(fitted, tf)
+S3method(observed, tf)
+S3method(xyplot, tf)
+S3method(vcov, tf)
+
 
 ## SOIL MOISTURE ACCOUNTING MODELS
 
@@ -92,20 +106,11 @@ export(bucket.sim)
 export(sacramento.sim)
 useDynLib(hydromad, sma_sac)
 
+export(runoffratio.sim)
+
 export(dbm.sim)
 export(absorbScale.dbm)
 
-## tf.R
-S3method(print, tf)
-S3method(summary, tf)
-S3method(print, summary.tf)
-S3method(coef, tf)
-S3method(update, tf)
-S3method(predict, tf)
-S3method(fitted, tf)
-S3method(observed, tf)
-S3method(xyplot, tf)
-S3method(vcov, tf)
 
 ## CALIBRATION METHODS
 

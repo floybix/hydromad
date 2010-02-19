@@ -1,4 +1,11 @@
 
+Changes in Version 0.6-1
+
+  o changed default hydromad.options("inverse.rel.tolerance") to 1/1000.
+
+  o new simple SMA "runoffratio" - runoffratio.sim().
+    (scales P by observed flow, so can not do prediction).
+
 Changes in Version 0.6-0
 
   o "uh" routing renamed to "armax".

@@ -146,7 +146,7 @@ sacramento.ranges <- function()
     list(uztwm = c(1, 150),
          uzfwm = c(1, 150),
          uzk = c(0.1, 0.5),
-         pctim = c(0.00001, 0.1),
+         pctim = c(0.000001, 0.1),
          adimp = c(0, 0.4),
          zperc = c(1, 250),
          rexp = c(0, 5),

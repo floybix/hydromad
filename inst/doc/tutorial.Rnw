@@ -341,14 +341,14 @@ uniquely specified, but rather have a range of possible values. These
 defaults are taken from \code{hydromad.options()}, and they can be
 over-ridden by arguments to the \code{hydromad} function.
 
-A good starting point is the simple \ihacres{} model of
+A good starting point is the classic \ihacres{} model of
 \cite{JakemanHornberger:1993}, which is a Soil Moisture Accounting
-model referred to as \code{cwi} (Catchment Wetness Index\footnote{also known as the
-\emph{Classic} version of \ihacres{}.}). The routing component is a
-Unit Hydrograph composed of exponential components, which is referred
-to as \code{expuh}.
+model referred to here as \code{"cwi"} (Catchment Wetness Index). The
+routing component is a Unit Hydrograph composed of exponential
+components, a structure referred to here as \code{"expuh"}.
 
-
+When a model structure is specified, default parameter ranges for
+the given SMA model are applied:
 
 <<model, echo=TRUE>>=
 cotterMod <- hydromad(ts90s, sma = "cwi", routing = "expuh")
@@ -371,7 +371,7 @@ The objective function can be specified as the
 It is given as an R formula (a chunk of \proglang{R} code) based on
 the values \code{Q} and \code{X}, representing observed and modelled
 flow, respectively\footnote{The objective function can also refer to
-  \code{U}, modelled effective rainfall.}.
+  \code{U}, modelled effective rainfall -- and other things...}.
 
 Here we use the default, which is a weighted sum of the $R^2$ of
 square-root transformed data, and the relative bias:
@@ -402,7 +402,10 @@ stores in parallel: ``quick'' flow and ``slow'' flow. This
 model structure often works well and is conceptually attractive. Its
 notation is $(n=2, m=1)$.
 
-So, to finally calibrate the model:
+The model is calibrated using the \code{fitByOptim} function, which
+performs parameter sampling over the pre-specified ranges, selecting
+the best of these, and finally runs an optimisation algorithm to
+improve the result locally.
 
 <<model-fit, echo=TRUE>>=
 cotterMod <- update(cotterMod, rfit = list("sriv", order = c(n=2, m=1)))
@@ -420,17 +423,16 @@ Now that we have an object representing a calibrated model, what can
 we do with it?
 
 \begin{description}
-\item[access data] \code{fitted(mod)}, \code{residuals(mod)},
-  \code{observed(mod)} and \code{getU(mod)}. These exclude the warm-up
-  period by default.
-\item[simulate] \code{predict(mod, newdata=...)} or
-  \code{update(mod, ...)}.
 \item[view model info] \code{print(mod)} and \code{summary(mod)}.
-\item[get parameter values] \code{coef(mod)}.
+\item[extract parameter values] \code{coef(mod)}.
+\item[access data] \code{fitted(mod)}, \code{residuals(mod)},
+  \code{observed(mod)}. These exclude the warm-up
+  period by default.
+\item[run with new data] \code{predict(mod, newdata=...)} or
+  \code{update(mod, ...)}.
+\item[simulate from parameter ranges] \code{simulate(mod, N, ...)}.
 \item[plot hydrograph] \code{xyplot(mod)}; see below.
-\item[plot flow duration curve] \code{qqmath(mod)}; see below.
-\item[plot diagnostics] Some time series diagnostics are available as
-  \code{tsdiag(mod)}.
+\item[plot flow duration curve] \code{qqmath(mod)}.
 \end{description}
 
 For details, see the examples below, the user manual, and the help
@@ -522,7 +524,6 @@ The predicted time series (hydrograph) and cumulative distribution
 \begin{figure}[hpbt]
 \begin{center}
 <<obs-mod-plots-code, echo=TRUE, results=hide>>=
-library(latticeExtra)
 xyplot.list(allMods[2:3], trans = log, layout = c(1,2))
 @
 <<obs-mod-plots, fig=TRUE>>=
@@ -594,7 +595,6 @@ qqmath(cotterFit, scales = list(y = list(log = TRUE)), type=c("l","g"))
 @
   \emph{To plot a flow duration curves for each of the simulated models:}
 <<fdc-plot-code, echo=TRUE, results=hide>>=
-library(latticeExtra)
 xyplot.list(allMods, FUN = qqmath,
             type=c("l","g"), scales = list(y = list(log = TRUE)),
             xlab = "Standard normal variate",
@@ -638,7 +638,7 @@ The default ranges can be seen, and set, using \code{hydromad.options()}.
 To include the extra parameters \code{l} and/or \code{p}, used for
 arid zone catchments, specify ranges. An example:
 
-<<eval = FALSE>>=
+<<echo=TRUE, eval=FALSE>>=
 hydromad(ts90s, sma = "cwi", l = range(0, 200), f = 0)
 @
 
