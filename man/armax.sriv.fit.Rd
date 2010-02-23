@@ -7,15 +7,19 @@
   Variables method. }
 \description{
   Calibrate unit hydrograph transfer function models (\code{\link{armax}}
-  or \code{\link{expuh}}) using Refined Instrumental
-  Variables (RIV) or Simple Refined Instrumental
+  or \code{\link{expuh}}) using Simple Refined Instrumental
   Variables (SRIV) method.
 }
 \usage{
 armax.sriv.fit(DATA,
            order = hydromad.getOption("order"),
            delay = hydromad.getOption("delay"),
-           ...)
+           noise.order = hydromad.getOption("riv.noise.order"),
+           fixed.ar = NULL,
+           ...,
+           na.action = na.pass,
+           epsilon = hydromad.getOption("sriv.epsilon"),
+           max.iterations = hydromad.getOption("sriv.iterations"))
 
 expuh.sriv.fit(DATA,
               order = hydromad.getOption("order"),
@@ -30,25 +34,25 @@ expuh.sriv.fit(DATA,
     
   }
   \item{order}{
-    the transfer function order. See \code{\link{uh}}.
+    the transfer function order. See \code{\link{armax}}.
   }
   \item{delay}{
     delay (lag time / dead time) in number of time steps. If missing,
     this will be estimated from the cross correlation function.
   }
+  \item{noise.order}{ }
+  \item{fixed.ar}{ }
   \item{\dots}{
     further arguments may include
     \describe{
-      \item{prefilter}{ ~~Describe \code{prefilter} here~~ }
-      \item{noise.order}{ }
-      \item{fixed.ar}{ }
-      \item{epsilon}{ }
-      \item{max.iterations}{ }
+      \item{prefilter}{ }
       \item{initX}{ }
-      \item{na.action}{ ~~Describe \code{na.action} here~~ }
       \item{trace}{ ~~Describe \code{trace} here~~ }
     }
   }
+  \item{na.action}{ }
+  \item{epsilon}{ }
+  \item{max.iterations}{ }
   \item{method, control}{
     optimisation method and settings for fitting poles constrained to
     have real, positive roots. See \code{\link{optim}}.
@@ -70,7 +74,7 @@ expuh.sriv.fit(DATA,
   \code{hydromad(..., routing = "expuh", rfit = list("sriv", order = c(2,1)))}.
 }
 \value{
-  a list with components
+  a \code{tf} object, which is a list with components
   \item{coefficients}{ the fitted parameter values.}
   \item{fitted.values}{ the fitted values. }
   \item{residuals}{ the residuals. }
@@ -81,10 +85,8 @@ Jakeman
 }
 \author{ Felix Andrews \email{felix@nfrac.org} }
 \seealso{
-  \code{\link{uh}},
-  \code{\link{expuh}},
-  \code{\link{uh.ls.fit}},
-  \code{\link{arima}}
+  \code{\link{armax}},
+  \code{\link{expuh}}
 }
 \examples{
 

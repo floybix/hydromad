@@ -1,10 +1,16 @@
 
 Changes in Version 0.6-1
 
-  o changed default hydromad.options("inverse.rel.tolerance") to 1/1000.
+  o armax.sim() (and therefore predict()) takes return_components argument.
 
-  o new simple SMA "runoffratio" - runoffratio.sim().
-    (scales P by observed flow, so can not do prediction).
+  o new simple SMA "runoffratio" - and function runoffratio.sim().
+    (it scales P by observed flow, so can not be used for prediction).
+
+  o coef() can now be assigned to.
+
+  o update(model, sma = ...) changes the SMA and resets its parameters.
+
+  o changed default hydromad.options("inverse.rel.tolerance") to 1/1000.
 
 Changes in Version 0.6-0
 

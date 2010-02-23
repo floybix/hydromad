@@ -9,7 +9,8 @@ hydromad.sim <-
              ...,
              sma = hydromad.getOption("sma"),
              routing = hydromad.getOption("routing"),
-             return_state = FALSE)
+             return_state = FALSE,
+             return_components = FALSE)
 {
     DATA <- as.ts(DATA)
     ## dots `...` may contain arguments for sma and/or routing
@@ -76,6 +77,8 @@ hydromad.sim <-
         rcall <- as.call(c(list(as.symbol(r.fun),
                             quote(U)),
                        dots[forRouting]))
+        if (return_components)
+            ucall$return_components <- TRUE
         Q <- eval(rcall)
     } else if (is.null(routing)) {
         ## no routing

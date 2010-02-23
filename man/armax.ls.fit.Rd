@@ -5,13 +5,20 @@
 \title{ Estimate transfer function models by Least Squares. }
 \description{
   Calibrate unit hydrograph transfer function models (\code{\link{armax}}
-  or \code{\link{expuh}}) using Least Squares.
+  or \code{\link{expuh}}) using Least Squares with prefiltering.
 }
 \usage{
 armax.ls.fit(DATA,
-          order = hydromad.getOption("order"),
-          delay = hydromad.getOption("delay"),
-          ...)
+             order = hydromad.getOption("order"),
+             delay = hydromad.getOption("delay"),
+             prefilter = hydromad.getOption("prefilter"),
+             warmup = hydromad.getOption("warmup"),
+             normalise = FALSE,
+             fixed.ar = NULL,
+             weights = NULL,
+             initX = TRUE,
+             na.action = na.pass,
+             trace = hydromad.getOption("trace"))
 
 expuh.ls.fit(DATA,
              order = hydromad.getOption("order"),
@@ -32,14 +39,24 @@ expuh.ls.fit(DATA,
     delay (lag time / dead time) in number of time steps. If missing,
     this will be estimated from the cross correlation function.
   }
+  \item{prefilter}{
+  }
+  \item{warmup}{
+  }
+  \item{normalise}{
+  }
+  \item{fixed.ar}{
+  }
+  \item{weights}{
+  }
+  \item{initX}{
+  }
+  \item{na.action}{
+  }
+  \item{trace}{
+  }
   \item{\dots}{
-    further arguments may include
-    \describe{
-      \item{prefilter}{ ~~Describe \code{prefilter} here~~ }
-      \item{weights}{ ~~Describe \code{weights} here~~ }
-      \item{na.action}{ ~~Describe \code{na.action} here~~ }
-      \item{trace}{ ~~Describe \code{trace} here~~ }
-    }
+    passed on to \code{armax.ls.fit}.
   }
   \item{method, control}{
     optimisation method and settings for fitting poles constrained to
@@ -62,7 +79,7 @@ expuh.ls.fit(DATA,
   \code{hydromad(..., routing = "expuh", rfit = list("ls", order = c(2,1)))}.
 }
 \value{
-  a list with components
+  a \code{tf} object, which is a list with components
   \item{coefficients}{ the fitted parameter values.}
   \item{fitted.values}{ the fitted values. }
   \item{residuals}{ the residuals. }

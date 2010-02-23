@@ -16,7 +16,7 @@ S3method(isValidModel, default)
 S3method(isValidModel, hydromad)
 
 export(predict.hydromad)
-export(hydromad.sim)
+export(hydromad.sim) ## TODO: do not export - same as predict(hydromad())
 
 export(update.hydromad)
 export("coef<-")

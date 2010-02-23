@@ -3,16 +3,17 @@
 ## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
-"coef<-" <- function(object, value)
+"coef<-" <- function(object, ..., value)
     UseMethod("coef<-")
 
-"coef<-.hydromad" <- function(object, value)
+"coef<-.hydromad" <-
+    function(object, ..., value)
 {
     pars <- as.list(value)
     ## all elements must have names
     stopifnot(length(names(pars)) == length(pars))
     stopifnot(all(sapply(names(pars), nchar) > 0))
-    curNames <- names(coef(object, warn = FALSE))
+    curNames <- names(coef(object, ..., warn = FALSE))
     ## find existing parameters not named in 'value', to remove:
     remNames <- curNames[curNames %in% names(pars) == FALSE]
     ## set them to NULL to delete them from the coef() list:
@@ -20,7 +21,7 @@
     names(remList) <- remNames
     pars <- c(pars, remList)
     ## use 'update' to make the changes
-    object <- do.call("update.hydromad", c(list(object), pars))
+    object <- do.call("update", c(list(object), pars))
     object
 }
 
@@ -32,8 +33,6 @@ update.hydromad <-
     ## update timestamp
     object$last.updated <- Sys.time()
 
-    if (!missing(sma))
-        return(NextMethod("update"))
     ## update the stored call
     upcall <- match.call()
     nm <- names(upcall)
@@ -57,8 +56,41 @@ update.hydromad <-
         RUNSMA <- TRUE
     }
     ## update named items
-    if (!missing(routing))
+    if (!missing(sma)) {
+        if (!is.null(object$sma)) {
+            ## remove old SMA-specific parameters
+            coef(object) <- coef(object, "routing", warn = FALSE)
+        }
+        if (!is.null(sma)) {
+            ## take default parameter ranges/values from hydromad.options()
+            object$parlist <-
+                modifyList(as.list(hydromad.getOption(sma)),
+                           object$parlist)
+        }
+        class(object) <- unique(c(sma, "hydromad"))
+        object$sma <- sma
+        object$sma.fun <- NULL
+        object$sma.args <- NULL
+        if (!is.null(sma)) {
+            object$sma.fun <- paste(sma, ".sim", sep = "")
+            force(get(object$sma.fun, mode = "function")) ## check exists
+            object$sma.args <- formals(object$sma.fun)
+        }
+        RUNSMA <- TRUE
+    }
+    if (!missing(routing)) {
+        if (!is.null(object$routing)) {
+            ## remove old routing-specific parameters
+            coef(object) <- coef(object, "sma", warn = FALSE)
+        }
+        if (!is.null(routing)) {
+            ## take default parameter ranges/values from hydromad.options()
+            object$parlist <-
+                modifyList(as.list(hydromad.getOption(routing)),
+                           object$parlist)
+        }
         object$routing <- routing
+    }
     if (!missing(rfit))
         object$rfit <- rfit
     if (!missing(warmup)) {
@@ -101,7 +133,7 @@ update.hydromad <-
     }
     ## run SMA to generate U
     if (RUNSMA) {
-        object$U <- predict(object, with_routing = FALSE)
+        object$U <- predict(object, which = "sma")
     }
     ## handle routing
     routing <- object$routing
@@ -132,15 +164,9 @@ update.hydromad <-
 
             ## TODO: take starting value of filter from data
 
-            fnName <- paste(routing, "sim", sep = ".")
-            force(get(fnName, mode = "function"))
-            rcoef <- coef(object, which = "routing")
-            rcall <- as.call(c(list(as.symbol(fnName),
-                                    quote(object$U)),
-                               as.list(rcoef)))
-            object$fitted.values <- eval(rcall)
-            object$residuals <-
-                (object$data[,"Q"] - object$fitted.values)
+            object$fitted.values <- predict(object, which = "routing")
+#            object$residuals <-
+#                (object$data[,"Q"] - object$fitted.values)
         }
     }
     ## absorbScale:
@@ -302,7 +328,7 @@ doRoutingFit <-
         rcoef <- c(rcoef, delay = rans$delay)
     object$parlist <- modifyList(object$parlist, as.list(rcoef))
     object$fitted.values <- fitted(rans, all = TRUE)
-    object$residuals <- residuals(rans, all = TRUE)
+    #object$residuals <- residuals(rans, all = TRUE)
     tmp <- try(vcov(rans), silent = TRUE)
     if (inherits(tmp, "try-error"))
         tmp <- rans$vcov

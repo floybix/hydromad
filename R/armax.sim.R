@@ -8,7 +8,8 @@ armax.sim <-
              b_0 = 1, b_1 = 0, b_2 = 0, b_3 = 0,
              pars = NULL,
              delay = 0, init = 0, na.action = na.pass,
-             epsilon = hydromad.getOption("sim.epsilon"))
+             epsilon = hydromad.getOption("sim.epsilon"),
+             return_components = FALSE)
 {
     ## parameter vectors
     a <- c(a_1, a_2, a_3)
@@ -34,6 +35,16 @@ armax.sim <-
     ## note U is allowed to be multi-variate, i.e. multiple columns
     if (!is.ts(U)) U <- as.ts(U)
     U <- na.action(U)
+    ## to return components, need to convert and pass to expuh.sim
+    if (return_components) {
+        abpars <- c(a,b)
+        names(abpars) <- c(paste("a",seq_len(n),sep="_"),
+                           paste("b",seq(0,m),sep="_"))
+        return(expuh.sim(U, pars = tfParsConvert(abpars, "tau,v"),
+                         delay = delay, Xs_0 = init[1],
+                         epsilon = epsilon,
+                         return_components = TRUE))
+    }
     ## apply 'U' delay in reverse to 'X' (i.e. lag by 'delay' steps)
     ## so can take delay as 0 for simulation purposes
     if (delay != 0)

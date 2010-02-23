@@ -1,6 +1,6 @@
 
 body {
-  background: #BABCBB url('waterfall_sidebar.jpg') no-repeat top left;*/
+  background: #BABCBB url('waterfall_sidebar_right.jpg') no-repeat top right;
   margin: 0;
   padding: 0;
   font-family: sans-serif;
@@ -8,12 +8,13 @@ body {
 
 #banner {
   margin-left: 15em;
-  padding: 1em;
-  height: 3em;
+  padding: 0em 0em;
+  height: 4em;
   vertical-align: middle;
 }
 
 #banner .title {
+  display: block;
   float: left;
   margin: 0;
   padding: 0;
@@ -26,10 +27,12 @@ body {
   display: block;
   float: left;
   margin: 1em;
-  border: 2px solid black;
+  margin-top: 1em;
+  padding: 0.05em;  
+  border: 2px solid;
   border-left: 0;
   border-right: 0;
-  font-size: 1.3em;
+  font-size: 1.25em;
   font-family: UnderwoodChampion,monospace;
   vertical-align: middle;
 }

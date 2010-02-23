@@ -9,7 +9,8 @@
 }
 \usage{
 \method{xyplot}{hydromad}(x, data = NULL,
-	coerce = byDays, with.P = FALSE,
+	coerce = byDays, all = FALSE,
+        superpose = FALSE, with.P = FALSE,
         screens = list(P = "rainfall", "streamflow"),
 	...)
 
@@ -27,6 +28,7 @@ errormasscurve(x, ...)
   \item{data}{ ignored. }
   \item{coerce}{ a function to apply to the time series of observed and modelled values. }
   \item{trans}{ a function to apply to the time series. }
+  \item{superpose}{ to overlay time series in one panel. }
   \item{with.P}{ to include the input rainfall series in the plot. }
   \item{screens}{ panels specification, passed to \code{\link[zoo]{xyplot.zoo}}. }
   \item{col}{ colours. }

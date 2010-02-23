@@ -8,7 +8,7 @@
 }
 \usage{
 simulate.hydromad(object, nsim, seed, ...,
-   sampletype = c("all.combinations", "latin.hypercube", "random"),
+   sampletype = c("latin.hypercube", "random", "all.combinations"),
    FUN = NULL, bind = FALSE)
 }
 \arguments{

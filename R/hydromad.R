@@ -16,28 +16,13 @@ hydromad <-
     DATA <- as.ts(DATA)
     ## dots `...` may contain arguments for sma and/or routing.
     ## parlist stores these -- and they may be ranges.
-    ## take defaults from hydromad.options()
-    parlist <- list()
-    if (is.character(routing)) {
-        parlist <-
-            modifyList(parlist, as.list(hydromad.getOption(routing)))
-    }
-    if (is.character(sma)) {
-        parlist <-
-            modifyList(parlist, as.list(hydromad.getOption(sma)))
-    }
-    parlist <- modifyList(parlist, list(...))
+    ## update() takes default parameter ranges/values from hydromad.options().
+    parlist <- list(...)
     ## create the model object
     obj <- list(call = match.call())
-    class(obj) <- unique(c(sma, "hydromad"))
-    obj$sma <- sma
-    if (is.character(sma)) {
-        obj$sma.fun <- paste(sma, ".sim", sep = "")
-        force(get(obj$sma.fun, mode = "function"))
-        obj$sma.args <- formals(obj$sma.fun)
-    }
+    class(obj) <- "hydromad"
     obj$parlist <- parlist
-    obj <- update(obj, newdata = DATA,
+    obj <- update(obj, newdata = DATA, sma = sma,
                   routing = routing, rfit = rfit,
                   warmup = warmup, weights = weights)
     obj$call <- match.call() ## reset call after update()

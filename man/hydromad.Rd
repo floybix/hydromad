@@ -19,11 +19,6 @@ hydromad(DATA = zoo(), ...,
         routing = hydromad.getOption("routing"),
         rfit = NULL, weights = NULL,
         warmup = hydromad.getOption("warmup"))
-
-hydromad.sim(DATA, ...,
-        sma = hydromad.getOption("sma"),
-        routing = hydromad.getOption("routing"),
-        return_state = FALSE)
 }
 \arguments{
   \item{DATA, newdata}{
@@ -89,6 +84,10 @@ hydromad.sim(DATA, ...,
     \item{\code{\link{sacramento}}}{
       Sacramento Soil Moisture Accounting model (US NWS).
     }
+    \item{\code{\link{runoffratio}}}{
+      rainfall is scaled by the runoff coefficient estimated in a moving
+      window. 
+    }
   }
 
   The supplied Routing (\code{routing}) models are:
@@ -105,7 +104,11 @@ hydromad.sim(DATA, ...,
       series configuration. 
     }
     \item{\code{\link{lambda}}}{
-      lambda
+      a non-linear variant of two exponential stores in parallel: the
+      partitioning of flow between the two stores is allowed to vary,
+      depending on the magnitude of (effective) rainfall. Intense
+      rainfall events tend to be dominated by quick flow, while light
+      rainfall events tend to be dominated by slow flow.
     }
 %    \item{\code{\link{powerlaw}}}{
 %      [TODO]
@@ -158,8 +161,6 @@ hydromad.sim(DATA, ...,
 \value{
   the result from \code{hydromad()} is a
   \link[=hydromad.object]{hydromad object}.
-
-  the result from \code{hydromad.sim()} is a simulated time series.
 }
 \references{
   ... TODO
