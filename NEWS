@@ -1,4 +1,9 @@
 
+Changes in Version 0.6-2 (under development)
+
+  o armax.sriv.fit() now takes an argument fallback, default TRUE,
+    to return the current best result if the matrix cannot be solved.
+
 Changes in Version 0.6-1
 
   o armax.sim() (and therefore predict()) takes return_components argument.

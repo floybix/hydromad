@@ -52,6 +52,7 @@ do_srivfit <-
              normalise = FALSE,
              initX = TRUE,
              na.action = na.pass,
+             fallback = TRUE,
              epsilon = hydromad.getOption("sriv.epsilon"),
              max.iterations = hydromad.getOption("sriv.iterations"),
              trace = hydromad.getOption("trace"))
@@ -80,6 +81,7 @@ do_srivfit <-
     if (length(fixed.ar) > 0)
         mask[1:n] <- FALSE
     X <- fitted(init.model, all = TRUE)
+    obj <- init.model
     ## working data matrix
     DATA <- DATA[,c("U","Q","U")] ## last column will store X
     converged <- FALSE
@@ -178,14 +180,17 @@ do_srivfit <-
             ## and remove them from model matrix
             xz <- xz[,-(1:n)]
         }
-        #if (isTRUE(hydromad.getOption("catch.errors"))) {
-            theta <- try(solve(xz, xQ),
-                         silent = !hydromad.getOption("trace"))
-            if (inherits(theta, "try-error"))
+        theta <- try(solve(xz, xQ),
+                     silent = !hydromad.getOption("trace"))
+        if (inherits(theta, "try-error")) {
+            if (fallback) {
+                warning(theta)
+                theta <- theta.prev
+                break
+            } else {
                 return(theta)
-        #} else {
-        #    theta <- solve(xz, xQ)
-        #}
+            }
+        }
         if (length(fixed.ar) > 0) {
             theta <- c(fixed.ar, theta)
         }

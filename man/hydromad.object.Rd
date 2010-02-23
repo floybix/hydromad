@@ -65,7 +65,12 @@ isValidModel(object, ...)
     parameters for mass balance.
   }
   \item{which}{
-    selects either the SMA or routing model, or both models (the default).
+    selects either the SMA or routing model, or both models (the
+    default).
+
+    For the \code{predict} method, note that if \code{which =
+      "routing"}, then \code{newdata} should be the effective rainfall
+    (U). 
   }
   \item{all}{
     if \code{TRUE}, return the entire time series for which data
@@ -107,7 +112,10 @@ isValidModel(object, ...)
   \code{\link{xyplot.hydromad}},
   \code{\link{qqmath.hydromad}},
   \code{\link{errormasscurve}}.
-
+  
+  \code{isValidModel()} returns \code{TRUE} only if the supplied
+  \code{hydromad} object is fully specified and has a calculated output
+  series. 
 }
 \value{
   \code{update} returns a new \code{hydromad} object.
@@ -115,8 +123,8 @@ isValidModel(object, ...)
   \code{predict}, \code{fitted}, \code{observed} and \code{residuals}
   returns time series. 
   
-  \code{coef} returns a named vector, or a named \code{list} if one or
-  more parameters are not fully specified.
+  \code{coef} returns a named numeric vector, or a named \code{list} if
+  one or more parameters are not fully specified.
 }
 \author{ Felix Andrews \email{felix@nfrac.org} }
 \seealso{

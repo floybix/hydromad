@@ -45,6 +45,7 @@ expuh.sriv.fit(DATA,
   \item{\dots}{
     further arguments may include
     \describe{
+      \item{fallback}{ }
       \item{prefilter}{ }
       \item{initX}{ }
       \item{trace}{ ~~Describe \code{trace} here~~ }
