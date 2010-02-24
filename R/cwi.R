@@ -149,7 +149,7 @@ cwi.ranges <- function()
          p = 1,
          t_ref = 20)
 
-absorbScale.cwi <- function(object, gain)
+absorbScale.hydromad.cwi <- function(object, gain)
 {
     #if (!isTRUE(object$estimateScale)) {
     c <- coef(object)[["c"]]

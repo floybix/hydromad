@@ -135,7 +135,9 @@ fitByOptim <-
             bestModel$msg <- msg
         }
         bestModel$funevals <- ans$counts[1] + pre.funevals
-        bestModel$timing <- proc.time() - start_time
+        bestModel$timing <- signif(proc.time() - start_time, 4)[1:3]
+        bestModel$objective <- objective
+        bestModel$fit.call <- match.call()
         return(bestModel)
     }
 }

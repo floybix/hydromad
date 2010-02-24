@@ -32,58 +32,6 @@ hydromad <-
 isFullySpecified <- function(object, ...)
     !is.list(coef(object, ..., warn = FALSE))
 
-coef.hydromad <-
-    function(object, which = c("both", "sma", "routing"), ..., warn = TRUE)
-{
-    which <- match.arg(which)
-    parlist <- object$parlist
-    if (which == "both") {
-        if (any(sapply(parlist, length) > 1)) {
-            if (warn)
-                warning("parameters not fully specified, returning list")
-            return(parlist)
-        } else {
-            return(unlist(parlist))
-        }
-    }
-    ## work out which arguments go to SMA function
-    sma.argnames <- names(object$sma.args)
-    forSMA <- names(parlist) %in% sma.argnames
-    ## work out which arguments go to routing function
-    routing <- object$routing
-    r.argnames <- NULL
-    if (is.character(routing)) {
-        r.fun <- paste(routing, ".sim", sep = "")
-        r.argnames <- names(formals(r.fun))
-    }
-    forRouting <- names(parlist) %in% r.argnames
-    ## resolve ambiguities / arguments to be passed through
-    unmatched <- (!forSMA) & (!forRouting)
-    unmatchedOK <- FALSE
-    if ("..." %in% sma.argnames) {
-        forSMA <- forSMA | unmatched
-        unmatchedOK <- TRUE
-    }
-    if ("..." %in% r.argnames) {
-        forRouting <- forRouting | unmatched
-        unmatchedOK <- TRUE
-    }
-    if (any(unmatched) && !unmatchedOK)
-        warning("unrecognised parameters: ",
-                toString(names(parlist)[unmatched]))
-    if (which == "sma")
-        result <- parlist[forSMA]
-    if (which == "routing")
-        result <- parlist[forRouting]
-    if (any(sapply(result, length) > 1)) {
-        if (warn)
-            warning("parameters not fully specified, returning list")
-        return(result)
-    } else {
-        return(unlist(result))
-    }
-}
-
 fitted.hydromad <- function(object, ..., U = FALSE, all = FALSE)
 {
     if (is.null(object$routing))
@@ -138,20 +86,16 @@ deviance.hydromad <- stats:::deviance.lm
 print.hydromad <-
     function(x, digits = max(3, getOption("digits") - 3), ...)
 {
+    cat(paste("\n",
+              'Hydromad model with "', format(x$sma), '" SMA',
+              ' and "', format(x$routing), '" routing:', "\n", sep = ''))
     rx <- x$data
-    routingStr <- if (is.null(x$routing)) "NULL" else toString(x$routing)
-    cat(paste("\nHydromad model with SMA class \"", class(x)[1],
-              "\" and routing \"", routingStr, "\":\n", sep = ""))
     cat(paste("Start = ", index2char(index(rx)[1], frequency(rx)),
               ", End = ", index2char(index(rx)[NROW(rx)], frequency(rx)),
               "\n", sep = ""))
     cat("Last updated: ", format(x$last.updated), "\n")
     cat("\nCall:\n")
     print(x$call)
-    if (!is.null(x$objective)) {
-        cat("Objective function:\n")
-        print(x$objective)
-    }
     cat("\n")
     for (which in c("sma", "routing")) {
         if (!is.null(x[[which]])) {
@@ -187,10 +131,23 @@ print.hydromad <-
     if (!is.null(x$rfit)) {
         cat("Routing fit spec.: ",
             toString(deparse(x$rfit, control = c(), width = 500),
-                     width = 60), "\n")
+                     width = getOption("width")), "\n")
     }
     if (!is.null(x$msg)) {
         cat("\nMessage: ", toString(x$msg), "\n")
+    }
+    if (!is.null(x$fit.call)) {
+        cat("\nFit call:\n")
+        print(x$fit.call)
+        cat("Fit info:\n",
+            toString(deparse(x[c("funevals", "timing", "objective")],
+                             control = c(), width = 500),
+                     width = getOption("width")), "\n")
+    }
+    if (length(x$info.rfit) > 0) {
+        cat("\nRouting fit info: ",
+            toString(deparse(x$info.rfit, control = c(), width = 500),
+                     width = getOption("width")), "\n")
     }
     invisible(x)
 }

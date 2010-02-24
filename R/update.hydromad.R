@@ -3,27 +3,11 @@
 ## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
-"coef<-" <- function(object, ..., value)
-    UseMethod("coef<-")
+absorbScale <- function(object, gain)
+    UseMethod("absorbScale")
 
-"coef<-.hydromad" <-
-    function(object, ..., value)
-{
-    pars <- as.list(value)
-    ## all elements must have names
-    stopifnot(length(names(pars)) == length(pars))
-    stopifnot(all(sapply(names(pars), nchar) > 0))
-    curNames <- names(coef(object, ..., warn = FALSE))
-    ## find existing parameters not named in 'value', to remove:
-    remNames <- curNames[curNames %in% names(pars) == FALSE]
-    ## set them to NULL to delete them from the coef() list:
-    remList <- rep(list(NULL), length(remNames))
-    names(remList) <- remNames
-    pars <- c(pars, remList)
-    ## use 'update' to make the changes
-    object <- do.call("update", c(list(object), pars))
-    object
-}
+absorbScale.hydromad <- function(object, gain)
+    return(NULL)
 
 update.hydromad <-
     function(object, ..., newdata = NULL,
@@ -61,13 +45,15 @@ update.hydromad <-
             ## remove old SMA-specific parameters
             object$parlist <- as.list(coef(object, "routing", warn = FALSE))
         }
+        class(object) <- "hydromad"
         if (!is.null(sma)) {
             ## take default parameter ranges/values from hydromad.options()
             object$parlist <-
                 modifyList(as.list(hydromad.getOption(sma)),
                            object$parlist)
+            class(object) <- c(paste("hydromad", sma, sep="."),
+                               "hydromad")
         }
-        class(object) <- unique(c(sma, "hydromad"))
         object$sma <- sma
         object$sma.fun <- NULL
         object$sma.args <- NULL
@@ -231,12 +217,6 @@ update.hydromad <-
     return(object)
 }
 
-absorbScale <- function(object, gain)
-    UseMethod("absorbScale")
-
-absorbScale.hydromad <- function(object, gain)
-    return(NULL)
-
 doParseRfit <-
     function(object)
 {
@@ -261,71 +241,4 @@ doParseRfit <-
     
     object$rfit <- rfit
     return(object)
-}
-
-doRoutingFit <-
-    function(object, inverseFitOnly = FALSE)
-{
-    ## run 'rfit' with appropriate DATA
-    routing <- object$routing
-    rfit <- object$rfit
-    if (is.null(routing))
-        return(object)
-    if (is.null(rfit))
-        return(object)
-    ## ok, 'rfit' given, fit the routing model.
-    ## we should remove any existing routing parameters
-    object$parlist <- as.list(coef(object, which = "sma", warn = FALSE))
-    object$vcov.rfit <- NULL
-    doRfit <- function(method, ...)
-    {
-        if (missing(method))
-            stop("missing 'method' in 'rfit' specification")
-        if (!is.character(method))
-            stop("unrecognised 'method' in 'rfit' specification")
-        isInverseMethod <- (any(grep("inverse", method)))
-        if (isInverseMethod) {
-            DATA <- object$data
-        } else {
-            if (inverseFitOnly)
-                return(NULL)
-            DATA <- cbind(U = object$U,
-                          Q = object$data[,"Q"])
-        }
-        fnName <- paste(routing, method, "fit", sep = ".")
-        force(get(fnName, mode = "function"))
-        if (isInverseMethod && !isTRUE(hydromad.getOption("quiet")))
-            message("== fitting routing by ", fnName, " method ==")
-        fcall <- quote(RFIT(DATA, ...))
-        fcall[[1]] <- as.symbol(fnName)
-        ans <- eval(fcall)
-        if (isInverseMethod && is.list(ans)) {
-            ## these should be set to NULL anyway, but to be sure:
-            ans$fitted.values <- NULL
-            ans$residuals <- NULL
-        }
-        ans
-    }
-    rans <- do.call(doRfit, rfit)
-    if (is.null(rans))
-        return(object)
-    if (inherits(rans, "try-error") ||
-        inherits(rans, "error")) {
-        object$msg <- rans
-        return(object)
-    }
-    rcoef <- coef(rans)
-    if (!is.null(rans$delay))
-        rcoef <- c(rcoef, delay = rans$delay)
-    object$parlist <- modifyList(object$parlist, as.list(rcoef))
-    object$fitted.values <- fitted(rans, all = TRUE)
-    #object$residuals <- residuals(rans, all = TRUE)
-    tmp <- try(vcov(rans), silent = TRUE)
-    if (inherits(tmp, "try-error"))
-        tmp <- rans$vcov
-    object$vcov.rfit <- tmp
-    ## delete the fit specification, as it has done its work now
-    object$used.rfit <- rfit
-    object$rfit <- NULL
-    object
 }

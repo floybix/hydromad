@@ -1,9 +1,13 @@
 
 Changes in Version 0.6-3 (under development)
 
+  o class of hydromad objects is now c("hydromad.<sma>", "hydromad").
+
   o hydromad.options("prefilter") now has 3 hard-coded prefilters.
     The 'prefilter' argument is now allowed to be a prefilter-generating 
     function (function(DATA)).
+
+  o more information about fit results is printed.
 
 Changes in Version 0.6-2
 

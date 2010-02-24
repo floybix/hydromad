@@ -187,6 +187,7 @@ do_srivfit <-
         if (inherits(theta, "try-error")) {
             if (fallback) {
                 warning(theta)
+                obj$warning <- theta
                 theta <- theta.prev
                 break
             } else {

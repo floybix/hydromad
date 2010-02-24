@@ -22,7 +22,7 @@ scalar.sim <-
 scalar.ranges <- function()
     list(c = NA)
 
-absorbScale.scalar <- function(object, gain)
+absorbScale.hydromad.scalar <- function(object, gain)
 {
     coeff <- coef(object)
     c <- coeff[["c"]]

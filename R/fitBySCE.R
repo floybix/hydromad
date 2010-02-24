@@ -52,6 +52,8 @@ fitBySCE <-
     }
     bestModel$sce.iterations <- ans$iterations
     bestModel$funevals <- ans$counts
-    bestModel$timing <- proc.time() - start_time
+    bestModel$timing <- signif(proc.time() - start_time, 4)[1:3]
+    bestModel$objective <- objective
+    bestModel$fit.call <- match.call()
     return(bestModel)
 }

@@ -1,10 +1,10 @@
 
 importFrom(lattice, xyplot)
+importFrom(lattice, qqmath)
 
 ## CORE FUNCTIONS
 
 export(hydromad)
-export(coef.hydromad)
 S3method(print, hydromad)
 S3method(fitted, hydromad)
 S3method(residuals, hydromad)
@@ -15,26 +15,29 @@ export(isValidModel)
 S3method(isValidModel, default)
 S3method(isValidModel, hydromad)
 
-export(predict.hydromad)
+S3method(predict, hydromad)
 export(hydromad.sim) ## TODO: do not export - same as predict(hydromad())
 
-export(update.hydromad)
+S3method(update, hydromad)
+
+S3method(coef, hydromad)
 export("coef<-")
 S3method("coef<-", hydromad)
+
 export(absorbScale)
-export(absorbScale.hydromad)
+S3method(absorbScale, hydromad)
 
-export(simulate.hydromad)
+S3method(simulate, hydromad)
 
-export(summary.hydromad)
+S3method(summary, hydromad)
 S3method(print, summary.hydromad)
 S3method(print, summaryWithBreaks.hydromad)
 
-export(xyplot.hydromad)
+S3method(xyplot, hydromad)
 export(errormasscurve)
-export(errormasscurve.default)
-export(qqmath.hydromad)
-export(tsdiag.hydromad)
+S3method(errormasscurve, default)
+S3method(qqmath, hydromad)
+S3method(tsdiag, hydromad)
 
 
 ## ROUTING MODELS
@@ -90,10 +93,10 @@ S3method(vcov, tf)
 ## SOIL MOISTURE ACCOUNTING MODELS
 
 export(scalar.sim)
-export(absorbScale.scalar)
+export(absorbScale.hydromad.scalar)
 
 export(cwi.sim)
-export(absorbScale.cwi)
+export(absorbScale.hydromad.cwi)
 export(filter_tv)
 useDynLib(hydromad, ar1_tv)
 
@@ -109,7 +112,7 @@ useDynLib(hydromad, sma_sac)
 export(runoffratio.sim)
 
 export(dbm.sim)
-export(absorbScale.dbm)
+export(absorbScale.hydromad.dbm)
 
 
 ## CALIBRATION METHODS
@@ -141,16 +144,15 @@ export(SCEoptim)
 
 ## runlist.R
 export(runlist,
-       as.runlist,
-       errormasscurve.runlist,
-       xyplot.runlist,
-       qqmath.runlist,
-       summary.hydromad.runlist)
+       as.runlist)
 S3method("[", runlist)
 S3method(print, runlist)
 S3method(print, summary.runlist)
+S3method(errormasscurve, runlist)
+S3method(xyplot, runlist)
+S3method(qqmath, runlist)
 S3method(print, hydromad.runlist)
-
+S3method(summary, hydromad.runlist)
 
 
 ## MISCELLANEOUS
