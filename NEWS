@@ -1,8 +1,16 @@
 
-Changes in Version 0.6-2 (under development)
+Changes in Version 0.6-3 (under development)
 
-  o armax.sriv.fit() now takes an argument fallback, default TRUE,
+  o hydromad.options("prefilter") now has 3 hard-coded prefilters.
+    The 'prefilter' argument is now allowed to be a prefilter-generating 
+    function (function(DATA)).
+
+Changes in Version 0.6-2
+
+  o armax.sriv.fit() now takes an argument fallback (default TRUE),
     to return the current best result if the matrix cannot be solved.
+
+  o predict(return_components = TRUE) didn't work.
 
 Changes in Version 0.6-1
 

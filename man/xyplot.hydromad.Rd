@@ -10,7 +10,7 @@
 \usage{
 \method{xyplot}{hydromad}(x, data = NULL,
 	coerce = byDays, all = FALSE,
-        superpose = FALSE, with.P = FALSE,
+        superpose = TRUE, with.P = FALSE,
         screens = list(P = "rainfall", "streamflow"),
 	...)
 

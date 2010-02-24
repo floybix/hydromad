@@ -59,7 +59,7 @@ update.hydromad <-
     if (!missing(sma)) {
         if (!is.null(object$sma)) {
             ## remove old SMA-specific parameters
-            coef(object) <- coef(object, "routing", warn = FALSE)
+            object$parlist <- as.list(coef(object, "routing", warn = FALSE))
         }
         if (!is.null(sma)) {
             ## take default parameter ranges/values from hydromad.options()
@@ -81,7 +81,7 @@ update.hydromad <-
     if (!missing(routing)) {
         if (!is.null(object$routing)) {
             ## remove old routing-specific parameters
-            coef(object) <- coef(object, "sma", warn = FALSE)
+            object$parlist <- as.list(coef(object, "sma", warn = FALSE))
         }
         if (!is.null(routing)) {
             ## take default parameter ranges/values from hydromad.options()
@@ -257,17 +257,8 @@ doParseRfit <-
         stop("unrecognised value of 'rfit'")
 
     ## TODO: set normalise = FALSE for armax/expuh if an absorbScale is available
-
-
-    ## prefilter is relevant to these routing modules:
-    if (routing %in% c("armax", "expuh")) {
-        if (is.null(rfit$prefilter) &&
-            isTRUE(hydromad.getOption("prefilter")))
-        {
-            rfit$prefilter <-
-                makePrefilter(object$data, order = c(2,1))
-        }
-    }
+    ## ?
+    
     object$rfit <- rfit
     return(object)
 }

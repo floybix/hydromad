@@ -12,8 +12,7 @@ spec[["modelling framework"]] <-
     list(
          "hydromad" = list(example = 1),
          "hydromad.object" = list(),
-         #"predict.hydromad" = list(),
-         #"summary.hydromad" = list(),
+         "summary.hydromad" = list(),
          "simulate.hydromad" = list(),
          "runlist" = list(),
          "hydromad.options" = list()
@@ -25,7 +24,8 @@ spec[["soil moisture accounting"]] <-
          "IHACRES.CWI.model" = list(),
          "IHACRES.CMD.model" = list(),
          "bucket" = list(),
-         "sacramento" = list()
+         "sacramento" = list(),
+         "runoffratio" = list()
          #"dbm" = list()
          )
 
@@ -52,7 +52,7 @@ spec[["routing fitting"]] <-
          "armax.ls.fit" = list(),
          "armax.sriv.fit" = list(),
          "armax.inverse.fit" = list(),
-         "expuh.sriv.fit" = list
+         "expuh.sriv.fit" = list()
          #"lambda.inverse.fit"
          )
 

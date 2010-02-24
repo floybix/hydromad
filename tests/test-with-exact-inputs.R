@@ -53,7 +53,7 @@ test_that("Least squares (armax) fitting works for all orders with exact inputs"
     expect_that(fitted(armax.ls.fit(cbind(U = U, Q = Q_n3s0), order = c(3,2))), ts_equals(Q_n3s0, tol = 1e-5))
     expect_that(fitted(armax.ls.fit(cbind(U = U, Q = Q_n3s1), order = c(3,2))), ts_equals(Q_n3s1, tol = 1e-5))
     expect_that(fitted(armax.ls.fit(cbind(U = U, Q = Q_n3s2), order = c(3,1))), ts_equals(Q_n3s2, tol = 1e-5))
-    expect_that(fitted(armax.ls.fit(cbind(U = U, Q = Q_n3s3), order = c(3,0))), ts_equals(Q_n3s3, tol = 0.10)) ## hmm
+    expect_that(fitted(armax.ls.fit(cbind(U = U, Q = Q_n3s3), order = c(3,0), delay = 0)), ts_equals(Q_n3s3, tol = 1e-5))
 })
 
 test_that("SRIV (armax) fitting works for all orders with exact inputs", {
@@ -68,9 +68,9 @@ test_that("SRIV (armax) fitting works for all orders with exact inputs", {
     expect_that(fitted(armax.sriv.fit(cbind(U = U, Q = Q_n3s0), order = c(3,2))), ts_equals(Q_n3s0, tol = 1e-5))
     expect_that(fitted(armax.sriv.fit(cbind(U = U, Q = Q_n3s1), order = c(3,2))), ts_equals(Q_n3s1, tol = 1e-5))
     expect_that(fitted(armax.sriv.fit(cbind(U = U, Q = Q_n3s2), order = c(3,1))), ts_equals(Q_n3s2, tol = 1e-5))
-    expect_that(fitted(armax.sriv.fit(cbind(U = U, Q = Q_n3s3), order = c(3,0))), ts_equals(Q_n3s3, tol = 0.15)) ## hmm!
+    expect_that(fitted(armax.sriv.fit(cbind(U = U, Q = Q_n3s3), order = c(3,0), delay = 0)), ts_equals(Q_n3s3, tol = 1e-5))
     
-    ## tmp <- ts.intersect(fitted(armax.sriv.fit(cbind(U = U, Q = Q_n3s3), order = c(3,0))), Q_n3s3)
+    ## tmp <- ts.intersect(fitted(armax.sriv.fit(cbind(U = U, Q = Q_n3s3), order = c(3,0), delay = 0)), Q_n3s3)
     ## summary(tmp[,1] - tmp[,2])
     ## xyplot(ts(tmp), superpose = TRUE)
 })
@@ -87,8 +87,8 @@ test_that("Inverse (armax) fitting works for all orders with exact inputs", {
     expect_that(fitted(armax.inverse.fit(cbind(P = as.ts(obsdat$P), Q = Q_n3s0), order = c(3,2), use.Qm = FALSE)), ts_equals(Q_n3s0, tol = 1e-2))
     expect_that(fitted(armax.inverse.fit(cbind(P = as.ts(obsdat$P), Q = Q_n3s1), order = c(3,2), use.Qm = FALSE)), ts_equals(Q_n3s1, tol = 1e-2))
     expect_that(fitted(armax.inverse.fit(cbind(P = as.ts(obsdat$P), Q = Q_n3s2), order = c(3,1), use.Qm = FALSE)), ts_equals(Q_n3s2, tol = 1e-2))
-    expect_that(fitted(armax.inverse.fit(cbind(P = as.ts(obsdat$P), Q = Q_n3s3), order = c(3,0), use.Qm = FALSE)), ts_equals(Q_n3s3, tol = 1.20)) ## !!
-    ## tmp <- ts.intersect(fitted(armax.inverse.fit(cbind(P = as.ts(obsdat$P), Q = Q_n3s3), order = c(3,0), use.Qm = FALSE)), Q_n3s3)
+    expect_that(fitted(armax.inverse.fit(cbind(P = as.ts(obsdat$P), Q = Q_n3s3), order = c(3,0), delay = 0, use.Qm = FALSE)), ts_equals(Q_n3s3, tol = 1e-2))
+    ## tmp <- ts.intersect(fitted(armax.inverse.fit(cbind(P = as.ts(obsdat$P), Q = Q_n3s3), order = c(3,0), delay = 0, use.Qm = FALSE)), Q_n3s3)
     ## summary(tmp[,1] - tmp[,2])
     ## xyplot(ts(tmp), superpose = TRUE)
 })

@@ -78,7 +78,7 @@ hydromad.sim <-
                             quote(U)),
                        dots[forRouting]))
         if (return_components)
-            ucall$return_components <- TRUE
+            rcall$return_components <- TRUE
         Q <- eval(rcall)
     } else if (is.null(routing)) {
         ## no routing
@@ -87,7 +87,10 @@ hydromad.sim <-
         stop("unrecognised value of 'routing'")
     }
     if (return_state) {
-        return(cbind(S, Q = Q))
+        ans <- cbind(S, Q)
+        if (length(colnames(S)) > 0)
+            colnames(ans)[1:NCOL(S)] <- colnames(S)
+        return(ans)
     } else {
         return(Q)
     }

@@ -30,10 +30,7 @@ armax.ls.fit <-
     m <- order[["m"]]
     warmup0 <- warmup
     warmup <- max(n, m+delay, warmup) ## used in fitting only
-    ## generate prefilter from data
-    if (isTRUE(prefilter)) {
-        prefilter <- makePrefilter(DATA, order = c(2,1))
-    }
+
     DATAf <- DATA
     if (!is.null(weights)) {
         weights <- as.ts(weights)
@@ -86,6 +83,10 @@ armax.ls.fit <-
     for (i in seq_along(prefilter)) {
         ## apply i'th candidate prefilter
         pf <- prefilter[[i]]
+        ## handle prefilter-generating function
+        if (is.function(pf)) {
+            pf <- pf(DATA)
+        }
         z2 <- filter(z, filter = pf, method = "recursive")
         ## set column names for parameters
         a_names <- if (n > 0) paste("a", 1:n, sep="_")

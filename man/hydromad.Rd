@@ -110,7 +110,7 @@ hydromad(DATA = zoo(), ...,
       rainfall events tend to be dominated by quick flow, while light
       rainfall events tend to be dominated by slow flow.
     }
-%    \item{\code{\link{powerlaw}}}{
+%    \item{\code{\link{powuh}}}{
 %      [TODO]
 %    }
   }

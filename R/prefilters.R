@@ -18,13 +18,12 @@ defaultPrefilters <- function()
 }
 
 makePrefilter <-
-    function(DATA = list(Q=),
+    function(DATA,
              order = hydromad.getOption("order"),
              pureAR = FALSE,
              na.action = na.exclude)
 {
     ## get data into the right form
-    if (is.list(DATA)) DATA <- do.call(ts.intersect, lapply(DATA, as.ts))
     if (!is.ts(DATA)) DATA <- as.ts(DATA)
     if (NCOL(DATA) > 1)
         DATA <- DATA[,"Q"]

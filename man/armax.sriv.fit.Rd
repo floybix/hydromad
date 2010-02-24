@@ -17,6 +17,7 @@ armax.sriv.fit(DATA,
            noise.order = hydromad.getOption("riv.noise.order"),
            fixed.ar = NULL,
            ...,
+           fallback = TRUE,
            na.action = na.pass,
            epsilon = hydromad.getOption("sriv.epsilon"),
            max.iterations = hydromad.getOption("sriv.iterations"))
@@ -45,12 +46,12 @@ expuh.sriv.fit(DATA,
   \item{\dots}{
     further arguments may include
     \describe{
-      \item{fallback}{ }
       \item{prefilter}{ }
       \item{initX}{ }
       \item{trace}{ ~~Describe \code{trace} here~~ }
     }
   }
+  \item{fallback}{ }
   \item{na.action}{ }
   \item{epsilon}{ }
   \item{max.iterations}{ }

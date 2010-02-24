@@ -14,6 +14,7 @@ runoffratio.sim <-
     ## check values
     stopifnot(c >= 1)
     ## synchronise Q lagged by qlag
+    ## TODO: share 'delay' argument with routing?
     Qd <- shiftWindow(Q, round(qlag), and.lag = TRUE)
     ## compute effective rainfall U
     ## estimate U as scaled P, scaled in a moving window

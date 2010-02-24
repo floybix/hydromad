@@ -11,6 +11,7 @@ armax.sriv.fit <-
              noise.order = hydromad.getOption("riv.noise.order"),
              fixed.ar = NULL,
              ...,
+             fallback = TRUE,
              na.action = na.pass,
              epsilon = hydromad.getOption("sriv.epsilon"),
              max.iterations = hydromad.getOption("sriv.iterations"))
@@ -35,6 +36,7 @@ armax.sriv.fit <-
                       noise.order = noise.order,
                       fixed.ar = fixed.ar,
                       ...,
+                      fallback = fallback,
                       epsilon = epsilon,
                       max.iterations = max.iterations)
     if (inherits(obj, "tf"))
