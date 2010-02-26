@@ -178,12 +178,15 @@ do_srivfit <-
         ## apply fixed parameters if any
         if (length(fixed.ar) > 0) {
             ## substract fixed predictors
-            xQ <- xQ - xz[,(1:n)] %*% fixed.ar
+            xQ <- drop(xQ - xz[,(1:n)] %*% fixed.ar)
             ## and remove them from model matrix
             xz <- xz[,-(1:n)]
+            theta <- try(qr.solve(xz, xQ),
+                         silent = !hydromad.getOption("trace"))
+        } else {
+            theta <- try(solve(xz, xQ),
+                         silent = !hydromad.getOption("trace"))
         }
-        theta <- try(solve(xz, xQ),
-                     silent = !hydromad.getOption("trace"))
         if (inherits(theta, "try-error")) {
             if (fallback) {
                 warning(theta)

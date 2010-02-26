@@ -22,16 +22,20 @@ scalar.sim <-
 scalar.ranges <- function()
     list(c = NA)
 
-absorbScale.hydromad.scalar <- function(object, gain)
+absorbScale.hydromad.scalar <- function(object, gain, parname = "c")
 {
-    coeff <- coef(object)
-    c <- coeff[["c"]]
+    if (gain <= 0)
+        return(NULL)
+    coeff <- coef(object, which = "sma")
+    if (parname %in% names(coeff) == FALSE)
+        return(NULL)
+    c <- coeff[[parname]]
     ## we only want to do this when c is NA (special value)
     if (is.null(c) || !is.na(c))
         return(NULL)
     c <- 1
     c <- c * gain
-    object$parlist[["c"]] <- c
+    object$parlist[[parname]] <- c
     object$U <- c * object$U
     object
 }

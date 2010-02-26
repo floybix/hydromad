@@ -56,7 +56,8 @@ perfStats <-
     ans
 }
 
-objFunVal <- function(model, objective = hydromad.getOption("objective"))
+objFunVal <-
+    function(model, objective = hydromad.getOption("objective"), nan.ok = FALSE)
 {
     if (inherits(objective, "formula"))
         objective <- objective[[2]]
@@ -68,7 +69,7 @@ objFunVal <- function(model, objective = hydromad.getOption("objective"))
     delayedAssign("X", fitted(model))
     delayedAssign("U", fitted(model, U = TRUE))
     tmp <- eval(objective)
-    if (is.nan(tmp))
+    if (nan.ok || is.nan(tmp))
         stop("objective function returned NaN")
     as.numeric(tmp)
 }

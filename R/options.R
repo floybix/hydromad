@@ -12,6 +12,7 @@
          cmd = cmd.ranges(),
          sacramento = sacramento.ranges(),
          bucket = bucket.ranges(),
+         runoffratio = runoffratio.ranges(),
          dbm = dbm.ranges(),
          inverse.fit.method = "sriv",
          order = c(n = 1, m = 0),

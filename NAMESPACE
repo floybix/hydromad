@@ -1,6 +1,7 @@
 
-importFrom(lattice, xyplot)
-importFrom(lattice, qqmath)
+importFrom(lattice,
+           xyplot,
+           qqmath)
 
 ## CORE FUNCTIONS
 
@@ -16,7 +17,6 @@ S3method(isValidModel, default)
 S3method(isValidModel, hydromad)
 
 S3method(predict, hydromad)
-export(hydromad.sim) ## TODO: do not export - same as predict(hydromad())
 
 S3method(update, hydromad)
 

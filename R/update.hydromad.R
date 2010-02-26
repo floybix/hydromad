@@ -48,8 +48,14 @@ update.hydromad <-
         class(object) <- "hydromad"
         if (!is.null(sma)) {
             ## take default parameter ranges/values from hydromad.options()
+            pardefs <- hydromad.getOption(sma)
+            if (is.null(pardefs)) {
+                pardef.fn <- paste(sma, ".ranges", sep = "")
+                if (exists(pardef.fn, mode = "function"))
+                    pardefs <- do.call(pardef.fn, list())
+            }
             object$parlist <-
-                modifyList(as.list(hydromad.getOption(sma)),
+                modifyList(as.list(pardefs),
                            object$parlist)
             class(object) <- c(paste("hydromad", sma, sep="."),
                                "hydromad")

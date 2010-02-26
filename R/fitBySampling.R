@@ -35,7 +35,10 @@ fitBySampling <-
         thisMod <- do.call("update", c(quote(MODEL), thisPars))
         if (!isValidModel(thisMod))
             next
-        thisVal <- objFunVal(thisMod, objective = objective)
+        thisVal <- objFunVal(thisMod, objective = objective,
+                             nan.ok = hydromad.getOption("catch.errors"))
+        if (is.na(thisVal))
+            next
         if (thisVal < bestFunVal) {
             bestModel <- thisMod
             bestFunVal <- thisVal

@@ -56,5 +56,5 @@ dbm.ranges <- function()
 absorbScale.hydromad.dbm <- function(object, gain)
 {
     ## uses 'c' parameter for scaling:
-    absorbScale.hydromad.scalar(object, gain)
+    absorbScale.hydromad.scalar(object, gain, parname = "c")
 }

@@ -1,7 +1,14 @@
 
 Changes in Version 0.6-3 (under development)
 
+  o new SMA "snow" -- and function snow.sim() -- from Jarkko Koskela.
+
+  o SMA "runoffratio" now has threshold and mass balance parameters.
+
   o class of hydromad objects is now c("hydromad.<sma>", "hydromad").
+
+  o the 'fixed.ar' argument to armax.sriv.fit now works
+    (and this is used by expuh rfit methods too).
 
   o hydromad.options("prefilter") now has 3 hard-coded prefilters.
     The 'prefilter' argument is now allowed to be a prefilter-generating 

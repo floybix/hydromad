@@ -4,7 +4,8 @@
 ##
 
 coef.hydromad <-
-    function(object, which = c("both", "sma", "routing"), ..., warn = TRUE)
+    function(object, which = c("both", "sma", "routing"), ...,
+             warn = TRUE, etc = FALSE) ####TODO etc
 {
     which <- match.arg(which)
     parlist <- object$parlist

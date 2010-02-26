@@ -152,12 +152,13 @@ cwi.ranges <- function()
 absorbScale.hydromad.cwi <- function(object, gain)
 {
     #if (!isTRUE(object$estimateScale)) {
-    c <- coef(object)[["c"]]
+    coeff <- coef(object, which = "sma")
+    c <- coeff[["c"]]
     ## we only want to do this when c is NA (special value)
     if (is.null(c) || !is.na(c))
         return(NULL)
     c <- 1
-    p <- coef(object)[["p"]]
+    p <- coeff[["p"]]
     c <- c * (gain ^ p)
     c <- max(c, 0)
     object <- update(object, c = c, and.rescale = FALSE)
