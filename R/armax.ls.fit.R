@@ -119,6 +119,7 @@ armax.ls.fit <-
             theta[1:n] <- stabiliseAR(theta[1:n])
         if (normalise)
             theta <- normalise.tf.coef(theta)
+        theta[!is.finite(theta)] <- 0
         ## create fitted model object (includes simulation)
         ## this will check that solution is OK
         obji <- tf(DATA, pars=theta, delay=delay, warmup=warmup0, initX=initX)

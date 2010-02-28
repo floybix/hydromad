@@ -34,7 +34,7 @@ doRoutingFit <-
         }
         fnName <- paste(routing, method, "fit", sep = ".")
         force(get(fnName, mode = "function"))
-        if (isInverseMethod && !isTRUE(hydromad.getOption("quiet")))
+        if (isInverseMethod && hydromad.getOption("trace"))
             message("== fitting routing by ", fnName, " method ==")
         fcall <- quote(RFIT(DATA, ...))
         fcall[[1]] <- as.symbol(fnName)

@@ -45,8 +45,8 @@ parameterSets <-
                     par.seqs[[p]] <- mean(vv)
                 } else {
                     par.seqs[[p]] <-
-                        zapsmall(quantile(vv, ppoints(freesamp), names = FALSE))
-                        #zapsmall(seq(min(vv), max(vv), length = freesamp))
+                        #zapsmall(quantile(vv, ppoints(freesamp), names = FALSE))
+                        zapsmall(seq(min(vv), max(vv), length = freesamp))
                 }
             } else {
                 par.seqs[[p]] <- vv
@@ -64,8 +64,8 @@ parameterSets <-
                 par.seqs[[p]] <- mean(vv)
             } else if (free[[p]]) {
                 par.seqs[[p]] <-
-                    zapsmall(quantile(vv, ppoints(samples), names = FALSE))
-                    #zapsmall(seq(min(vv), max(vv), length = samples))
+                    #zapsmall(quantile(vv, ppoints(samples), names = FALSE))
+                    zapsmall(seq(min(vv), max(vv), length = samples))
             } else {
                 par.seqs[[p]] <- rep(vv, length = samples)
             }

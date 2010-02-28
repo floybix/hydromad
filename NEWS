@@ -1,5 +1,10 @@
 
-Changes in Version 0.6-3 (under development)
+Changes in Version 0.6-4 (under development)
+
+  o parameterSets (used by fitBySampling etc) now generates a regular
+    sequence along each parameter range, rather than using quantile().
+
+Changes in Version 0.6-3
 
   o new SMA "snow" -- and function snow.sim() -- from Jarkko Koskela.
 
@@ -11,7 +16,7 @@ Changes in Version 0.6-3 (under development)
     (and this is used by expuh rfit methods too).
 
   o hydromad.options("prefilter") now has 3 hard-coded prefilters.
-    The 'prefilter' argument is now allowed to be a prefilter-generating 
+    The 'prefilter' argument is now allowed to be a prefilter-generating
     function (function(DATA)).
 
   o more information about fit results is printed.
@@ -50,5 +55,5 @@ Changes in Version 0.5-4
 
   o event.clusters() renamed to eventseq()
 
-  o functions getU() and getP() removed; 
+  o functions getU() and getP() removed;
     use fitted(U = TRUE) and observed(item = "P").
