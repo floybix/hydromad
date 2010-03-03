@@ -193,8 +193,8 @@ xyplot(x)
 mod0 <- hydromad(x, sma = "cwi", l = c(0, 100), 
              routing = "armax", rfit = list("inverse", order = c(1,1)))
 mod0
-## now try to fit it
-fit1 <- fitBySCE(mod0)
+## now try to fit it - roughly - in 10 seconds
+fit1 <- fitBySCE(mod0, control = list(maxtime = 10))
 fit1
 summary(fit1)
 xyplot(fit1)

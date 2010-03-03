@@ -44,51 +44,74 @@ snow.sim <-
     stopifnot(0 <= cr)
     stopifnot(0 <= cs)
     stopifnot(0 <= rcap)
-    P <- DATA[,1]
-    E <- DATA[,2]
+    Tmin <- min(Tmax, Tmin)
+    P <- DATA[,"P"]
+    E <- DATA[,"E"]
 
-    ## implementation in R
-    Psnow <- Prain <- P
-    ISWE <- freeze <- melt <- Psnow
-    Sdischarge <- SWE<- LSWE <- LSWEmax <- LCAP <- ISWE
-    LSWEprev<- LSWE_0
-    ISWEprev <- ISWE_0
-    for (t in seq(2, length(P))){
-        ## rainfall or snowfall
-        if(E[t]<Tmin) fr <- 0 else {
-            if(E[t]>Tmax) fr <- 1 else fr <- (E[t]-Tmin)/(Tmax-Tmin)
+    ## rainfall or snowfall
+    fr <- (E - Tmin) / (Tmax - Tmin)
+    fr <- pmax(pmin(fr, 1), 0)
+    Prain <- fr * cr * P
+    Psnow <- (1-fr) * cs * P
+
+    COMPILED <- (hydromad.getOption("pure.R.code") == FALSE)
+    if (COMPILED && !return_state) {
+        ans <- .C(sma_snow,
+                  as.double(Prain),
+                  as.double(Psnow),
+                  as.double(E),
+                  as.integer(NROW(DATA)),
+                  as.double(kd),
+                  as.double(kf),
+                  as.double(rcap),
+                  as.double(Tmelt),
+                  as.double(LSWE_0),
+                  as.double(ISWE_0),
+                  U = double(NROW(DATA)),
+                  SWE = double(NROW(DATA)),
+                  NAOK=FALSE, DUP=FALSE, PACKAGE="hydromad")[c("U","SWE")]
+        Sdischarge <- ans$U
+        SWE <- ans$SWE
+        ## make it a time series object again
+        mostattributes(Sdischarge) <- attributes(DATA)
+        class(Sdischarge) <- "ts"
+        attributes(SWE) <- attributes(Sdischarge)
+    } else {
+        ## implementation in R for cross-checking (slow)
+        ## time loop
+        SWE <- Sdischarge <- P * 0
+        LSWEprev <- LSWE_0
+        ISWEprev <- ISWE_0
+        for (t in seq(1, length(P))) {
+            ## Melt (degree day model)
+            melt <- min(max(kd*(E[t]-Tmelt),0),ISWEprev)
+            ##Freezing (degree day model)
+            freeze <- min(max(kf*(Tmelt-E[t]),0),LSWEprev)
+            ##Mass balance for the snowpack
+            ##
+            ## Ice in the snowpack
+            ISWE <- ISWEprev+Psnow[t]+freeze-melt
+            ## Water in the snowpack
+            LSWE <- min(rcap*ISWE,LSWEprev+Prain[t]+melt-freeze)
+            ##Rain/melt is snowmelt discharge when there is snow on the ground,
+            ##and rainfall in snow-free periods.
+            Sdischarge[t] <- max(Prain[t]+melt-freeze-(rcap*ISWE-LSWEprev),0)
+            SWE[t] <- LSWE+ISWE
+            ISWEprev <- ISWE
+            LSWEprev <- LSWE
         }
-        fs <- 1-fr
-        Psnow[t] <- fs*cs*P[t]
-        Prain[t] <- fr*cr*P[t]
-
-        ## Melt (degree day model)
-        melt[t] <- min(max(kd*(E[t]-Tmelt),0),ISWEprev)
-        ##Freezing (degree day model)
-        freeze[t] <- min(max(kf*(Tmelt-E[t]),0),LSWEprev)
-
-        ##Mass balance for the snowpack
-        ##
-        ## Ice in the snowpack
-        ISWE[t] <- ISWEprev+Psnow[t]+freeze[t]-melt[t]
-        ## Water in the snowpack
-        LSWE[t] <- min(rcap*ISWE[t],LSWEprev+Prain[t]+melt[t]-freeze[t])
-        Sdischarge[t] <- max(Prain[t]+melt[t]-freeze[t]-(rcap*ISWE[t]-LSWEprev),0)
-        SWE[t] <- LSWE[t]+ISWE[t]
-        ISWEprev <- ISWE[t]
-        LSWEprev <- LSWE[t]
-        ##Rain/melt is snowmelt discharge when there is snow on the ground,
-        ##and rainfall in snow-free periods.
-        DATA[t,1]<-Sdischarge[t]
     }
+
+    DATA[,"P"] <- Sdischarge
 
     ## IHACRES CMD-module
     if (return_state) {
-        U <- cmd.sim(DATA,d, f, e, M_0,return_state=TRUE)
-        return(ts.union(U=U, SWE=SWE, TF=DATA[,1]))}
-    else{
-        U <- cmd.sim(DATA,d, f, e, M_0,return_state=FALSE)
-        return(ts.union(U))}
+        U <- cmd.sim(DATA, d=d, f=f, e=e, M_0=M_0, return_state=TRUE)
+        return(ts.union(U=U, SWE=SWE, TF=Sdischarge))
+    } else {
+        U <- cmd.sim(DATA, d=d, f=f, e=e, M_0=M_0, return_state=FALSE)
+        return(U)
+    }
 
 }
 

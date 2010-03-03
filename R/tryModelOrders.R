@@ -36,8 +36,10 @@ tryModelOrders <-
         mod <- eval.parent(expr)
         results[[nm]] <- mod
         if (!isTRUE(beSilent)) {
-            if (!isValidModel(mod)) {
-                message(toString(mod))
+            if (!isFullySpecified(mod)) {
+                message("model not fully specified!")
+            } else if (!isValidModel(mod)) {
+                message(toString(mod, width = 60))
             } else {
                 modsumm <- summary(mod, which = c("yic", "r.squared"))
                 YIC <- modsumm$yic

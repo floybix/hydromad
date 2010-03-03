@@ -109,6 +109,9 @@ export(bucket.sim)
 export(sacramento.sim)
 useDynLib(hydromad, sma_sac)
 
+export(snow.sim)
+useDynLib(hydromad, sma_snow)
+
 export(runoffratio.sim)
 
 export(dbm.sim)

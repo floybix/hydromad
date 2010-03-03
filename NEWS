@@ -1,6 +1,8 @@
 
 Changes in Version 0.6-4 (under development)
 
+  o snow.sim now has a C code back-end.
+
   o parameterSets (used by fitBySampling etc) now generates a regular
     sequence along each parameter range, rather than using quantile().
 
