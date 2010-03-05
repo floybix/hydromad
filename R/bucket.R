@@ -55,7 +55,7 @@ bucket.sim <-
     ## TODO: return state from C code
     COMPILED <- (hydromad.getOption("pure.R.code") == FALSE)
     if (FALSE && COMPILED && !return_state) {
-        U <- .C(NA, #sma_bucket, TODO
+        ans <- .C(NA, #sma_bucket, TODO
                 as.double(P),
                 as.double(E),
                 as.integer(NROW(DATA)),
@@ -66,10 +66,16 @@ bucket.sim <-
                 as.double(a.ss),
                 as.double(S_0),
                 U = double(NROW(DATA)),
-                NAOK=FALSE, DUP=FALSE, PACKAGE="hydromad")$U
+                S = double(NROW(DATA)),
+                ET = double(NROW(DATA)),
+                NAOK=FALSE, DUP=FALSE, PACKAGE="hydromad")[c("U", "S", "ET")]
+        U <- ans$U
+        S <- ans$S
+        ET <- ans$ET
         ## make it a time series object again
         mostattributes(U) <- attributes(DATA)
         class(U) <- "ts"
+        attributes(S) <- attributes(ET) <- attributes(U)
     } else {
         ## implementation in R for cross-checking (slow)
         U <- S <- ET <- P

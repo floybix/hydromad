@@ -55,6 +55,8 @@ residuals.hydromad <- function(object, ..., all = FALSE)
 observed.hydromad <- function(object, ..., item = "Q", all = FALSE)
 {
     ## observed.default will work (for Q), but this may be slightly faster
+    if (item %in% colnames(object$data) == FALSE)
+        return(NULL)
     tmp <- object$data[,item]
     if (all) return(tmp)
     stripWarmup(tmp, object$warmup)

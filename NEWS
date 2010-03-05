@@ -1,5 +1,12 @@
 
-Changes in Version 0.6-4 (under development)
+Changes in Version 0.6-5 (under development)
+
+  o coef<-() method now has a 'drop' argument, allowing free parameters
+    to be easily updated inside an optimisation / simulation loop.
+
+  o fixed the case where hydromad() failed if 'Q' was not given in DATA.
+
+Changes in Version 0.6-4
 
   o snow.sim now has a C code back-end.
 

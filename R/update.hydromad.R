@@ -207,16 +207,18 @@ update.hydromad <-
     if (!alreadyRescaled) {
         ## estimate scale by mass balance
         Q <- observed(object)
-        X <- fitted(object)
-        ok <- complete.cases(Q, X)
-        gain <- (sum(Q[ok]) / sum(X[ok]))
-        if (!is.finite(gain) || (gain == 0))
-            return(object)
-        sobject <- absorbScale(object, gain = gain)
-        if (!is.null(sobject)) {
-            object <- sobject
-            ## and re-do the routing
-            object <- update(object)
+        if (!is.null(Q)) {
+            X <- fitted(object)
+            ok <- complete.cases(Q, X)
+            gain <- (sum(Q[ok]) / sum(X[ok]))
+            if (!is.finite(gain) || (gain == 0))
+                return(object)
+            sobject <- absorbScale(object, gain = gain)
+            if (!is.null(sobject)) {
+                object <- sobject
+                ## and re-do the routing
+                object <- update(object, and.rescale = FALSE)
+            }
         }
     }
 

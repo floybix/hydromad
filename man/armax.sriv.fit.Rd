@@ -83,7 +83,16 @@ expuh.sriv.fit(DATA,
   \item{delay}{ the (possibly fitted) delay time. }
 }
 \references{
-Jakeman
+  Young, P. C. (2008). The refined instrumental variable method. Journal
+  Européen des Systèmes Automatisés 42 (2-3), 149-179. 
+  \url{http://dx.doi.org/10.3166/jesa.42.149-179}
+
+  Jakeman, A. J., G. A. Thomas and C. R. Dietrich (1991). System
+Identification and Validation for Output Prediction of a Dynamic
+Hydrologic Process, \emph{Journal of Forecasting} 10, pp. 319--346.
+
+Ljung, Lennart (1999). System Identification: Theory for the User
+(second edition). Prentice Hall. pp. 224-226, 466.
 }
 \author{ Felix Andrews \email{felix@nfrac.org} }
 \seealso{
