@@ -70,6 +70,10 @@ export(expuh.sim,
 export(filter_loss) # export?
 useDynLib(hydromad, filter_constloss)
 
+export(powuh.sim,
+       ssg.powuh,
+       normalise.powuh)
+
 export(lambda.sim,
        ssg.lambda,
        normalise.lambda,

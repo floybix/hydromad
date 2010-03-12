@@ -69,10 +69,12 @@ objFunVal <-
     delayedAssign("Q", observed(model))
     delayedAssign("X", fitted(model))
     delayedAssign("U", fitted(model, U = TRUE))
-    tmp <- eval(objective)
-    if (is.nan(tmp) && !nan.ok)
+    val <- eval(objective)
+    if (is.nan(val) && !nan.ok)
         stop("objective function returned NaN")
-    as.numeric(tmp)
+    stopifnot(is.numeric(val))
+    stopifnot(length(val) == 1)
+    as.numeric(val)
 }
 
 bestByObjFun <-
