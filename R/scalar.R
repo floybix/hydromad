@@ -22,7 +22,7 @@ scalar.sim <-
 scalar.ranges <- function()
     list(c = NA)
 
-absorbScale.hydromad.scalar <- function(object, gain, parname = "c")
+absorbScale.hydromad.scalar <- function(object, gain, parname = "c", ...)
 {
     if (gain <= 0)
         return(NULL)

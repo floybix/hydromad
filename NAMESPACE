@@ -1,4 +1,7 @@
 
+importFrom(stats,
+           simulate,
+           tsdiag)
 importFrom(lattice,
            xyplot,
            qqmath)

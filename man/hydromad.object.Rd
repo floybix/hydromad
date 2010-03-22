@@ -6,6 +6,7 @@
 \alias{observed.hydromad}
 \alias{residuals.hydromad}
 \alias{coef.hydromad}
+\alias{coef<-.hydromad}
 \alias{vcov.hydromad}
 \alias{isValidModel}
 \alias{print.hydromad}
@@ -31,6 +32,8 @@
 
 \method{coef}{hydromad}(object, which = c("both", "sma", "routing"),
      ..., warn = TRUE)
+
+\method{coef}{hydromad}(object, all = TRUE, ...) <- value
 
 \method{vcov}{hydromad}(object, ...)
 %% deviance?

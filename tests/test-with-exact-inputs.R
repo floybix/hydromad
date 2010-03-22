@@ -9,8 +9,9 @@ data(SalmonBrook)
 obsdat <- window(SalmonBrook, start = "1990-01-01", end = "1992-01-01")
 
 ## joint simulation of SMA and routing -- the "true" model for testing
-simQ <- hydromad.sim(obsdat, sma = "cwi", tw = 30, f = 0.5, c = 1/1000,
-                     routing = "expuh", tau_s = 30, tau_q = 2, v_s = 0.3)
+simQ <- fitted(hydromad(obsdat, sma = "cwi", tw = 30, f = 0.5, c = 1/1000,
+                        routing = "expuh", tau_s = 30, tau_q = 2, v_s = 0.3),
+               all = TRUE)
 
 modDat <- merge(obsdat[,c("P","E")], Q = byDays(simQ))
 spec <- hydromad(modDat, sma = "cwi", routing = "armax")

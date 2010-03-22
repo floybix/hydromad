@@ -55,7 +55,7 @@ snow.sim <-
     Psnow <- (1-fr) * cs * P
 
     COMPILED <- (hydromad.getOption("pure.R.code") == FALSE)
-    if (COMPILED && !return_state) {
+    if (COMPILED) {
         ans <- .C(sma_snow,
                   as.double(Prain),
                   as.double(Psnow),
@@ -69,7 +69,7 @@ snow.sim <-
                   as.double(ISWE_0),
                   U = double(NROW(DATA)),
                   SWE = double(NROW(DATA)),
-                  NAOK=FALSE, DUP=FALSE, PACKAGE="hydromad")[c("U","SWE")]
+                  NAOK=FALSE, DUP=FALSE, PACKAGE="hydromad")
         Sdischarge <- ans$U
         SWE <- ans$SWE
         ## make it a time series object again

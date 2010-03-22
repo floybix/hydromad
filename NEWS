@@ -1,12 +1,15 @@
 
 Changes in Version 0.6-6 (under development)
 
-  o 
+  o the CMD and snow models now run C code when return_state = TRUE.
+
+  o fixed a bug in simulate() and fitBySampling() for models with only
+    one free parameter.
+
+  o coef<-() method now has an 'all' argument, allowing free parameters
+    to be easily updated inside an optimisation / simulation loop.
 
 Changes in Version 0.6-5
-
-  o coef<-() method now has a 'drop' argument, allowing free parameters
-    to be easily updated inside an optimisation / simulation loop.
 
   o fixed the case where hydromad() failed if 'Q' was not given in DATA.
 

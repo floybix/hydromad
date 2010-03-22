@@ -53,7 +53,7 @@ dbm.ranges <- function()
          qlag = c(-1, 2),
          c = NA)
 
-absorbScale.hydromad.dbm <- function(object, gain)
+absorbScale.hydromad.dbm <- function(object, gain, ...)
 {
     ## uses 'c' parameter for scaling:
     absorbScale.hydromad.scalar(object, gain, parname = "c")

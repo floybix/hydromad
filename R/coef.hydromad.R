@@ -5,7 +5,7 @@
 
 coef.hydromad <-
     function(object, which = c("both", "sma", "routing"), ...,
-             warn = TRUE, etc = FALSE) ####TODO etc
+             warn = TRUE, etc = FALSE) ####TODO 'etc'
 {
     which <- match.arg(which)
     parlist <- object$parlist
@@ -60,13 +60,13 @@ coef.hydromad <-
     UseMethod("coef<-")
 
 "coef<-.hydromad" <-
-    function(object, drop = TRUE, ..., value)
+    function(object, all = TRUE, ..., value)
 {
     pars <- as.list(value)
     ## all elements must have names
     stopifnot(length(names(pars)) == length(pars))
     stopifnot(all(sapply(names(pars), nchar) > 0))
-    if (drop) {
+    if (all) {
         ## find existing parameters not named in 'value', to remove:
         curNames <- names(coef(object, ..., warn = FALSE))
         remNames <- curNames[curNames %in% names(pars) == FALSE]

@@ -104,8 +104,8 @@ cmd.sim <-
     E[bad] <- 0
     ## TODO: return state from C code
     COMPILED <- (hydromad.getOption("pure.R.code") == FALSE)
-    if (COMPILED && !return_state) {
-        U <- .C(sma_cmd,
+    if (COMPILED) {
+        ans <- .C(sma_cmd,
                 as.double(P),
                 as.double(E),
                 as.integer(NROW(DATA)),
@@ -114,10 +114,16 @@ cmd.sim <-
                 as.double(e),
                 as.double(M_0),
                 U = double(NROW(DATA)),
-                NAOK=FALSE, DUP=FALSE, PACKAGE="hydromad")$U
+                M = double(NROW(DATA)),
+                ET = double(NROW(DATA)),
+                NAOK=FALSE, DUP=FALSE, PACKAGE="hydromad")
+        U <- ans$U
+        M <- ans$M
+        ET <- ans$ET
         ## make it a time series object again
         mostattributes(U) <- attributes(DATA)
         class(U) <- "ts"
+        attributes(M) <- attributes(ET) <- attributes(U)
     } else {
         ## implementation in R for cross-checking (slow)
         U <- M <- ET <- P

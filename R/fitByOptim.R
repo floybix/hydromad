@@ -36,7 +36,7 @@ fitByOptim <-
         bestFunVal <- Inf
         funevals <- 0
         for (i in seq(NROW(psets))) {
-            thisPars <- as.list(psets[i,])
+            thisPars <- as.list(psets[i,,drop=FALSE])
 
             thisMod <-
                 try(fitByOptim(MODEL, objective = objective,
@@ -98,7 +98,8 @@ fitByOptim <-
 
             if (any(pars < lower)) return(NA)
             if (any(pars > upper)) return(NA)
-            thisMod <- do.call("update", c(quote(MODEL), as.list(pars)))
+            thisMod <- MODEL
+            coef(thisMod, all = FALSE) <- pars
             if (!isValidModel(thisMod))
                 return(NA)
             thisVal <- objFunVal(thisMod, objective = objective)

@@ -7,7 +7,10 @@ set.seed(0)
 warmup <- 100
 P <- ts(pmax(rnorm(200), 0))
 E <- ts(20 + 10 * cos((1:200)/20))
+Q <- P * E * runif(P)
 DATA <- cbind(P = P, E = E)
+## some SMAs require Q also in simulation
+DATAQ <- cbind(P = P, Q = Q)
 
 test_that("cmd simulation is the same in R and C", {
     set.seed(0)
@@ -73,16 +76,15 @@ test_that("sacramento simulation runs", {
 
 test_that("runoffratio simulation runs", {
     set.seed(0)
-    mod0 <- hydromad(DATA, sma = "runoffratio")
-    for (i in 1:5) {
-        mod <- simulate(mod0, 1)[[1]]
+    mod0 <- hydromad(DATAQ, sma = "runoffratio")
+    for (mod in simulate(mod0, 5)) {
         expect_that(all(predict(mod) >= 0), is_true())
     }
 })
 
 test_that("dbm simulation runs", {
     set.seed(0)
-    mod0 <- hydromad(DATA, sma = "dbm")
+    mod0 <- hydromad(DATAQ, sma = "dbm")
     for (i in 1:5) {
         mod <- simulate(mod0, 1)[[1]]
         expect_that(all(predict(mod) >= 0), is_true())

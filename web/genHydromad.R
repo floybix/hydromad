@@ -10,94 +10,95 @@ spec <- list()
 
 spec[["modelling framework"]] <-
     list(
-         "hydromad" = list(example = 1),
-         "hydromad.object" = list(),
-         "summary.hydromad" = list(),
-         "simulate.hydromad" = list(),
-         "runlist" = list(),
-         "hydromad.options" = list()
+         list("hydromad", example = 1),
+         list("hydromad.object"),
+         list("summary.hydromad"),
+         list("simulate.hydromad"),
+         list("runlist"),
+         list("hydromad.options")
          )
 
 spec[["soil moisture accounting"]] <-
     list(
-         "scalar" = list(),
-         "IHACRES.CWI.model" = list(),
-         "IHACRES.CMD.model" = list(),
-         "bucket" = list(),
-         "sacramento" = list(),
-         "runoffratio" = list()
-         #"dbm" = list()
+         list("scalar"),
+         list("IHACRES.CWI.model"),
+         list("IHACRES.CMD.model"),
+         list("bucket"),
+         list("sacramento"),
+         list("snow"),
+         list("runoffratio"),
+         list("dbm")
          )
 
 spec[["calibration"]] <-
     list(
-         "fitBySampling" = list(),
-         "fitByOptim" = list(),
-         "fitBySCE" = list(),
-         "fitByDE" = list()
-         #"fitByDream" = list()
-         #"mcmcByDream" = list()
+         list("objFunVal"),
+         list("fitBySampling"),
+         list("fitByOptim"),
+         list("fitBySCE"),
+         list("fitByDE"),
+         #list("fitByDream")
+         #list("mcmcByDream")
+         list("tryModelOrders")
          )
 
 spec[["routing"]] <-
     list(
-         "armax" = list(),
-         "expuh" = list(),
-         "lambda" = list()
-         #"powuh" = list()
+         list("armax"),
+         list("expuh"),
+         list("lambda"),
+         list("powuh")
          )
 
 spec[["routing fitting"]] <-
     list(
-         "armax.ls.fit" = list(),
-         "armax.sriv.fit" = list(),
-         "armax.inverse.fit" = list(),
-         "expuh.sriv.fit" = list()
+         list("armax.ls.fit"),
+         list("armax.sriv.fit"),
+         list("armax.inverse.fit"),
+         list("expuh.sriv.fit")
          #"lambda.inverse.fit"
          )
 
 spec[["event-based analysis"]] <-
     list(
-         "eventseq" = list(),
-         "eventAttributes" = list()
+         list("eventseq"),
+         list("eventAttributes")
          )
 
 spec[["plot methods"]] <-
     list(
-         "xyplot" = list(example = 1),
-         "xyplot.runlist" = list(example = 1),
-         "errormasscurve" = list(example = 1),
-         "qqmath" = list(example = 1),
-         "rollccf" = list(example = 1)
+         list("xyplot", example = 1),
+         list("xyplot.runlist", example = 1),
+         list("errormasscurve", example = 1),
+         list("qqmath", example = 1),
+         list("rollccf", example = 1)
          )
 
 spec[["utilities"]] <-
     list(
-         "convertFlow" = list(),
-         "estimateDelay" = list(),
-         "tryModelOrders" = list(),
-         "parameterSets" = list(),
-         "fitStat" = list(),
-         "objFunVal" = list(),
-         "observed" = list()
+         list("convertFlow"),
+         list("estimateDelay"),
+         list("parameterSets"),
+         list("fitStat"),
+         list("observed")
          )
 
 spec[["datasets"]] <-
     list(
-         "BinghamTrib" = list(example = 1),
-         "Canning" = list(example = 1),
-         "Cotter" = list(example = 1),
-         #"Molonglo" = list(),
-         "Murrindindi" = list(example = 1),
-         "Queanbeyan" = list(example = 1),
-         "SalmonBrook" = list(example = 1),
-         "Wye" = list(example = 1)
+         list("BinghamTrib", example = 1),
+         list("Canning", example = 1),
+         list("Cotter", example = 1),
+         #list("Molonglo"),
+         list("Murrindindi", example = 1),
+         list("Queanbeyan", example = 1),
+         list("SalmonBrook", example = 1),
+         list("Wye", example = 1)
          )
 
 spec[["wetlands"]] <-
     list(
-         "swimp" = list(example = 1),
-         "poweroid" = list(example = 2)
+         list("swimp", example = 1),
+         list("poweroid", example = 2)
          )
 
 source("http://latticeextra.r-forge.r-project.org/generate.R")

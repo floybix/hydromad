@@ -26,13 +26,14 @@ fitBySampling <-
     bestModel <- MODEL
     bestFunVal <- Inf
     for (i in seq(NROW(psets))) {
+        thisPars <- as.list(psets[i,,drop=FALSE])
         if (isTRUE(hydromad.getOption("trace"))) {
-            run_name <- paste(names(psets), format(psets[i,], digits=3),
+            run_name <- paste(names(thisPars), format(unlist(thisPars), digits=3),
                               sep = "=", collapse = ",")
             message(run_name)
         }
-        thisPars <- as.list(psets[i,])
-        thisMod <- do.call("update", c(quote(MODEL), thisPars))
+        thisMod <- MODEL
+        coef(thisMod, all = FALSE) <- thisPars
         if (!isValidModel(thisMod))
             next
         thisVal <- objFunVal(thisMod, objective = objective,

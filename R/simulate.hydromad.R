@@ -25,19 +25,20 @@ simulate.hydromad <-
     isfixed <- (sapply(parlist, length) == 1)
     if (all(isfixed)) {
         warning("all parameters are fixed, so can not fit")
-        return(MODEL)
+        return(list(if (is.null(FUN)) MODEL else FUN(MODEL, ...)))
     }
     ## generate parameter sets
     psets <- parameterSets(parlist, samples = samples, method = sampletype)
     result <- list()
-    for (i in seq(NROW(psets))) {
-        run_name <- paste(names(psets), format(psets[i,], digits=3),
+    for (i in seq_len(NROW(psets))) {
+        thisPars <- as.list(psets[i,,drop=FALSE])
+        run_name <- paste(names(thisPars), format(unlist(thisPars), digits=3),
                           sep = "=", collapse = ",")
         if (isTRUE(hydromad.getOption("trace"))) {
             message(run_name)
         }
-        thisPars <- as.list(psets[i,])
-        thisMod <- do.call("update", c(quote(MODEL), thisPars))
+        thisMod <- MODEL
+        coef(thisMod, all = FALSE) <- thisPars
         ## store model or derived result
         result[[i]] <-
             if (is.null(FUN)) thisMod else FUN(thisMod, ...)

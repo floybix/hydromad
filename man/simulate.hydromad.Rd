@@ -7,9 +7,9 @@
   Run many simulations by sampling within parameter ranges.
 }
 \usage{
-simulate.hydromad(object, nsim, seed, ...,
-   sampletype = c("latin.hypercube", "random", "all.combinations"),
-   FUN = NULL, bind = FALSE)
+\method{simulate}{hydromad}(object, nsim, seed, ...,
+         sampletype = c("latin.hypercube", "random", "all.combinations"),
+         FUN = NULL, bind = FALSE)
 }
 \arguments{
   \item{object}{

@@ -3,10 +3,10 @@
 ## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
-absorbScale <- function(object, gain)
+absorbScale <- function(object, gain, ...)
     UseMethod("absorbScale")
 
-absorbScale.hydromad <- function(object, gain)
+absorbScale.hydromad <- function(object, gain, ...)
     return(NULL)
 
 update.hydromad <-

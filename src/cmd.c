@@ -17,12 +17,12 @@
 
 void
 sma_cmd(double *P, double *E, int *n,
-	double *d, double *g, double *e, double *M_0, double *U)
+	double *d, double *g, double *e, double *M_0, 
+	double *U, double *M, double *ET)
 {
 	int t;
 	double Mf;
 	double M_prev = *M_0;
-	double ET;
 	for (t = 0; t < *n; t++) {
 		// rainfall reduces CMD (Mf)
 		if (P[t] > 0) {
@@ -39,11 +39,12 @@ sma_cmd(double *P, double *E, int *n,
 		// drainage (rainfall not accounted for in -dM)
 		U[t] = max(0, P[t] - M_prev + Mf);
 		// evapo-transpiration
-		ET = *e * E[t] * min(1, exp(2 * (1 - Mf / *g)));
-		ET = max(0, ET);
+		ET[t] = *e * E[t] * min(1, exp(2 * (1 - Mf / *g)));
+		ET[t] = max(0, ET[t]);
 		// mass balance
-		M_prev = M_prev - P[t] + U[t] + ET;
-		M_prev = max(0, M_prev);
+		M[t] = M_prev - P[t] + U[t] + ET[t];
+		M[t] = max(0, M[t]);
+		M_prev = M[t];
 	}
 }
 

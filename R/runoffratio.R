@@ -42,7 +42,7 @@ runoffratio.ranges <- function()
          scale = NA)
 
 absorbScale.hydromad.runoffratio <-
-    function(object, gain)
+    function(object, gain, ...)
 {
     absorbScale.hydromad.scalar(object, gain, parname = "scale")
 }
