@@ -79,7 +79,7 @@ EcoWise. The temperature records come from Canberra Airport.
 Once you have \proglang{R}
 running\footnote{A Windows \proglang{R} installer is available from
   \url{http://cran.ms.unimelb.edu.au/bin/windows/base/release.htm}}
-and have installed the \pkg{hydromad} package\footnote{at this pre-beta
+and have installed the \pkg{hydromad} package\footnote{at this beta
 development stage, you will need to ask Felix how to do this.}, you
 can load it:
 <<load-package, echo=TRUE>>=
@@ -539,10 +539,10 @@ print(trellis.last.object())
 \begin{table}[hpbt]
 \begin{center}
 <<mod-cal-stats-table-code, echo=TRUE, eval=FALSE>>=
-summary(allMods, pars = FALSE)
+summary(allMods)
 @
 <<mod-cal-stats-table, results=tex>>=
-perfstats <- summary(allMods, pars = FALSE)
+perfstats <- summary(allMods)
 print(xtable(perfstats), floating = FALSE)
 @
 \caption{\label{tab:mod-cal-stats} Performance statistics for a set of models. }
@@ -687,10 +687,10 @@ ihSpec <- hydromad(ts90s, sma = "runoffratio", width = 30, c = 2,
                    rrthresh = 0, routing = "armax")
 osumm <- tryModelOrders(update(ihSpec, rfit = "sriv"),
                         n = 0:3, m = 0:3, delay = 0:1)
-ordersSummary(osumm)
+summary(osumm)
 @
 <<try-model-orders-table, results=tex>>=
-perfstats <- ordersSummary(osumm)
+perfstats <- summary(osumm)
 print(xtable(perfstats), floating = FALSE)
 @
 \caption{\label{tab:try-model-orders}

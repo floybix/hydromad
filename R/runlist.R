@@ -29,25 +29,61 @@ as.runlist <- function(x, ...)
 "[.runlist" <- function (x, i, ...)
     structure(NextMethod("["), class = class(x))
 
+coef.runlist <-
+    function(object, ...)
+{
+    stopifnot(is.list(object))
+    if (length(object) == 0)
+        return(NULL)
+    cc <- lapply(object, coef, ...)
+    ## TODO: pad out missing entries with NAs
+    nms <- names(cc[[1]])
+    allsame <-
+        all(sapply(cc, function(x) identical(names(x), nms)))
+    ans <- cc
+    if (allsame) {
+        ans <- as.data.frame(do.call("rbind", cc)) #sapply(cc, identity))
+        class(ans) <- c("summary.runlist", class(ans))
+    }
+    ans
+}
+
+summary.runlist <-
+    function(object, ...)
+{
+    stopifnot(is.list(object))
+    if (length(object) == 0)
+        return(NULL)
+    cc <- lapply(object, function(x) {
+        tmp <- summary(x, ...)
+        tmp[(sapply(tmp, length) == 1) &
+            (sapply(tmp, is.numeric))]
+    })
+    ## TODO: pad out missing entries with NAs
+    nms <- names(cc[[1]])
+    allsame <-
+        all(sapply(cc, function(x) identical(names(x), nms)))
+    ans <- cc
+    if (allsame) {
+        ans <- as.data.frame(do.call("rbind", cc)) #sapply(cc, identity))
+        class(ans) <- c("summary.runlist", class(ans))
+    }
+    ans
+}
+
+print.summary.runlist <-
+    function(x, digits = max(3, getOption("digits") - 3), ...)
+{
+    ## just simplify the printed output by rounding
+    print.data.frame(x, digits=digits, ...)
+    invisible(x)
+}
+
 print.runlist <-
     function(x, ...)
 {
     cat("\nList of model runs:\n")
     print.default(x, ...)
-    invisible(x)
-}
-
-print.hydromad.runlist <-
-    function(x, digits = max(3, getOption("digits") - 3), ...)
-{
-    cat("\nList of Hydromad model runs:\n")
-    print.default(lapply(x, function(obj) {
-        if (!is.null(obj$msg)) {
-            list(call = obj$call, message = obj$msg)
-        } else {
-            obj$call
-        }
-    }), digits=digits, ...)
     invisible(x)
 }
 
@@ -167,58 +203,3 @@ qqmath.runlist <-
     foo$call <- sys.call(sys.parent())
     foo
 }
-
-summary.hydromad.runlist <-
-    function(object,
-             pars=TRUE,
-             flowstats=c("rel.bias","r.squared","r.sq.sqrt","r.sq.log","r.sq.monthly"),
-             ...)
-{
-    stopifnot(is.list(object))
-    object <- object[sapply(object, isValidModel)]
-    if (length(object) == 0)
-        return(NULL)
-    ## if objects in runlist are different classes, set pars = FALSE
-    classes <- sapply(object, function(x) class(x)[1])
-    if (pars && any(classes != classes[1])) {
-        pars <- FALSE
-    }
-    ## if any different parameter names, set pars = FALSE
-    if (pars) {
-        allpars <- lapply(object, coef)
-        if (any(diff(sapply(allpars, length) != 0))) {
-            ## number of parameters differs
-            pars <- FALSE
-        } else {
-            ## paste parameter names together
-            allparnames <- sapply(allpars, function(x) toString(names(x)))
-            if (any(allparnames != allparnames[1])) {
-                pars <- FALSE
-            }
-        }
-    }
-
-    summstats <- lapply(object, function(obj) {
-        flow.summ <- summary(obj, which=flowstats, ...)
-        c(if (pars) coef(obj),
-          unlist(flow.summ[flowstats]))
-    })
-
-    ## pad out missing values with NAs
-    ok.i <- which.max(sapply(summstats, length))
-    varnames <- names(summstats[[ok.i]])
-    summstats <- lapply(summstats, function(x) x[1:length(varnames)])
-    summstats <- data.frame(do.call(rbind, summstats))
-    names(summstats) <- varnames
-    class(summstats) <- c("summary.runlist", class(summstats))
-    summstats
-}
-
-print.summary.runlist <-
-    function(x, digits = max(3, getOption("digits") - 3), ...)
-{
-    ## just simplify the printed output by rounding
-    print.data.frame(x, digits=digits, ...)
-    invisible(x)
-}
-

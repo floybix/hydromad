@@ -3,33 +3,12 @@
 ## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
-#' Bucket-type Soil Moisture Accounting models.
-#' 
-#' From Farmer et al 2003, Water Resources Research.
-#' The general mass balance structure is:
-#' \deqn{dS/dt = p - q(S) - e(S, Ep)}
-#'
-#' This functions uses the slightly modified forms given in
-#' Bai et al 2009, Environmental Modelling and Software.
-#' 
-#' @aliases bucket.sim bucket
-#' @param DATA time-series-like object with columns P (precipitation,
-#'   mm) and E (potential evapo-transpiration, mm). 
-#' @param Sb Maximum soil water storage (mm).
-#' @param fc Field capacity (0 - 1).
-#' @param a.ei Interception coefficient (\eqn{\alpha_{ei}}). 
-#' @param M Fraction of catchment area covered by deep rooted vegetation.
-#' @param a.ss Recession coefficients for subsurface flow from
-#'   saturated zone (\eqn{\alpha_{ss}}). 
-#' @param S_0 Initial soil moisture level (mm).
-#' @param return_state to return the series U, S and ET (evapotranspiration). 
-#' @return the simulated effective rainfall, a time series of the same
-#'   length as the input series. 
-#' @keywords models
-#' @export
+## Bucket-type Soil Moisture Accounting models.
+## From Farmer et al 2003, Water Resources Research.
 bucket.sim <-
     function(DATA,
-             Sb, fc = 1, a.ei = 0, M = 0, a.ss = 0, S_0 = 0,
+             Sb, fc = 1, a.ei = 0, M = 0, a.ss = 0,
+             etmult = 1, S_0 = 0,
              return_state = FALSE)
 {
     ## get data into the right form
@@ -47,7 +26,7 @@ bucket.sim <-
     Sfc <- fc * Sb
 
     P <- DATA[,"P"]
-    E <- DATA[,"E"]
+    E <- DATA[,"E"] * etmult
     ## skip over missing values (maintaining the state S)
     bad <- is.na(P) | is.na(E)
     P[bad] <- 0

@@ -49,12 +49,16 @@ tryModelOrders <-
             }
         }
     }
-    as.runlist(results)
+    ans <- as.runlist(results)
+    class(ans) <- c("tryModelOrders", class(ans))
+    ans
 }
 
-
-ordersSummary <-
-    function(x, flowstats = c("yic", "arpe", "r.squared", "r.squared.log", "ssg", "rel.bias"), ...)
+summary.tryModelOrders <- 
+    function(object,
+             which = c("yic", "arpe", "r.squared", "r.squared.log", "ssg", "rel.bias"),
+             ...)
 {
-    summary(x, pars = FALSE, flowstats = flowstats, ...)
+    class(object) <- setdiff(class(object), "tryModelOrders")
+    summary(object, which = which, ...)
 }

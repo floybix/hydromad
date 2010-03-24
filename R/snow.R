@@ -1,35 +1,8 @@
 ## hydromad: Hydrological Modelling and Analysis of Data
 
-## coded by Jarkko Koskela @tkk.fi 2010-02-26
 
-##
-#@param DATA a \code{\link{ts}}-like object or list with named components:#'
-#\describe{
-#'\item{\code{P}}{ time series of areal rainfall depths, in mm. }
-#'\item{\code{E}}{ time series of temperature}
-#
 # Simple degree day factor snow model with IHACRES CMD soil moisture model
-# @param cr correction factor for rainfall
-# @param cs correction factor for snowfall
-# @kd degree day factor for snowmelt
-# @kf degree day factor for freezing
-# @Tmin temperature threshold for rain, 100 % of rain is snow below this threshold
-# @Tmax temperature threshold for rain, 100 % of rain is liquid above this threshold
-# @Tmelt temperature threshold for snowmelt and freezing in the snowpack
-# @rcap retention parameter for liquid water capacity of snowpack
-#
-# SWE snow water equivalent
-# ISWE water equivalent of ice in the snowpack
-# LSWE liquid water retained in the snowpack
-#
-#
-## Snowmodel as in Kokkonen T., Jakeman A.J, Koivusalo.H, Norton.J.:
-## COMPUTATIONAL METHODS FOR WATER RESOURCE ASSESSMENTS:
-## AN EXERCISE KIT
-## Educational Series on Modelling and Software
-## iEMSs International Modelling and Software Society
-## Available through www.iemss.org
-
+## coded by Jarkko Koskela @tkk.fi 2010-02-26
 snow.sim <-
     function(DATA, Tmax, Tmin, kd, kf, rcap, Tmelt = Tmin,
              cr = 1, cs = 1, LSWE_0 = 0, ISWE_0 = 0,
@@ -106,19 +79,19 @@ snow.sim <-
 
     ## IHACRES CMD-module
     if (return_state) {
-        U <- cmd.sim(DATA, d=d, f=f, e=e, M_0=M_0, return_state=TRUE)
-        return(ts.union(U=U, SWE=SWE, TF=Sdischarge))
+        U <- cmd.sim(DATA, d = d, f = f, e = e, M_0 = M_0, return_state = TRUE)
+        ans <- ts.union(U, SWE = SWE, TF = Sdischarge)
+        colnames(ans)[1:NCOL(U)] <- colnames(U)
+        return(ans)
     } else {
-        U <- cmd.sim(DATA, d=d, f=f, e=e, M_0=M_0, return_state=FALSE)
+        U <- cmd.sim(DATA, d = d, f = f, e = e, M_0 = M_0, return_state = FALSE)
         return(U)
     }
-
 }
 
 snow.ranges <- function()
     list(Tmax=c(0, 2),
          Tmin=c(-1, 1),
-         Tmelt=c(-1, 1),
          cr=c(0.8, 2),
          cs=c(0.8, 2),
          kd=c(2, 5),

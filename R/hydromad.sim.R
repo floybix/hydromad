@@ -54,7 +54,10 @@ hydromad.sim <-
             if (is.null(routing))
                 return(U)
             S <- U
-            U <- S[,"U"]
+            if (NCOL(S) > 1) {
+                stopifnot("U" %in% colnames(S))
+                U <- S[,"U"]
+            }
         }
     } else if (is.null(sma)) {
         ## take observed rainfall P as effective rainfall U

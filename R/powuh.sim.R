@@ -6,8 +6,8 @@
 ## a = time to drop to half
 powuh.sim <-
     function(U, delay = 0,
-             a, b = 1, c = 1,
-             init = 0, na.action = na.pass,
+             a = 1, b = 1, c = 1, init = 0, uhsteps = 100,
+             na.action = na.pass,
              epsilon = hydromad.getOption("sim.epsilon"))
 {
     delay <- round(delay)
@@ -19,12 +19,15 @@ powuh.sim <-
     if (delay != 0)
         U <- lag(U, -delay)
 
-    ## TODO
-
-    t <- 0:100
+    t <- seq(0, uhsteps)
     uh <- (1 / (1 + (t/a)^(b/c))) ^ c
-
+    ## normalise:
+    uh <- uh / sum(uh)
+    ## initialisation
+    Upad <- window(U, start = start(U)[1] - uhsteps, extend = TRUE)
+    Upad[1:uhsteps] <- init
     X <- filter(U, uh, sides = 1)
+    X <- window(X, start = start(U))
     
     ## align results to original input
     X <- shiftWindow(X, delay)
@@ -37,11 +40,7 @@ powuh.sim <-
 
 ssg.powuh <- function(theta)
 {
-    if (length(theta) == 0)
-        return(1)
     1
-    #theta <- tfParsConvert(theta, "a,b")
-    #ssg.tf.coef(theta)
 }
 
 normalise.powuh <- function(theta)

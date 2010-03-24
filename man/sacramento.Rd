@@ -100,10 +100,16 @@ sacramento.sim(DATA, uztwm, uzfwm, uzk, pctim, adimp, zperc, rexp,
 ## view default parameter ranges:
 str(hydromad.options("sacramento"))
 
-data(Cotter)
-sac0 <- hydromad(Cotter[1:500], sma = "sacramento")
-sac0
-simulate(sac0, 1)
+data(HydroTestData)
+mod0 <- hydromad(HydroTestData, sma = "sacramento")
+mod0
+
+## simulate with some arbitrary parameter values
+set.seed(2)
+mod1 <- simulate(update(mod0, etmult = 0.01), 1, sampletype = "random")[[1]]
+testQ <- predict(mod1, return_state = TRUE)
+xyplot(window(ts.union(HydroTestData[,1:2], sacramento = testQ), start = 100))
+mod1
 }
 \keyword{ models }
 

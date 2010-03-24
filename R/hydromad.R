@@ -154,6 +154,20 @@ print.hydromad <-
     invisible(x)
 }
 
+str.hydromad.runlist <- 
+    function(object, ...)
+{
+    cat("\nList of Hydromad model runs:\n")
+    str(lapply(object, function(obj) {
+        if (!is.null(obj$msg)) {
+            list(call = obj$call, message = obj$msg)
+        } else {
+            obj$call
+        }
+    }))
+    invisible()
+}
+
 isValidModel <- function(object, ...)
     UseMethod("isValidModel")
 

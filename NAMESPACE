@@ -15,6 +15,7 @@ S3method(residuals, hydromad)
 S3method(observed, hydromad)
 S3method(vcov, hydromad)
 S3method(deviance, hydromad)
+S3method(str, hydromad.runlist)
 export(isValidModel)
 S3method(isValidModel, default)
 S3method(isValidModel, hydromad)
@@ -45,8 +46,8 @@ S3method(tsdiag, hydromad)
 
 ## ROUTING MODELS
 
-export(tryModelOrders,
-       ordersSummary)
+export(tryModelOrders)
+S3method(summary, tryModelOrders)
 
 export(makePrefilter,
        estimateDelay)
@@ -156,13 +157,13 @@ export(SCEoptim)
 export(runlist,
        as.runlist)
 S3method("[", runlist)
-S3method(print, runlist)
+S3method(coef, runlist)
+S3method(summary, runlist)
 S3method(print, summary.runlist)
+S3method(print, runlist)
 S3method(errormasscurve, runlist)
 S3method(xyplot, runlist)
 S3method(qqmath, runlist)
-S3method(print, hydromad.runlist)
-S3method(summary, hydromad.runlist)
 
 
 ## MISCELLANEOUS
@@ -170,10 +171,9 @@ S3method(summary, hydromad.runlist)
 export(convertFlow)
 
 ## events.R
-export(eventseq, event.clusters,
+export(eventseq, 
        eventapply,
-       preInterEventDuration,
-       eventAttributes)
+       eventinfo)
 
 ## utilities.R
 export(tsCleanup,

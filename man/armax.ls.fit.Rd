@@ -30,7 +30,11 @@ expuh.ls.fit(DATA,
 }
 \arguments{
   \item{DATA}{
-    
+    a \code{\link{ts}}-like object with named columns:
+    \describe{
+      \item{\code{U}}{ observed input time series. }
+      \item{\code{Q}}{ observed output time series. }
+    }
   }
   \item{order}{
     the transfer function order. See \code{\link{armax}}.
@@ -96,7 +100,15 @@ Jakeman
   \code{\link{arima}}
 }
 \examples{
-
+U <- ts(c(0, 0, 0, 1, rep(0, 30), 1, rep(0, 20)))
+Y <- expuh.sim(lag(U, -1), tau_s = 10, tau_q = 2, v_s = 0.5, v_3 = 0.1)
+set.seed(0)
+Yh <- pmax(Y + rnorm(Y, sd = 0.01), 0)
+fit1 <- armax.ls.fit(ts.union(U = U, Q = Yh),
+                     order = c(2, 2), warmup = 0)
+fit1
+xyplot(ts.union(observed = Yh, fitted = fitted(fit1)),
+       superpose = TRUE)
 }
 \keyword{ ts }
 

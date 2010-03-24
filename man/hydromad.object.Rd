@@ -80,6 +80,9 @@ isValidModel(object, ...)
     exists. Otherwise, the warmup period (specified in the original call
     to \code{\link{hydromad}} is stripped off.
   }
+  \item{value}{
+    ...
+  }
   \item{U}{
     to return modelled effective rainfall (the output from SMA) rather
     than streamflow.
@@ -134,7 +137,7 @@ isValidModel(object, ...)
   \code{\link{hydromad}},
   \code{\link{summary.hydromad}},
   \code{\link{xyplot.hydromad}},
-  \code{\link{hydromad.runlist}}
+  \code{\link{runlist}}
 }
 \examples{
 

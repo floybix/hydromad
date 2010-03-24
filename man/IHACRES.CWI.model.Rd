@@ -22,14 +22,22 @@ cwi.sim(DATA,
 }
 \arguments{
   \item{DATA}{ a \code{\link{ts}}-like object or list with named components:
-	\describe{
-	  \item{\code{P}}{ time series of areal rainfall depths, usually in mm. }
-	  \item{\code{E}}{ time series of potential evapo-transpiration, or more typically,
-		temperature as an indicator of this. Can be omitted if \code{f = 0}. }
-	  \item{\code{Q}}{ time series of discharge (streamflow) at the catchment outlet.
-		This should usually be in units of mm (averaged over the catchment area).
-		Use \code{\link{convertFlow}} to convert it. }
-	} }
+    \describe{
+      \item{\code{P}}{
+	time series of areal rainfall depths, usually in mm.
+      }
+      \item{\code{E}}{
+	time series of potential evapo-transpiration, or more typically,
+	temperature as an indicator of this.
+	Can be omitted if \code{f = 0}.
+      }
+      \item{\code{Q}}{
+	time series of discharge (streamflow) at the catchment outlet.
+	This should usually be in units of mm (averaged over the catchment area).
+	Use \code{\link{convertFlow}} to convert it.
+      }
+    }
+  }
   \item{tw}{ drying rate at reference temperature (\eqn{\tau_\omega}{tw}).
   	This is a \emph{time constant}, the number of time steps to reduce
   	to a fraction \eqn{1/e \approx 37\%}. See definition below. }
@@ -106,5 +114,14 @@ data(Canning)
 x <- cwi.sim(Canning[1:1000,], tw = 162, f = 2, l = 300, t_ref = 0, c = 0.000284,
              return_state = TRUE)
 xyplot(x)
+
+data(HydroTestData)
+mod0 <- hydromad(HydroTestData, sma = "cwi", routing = "expuh")
+mod0
+
+## simulate with some arbitrary parameter values
+mod1 <- update(mod0, tw = 32, f = 2, c = 0.01, tau_s = 10)
+testQ <- predict(mod1, return_state = TRUE)
+xyplot(ts.union(HydroTestData[,1:2], cwi = testQ))
 }
 \keyword{ models }

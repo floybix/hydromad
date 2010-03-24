@@ -141,6 +141,7 @@ depthdat <- lapply(shapedat, transform,
   H = (1 - H / max(H)), A = 100 * A / max(A))
 depthdf <- do.call(make.groups, depthdat)
 
+\dontshow{ .featured_example <- TRUE }
 xyplot(H ~ A | which, depthdf, as.table = TRUE,
   xlab = "cumulative area (percent)", ylab = "depth / max(depth)",
   panel = function(x, y, ...) {

@@ -134,9 +134,11 @@ update.hydromad <-
         initX <- object$initX
         Xs_0 <- if (is.logical(initX)) 0 else initX
         if (is.null(object$initX)) {
-            Q <- object$data[,"Q"]
-            if (any(is.finite(Q[1:10]))) {
-                object$initX <- min(Q[1:10], na.rm=TRUE)
+            Q <- observed(object)
+            if (!is.null(Q)) {
+                if (any(is.finite(Q[1:10]))) {
+                    object$initX <- min(Q[1:10], na.rm=TRUE)
+                }
             }
         }
         ## TODO: use initX!

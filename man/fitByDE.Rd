@@ -1,15 +1,15 @@
-\name{fitBySCE}
-\alias{fitBySCE}
+\name{fitByDE}
+\alias{fitByDE}
 \title{
-  Fit a hydromad model using the SCE (Shuffled Complex Evolution) algorithm.
+  Fit a hydromad model using the DE (Differential Evolution) algorithm.
 }
 \description{
-  Fit a hydromad model using the SCE (Shuffled Complex Evolution) algorithm.
+  Fit a hydromad model using the DE (Differential Evolution) algorithm.
 }
 \usage{
-fitBySCE(MODEL, 
-         objective = hydromad.getOption("objective"),
-         control = hydromad.getOption("sce.control"))
+fitByDE(MODEL, 
+        objective = hydromad.getOption("objective"),
+        control = hydromad.getOption("de.control"))
 }
 \arguments{
   \item{MODEL}{
@@ -22,7 +22,7 @@ fitBySCE(MODEL,
     \code{Q}, \code{X} and/or \code{U}. See \code{\link{objFunVal}}.
   }
   \item{control}{
-    settings for the SCE algorithm. See \code{\link{SCEoptim}}.
+    settings for the DE algorithm. See \code{\link{DEoptim}}.
   }
 }
 \details{
@@ -36,7 +36,7 @@ fitBySCE(MODEL,
   Felix Andrews \email{felix@nfrac.org}
 }
 \seealso{
-  \code{\link{SCEoptim}},
+  \code{\link{DEoptim}},
   \code{\link{objFunVal}}
 }
 \examples{

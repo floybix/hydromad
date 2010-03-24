@@ -1,11 +1,13 @@
 \name{armax}
 \alias{armax}
 \alias{armax.sim}
+\alias{ssg.armax}
+\alias{normalise.armax}
 \title{ ARMAX Transfer Function models }
 \description{
-	Linear transfer functions
-	(\emph{instantaneous unit hydrograph} or \emph{flow routing} in hydrology),
-	with a single input and single output series.
+  ARMAX linear transfer functions
+  (\emph{instantaneous unit hydrograph} or \emph{flow routing} in hydrology),
+  with a single input and single output series.
 }
 \usage{
 armax.sim(U, a_1 = 0, a_2 = 0, a_3 = 0,
@@ -15,39 +17,44 @@ armax.sim(U, a_1 = 0, a_2 = 0, a_3 = 0,
           epsilon = hydromad.getOption("sim.epsilon"),
           return_components = FALSE)
 
-
-tfParsConvert(pars, form = c("a,b", "tau,v", "alpha,beta"))
-
+ssg.armax(theta)
+normalise.armax(theta)
 }
 \arguments{
   \item{U}{
-    a \code{\link{ts}}-like object or list with named components:
-    \describe{
-      \item{\code{U}}{ input time series.
-	For IHACRES this is effective rainfall depths, usually in mm. }
-      \item{\code{Q}}{ observed reponse time series.
-	For IHACRES this is discharge (streamflow) at the catchment outlet.
-	It should usually be in units of mm (averaged over the catchment area).
-	Use \code{\link{convertFlow}} to convert it. }
-    }
+    input time series.
   }
   \item{a_1, a_2, a_3, b_0, b_1, b_2, b_3}{
     ARMAX coefficients. Auto-regressive terms begin with \code{a} and
     moving average terms begin with \code{b}. See Details section.
   }
   \item{pars}{
-    the ARMAX coefficients as a (named) vector. If this is given, it
+    the ARMAX coefficients as a named vector. If this is given, it
     will over-ride the named parmameter arguments. Any number of terms
     can be given here, it is not limited to the named arguments.
   }
-  \item{delay}{ lag (dead time) between input and response, in time steps. }
-  \item{warmup}{ number of time steps to remove from start of record when calculating statistics. }
-  \item{initX}{ whether to initialise the slower component using minimum of first 10
-    time steps. }
-  \item{na.action}{ function to remove missing values, e.g. \code{\link[=na.omit.ts]{na.omit}}. }
-  \item{Xs_0}{ initial value of slower response component. }
-  \item{Xq_0}{ initial value of quicker response component. }
-  \item{return_components}{ whether to return all exponential component time series. }
+  \item{delay}{
+    lag (dead time) between input and response, in time steps.
+  }
+  \item{init}{
+    initial values for the autoregressive filter.
+  }
+  \item{na.action}{
+    function to remove missing values,
+    e.g. \code{\link[=na.omit.ts]{na.omit}}.
+  }
+  \item{epsilon}{
+    values smaller than this will be set to zero.
+  }
+  \item{return_components}{
+    whether to return exponential component time series.
+    If \code{TRUE}, the parameters will be converted to an exponential
+    components formulation, and passed to \code{\link{expuh.sim}}. This
+    may fail in some cases.
+  }
+  \item{theta}{
+    the parameters as a named vector.
+  }
 }
 \details{
 	The transfer function used here, with input \var{u} and output \var{x} is:

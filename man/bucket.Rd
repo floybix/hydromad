@@ -3,11 +3,12 @@
 \alias{bucket.sim}
 \title{ Single-bucket Soil Moisture Accounting models }
 \description{
-  Single-bucket Soil Moisture Accounting models.
+  Single-bucket Soil Moisture Accounting models with
+  saturated/unsaturated zones and interception. 
 }
 \usage{
-bucket.sim(DATA, Sb, fc = 1, a.ei = 0, M = 0, a.ss = 0, S_0 = 0,
-           return_state = FALSE)
+bucket.sim(DATA, Sb, fc = 1, a.ei = 0, M = 0, a.ss = 0,
+           etmult = 1, S_0 = 0, return_state = FALSE)
 }
 \arguments{
   \item{DATA}{time-series-like object with columns P (precipitation,
@@ -18,6 +19,7 @@ bucket.sim(DATA, Sb, fc = 1, a.ei = 0, M = 0, a.ss = 0, S_0 = 0,
   \item{M}{Fraction of catchment area covered by deep rooted vegetation.}
   \item{a.ss}{Recession coefficients for subsurface flow from
     saturated zone (\eqn{\alpha_{ss}}).}
+  \item{etmult}{Multiplier for the \code{E} input data.}
   \item{S_0}{Initial soil moisture level (mm).}
   \item{return_state}{to return the series U, S and ET (evapotranspiration).}
 }
@@ -53,9 +55,14 @@ bucket.sim(DATA, Sb, fc = 1, a.ei = 0, M = 0, a.ss = 0, S_0 = 0,
 ## view default parameter ranges:
 str(hydromad.options("bucket"))
 
-data(Cotter)
-buc0 <- hydromad(Cotter[1:500], sma = "bucket")
-buc0
-simulate(buc0, 1)
+data(HydroTestData)
+mod0 <- hydromad(HydroTestData, sma = "bucket", routing = "expuh")
+mod0
+
+## simulate with some arbitrary parameter values
+mod1 <- update(mod0, Sb = 40, fc = 0.5, M = 0.5, etmult = 0.1,
+                     a.ei = 0, a.ss = 0, tau_s = 10)
+testQ <- predict(mod1, return_state = TRUE)
+xyplot(ts.union(HydroTestData[,1:2], bucket = testQ))
 }
 \keyword{models}

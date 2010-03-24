@@ -1,10 +1,26 @@
 
-Changes in Version 0.6-6 (under development)
+Changes in Version 0.6-7 (under development)
+
+  o the 'summary' method for 'runlist' is now much simpler and does not
+    include parameter values (previously included with 'pars' argument).
+    Instead a 'coef' method for 'runlist' returns the parameter values.
+
+  o 'summaryOrders' removed, just use 'summary'.
+
+  o fixed another case of hydromad() failing if 'Q' was not given in DATA.
+
+  o renamed 'eventAttributes' to 'eventinfo'.
+
+  o 'width' parameter for 'runoffratio' SMA now defaults to 30.
+
+  o more complete help pages and examples.
+
+Changes in Version 0.6-6
 
   o the CMD and snow models now run C code when return_state = TRUE.
 
   o fixed a bug in simulate() and fitBySampling() for models with only
-    one free parameter.
+    one (or zero) free parameters.
 
   o coef<-() method now has an 'all' argument, allowing free parameters
     to be easily updated inside an optimisation / simulation loop.
@@ -22,7 +38,7 @@ Changes in Version 0.6-4
 
 Changes in Version 0.6-3
 
-  o new SMA "snow" -- and function snow.sim() -- from Jarkko Koskela.
+  o new SMA "snow" -- as function snow.sim() -- from Jarkko Koskela.
 
   o SMA "runoffratio" now has threshold and mass balance parameters.
 

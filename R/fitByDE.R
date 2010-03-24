@@ -5,7 +5,7 @@
 
 
 fitByDE <-
-    function(MODEL, ...,
+    function(MODEL,
              objective = hydromad.getOption("objective"),
              control = hydromad.getOption("de.control"))
 {

@@ -3,14 +3,19 @@
 ##
 
 event.clusters <- function(...) {
-    .Deprecated("event.clusters")
+    .Deprecated("eventseq")
     eventseq(...)
 }
+
+eventAttributes <- function(...) {
+    .Deprecated("eventinfo")
+    eventinfo(...)
+}
+
 
 ## based on the arguments of evd::clusters
 eventseq <-
     function(x, thresh = 0, inter = 1, mindur = 1, below = FALSE)
-                                        #, ulow = -Inf, rlow = 1)
 {
     if (below) {
         x <- -x
@@ -56,12 +61,10 @@ eventseq <-
 }
 
 eventapply <-
-    function(X,
-             events = eventseq(X, thresh = thresh, inter = inter, mindur = mindur, below = below),
-             FUN = sum, ...,
-             thresh = 0, inter = 1, mindur = 1, below = FALSE,
+    function(X, events = eventseq(X, thresh, inter, mindur, below),
+             FUN = sum, ..., by.column = TRUE,
              TIMING = c("start", "middle", "end"),
-             by.column = TRUE)
+             thresh = 0, inter = 1, mindur = 1, below = FALSE)
 {
     TIMING <- match.arg(TIMING)
     force(events)
@@ -113,20 +116,22 @@ preInterEventDuration <- function(x)
     c(vals[1], diff(vals))
 }
 
-eventAttributes <-
-    function(X,
-             events = eventseq(X, thresh = thresh, inter = inter, mindur = mindur, below = below),
+eventinfo <-
+    function(X, events = eventseq(X, thresh, inter, mindur, below),
              FUN = mean, ...,
              thresh = 0, inter = 1, mindur = 1, below = FALSE)
 {
     stopifnot(inherits(X, "zoo"))
     force(events)
+    ## TODO: allow FUN to return multiple values?
     xValues <- eventapply(X, events = events, FUN = FUN, ...)
     xLengths <- eventapply(X, events = events, FUN = length,
                            TIMING = "middle")
-    data.frame(Date = time(xValues),
-               Month = as.POSIXlt(time(xLengths))$mon + 1,
+    midTimeComponents <- as.POSIXlt(time(xLengths))
+    data.frame(Time = time(xValues),
+               Month = midTimeComponents$mon + 1,
+               Year = midTimeComponents$year + 1900,
                Value = coredata(xValues),
                Duration = coredata(xLengths),
-               DryPeriod = preInterEventDuration(events))
+               PreDuration = preInterEventDuration(events))
 }

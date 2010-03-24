@@ -21,32 +21,41 @@ hydromad(DATA = zoo(), ...,
         warmup = hydromad.getOption("warmup"))
 }
 \arguments{
-  \item{DATA, newdata}{
+  \item{DATA}{
     a \code{\link{ts}}-like object with named columns:
-	\describe{
-	  \item{\code{P}}{ time series of areal rainfall depths, usually in mm. }
-	  \item{\code{E}}{ time series of potential evapo-transpiration, or more typically,
-		temperature as an indicator of this. Optional for some models. }
-	  \item{\code{Q}}{ time series of discharge (streamflow) at the catchment outlet.
-		This should usually be in units of mm (averaged over the catchment area).
-		Use \code{\link{convertFlow}} to convert it. }
-	    }
-	    }
+    \describe{
+      \item{\code{P}}{
+	time series of areal rainfall depths, usually in mm.
+      }
+      \item{\code{E}}{
+	(optional) time series of potential evapo-transpiration, or more
+	typically, temperature as an indicator of this. Required for
+	some models but not others.  
+      } 
+      \item{\code{Q}}{
+	(optional) time series of discharge (streamflow) at the
+	catchment outlet. Required for calibration but not simulation.
+	It should usually be in units of mm (averaged over the catchment
+	area). Use \code{\link{convertFlow}} to convert it.
+      } 
+    }
+  }
   \item{\dots}{
     values or ranges for named parameters. Any parameters not given here
-    will be taken from defaults given in \code{hydromad.options(sma)}.
+    will be taken from defaults given in \code{hydromad.options(sma)}
+    and/or \code{hydromad.options(routing)}.
   }
   \item{sma}{
-    name of the Soil Moisture Accounting (SMA) component. May be \code{NULL}, in
-    which case the input rainfall will be passed directly to
-    \code{routing}. If \code{sma} is specified, a corresponding
-    simulation function \var{sma}\code{.sim} must exist.
+    name of the Soil Moisture Accounting (SMA) component. May be
+    \code{NULL}, in which case the input rainfall will be passed
+    directly to \code{routing}. If \code{sma} is specified, a
+    corresponding simulation function \var{sma}\code{.sim} must exist.
   }
   \item{routing}{
     name of the routing component (i.e. the component which takes in
     effective rainfall from \code{sma} and converts it to streamflow).
-    May be \code{NULL}, in which case the
-    model output is taken as the output from \code{sma} directly.
+    May be \code{NULL}, in which case the model output is taken as the
+    output from \code{sma} directly. 
   }
   \item{rfit}{
     optional specification for fitting the routing component. If a
@@ -82,11 +91,19 @@ hydromad(DATA = zoo(), ...,
 %      multiple-bucket models (UNDER DEVELOPMENT).
 %    }
     \item{\code{\link{sacramento}}}{
-      Sacramento Soil Moisture Accounting model (US NWS).
+      Sacramento Soil Moisture Accounting model (from US NWS).
+    }
+    \item{\code{\link{snow}}}{
+      simple degree day factor snow model coupled with IHACRES CMD soil
+      moisture model. 
     }
     \item{\code{\link{runoffratio}}}{
       rainfall is scaled by the runoff coefficient estimated in a moving
-      window. 
+      window (can not be used for prediction).
+    }
+    \item{\code{\link{dbm}}}{
+      rainfall is scaled by corresponding streamflow values raised to a
+      power (can not be used for prediction). 
     }
   }
 

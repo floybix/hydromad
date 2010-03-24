@@ -4,7 +4,7 @@
 ##
 
 runoffratio.sim <-
-    function(DATA, width = NA, kernel = 2, sides = 2, rrthresh = 0,
+    function(DATA, width = 30, kernel = 2, sides = 2, rrthresh = 0,
              qlag = 0, scale = 1, return_state = FALSE)
 {
     ## get data into the right form
@@ -22,10 +22,6 @@ runoffratio.sim <-
     ## compute effective rainfall U
     ## estimate U as scaled P, scaled in a moving window
     ## (runoff coefficient)
-    if (is.na(width)) {
-        width <- autocorrTime(Q)
-        width <- min(max(width, 8), length(Q) %/% 5)
-    }
     width <- round(width)
     sm <- simpleSmoothTs(cbind(Q, P), width = width, c = kernel, sides = sides)
     rr <- sm[,"Q"] / sm[,"P"]

@@ -25,8 +25,12 @@ scalar.sim(DATA, c, return_state = FALSE)
 ## view default parameter ranges:
 str(hydromad.options("scalar"))
 
-data(Cotter)
-sca0 <- hydromad(Cotter[1:500], sma = "scalar", routing = "expuh")
-sca0
+data(HydroTestData)
+mod0 <- hydromad(HydroTestData, sma = "scalar", routing = "expuh")
+mod0
+
+## simulate with some arbitrary parameter values
+testQ <- predict(update(mod0, c = 0.5, tau_s = 10))
+xyplot(ts.union(HydroTestData[,1:2], scalar.Q = testQ))
 }
 \keyword{models}

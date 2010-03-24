@@ -13,15 +13,14 @@ cmd.sim(DATA, d, f, e, M_0 = d/2,
         return_state = FALSE)
 }
 \arguments{
-  \item{DATA}{ a \code{\link{ts}}-like object or list with named components:
-	\describe{
-	  \item{\code{P}}{ time series of areal rainfall depths, usually in mm. }
-	  \item{\code{E}}{ time series of potential evapo-transpiration, or more typically,
-		temperature as an indicator of this. }
-	  \item{\code{Q}}{ time series of discharge (streamflow) at the catchment outlet.
-		This should usually be in units of mm (averaged over the catchment area).
-		Use \code{\link{convertFlow}} to convert it. }
-	} }
+  \item{DATA}{
+    a \code{\link{ts}}-like object with named components:
+    \describe{
+      \item{\code{P}}{ time series of areal rainfall depths, usually in mm. }
+      \item{\code{E}}{ time series of potential evapo-transpiration, or more typically,
+	temperature as an indicator of this. }
+    }
+  }
   \item{d}{ CMD threshold for producing flow. }
   \item{f}{ CMD stress threshold as a proportion of \code{d}. }
   \item{e}{ temperature to PET conversion factor. }
@@ -85,6 +84,15 @@ data(Canning)
 x <- cmd.sim(Canning[1:1000,], d = 200, f = 0.7, e = 0.166,
              return_state = TRUE)
 xyplot(x)
+
+data(HydroTestData)
+mod0 <- hydromad(HydroTestData, sma = "cmd", routing = "expuh")
+mod0
+
+## simulate with some arbitrary parameter values
+mod1 <- update(mod0, d = 200, f = 0.5, e = 0.1, tau_s = 10)
+testQ <- predict(mod1, return_state = TRUE)
+xyplot(ts.union(HydroTestData[,1:2], cmd = testQ))
 }
 \keyword{ models }
 

@@ -1,10 +1,11 @@
 \name{tryModelOrders}
 \alias{tryModelOrders}
+\alias{summary.tryModelOrders}
 \title{
-  Compare calibrations with different order models.
+  Compare calibrations with different transfer function (ARMA) orders for routing.
 }
 \description{
-  Compare calibrations with different order models.
+  Compare calibrations with different transfer function (ARMA) orders for routing.
 }
 \usage{
 tryModelOrders(expr, n = 0:3, m = 0:2,
@@ -13,13 +14,13 @@ tryModelOrders(expr, n = 0:3, m = 0:2,
 }
 \arguments{
   \item{expr}{
-    an expression to calibrate an hydromad type model.
+    an expression to calibrate a hydromad model.
   }
   \item{n}{
-    the set of values of n to try (order of the auto-regressive component).
+    the set of values of \var{n} to try (order of the auto-regressive component).
   }
   \item{m}{
-    the set of values of m to try (order of the moving-average component).
+    the set of values of \var{m} to try (order of the moving-average component).
   }
   \item{delay}{
     the set of delays to try.
@@ -41,8 +42,8 @@ tryModelOrders(expr, n = 0:3, m = 0:2,
   Felix Andrews \email{felix@nfrac.org}
 }
 \seealso{
-  \code{\link{tf}},
-  \code{\link{tf.sriv.fit}}
+  \code{\link{armax}},
+  \code{\link{armax.sriv.fit}}
 }
 \examples{
 
