@@ -683,10 +683,10 @@ Jakeman et. al. (1990) and Young (2003).
 \begin{table}[hpbt]
 \begin{center}
 <<try-model-orders-table-code, echo=TRUE, results=hide>>=
-ihSpec <- hydromad(ts90s, sma = "runoffratio", width = 30, c = 2,
+ihSpec <- hydromad(ts90s, sma = "runoffratio", width = 30, kernel = 2,
                    rrthresh = 0, routing = "armax")
 osumm <- tryModelOrders(update(ihSpec, rfit = "sriv"),
-                        n = 0:3, m = 0:3, delay = 0:1)
+                        n = 0:3, m = 0:3, delay = 0)
 summary(osumm)
 @
 <<try-model-orders-table, results=tex>>=

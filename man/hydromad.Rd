@@ -90,6 +90,9 @@ hydromad(DATA = zoo(), ...,
 %    \item{\code{\link{multibucket}}}{
 %      multiple-bucket models (UNDER DEVELOPMENT).
 %    }
+    \item{\code{\link{awbm}}}{
+      Australian Water Balance Model: simple 3 bucket model.
+    }
     \item{\code{\link{sacramento}}}{
       Sacramento Soil Moisture Accounting model (from US NWS).
     }

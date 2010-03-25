@@ -12,8 +12,6 @@
 #define max(a, b) ((a < b)?(b):(a))
 #endif
 
-#define my_isok(x) (!ISNA(x) & !ISNAN(x))
-
 
 void
 sma_cmd(double *P, double *E, int *n,

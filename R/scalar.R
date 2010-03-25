@@ -4,38 +4,39 @@
 ##
 
 scalar.sim <-
-    function(DATA, c, return_state = FALSE)
+    function(DATA, scale, return_state = FALSE)
 {
     ## get data into the right form
     DATA <- as.ts(DATA)
     if (NCOL(DATA) > 1) stopifnot("P" %in% colnames(DATA))
     P <- if (NCOL(DATA) > 1) DATA[,"P"] else DATA
-    ## special value c = NA used for initial run for scaling
-    if (is.na(c))
-        c <- 1
+    ## special value scale = NA used for initial run
+    if (is.na(scale))
+        scale <- 1
     ## check values
-    stopifnot(c >= 0)
+    stopifnot(scale >= 0)
     ## compute effective rainfall U
-    c * P
+    scale * P
 }
 
 scalar.ranges <- function()
-    list(c = NA)
+    list(scale= NA)
 
-absorbScale.hydromad.scalar <- function(object, gain, parname = "c", ...)
+absorbScale.hydromad.scalar <- function(object, gain, parname = "scale", ...)
 {
     if (gain <= 0)
         return(NULL)
     coeff <- coef(object, which = "sma")
     if (parname %in% names(coeff) == FALSE)
         return(NULL)
-    c <- coeff[[parname]]
-    ## we only want to do this when c is NA (special value)
-    if (is.null(c) || !is.na(c))
+    scale <- coeff[[parname]]
+    ## we only want to do this when scale is NA (special value)
+    if (is.null(scale) || !is.na(scale))
         return(NULL)
-    c <- 1
-    c <- c * gain
-    object$parlist[[parname]] <- c
-    object$U <- c * object$U
+    scale <- 1
+    scale <- scale * gain
+    object$parlist[[parname]] <- scale
+    object$call[[parname]] <- signif(scale, 6)
+    object$U <- scale * object$U
     object
 }

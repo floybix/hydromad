@@ -14,7 +14,7 @@ cmd.sim(DATA, d, f, e, M_0 = d/2,
 }
 \arguments{
   \item{DATA}{
-    a \code{\link{ts}}-like object with named components:
+    a \code{\link{ts}}-like object with named columns:
     \describe{
       \item{\code{P}}{ time series of areal rainfall depths, usually in mm. }
       \item{\code{E}}{ time series of potential evapo-transpiration, or more typically,

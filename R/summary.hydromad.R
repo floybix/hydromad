@@ -75,14 +75,14 @@ summary.hydromad <-
     }
     if ("arpe" %in% which) {
         if (is.null(vcov(object))) {
-            ans$arpe <- NA
+            ans$arpe <- NA_real_
         } else {
-            ans$coef.var <- diag(vcov(object))
+            coef.var <- diag(vcov(object))
             cc <- coef(object, "routing")
             cc2 <- tfParsConvert(cc, "a,b")
             cc[names(cc2)] <- cc2
-            nms <- intersect(names(cc), names(ans$coef.var))
-            ans$arpe <- mean(ans$coef.var[nms] / (cc[nms]^2))
+            nms <- intersect(names(cc), names(coef.var))
+            ans$arpe <- mean(coef.var[nms] / (cc[nms]^2))
             if ("yic" %in% which) {
                 var.ratio <- (var(residuals(object), na.rm = TRUE) /
                               var(observed(object), na.rm = TRUE))

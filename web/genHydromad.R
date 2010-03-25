@@ -24,6 +24,7 @@ spec[["soil moisture accounting"]] <-
          list("IHACRES.CWI.model"),
          list("IHACRES.CMD.model"),
          list("bucket"),
+         list("awbm"),
          list("sacramento"),
          list("snow"),
          list("runoffratio"),
@@ -46,8 +47,8 @@ spec[["routing"]] <-
     list(
          list("armax"),
          list("expuh"),
-         list("lambda"),
-         list("powuh")
+         list("lambda", do.example = FALSE),
+         list("powuh", do.example = FALSE)
          )
 
 spec[["routing fitting"]] <-
@@ -110,5 +111,5 @@ lattice.options(panel.error = NULL)
 generateWebsite("hydromad", spec = spec, 
                 man.src.dir = "../man/",
                 imageSrcBase = "",
-                themeNames = "custom_theme_2"
+                themeNames = "custom_theme_2",
                 do.examples = TRUE)

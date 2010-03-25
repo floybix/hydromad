@@ -6,7 +6,7 @@
 ## IHACRES Catchment Wetness Index (CWI) model.
 cwi.sim <-
     function(DATA,
-             tw, f = 0, c,
+             tw, f = 0, scale,
              l = 0, p = 1,
              t_ref = hydromad.getOption("cwi")$t_ref,
              s_0 = 0,
@@ -17,13 +17,13 @@ cwi.sim <-
     if (NCOL(DATA) > 1) stopifnot("P" %in% colnames(DATA))
     if (f > 0) stopifnot("E" %in% colnames(DATA))
     P <- if (NCOL(DATA) > 1) DATA[,"P"] else DATA
-    ## special value c = NA used for initial run for scaling
-    if (is.na(c))
-        c <- 1
+    ## special value scale = NA used for initial run for scaling
+    if (is.na(scale))
+        scale <- 1
     ## check values
     stopifnot(tw >= 0)
     stopifnot(f >= 0)
-    stopifnot(c >= 0)
+    stopifnot(scale >= 0)
     stopifnot(l >= 0)
     stopifnot(p > 0)
     stopifnot(length(t_ref) == 1)
@@ -44,7 +44,7 @@ cwi.sim <-
     ## compute effective rainfall U
     U <- (pmax(s - l, 0) ^ p) * P
     ## TODO: test mass balance scaling with p > 1
-    U <- (c ^ p) * U
+    U <- (scale ^ p) * U
     if (return_state) return(ts.union(U=U, s=s, w=w))
     return(U)
 }
@@ -52,27 +52,29 @@ cwi.sim <-
 cwi.ranges <- function()
     list(tw = c(0, 100),
          f = c(0, 8),
-         c = NA,
+         scale = NA,
          l = 0,
          p = 1,
          t_ref = 20)
 
 absorbScale.hydromad.cwi <- function(object, gain, ...)
 {
-    #if (!isTRUE(object$estimateScale)) {
-    coeff <- coef(object, which = "sma")
-    c <- coeff[["c"]]
-    ## we only want to do this when c is NA (special value)
-    if (is.null(c) || !is.na(c))
+    parname <- "scale"
+    if (gain <= 0)
         return(NULL)
-    c <- 1
+    coeff <- coef(object, which = "sma")
+    scale <- coeff[[parname]]
+    ## we only want to do this when scale is NA (special value)
+    if (is.null(scale) || !is.na(scale))
+        return(NULL)
+    scale <- 1
     p <- coeff[["p"]]
-    c <- c * (gain ^ p)
-    c <- max(c, 0)
-    object <- update(object, c = c, and.rescale = FALSE)
-    ## TODO - may be significatly faster:
-    #object$parlist[["c"]] <- c
-    #object$call$c <- signif(c, 6)
-    #object$U <- (c ^ p) * object$U
+    scale <- scale * (gain ^ p)
+    scale <- max(scale, 0)
+    #object <- update(object, scale = scale, and.rescale = FALSE)
+    ## may be significatly faster:
+    object$parlist[[parname]] <- scale
+    object$call[[parname]] <- signif(scale, 6)
+    object$U <- (scale ^ p) * object$U
     object
 }

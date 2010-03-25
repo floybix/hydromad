@@ -95,6 +95,16 @@ eventinfo(X, events = eventseq(X, thresh, inter, mindur, below),
   \code{clusters} in the \pkg{evd} package.
 }
 \examples{
+data(SalmonBrook)
+x <- window(SalmonBrook, start = "1990-01-01", end = "1995-01-01")
+ev <- eventseq(x$Q, thresh = 1, inter = 5)
+str(ev)
+summary(ev)
+eventapply(x$Q, ev, FUN = sum)
+eventapply(x, ev, FUN = mean)
+eventinfo(x$Q, ev)
+
+xyplot(x) + layer(panel.xblocks(ev))
 
 }
 \keyword{ ts }

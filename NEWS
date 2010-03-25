@@ -1,8 +1,14 @@
 
-Changes in Version 0.6-7 (under development)
+Changes in Version 0.7-0 (under development)
+
+  o the mass balance term 'c' in cwi.sim is now called 'scale'.
+
+  o new power law routing 'powuh'.
+
+  o new SMA 'awbm'.
 
   o the 'summary' method for 'runlist' is now much simpler and does not
-    include parameter values (previously included with 'pars' argument).
+    include parameter values (as the 'pars' argument did previously).
     Instead a 'coef' method for 'runlist' returns the parameter values.
 
   o 'summaryOrders' removed, just use 'summary'.

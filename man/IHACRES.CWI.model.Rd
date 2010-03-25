@@ -2,6 +2,7 @@
 \alias{IHACRES.CWI.model}
 \alias{cwi}
 \alias{cwi.sim}
+\alias{absorbScale.hydromad.cwi}
 \alias{ihacres.cwi}
 \title{ IHACRES Catchment Wetness Index (CWI) model }
 \description{
@@ -14,14 +15,15 @@
 }
 \usage{
 cwi.sim(DATA,
-	tw, f = 0, c,
+	tw, f = 0, scale,
         l = 0, p = 1,
         t_ref = hydromad.getOption("cwi")$t_ref,
         s_0 = 0,
         return_state = FALSE)
 }
 \arguments{
-  \item{DATA}{ a \code{\link{ts}}-like object or list with named components:
+  \item{DATA}{
+    a \code{\link{ts}}-like object with named columns:
     \describe{
       \item{\code{P}}{
 	time series of areal rainfall depths, usually in mm.
@@ -31,31 +33,41 @@ cwi.sim(DATA,
 	temperature as an indicator of this.
 	Can be omitted if \code{f = 0}.
       }
-      \item{\code{Q}}{
-	time series of discharge (streamflow) at the catchment outlet.
-	This should usually be in units of mm (averaged over the catchment area).
-	Use \code{\link{convertFlow}} to convert it.
-      }
     }
   }
-  \item{tw}{ drying rate at reference temperature (\eqn{\tau_\omega}{tw}).
-  	This is a \emph{time constant}, the number of time steps to reduce
-  	to a fraction \eqn{1/e \approx 37\%}. See definition below. }
-  \item{f}{ temperature dependence of drying rate. See definition below.
-	The case of \code{f=0} describes an invariant drying rate model,
-	in which case the input data \code{E} is not required. }
-  \item{c}{ mass balance term.
-	If this is missing, it will be set to ensure that
-	\eqn{\sum{U} = \sum{Q}}.
-	It can not be omitted in the simulation function \code{cwi.sim}.}
-  \item{l}{ moisture threshold for producing flow (in units of \var{s}).
-  	This can be used together with \code{p} for ephemeral rivers. }
-  \item{p}{ power on soil moisture (above the threshold \code{l}). }
-  \item{t_ref}{ reference temperature in units of \code{E} (traditionally 20 deg. C).
-	  This is not a parameter; it simply transforms \code{tw}
-	  (scaling \code{tw} by \code{exp(0.062 * t_ref * f)}.}
-  \item{s_0}{ starting value for soil moisture index \var{s}. }
-  \item{return_state}{ to return state variables as well as the effective rainfall. }
+  \item{tw}{
+    drying rate at reference temperature (\eqn{\tau_\omega}{tw}).
+    This is a \emph{time constant}, the number of time steps to reduce
+    to a fraction \eqn{1/e \approx 37\%}. See definition below.
+  }
+  \item{f}{
+    temperature dependence of drying rate. See definition below.
+    The case of \code{f=0} describes an invariant drying rate model,
+    in which case the input data \code{E} is not required.
+  }
+  \item{scale}{
+    mass balance term (\var{c} in the literature).
+    If this parameter is set to \code{NA} (as it is by default)
+    in \code{\link{hydromad}} it will be set by mass balance calculation. 
+  }
+  \item{l}{
+    moisture threshold for producing flow (in units of \var{s}).
+    This can be used together with \code{p} for ephemeral rivers.
+  }
+  \item{p}{
+    power on soil moisture (above the threshold \code{l}).
+  }
+  \item{t_ref}{
+    reference temperature in units of \code{E} (traditionally 20 deg. C).
+    This is not a parameter; it simply transforms \code{tw}
+    (scaling \code{tw} by \code{exp(0.062 * t_ref * f)}.
+  }
+  \item{s_0}{
+    starting value for soil moisture index \var{s}.
+  }
+  \item{return_state}{
+    to return state variables as well as the effective rainfall.
+  }
 }
 \details{
 	The effective rainfall at each time step is proportional to
@@ -111,8 +123,8 @@ cwi.sim(DATA,
 str(hydromad.options("cwi"))
 
 data(Canning)
-x <- cwi.sim(Canning[1:1000,], tw = 162, f = 2, l = 300, t_ref = 0, c = 0.000284,
-             return_state = TRUE)
+x <- cwi.sim(Canning[1:1000,], tw = 162, f = 2, l = 300,
+             t_ref = 0, scale = 0.000284, return_state = TRUE)
 xyplot(x)
 
 data(HydroTestData)
@@ -120,7 +132,7 @@ mod0 <- hydromad(HydroTestData, sma = "cwi", routing = "expuh")
 mod0
 
 ## simulate with some arbitrary parameter values
-mod1 <- update(mod0, tw = 32, f = 2, c = 0.01, tau_s = 10)
+mod1 <- update(mod0, tw = 32, f = 2, scale = 0.01, tau_s = 10)
 testQ <- predict(mod1, return_state = TRUE)
 xyplot(ts.union(HydroTestData[,1:2], cwi = testQ))
 }

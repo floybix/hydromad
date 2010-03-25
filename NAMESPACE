@@ -114,6 +114,9 @@ useDynLib(hydromad, sma_cmd)
 export(bucket.sim)
 #useDynLib(hydromad, sma_bucket)
 
+export(awbm.sim)
+useDynLib(hydromad, sma_awbm)
+
 export(sacramento.sim)
 useDynLib(hydromad, sma_sac)
 

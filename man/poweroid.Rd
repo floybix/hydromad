@@ -14,8 +14,6 @@ poweroid(alpha = NULL, beta = NULL,
          r = if (!missing(A)) sqrt(A/pi),
          ...,
          rel.error = FALSE,
-         objective = if (rel.error) ~ mean(abs((obs - mod)/obs))
-                     else ~ mean(abs((obs - mod))),
          polish = FALSE, details = FALSE)
 }
 \arguments{
@@ -45,10 +43,6 @@ poweroid(alpha = NULL, beta = NULL,
     if \code{TRUE}, consider errors as proportion of given observed
     values; otherwise consider the total error in original units. This
     affects the objective function as well as estimation of alpha.
-  }
-  \item{objective}{
-    the objective function, as a formula or expression, referring to
-    objects \code{obs} (observed data) and \code{mod} (fitted data).
   }
   \item{polish}{
     to apply \code{\link{nlminb}} when fitting parameters.

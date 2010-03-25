@@ -12,6 +12,8 @@
          cmd = cmd.ranges(),
          sacramento = sacramento.ranges(),
          bucket = bucket.ranges(),
+         awbm = awbm.ranges(),
+         snow = snow.ranges(),
          runoffratio = runoffratio.ranges(),
          dbm = dbm.ranges(),
          inverse.fit.method = "sriv",

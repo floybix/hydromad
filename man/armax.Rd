@@ -82,7 +82,13 @@ normalise.armax(theta)
 \author{ Felix Andrews \email{felix@nfrac.org} }
 \seealso{ \code{\link{armax.sriv.fit}}, \code{\link{arima}} }
 \examples{
+data(HydroTestData)
+fit <- hydromad(HydroTestData, routing = "armax",
+                rfit = list("ls", order = c(n = 2, m = 1)))
+pars <- coef(fit)
+pars
 
+xyplot(armax.sim(HydroTestData[,"P"], pars = pars))
 }
 \keyword{ ts }
 

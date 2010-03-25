@@ -6,11 +6,11 @@ obsdat <- window(SalmonBrook, start = "1990-01-01", end = "1992-01-01")
 
 P <- obsdat$P
 simU <- hydromad.sim(obsdat, routing = NULL,
-                     sma = "cwi", tw = 30, f = 0.5, c = 1/1000)
+                     sma = "cwi", tw = 30, f = 0.5, scale = 1/1000)
 simQ <- hydromad.sim(simU, sma = NULL,
                      routing = "expuh", tau_s = 30, tau_q = 2, v_s = 0.3)
 
-simQ <- hydromad.sim(obsdat, sma = "cwi", tw = 30, f = 0.5, c = 1/1000,
+simQ <- hydromad.sim(obsdat, sma = "cwi", tw = 30, f = 0.5, scale = 1/1000,
                      routing = "expuh", tau_s = 30, tau_q = 2, v_s = 0.3)
 
 
@@ -27,7 +27,7 @@ rspecs <-
 #cmdspecs <- lapply(cwispecs, update, sma = "cmd")
 
 ## first just test routing fitting with exact U given
-fits <- as.runlist(lapply(rspecs, update, tw = 30, f = 0.5, c = 1/1000))
+fits <- as.runlist(lapply(rspecs, update, tw = 30, f = 0.5, scale = 1/1000))
 ## now test fitting of all parameters (SMA + expuh routing)
 fullspec <- update(spec0, routing = "expuh", tau_q = c(0,3), tau_s = c(3,100), v_s = c(0,1))
 fits$Optim <- fitByOptim(fullspec)

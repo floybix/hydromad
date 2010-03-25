@@ -1,6 +1,7 @@
 \name{runoffratio}
 \alias{runoffratio}
 \alias{runoffratio.sim}
+\alias{absorbScale.hydromad.runoffratio}
 \title{ Simple time-varying runoff proportion }
 \description{
   Simple time-varying runoff proportion. Rainfall is scaled by the
@@ -38,6 +39,8 @@ runoffratio.sim(DATA, width = 30, kernel = 2, sides = 2, rrthresh = 0,
   }
   \item{scale}{
     constant multiplier of the result, for mass balance.
+    If this parameter is set to \code{NA} (as it is by default)
+    in \code{\link{hydromad}} it will be set by mass balance calculation. 
   }
   \item{return_state}{ignored.}
 }

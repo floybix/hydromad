@@ -9,7 +9,7 @@ test_that("cwi+expuh(2,1) simulation looks reasonable", {
     obsdat <- window(SalmonBrook, start = "1990-01-01", end = "1992-01-01")
     ## joint simulation of SMA and routing
     simQ <-
-        fitted(hydromad(obsdat, sma = "cwi", tw = 30, f = 0.5, c = 1/1000,
+        fitted(hydromad(obsdat, sma = "cwi", tw = 30, f = 0.5, scale = 1/1000,
                         routing = "expuh", tau_s = 30, tau_q = 2, v_s = 0.3),
                all = TRUE)
     expect_that(NROW(simQ) == NROW(obsdat), is_true())

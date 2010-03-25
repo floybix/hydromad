@@ -43,5 +43,5 @@ objFunVal(model, objective = hydromad.getOption("objective"),
 \examples{
 
 }
-\keyword{ ts }
+\keyword{ utilities }
 

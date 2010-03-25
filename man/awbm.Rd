@@ -1,0 +1,82 @@
+\name{awbm}
+\alias{awbm}
+\alias{awbm.sim}
+\title{ Australian Water Balance Model (AWBM) }
+\description{
+  Australian Water Balance Model (AWBM).
+}
+\usage{
+awbm.sim(DATA, cap.ave,
+         cap1 = 0.01 * cap.ave / area1,
+         cap2 = 0.33 * cap.ave / area2,
+         cap3 = 0.66 * cap.ave / area3,
+         area2 = 0.433, area3 = 0.433,
+         area1 = 1 - area2 - area3,
+         etmult = 1,
+         S1_0 = 0, S2_0 = 0, S3_0 = 0,
+         return_state = FALSE)
+}
+\arguments{
+  \item{DATA}{
+    time-series-like object with columns P (precipitation,
+    mm) and E (potential evapo-transpiration, mm).
+  }
+  \item{cap.ave}{
+    average soil water storage capacity (mm). This is not used directly
+    in the model, but rather to define default values of the other
+    parameters. 
+  }
+  \item{cap1, cap2, cap3}{
+    soil water storage capacities (mm) for the three fractional areas.
+  }
+  \item{area1, area2, area3}{
+    fractional areas with corresponding capacities. These must sum to 1.
+  }
+  \item{etmult}{
+    multiplier for the \code{E} input data.
+  }
+  \item{S1_0, S2_0, S3_0}{
+    initial soil moisture levels (mm).
+  }
+  \item{return_state}{
+    to return the soil moisture levels \code{S1}, \code{S2} and
+    \code{S3} together with effective rainfall \code{U}.
+  }
+}
+\details{
+  This is a very simple model: saturation excess from three buckets with
+  different capacities are added together with fractional areas for
+  weights.
+
+  This is the soil moisture accounting component; the model described in
+  the literature has a two-store routing component also:
+  \code{hydromad(..., sma = "awbm", routing = "expuh",
+    rfit = list("sriv", order = c(2, 1)))}
+}
+\value{
+  the simulated effective rainfall, a time series of the same length as
+  the input series.  
+}
+\references{
+  Boughton, W. (2004). The australian water balance model.
+  Environmental Modelling & Software 19 (10), 943-956.
+  \url{http://dx.doi.org/10.1016/j.envsoft.2003.10.007}
+}
+\author{ Felix Andrews \email{felix@nfrac.org} }
+\seealso{
+  \code{\link{hydromad}(sma = "awbm")} to work with models as objects (recommended).
+}
+\examples{
+## view default parameter ranges:
+str(hydromad.options("awbm"))
+
+data(HydroTestData)
+mod0 <- hydromad(HydroTestData, sma = "awbm", routing = "expuh")
+mod0
+
+## simulate with some arbitrary parameter values
+mod1 <- update(mod0, cap.ave = 40, etmult = 0.1, tau_s = 10)
+testQ <- predict(mod1, return_state = TRUE)
+xyplot(ts.union(HydroTestData[,1:2], awbm = testQ))
+}
+\keyword{models}

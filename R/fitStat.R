@@ -64,7 +64,7 @@ objFunVal <-
         objective <- objective[[2]]
     stopifnot(is.language(objective) || is.function(objective))
     if (!isValidModel(model))
-        return(as.numeric(NA))
+        return(NA_real_)
     ## these can be referred to in `objective`
     delayedAssign("Q", observed(model))
     delayedAssign("X", fitted(model))
@@ -161,12 +161,12 @@ tsFitStat <-
     dat <- ts.intersect(obs = obs, mod = mod, ref = ref)
     if (NROW(dat) <= 1) {
         warning("merged time series have no data; incompatible times?")
-        return(NA)
+        return(NA_real_)
     }
     dat <- na.action(dat)
     if (NROW(dat) <= 1) {
         warning("time series have no data after 'na.action'")
-        return(NA)
+        return(NA_real_)
     }
     ## aggregation
     if (!is.null(aggr) && !is.null(events))

@@ -6,6 +6,7 @@
 \alias{observed.hydromad}
 \alias{residuals.hydromad}
 \alias{coef.hydromad}
+\alias{coef<-}
 \alias{coef<-.hydromad}
 \alias{vcov.hydromad}
 \alias{isValidModel}

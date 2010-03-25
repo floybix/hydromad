@@ -32,42 +32,42 @@ as.runlist <- function(x, ...)
 coef.runlist <-
     function(object, ...)
 {
-    stopifnot(is.list(object))
-    if (length(object) == 0)
-        return(NULL)
-    cc <- lapply(object, coef, ...)
-    ## TODO: pad out missing entries with NAs
-    nms <- names(cc[[1]])
-    allsame <-
-        all(sapply(cc, function(x) identical(names(x), nms)))
-    ans <- cc
-    if (allsame) {
-        ans <- as.data.frame(do.call("rbind", cc)) #sapply(cc, identity))
-        class(ans) <- c("summary.runlist", class(ans))
-    }
-    ans
+    summary(object, ..., FUN = coef)
 }
 
 summary.runlist <-
-    function(object, ...)
+    function(object, ..., FUN = summary)
 {
     stopifnot(is.list(object))
     if (length(object) == 0)
         return(NULL)
+    ## extract elements from summary which are single numbers
     cc <- lapply(object, function(x) {
-        tmp <- summary(x, ...)
-        tmp[(sapply(tmp, length) == 1) &
-            (sapply(tmp, is.numeric))]
+        tmp <- FUN(x, ...)
+        tmp <- tmp[unlist(lapply(tmp, function(z) {
+            is.numeric(z) && !is.matrix(z) &&
+            (length(z) == 1)
+        }))]
+        unlist(tmp)
     })
-    ## TODO: pad out missing entries with NAs
-    nms <- names(cc[[1]])
-    allsame <-
-        all(sapply(cc, function(x) identical(names(x), nms)))
-    ans <- cc
-    if (allsame) {
-        ans <- as.data.frame(do.call("rbind", cc)) #sapply(cc, identity))
+    ## pad out missing entries with NAs
+    ## find the set of all names
+    allnms <- union(unlist(lapply(cc, names)))
+    ans <- matrix(NA_real_,
+                  nrow = length(object),
+                  ncol = length(allnms),
+                  dimnames = list(names(object), allnms))
+    for (i in 1:NROW(ans))
+        ans[i, names(cc[[i]])] <- cc[[i]]
+    
+#    nms <- names(cc[[1]])
+#    allsame <-
+#        all(sapply(cc, function(x) identical(names(x), nms)))
+#    ans <- cc
+#    if (allsame) {
+#        ans <- as.data.frame(do.call("rbind", cc)) #sapply(cc, identity))
         class(ans) <- c("summary.runlist", class(ans))
-    }
+#    }
     ans
 }
 

@@ -1,16 +1,23 @@
 \name{scalar}
 \alias{scalar}
 \alias{scalar.sim}
+\alias{absorbScale.hydromad.scalar}
 \title{ Simple constant runoff proportion }
 \description{
   Simple constant runoff proportion.
 }
 \usage{
-scalar.sim(DATA, c, return_state = FALSE)
+scalar.sim(DATA, scale, return_state = FALSE)
 }
 \arguments{
-  \item{DATA}{time-series-like object with a column P (precipitation).}
-  \item{c}{fraction of rainfall that becomes effective.}
+  \item{DATA}{
+    time-series-like object with a column P (precipitation).
+  }
+  \item{scale}{
+    fraction of rainfall that becomes effective.
+    If this parameter is set to \code{NA} (as it is by default)
+    in \code{\link{hydromad}} it will be set by mass balance calculation. 
+  }
   \item{return_state}{ignored.}
 }
 \value{
@@ -30,7 +37,7 @@ mod0 <- hydromad(HydroTestData, sma = "scalar", routing = "expuh")
 mod0
 
 ## simulate with some arbitrary parameter values
-testQ <- predict(update(mod0, c = 0.5, tau_s = 10))
+testQ <- predict(update(mod0, scale = 0.5, tau_s = 10))
 xyplot(ts.union(HydroTestData[,1:2], scalar.Q = testQ))
 }
 \keyword{models}

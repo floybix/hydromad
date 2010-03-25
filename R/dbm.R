@@ -30,31 +30,30 @@ fitDbmByGam <-
 }
 
 dbm.sim <-
-    function(DATA, power, c = 1, qlag = 0, return_state = FALSE)
+    function(DATA, power, scale = 1, qlag = 0, return_state = FALSE)
 {
     ## get data into the right form
     DATA <- as.ts(DATA)
     stopifnot(c("P", "Q") %in% colnames(DATA))
     P <- DATA[,"P"]
     Q <- DATA[,"Q"]
-    ## special value c = NA used for initial run for scaling
-    if (is.na(c))
-        c <- 1
+    ## special value scale = NA used for initial run for scaling
+    if (is.na(scale))
+        scale <- 1
     ## check values
-    stopifnot(c >= 0)
+    stopifnot(scale >= 0)
     ## synchronise Q lagged by qlag
     Qd <- shiftWindow(Q, round(qlag), and.lag = TRUE)
     ## compute effective rainfall U
-    c * P * Qd ^ power
+    scale * P * Qd ^ power
 }
 
 dbm.ranges <- function()
     list(power = c(0.01, 0.9),
          qlag = c(-1, 2),
-         c = NA)
+         scale = NA)
 
 absorbScale.hydromad.dbm <- function(object, gain, ...)
 {
-    ## uses 'c' parameter for scaling:
-    absorbScale.hydromad.scalar(object, gain, parname = "c")
+    absorbScale.hydromad.scalar(object, gain, parname = "scale")
 }

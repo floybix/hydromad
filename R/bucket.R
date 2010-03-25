@@ -4,7 +4,8 @@
 ##
 
 ## Bucket-type Soil Moisture Accounting models.
-## From Farmer et al 2003, Water Resources Research.
+## Bai et. al. (2009), Environmental Modelling and Software.
+## Model S2.
 bucket.sim <-
     function(DATA,
              Sb, fc = 1, a.ei = 0, M = 0, a.ss = 0,
@@ -15,9 +16,9 @@ bucket.sim <-
     DATA <- as.ts(DATA)
     stopifnot(c("P","E") %in% colnames(DATA))
     ## check values
-    stopifnot(Sb >= 0)
+    stopifnot(Sb > 0)
     stopifnot(S_0 >= 0)
-    stopifnot(0 <= fc && fc <= 1)
+    stopifnot(0 < fc && fc <= 1)
     stopifnot(0 <= a.ei && a.ei <= 1)
     stopifnot(0 <= M && M <= 1)
     stopifnot(0 <= a.ss && a.ss <= 1)
@@ -31,9 +32,8 @@ bucket.sim <-
     bad <- is.na(P) | is.na(E)
     P[bad] <- 0
     E[bad] <- 0
-    ## TODO: return state from C code
     COMPILED <- (hydromad.getOption("pure.R.code") == FALSE)
-    if (FALSE && COMPILED && !return_state) {
+    if (FALSE && COMPILED) {
         ans <- .C(NA, #sma_bucket, TODO
                 as.double(P),
                 as.double(E),
@@ -47,7 +47,7 @@ bucket.sim <-
                 U = double(NROW(DATA)),
                 S = double(NROW(DATA)),
                 ET = double(NROW(DATA)),
-                NAOK=FALSE, DUP=FALSE, PACKAGE="hydromad")[c("U", "S", "ET")]
+                NAOK=FALSE, DUP=FALSE, PACKAGE="hydromad")
         U <- ans$U
         S <- ans$S
         ET <- ans$ET
@@ -67,13 +67,13 @@ bucket.sim <-
             Ebare <- (1 - M) * (S[t] / Sb) * E[t]
             ET[t] <- Eintc + Etrans + Ebare
             ## mass balance
-            S[t] <- S_prev + P[t] - ET[t]
+            S[t] <- max(0, S_prev + P[t] - ET[t])
             ## drainage (saturation excess)
             Use <- max(0, S[t] - Sb)
-            S[t] <- S[t] - Use
+            S[t] <- max(0, S[t] - Use)
             ## drainage (sub-surface)
-            Uss <- a.ss * max(0, S[t] - Sfc)
-            S[t] <- S[t] - Uss
+            Uss <- max(0, a.ss * (S[t] - Sfc))
+            S[t] <- max(0, S[t] - Uss)
             U[t] <- Use + Uss
             S_prev <- S[t]
         }
@@ -85,8 +85,8 @@ bucket.sim <-
 }
 
 bucket.ranges <- function()
-    list(Sb = c(0, 1200),
-         fc = c(0, 1),
+    list(Sb = c(0.1, 1200),
+         fc = c(0.01, 1),
          a.ei = c(0, 0.49),
          M = c(0, 1),
          a.ss = c(0, 0.5))

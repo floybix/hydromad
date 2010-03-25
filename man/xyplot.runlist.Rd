@@ -56,7 +56,17 @@
   \code{\link[lattice]{qqmath}}
 }
 \examples{
-
+data(HydroTestData)
+mod1 <- hydromad(HydroTestData, routing = "expuh",
+                 tau_s = 10)
+mod2 <- update(mod1, tau_s = 20, tau_q = 5, v_s = 0.5)
+mod3 <- update(mod2, lambda = -0.5)
+mods <-
+  runlist(`single store` = mod1,
+          `two stores` = mod2,
+          lambda = mod3)
+xyplot(mods, with.P = TRUE)
+xyplot(mods, scales = list(y = list(log = TRUE)))
 }
 \keyword{ utilities }
 

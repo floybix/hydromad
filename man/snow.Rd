@@ -12,7 +12,7 @@ snow.sim(DATA, Tmax, Tmin, kd, kf, rcap, Tmelt = Tmin,
          d, f, e, M_0 = d/2, return_state = FALSE)
 }
 \arguments{
-  \item{DATA}{ a \code{\link{ts}}-like object with named components:
+  \item{DATA}{ a \code{\link{ts}}-like object with named columns:
     \describe{
       \item{\code{P}}{ time series of areal rainfall depths, usually in mm. }
       \item{\code{E}}{ time series of potential evapo-transpiration, or more typically,

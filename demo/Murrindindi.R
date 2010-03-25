@@ -5,10 +5,11 @@ library(hydromad)
 data(Murrindindi)
 ## reproduce result from IHACRES Java version tutorial:
 murrCal <- window(Murrindindi, start = "1976-06-08", end = "1980-06-08")
-## 2. specifying all parameters, including 'c' scale factor
-murrRef <- hydromad(murrCal, sma = "cwi", tw = 11, f = 1.2, c = 0.003147,
-                    routing = "expuh", tau_s = 86.19, tau_q = 2.28, v_s = 0.697,
-                    delay = 0, warmup = 200)
+## 2. specifying all parameters, including scale factor
+murrRef <-
+    hydromad(murrCal, sma = "cwi", tw = 11, f = 1.2, scale = 0.003147,
+             routing = "expuh", tau_s = 86.19, tau_q = 2.28, v_s = 0.697,
+             delay = 0, warmup = 200)
 summary(murrRef)
 ## 2. calibration
 murrMod <- hydromad(murrCal, sma = "cwi", routing = "armax",

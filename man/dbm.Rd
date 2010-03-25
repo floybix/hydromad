@@ -1,6 +1,7 @@
 \name{dbm}
 \alias{dbm}
 \alias{dbm.sim}
+\alias{absorbScale.hydromad.dbm}
 \title{ Typical initial model used in Data-Based Mechanistic modelling. }
 \description{
   Typical initial model used in Data-Based Mechanistic modelling.
@@ -8,7 +9,7 @@
   This SMA uses streamflow data, so can not be used for prediction.
 }
 \usage{
-dbm.sim(DATA, power, c = 1, qlag = 0, return_state = FALSE)
+dbm.sim(DATA, power, scale = 1, qlag = 0, return_state = FALSE)
 }
 \arguments{
   \item{DATA}{
@@ -18,8 +19,10 @@ dbm.sim(DATA, power, c = 1, qlag = 0, return_state = FALSE)
   \item{power}{
     power to apply to streamflow values.
   }
-  \item{c}{
+  \item{scale}{
     constant multiplier of the result, for mass balance.
+    If this parameter is set to \code{NA} (as it is by default)
+    in \code{\link{hydromad}} it will be set by mass balance calculation. 
   }
   \item{qlag}{
     number of time steps to lag the streamflow (relative to rainfall)
@@ -44,7 +47,7 @@ mod0 <- hydromad(HydroTestData, sma = "dbm", routing = "expuh")
 mod0
 
 ## simulate with some arbitrary parameter values
-testQ <- predict(update(mod0, power = 0.5, c = 0.01, qlag = 0, tau_s = 10))
+testQ <- predict(update(mod0, power = 0.5, scale = 0.01, qlag = 0, tau_s = 10))
 xyplot(ts.union(HydroTestData, dbm.Q = testQ))
 }
 \keyword{models}

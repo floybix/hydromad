@@ -12,8 +12,11 @@ sacramento.sim(DATA, uztwm, uzfwm, uzk, pctim, adimp, zperc, rexp,
                etmult = 1, dt = 1, return_state = FALSE)
 }
 \arguments{
-  \item{DATA}{time-series-like object with columns P (precipitation,
-    mm) and (potential evapo-transpiration, mm).}
+  \item{DATA}{
+    time-series-like object with columns \code{P} (precipitation,
+    mm) and \code{E} (potential evapo-transpiration, mm, scaled by
+    \code{etmult}).
+  }
   \item{uztwm}{Upper zone tension water maximum capacity (mm).}
   \item{uzfwm}{Upper zone free water maximum capacity (mm).}
   \item{uzk}{Lateral drainage rate of upper zone free water expressed
