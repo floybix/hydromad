@@ -11,7 +11,7 @@
 \alias{vcov.hydromad}
 \alias{isValidModel}
 \alias{print.hydromad}
-\title{ Hydromad model objects and methods }
+\title{ Standard methods for Hydromad model objects }
 \description{
   A \code{hydromad} object represents a model, which may be fully
   specified (calibrated) or be defined only by parameter ranges.

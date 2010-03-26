@@ -18,7 +18,7 @@ xyplot.hydromad <-
         tsdat <- cbind(tsdat, P = x$data[,"P"])
     tsdat <- coerce(tsdat)
     foo <- xyplot(tsdat, superpose = superpose, screens = screens, ...)
-    foo$call <- match.call()
+    foo$call <- sys.call(sys.parent())
     foo
 }
 
@@ -26,7 +26,7 @@ errormasscurve <- function(x, ...)
     UseMethod("errormasscurve")
 
 errormasscurve.default <-
-    function(x, coerce=as.ts, ...)
+    function(x, coerce = as.ts, ...)
 {
     if (!is.atomic(x)) {
         x <- residuals(x)
@@ -34,8 +34,9 @@ errormasscurve.default <-
     }
     x <- coerce(x)
     x[is.na(x)] <- 0
-    foo <- xyplot(cumsum(x), ...)
-    foo$call <- match.call() #sys.call(sys.parent())
+    x[] <- cumsum(x)
+    foo <- xyplot(x, ...)
+    foo$call <- sys.call(sys.parent())
     foo
 }
 
@@ -43,7 +44,7 @@ qqmath.hydromad <-
     function(x, data,
              coerce = byDays, trans = NULL,
              type = c("p","l"),
-             auto.key = TRUE,
+             auto.key = list(lines = TRUE, points = FALSE),
              subset = complete.cases(obsmod), ...)
 {
     if (!missing(data) && !is.null(data))

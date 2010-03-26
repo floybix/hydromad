@@ -4,10 +4,10 @@ Date: 2010-03-25
 Title: Hydrological Model Assessment and Development
 Author: Felix Andrews <felix@nfrac.org>
 Maintainer: Felix Andrews <felix@nfrac.org>
-Description: A modelling framework for environmental hydrology:
-  water balance accounting and flow routing in spatially aggregated
-  catchments. Simulation, estimation, assessment and visualisation
-  of flow response to time series of rainfall and other drivers.
+Description: A modelling framework for environmental hydrology: water 
+  balance accounting and flow routing in spatially aggregated catchments. 
+  It supports simulation, estimation, assessment and visualisation of 
+  flow response to time series of rainfall and other drivers.
   Includes models (such as IHACRES CWI, CMD), transfer function estimators
   (including SRIV - Simplified Refined Instrumental Variable), etc.
 Depends: zoo, lattice (>= 0.18-1), latticeExtra (>= 0.6-6), polynom

@@ -104,8 +104,7 @@ eventapply(x$Q, ev, FUN = sum)
 eventapply(x, ev, FUN = mean)
 eventinfo(x$Q, ev)
 
-xyplot(x) + layer(panel.xblocks(ev))
-
+xyplot(x) + layer_(panel.xblocks(ev, col = "grey"))
 }
 \keyword{ ts }
 \keyword{ utilities }

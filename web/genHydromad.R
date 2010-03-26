@@ -11,18 +11,19 @@ spec <- list()
 spec[["modelling framework"]] <-
     list(
          list("hydromad"),
-         list("hydromad.object", do.example = FALSE),
+         list("methods...", helpname = "hydromad.object", do.example = FALSE,
+              codefile = "coef.hydromad.R"),
          list("summary", helpname = "summary.hydromad", do.example = FALSE),
-         list("simulate.hydromad", helpname = "simulate.hydromad"),
+         list("simulate", helpname = "simulate.hydromad"),
          list("runlist", do.example = FALSE),
-         list("hydromad.options", do.example = FALSE)
+         list("hydromad.options", do.example = FALSE, codefile = "options.R")
          )
 
 spec[["soil moisture accounting"]] <-
     list(
          list("scalar"),
-         list("IHACRES.CWI.model"),
-         list("IHACRES.CMD.model"),
+         list("cwi", helpname = "IHACRES.CWI.model", codefile = "cwi.R"),
+         list("cmd", helpname = "IHACRES.CMD.model", codefile = "cmd.R"),
          list("bucket"),
          list("awbm"),
          list("sacramento"),
@@ -33,7 +34,7 @@ spec[["soil moisture accounting"]] <-
 
 spec[["calibration"]] <-
     list(
-         list("objFunVal", do.example = FALSE),
+         list("objFunVal", codefile = "fitStat.R", do.example = FALSE),
          list("fitBySampling", do.example = FALSE),
          list("fitByOptim", do.example = FALSE),
          list("fitBySCE", do.example = FALSE),
@@ -45,18 +46,17 @@ spec[["calibration"]] <-
 
 spec[["routing"]] <-
     list(
-         list("armax"),
-         list("expuh"),
-         list("lambda", do.example = FALSE),
-         list("powuh", do.example = FALSE)
+         list("armax", helpname = "armax.sim"),
+         list("expuh", helpname = "expuh.sim"),
+         list("lambda", helpname = "lambda.sim", do.example = FALSE),
+         list("powuh", helpname = "powuh.sim", do.example = FALSE)
          )
 
 spec[["routing fitting"]] <-
     list(
          list("armax.ls.fit"),
          list("armax.sriv.fit"),
-         list("armax.inverse.fit"),
-         list("expuh.sriv.fit", do.example = FALSE)
+         list("armax.inverse.fit")
          #"lambda.inverse.fit"
          )
 
@@ -86,15 +86,15 @@ spec[["utilities"]] <-
 
 spec[["datasets"]] <-
     list(
-         list("BinghamTrib"),
-         list("Canning"),
-         list("Cotter"),
+         list("BinghamTrib", codefile = "../data/BinghamTrib.R"),
+         list("Canning", codefile = NA),
+         list("Cotter", codefile = NA),
          #list("Molonglo"),
-         list("Murrindindi"),
-         list("Queanbeyan"),
-         list("SalmonBrook"),
-         list("Wye"),
-         list("HydroTestData")
+         list("Murrindindi", codefile = NA),
+         list("Queanbeyan", codefile = NA),
+         list("SalmonBrook", codefile = NA),
+         list("Wye", codefile = NA),
+         list("HydroTestData", codefile = "../data/HydroTestData.R")
          )
 
 spec[["wetlands"]] <-
@@ -104,6 +104,7 @@ spec[["wetlands"]] <-
          )
 
 source("http://latticeextra.r-forge.r-project.org/generate.R")
+source("X:/Packages/latticeextra/www/generate.R")
 
 ## stop on errors
 lattice.options(panel.error = NULL)
@@ -111,5 +112,6 @@ lattice.options(panel.error = NULL)
 generateWebsite("hydromad", spec = spec, 
                 man.src.dir = "../man/",
                 imageSrcBase = "",
+                codeSrcBase = "http://github.com/floybix/hydromad/tree/master/R/",
                 themeNames = "custom_theme_2",
                 do.examples = TRUE)

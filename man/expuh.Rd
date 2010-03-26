@@ -93,11 +93,13 @@ normalise.expuh(theta)
 }
 \examples{
 data(HydroTestData)
-mod1 <- hydromad(HydroTestData, routing = "expuh", tau_s = 30)
-mod2 <- update(mod1, tau_q = 5, v_s = 0.5)
-mod3 <- update(mod2, tau_3 = 100, v_3 = 0.2)
-mod4 <- update(mod3, series = 2)
-xyplot(runlist(mod1, mod2, mod3, mod4)
+mod1 <- hydromad(HydroTestData, routing = "expuh",
+                 tau_s = 30, tau_q = 5, v_s = 0.5)
+flowcomps <- predict(mod1, return_components = TRUE)
+xyplot(ts.union(`Slow component` = flowcomps[,"Xs"],
+                `Total flow` = flowcomps[,1] + flowcomps[,2]),
+       superpose = TRUE) +
+  layer(panel.refline(h = 0))
 }
 \keyword{ ts }
 

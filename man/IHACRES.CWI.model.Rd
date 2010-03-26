@@ -7,7 +7,7 @@
 \title{ IHACRES Catchment Wetness Index (CWI) model }
 \description{
   The Catchment Wetness Index (CWI) effective rainfall model for
-  IHACRES. This is the ``classic'' model of Jakeman and Hornberger (1993),
+  IHACRES. This is the classic model of Jakeman and Hornberger (1993),
   with the extensions to ephemeral catchments of Ye et. al. (1997).
   It is a metric-type model, where rainfall effectiveness is proportional to
   a simple antecedent moisture index, and the output is scaled
@@ -134,6 +134,7 @@ mod0
 ## simulate with some arbitrary parameter values
 mod1 <- update(mod0, tw = 32, f = 2, scale = 0.01, tau_s = 10)
 testQ <- predict(mod1, return_state = TRUE)
+\dontshow{ .featured_example <- TRUE }
 xyplot(ts.union(HydroTestData[,1:2], cwi = testQ))
 }
 \keyword{ models }

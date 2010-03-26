@@ -202,6 +202,7 @@ modx
 fitx <- fitByOptim(modx)
 fitx
 summary(fitx)
+\dontshow{.featured_example <- TRUE}
 xyplot(fitx, with.P = TRUE, type = c("l", "g"))
 
 data(Canning)

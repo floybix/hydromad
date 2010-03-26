@@ -92,7 +92,7 @@ expuh.inverse.fit(DATA,
 U <- ts(c(0, 0, 0, 1, rep(0, 30), 1, rep(0, 20)))
 Y <- expuh.sim(lag(U, -1), tau_s = 10, tau_q = 2, v_s = 0.5, v_3 = 0.1)
 set.seed(0)
-Yh <- pmax(Y + rnorm(Y, sd = 0.01), 0)
+Yh <- Y * rnorm(Y, mean = 1, sd = 0.2)
 fit1 <- armax.inverse.fit(ts.union(P = U, Q = Yh),
                           order = c(2, 2), warmup = 0)
 fit1

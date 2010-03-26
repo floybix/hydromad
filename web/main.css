@@ -1,9 +1,15 @@
 
 body {
-  background: #BABCBB url('waterfall_sidebar_right.jpg') no-repeat top right;
+  background: #BABCBB url('waterfall_sidebar_big_right.jpg') no-repeat top right;
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+}
+
+/* fix monospace sizing */
+code {
+    font-family: monospace, serif; 
+    font-size: 1em;
 }
 
 #banner {
@@ -46,26 +52,48 @@ body {
 
 #nav ul {
   margin: 0;
-  margin-bottom: 1em;
   padding: 0;
 }
 
 #nav li {
   list-style: none;
-  padding: 0.3em 1em;
   margin: 0;
-  border: 2px solid black;
+}
+
+#nav li.navhead {
+  margin-top: 0.4em;
   background-color: #F3F530;
+  border: 2px solid black;
   opacity: .6;
   -moz-border-radius: 16px;
   -webkit-border-radius: 16px;
 }
 
-#nav > ul > li {
-    
+#nav li.navhead.active {
+  opacity: .8;
+  border-bottom: 1px solid black;
+  -moz-border-radius-bottomleft: 0px;
+  -moz-border-radius-bottomright: 0px;
+  -webkit-border-bottom-left-radius: 0px;
+  -webkit-border-bottom-right-radius: 0px;
 }
 
-#nav li:hover {
+#nav li.navgroup {
+  border: 2px solid black;
+  border-top: 0px;
+  background-color: #dddddd;
+  -moz-border-radius-bottomleft: 16px;
+  -moz-border-radius-bottomright: 16px;
+  -webkit-border-bottom-left-radius: 16px;
+  -webkit-border-bottom-right-radius: 16px;
+}
+
+#nav li.navgroup li {
+  padding: 0;
+  border-top: 1px solid grey;
+}
+
+#nav li.navhead:hover {
 /*  -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
   filter: alpha(opacity=80);*/
   opacity: .8;
@@ -73,21 +101,32 @@ body {
 
 #nav a {
   display: block;
+  padding: 0.2em 1em;
   width: auto;
   text-decoration: none;
   font-weight: bold;
 }
 
-#content {
+#nav a.active {
+    background: #ffffff;
+}
+
+#content_container {
   margin-left: 15em;
   margin-right: 2em;
   max-width: 40em;
+  padding: 0;
+  color: black;
+}
+
+#content {
+  margin:0;
   padding: 1em 2em;
   border: 3px solid #B1DED6;
   background: white;
 }
 
-#content h2 {
+#content h2, #content h3 {
     font-family: UnderwoodChampion,monospace;
     font-size: 1.8em;
     margin-top: 0;
@@ -96,8 +135,9 @@ body {
     border-bottom: 1px solid #369;
 }
 #content h3 { 
+    text-transform: lowercase;
     font-size: 1.4em;
-    margin-right: 1em;
+    margin-top: 1em;
     border-bottom: 1px dotted #369;
 }
 
@@ -115,7 +155,7 @@ body {
 
 .itemcode {
     font-family: monospace;
-    whitespace: pre-wrap;
+    white-space: pre-wrap;
     color: #666;
 }
 

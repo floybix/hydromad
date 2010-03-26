@@ -44,6 +44,10 @@ function loadItem(newItem) {
     if (newItem != "intro") {
 	// expand the corresponding nav group
 	openNavGroup(navEl.parents("li.navgroup"));
+	// load man page immediately if there is no example image
+	if ($(jq(newItem)).find("img").length == 0) {
+	    $(jq(newItem)).find("a.helplink").click();
+	}
     }
 }
 
@@ -55,12 +59,18 @@ function jq(myid) {
 function openNavGroup(el) {
     el.siblings("li.navgroup:visible").slideUp();
     el.slideDown();
+    // set parent nav item to 'active'
+    $("#nav li.navhead.active").removeClass("active");
+    el.prev().addClass("active");
     el;
 }
 
 jQuery(function(){
-	$(".groupname").hide();
+	// suppress loading of images until they are needed:
+	//$(".item img").attr("src", "");
 	$(".item").hide();
+	$(".groupname").hide();
+	// collapse subnavigation initially
 	$("#nav li.navgroup").hide();
 
 	$("#nav li.navhead a").click(function() {
@@ -80,7 +90,7 @@ jQuery(function(){
 		helplink = $(this);
 		href = helplink.attr("href");
 		// record in access log
-		pageTracker._trackPageview(href);
+		//	pageTracker._trackPageview(href);
 		helplink.slideUp();
 		loader = $('<div class="loading">Loading...</div>');
 		helplink.after(loader);

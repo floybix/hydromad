@@ -60,7 +60,7 @@ mod0 <- hydromad(HydroTestData, sma = "bucket", routing = "expuh")
 mod0
 
 ## simulate with some arbitrary parameter values
-mod1 <- update(mod0, Sb = 40, fc = 0.5, M = 0.5, etmult = 0.1,
+mod1 <- update(mod0, Sb = 10, fc = 0.5, M = 0.5, etmult = 0.05,
                      a.ei = 0, a.ss = 0, tau_s = 10)
 testQ <- predict(mod1, return_state = TRUE)
 xyplot(ts.union(HydroTestData[,1:2], bucket = testQ))

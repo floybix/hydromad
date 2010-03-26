@@ -61,8 +61,10 @@ simulate(mod0, nsim = 5, method = "latin")
 
 ## plot the objective function surface over two parameters
 mod1 <- update(mod0, routing = "armax", rfit = "ls")
-sim1 <- simulate(mod1, 300, FUN = objFunVal, bind = TRUE)
+sim1 <- simulate(mod1, 300, FUN = objFunVal,
+          objective = ~ fitStat(Q, X, trans = sqrt), bind = TRUE)
 levelplot(result ~ tw * f, sim1, cex = 2,
-          panel = panel.levelplot.points)
+          panel = panel.levelplot.points,
+          main = "R Squared (of sq.rt. data) over parameter space")
 }
 \keyword{ iteration }
