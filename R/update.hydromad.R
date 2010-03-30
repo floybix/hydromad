@@ -3,12 +3,6 @@
 ## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
-absorbScale <- function(object, gain, ...)
-    UseMethod("absorbScale")
-
-absorbScale.hydromad <- function(object, gain, ...)
-    return(NULL)
-
 update.hydromad <-
     function(object, ..., newdata = NULL,
              sma, routing, rfit, warmup, weights,
@@ -159,8 +153,6 @@ update.hydromad <-
             ## TODO: take starting value of filter from data
 
             object$fitted.values <- predict(object, which = "routing")
-#            object$residuals <-
-#                (object$data[,"Q"] - object$fitted.values)
         }
     }
     ## absorbScale:
@@ -226,6 +218,14 @@ update.hydromad <-
 
     return(object)
 }
+
+
+absorbScale <- function(object, gain, ...)
+    UseMethod("absorbScale")
+
+absorbScale.hydromad <- function(object, gain, ...)
+    return(NULL)
+
 
 doParseRfit <-
     function(object)

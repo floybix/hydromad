@@ -13,17 +13,13 @@ code {
 }
 
 #banner {
-  margin-left: 15em;
-  padding: 0em 0em;
+  margin: 0;
+  padding: 0.5em 0.5em;
   height: 4em;
   vertical-align: middle;
 }
 
 #banner .title {
-  display: block;
-  float: left;
-  margin: 0;
-  padding: 0;
   font-size: 3.5em;
   font-family: Amadeus,sans-serif;
   vertical-align: middle;
@@ -31,9 +27,10 @@ code {
 
 #banner .subtitle {
   display: block;
-  float: left;
-  margin: 1em;
-  margin-top: 1em;
+  position: absolute;
+  margin: 0;
+  top: 1.25em;
+  left: 15em;
   padding: 0.05em;  
   border: 2px solid;
   border-left: 0;
@@ -155,7 +152,6 @@ code {
 
 .itemcode {
     font-family: monospace;
-    white-space: pre-wrap;
     color: #666;
 }
 
@@ -165,6 +161,11 @@ code {
 
 .item img {
     margin: 0;
+}
+
+.codelink {
+    display: block;
+    text-align: right;
 }
 
 .loading {

@@ -97,6 +97,7 @@ xyplot.rollccf <-
     rollplot <- update(rollplot, strip = strip, ...)
     rownames(rollplot) <- c(names(x$rolls), if (with.data) colnames(x$data))
     rollplot$layout <- layout
+    rollplot$call <- sys.call(sys.parent())
     return(rollplot)
 }
 

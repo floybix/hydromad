@@ -12,7 +12,7 @@ spec[["modelling framework"]] <-
     list(
          list("hydromad"),
          list("methods...", helpname = "hydromad.object", do.example = FALSE,
-              codefile = "coef.hydromad.R"),
+              codefile = "update.hydromad.R"),
          list("summary", helpname = "summary.hydromad", do.example = FALSE),
          list("simulate", helpname = "simulate.hydromad"),
          list("runlist", do.example = FALSE),
@@ -46,10 +46,10 @@ spec[["calibration"]] <-
 
 spec[["routing"]] <-
     list(
-         list("armax", helpname = "armax.sim"),
-         list("expuh", helpname = "expuh.sim"),
-         list("lambda", helpname = "lambda.sim", do.example = FALSE),
-         list("powuh", helpname = "powuh.sim", do.example = FALSE)
+         list("armax", codefile = "armax.sim.R"),
+         list("expuh", codefile = "expuh.sim.R"),
+         list("lambda", codefile = "lambda.sim.R", do.example = FALSE),
+         list("powuh", codefile = "powuh.sim.R", do.example = FALSE)
          )
 
 spec[["routing fitting"]] <-
@@ -62,8 +62,7 @@ spec[["routing fitting"]] <-
 
 spec[["event-based analysis"]] <-
     list(
-         list("eventseq"),
-         list("eventinfo", helpname = "eventseq")
+         list("eventseq")
          )
 
 spec[["plot methods"]] <-
@@ -104,7 +103,7 @@ spec[["wetlands"]] <-
          )
 
 source("http://latticeextra.r-forge.r-project.org/generate.R")
-source("X:/Packages/latticeextra/www/generate.R")
+source("../../latticeextra/www/generate.R")
 
 ## stop on errors
 lattice.options(panel.error = NULL)

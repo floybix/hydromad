@@ -46,7 +46,9 @@ function loadItem(newItem) {
 	openNavGroup(navEl.parents("li.navgroup"));
 	// load man page immediately if there is no example image
 	if ($(jq(newItem)).find("img").length == 0) {
-	    $(jq(newItem)).find("a.helplink").click();
+	    helplink = $(jq(newItem)).find("a.helplink");
+	    if (helplink.is(":visible"))
+		helplink.click();
 	}
     }
 }
@@ -94,14 +96,26 @@ jQuery(function(){
 		helplink.slideUp();
 		loader = $('<div class="loading">Loading...</div>');
 		helplink.after(loader);
-		loader.hide().slideDown();
+		loader.hide().slideDown(); // reveal slowly
 		man = $('<div class="manpage"></div>');
 		helplink.after(man);
 		man.load(href, function() {
-			loader.hide();
+			$(this).siblings(".loading").remove();
 			$(this).find("h2,table:first,div:last").remove();
-			$(this).hide().slideDown();
+			$(this).hide().slideDown(); // reveal slowly
+			helplink.after('<a class="rmhelplink" href="#">' +
+				       '<small>[hide help page]</small></a>');
 		    });
+	    });
+
+	$("a.rmhelplink").live('click', function(e) {
+		e.preventDefault();
+		rmhelplink = $(this);
+		helplink = $(this).siblings("a.helplink");
+		man = $(this).siblings(".manpage");
+		rmhelplink.remove();
+		man.slideUp('normal', function() { $(this).remove(); });
+		helplink.slideDown();
 	    });
 
 	checkAnchor();
