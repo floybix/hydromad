@@ -1,5 +1,9 @@
 
-Changes in Version 0.7-0 (under development)
+Changes in Version 0.7-1
+
+  o fixed bug in print.summary.runlist
+
+Changes in Version 0.7-0
 
   o the mass balance term 'c' in cwi.sim is now called 'scale'.
 

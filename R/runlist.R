@@ -66,6 +66,7 @@ summary.runlist <-
 #    ans <- cc
 #    if (allsame) {
 #        ans <- as.data.frame(do.call("rbind", cc)) #sapply(cc, identity))
+    ans <- as.data.frame(ans)
         class(ans) <- c("summary.runlist", class(ans))
 #    }
     ans
