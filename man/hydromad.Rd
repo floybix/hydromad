@@ -37,13 +37,21 @@ hydromad(DATA = zoo(), ...,
 	catchment outlet. Required for calibration but not simulation.
 	It should usually be in units of mm (averaged over the catchment
 	area). Use \code{\link{convertFlow}} to convert it.
-      } 
+      }
+      \item{etc.}{
+	other data columns may also be included, and will be accessible
+	via the \code{observed()} method.
+      }
     }
   }
   \item{\dots}{
     values or ranges for named parameters. Any parameters not given here
     will be taken from defaults given in \code{hydromad.options(sma)}
-    and/or \code{hydromad.options(routing)}.
+    and/or \code{hydromad.options(routing)}. In addition, other
+    arbitrary arguments may be given here that will be passed on to the
+    simulation function(s) and not treated as parameters. To specify a
+    numeric object that is not a parameter (such as a time series
+    object), wrap it in \code{\link{I}()}. 
   }
   \item{sma}{
     name of the Soil Moisture Accounting (SMA) component. May be
@@ -71,6 +79,11 @@ hydromad(DATA = zoo(), ...,
   }
 }
 \details{
+  The \code{hydromad()} function allows models to be specified with
+  the given component models and parameter specifications. The resulting
+  object can later be modified using the
+  \code{\link[=update.hydromad]{update}} method using the same syntax.
+  
   The supplied Soil Moisture Accounting (\code{sma}) models are:
   \describe{
     \item{\code{\link{scalar}}}{

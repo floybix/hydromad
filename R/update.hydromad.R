@@ -37,7 +37,7 @@ update.hydromad <-
     if (!missing(sma)) {
         if (!is.null(object$sma)) {
             ## remove old SMA-specific parameters
-            object$parlist <- as.list(coef(object, "routing", warn = FALSE))
+            object$parlist <- as.list(coef(object, "routing", etc = TRUE))
         }
         class(object) <- "hydromad"
         if (!is.null(sma)) {
@@ -67,7 +67,7 @@ update.hydromad <-
     if (!missing(routing)) {
         if (!is.null(object$routing)) {
             ## remove old routing-specific parameters
-            object$parlist <- as.list(coef(object, "sma", warn = FALSE))
+            object$parlist <- as.list(coef(object, "sma", etc = TRUE))
         }
         if (!is.null(routing)) {
             ## take default parameter ranges/values from hydromad.options()
@@ -102,7 +102,7 @@ update.hydromad <-
     ## the arguments in `...` may be intended for sma and/or routing
     dots <- list(...)
     ## first, store the SMA parameters to check whether they are changed.
-    oldSmaPar <- coef(object, which = "sma", warn = FALSE)
+    oldSmaPar <- coef(object, which = "sma", etc = TRUE)
     ## note that any NULL values in dots will delete parlist items
     ## (those parameters will then fall back to sim function defaults)
     object$parlist <- modifyList(object$parlist, dots)
@@ -113,7 +113,7 @@ update.hydromad <-
     }
     ## otherwise... SMA parameters are fully specified.
     ## need to run the SMA if parameters changed.
-    newSmaPar <- coef(object, which = "sma")
+    newSmaPar <- coef(object, which = "sma", etc = TRUE)
     if (!identical(oldSmaPar, newSmaPar)) {
         RUNSMA <- TRUE
     }

@@ -23,7 +23,7 @@ predict.hydromad <-
     if (!isFullySpecified(object, which = which))
         stop("model parameters are not fully specified")
     ## construct call to simulation function
-    simpars <- coef(object, which = which)
+    simpars <- coef(object, which = which, etc = TRUE)
     ucall <- quote(hydromad.sim(newdata))
     ucall <- as.call(c(as.list(ucall),
                        as.list(simpars),

@@ -32,7 +32,7 @@
 \method{residuals}{hydromad}(object, ..., all = FALSE)
 
 \method{coef}{hydromad}(object, which = c("both", "sma", "routing"),
-     ..., warn = TRUE)
+     ..., warn = TRUE, etc = FALSE)
 
 \method{coef}{hydromad}(object, all = TRUE, ...) <- value
 
@@ -51,13 +51,13 @@ isValidModel(object, ...)
     optionally \code{Q}.
   }
   \item{\dots}{
+    In the \code{update} method, parameter values or ranges for the SMA
+    and/or routing models can be given, as with the \code{hydromad()}
+    function. 
     In the \code{predict} method, further arguments are passed on to the
     simulation functions for the SMA and/or routing models. These
     typically can include arguments \code{return_state = TRUE} for the
     SMA, and/or \code{return_components = TRUE} for the routing.
-
-    In the \code{update} method, parameter values or ranges for the SMA
-    and/or routing models can be given.
   }
   \item{sma, routing, rfit, warmup, weights}{
     same arguments as for the \code{\link{hydromad}} function. The
@@ -97,6 +97,14 @@ isValidModel(object, ...)
     specific values), because it returns a \code{list} rather than a
     \code{vector} in this case. Setting \code{warn = FALSE} skips the
     warning. 
+  }
+  \item{etc}{
+    by default, \code{coef} returns only the model \emph{parameters}, which are
+    defined as being numeric and not wrapped in \code{\link{I}()}. If
+    \code{etc = TRUE} is given, then all arguments for the simulation
+    function(s) will be returned, which may include other data types
+    like logicals or time series. In this case the return value is
+    always a \code{list}. 
   }
 }
 \details{

@@ -52,7 +52,7 @@ summary.runlist <-
     })
     ## pad out missing entries with NAs
     ## find the set of all names
-    allnms <- union(unlist(lapply(cc, names)))
+    allnms <- unique(unlist(lapply(cc, names)))
     ans <- matrix(NA_real_,
                   nrow = length(object),
                   ncol = length(allnms),
@@ -124,6 +124,10 @@ xyplot.runlist <-
     stopifnot(is.null(data))
 
     xdat <- lapply(x, if (residuals.) residuals else fitted)
+    bad <- sapply(xdat, length) == 0
+    if (any(bad))
+        stop("residuals() or fitted() returned nothing for items ",
+             toString(names(xdat)[bad]))
     xdat <- lapply(xdat, coerce)
     
     if (superpose) {

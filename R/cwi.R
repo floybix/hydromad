@@ -52,7 +52,7 @@ cwi.sim <-
 cwi.ranges <- function()
     list(tw = c(0, 100),
          f = c(0, 8),
-         scale = NA,
+         scale = NA_real_,
          l = 0,
          p = 1,
          t_ref = 20)

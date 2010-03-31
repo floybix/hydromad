@@ -13,10 +13,31 @@ spec[["modelling framework"]] <-
          list("hydromad"),
          list("methods...", helpname = "hydromad.object", do.example = FALSE,
               codefile = "update.hydromad.R"),
-         list("summary", helpname = "summary.hydromad", do.example = FALSE),
          list("simulate", helpname = "simulate.hydromad"),
          list("runlist", do.example = FALSE),
          list("hydromad.options", do.example = FALSE, codefile = "options.R")
+         )
+
+spec[["assessment"]] <-
+    list(
+         list("summary", helpname = "summary.hydromad", do.example = FALSE),
+         list("eventseq"),
+         list("xyplot", helpname = "xyplot.hydromad"),
+         list("xyplot.runlist"),
+         list("errormasscurve", helpname = "xyplot.hydromad"),
+         list("qqmath", helpname = "xyplot.hydromad"),
+         list("fitStat", do.example = FALSE)
+         )
+
+spec[["calibration"]] <-
+    list(
+         list("objFunVal", codefile = "fitStat.R", do.example = FALSE),
+         list("fitBySampling", do.example = FALSE),
+         list("fitByOptim", do.example = FALSE),
+         list("fitBySCE", do.example = FALSE),
+         list("fitByDE", do.example = FALSE)
+         #list("fitByDream")
+         #list("mcmcByDream")
          )
 
 spec[["soil moisture accounting"]] <-
@@ -32,18 +53,6 @@ spec[["soil moisture accounting"]] <-
          list("dbm")
          )
 
-spec[["calibration"]] <-
-    list(
-         list("objFunVal", codefile = "fitStat.R", do.example = FALSE),
-         list("fitBySampling", do.example = FALSE),
-         list("fitByOptim", do.example = FALSE),
-         list("fitBySCE", do.example = FALSE),
-         list("fitByDE", do.example = FALSE),
-         #list("fitByDream")
-         #list("mcmcByDream")
-         list("tryModelOrders", do.example = FALSE)
-         )
-
 spec[["routing"]] <-
     list(
          list("armax", codefile = "armax.sim.R"),
@@ -56,30 +65,17 @@ spec[["routing fitting"]] <-
     list(
          list("armax.ls.fit"),
          list("armax.sriv.fit"),
-         list("armax.inverse.fit")
+         list("armax.inverse.fit"),
          #"lambda.inverse.fit"
-         )
-
-spec[["event-based analysis"]] <-
-    list(
-         list("eventseq")
-         )
-
-spec[["plot methods"]] <-
-    list(
-         list("xyplot", helpname = "xyplot.hydromad"),
-         list("xyplot.runlist"),
-         list("errormasscurve", helpname = "xyplot.hydromad"),
-         list("qqmath", helpname = "xyplot.hydromad"),
-         list("rollccf")
+         list("tryModelOrders", do.example = FALSE),
+         list("estimateDelay", do.example = FALSE)
          )
 
 spec[["utilities"]] <-
     list(
          list("convertFlow", do.example = FALSE),
-         list("estimateDelay", do.example = FALSE),
+         list("rollccf"),
          list("parameterSets", do.example = FALSE),
-         list("fitStat", do.example = FALSE),
          list("observed", do.example = FALSE)
          )
 
@@ -96,11 +92,11 @@ spec[["datasets"]] <-
          list("HydroTestData", codefile = "../data/HydroTestData.R")
          )
 
-spec[["wetlands"]] <-
-    list(
-         list("swimp"),
-         list("poweroid")
-         )
+#spec[["wetlands"]] <-
+#    list(
+#         list("swimp"),
+#         list("poweroid")
+#         )
 
 source("http://latticeextra.r-forge.r-project.org/generate.R")
 source("../../latticeextra/www/generate.R")

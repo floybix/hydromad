@@ -3,6 +3,10 @@ Changes in Version 0.7-0 (under development)
 
   o the mass balance term 'c' in cwi.sim is now called 'scale'.
 
+  o arbitrary arguments for the model simulation function(s) 
+    (i.e. objects which are not to be treated as model parameters) 
+    may now be passed to 'hydromad'.
+
   o new power law routing 'powuh'.
 
   o new SMA 'awbm'.

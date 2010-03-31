@@ -5,11 +5,24 @@
 
 coef.hydromad <-
     function(object, which = c("both", "sma", "routing"), ...,
-             warn = TRUE, etc = FALSE) ####TODO 'etc'
+             warn = TRUE, etc = FALSE)
 {
     which <- match.arg(which)
     parlist <- object$parlist
+    if (etc == FALSE) {
+        ## only return (numeric) parameters, ignore other objects
+        ok <- unlist(lapply(parlist, function(x)
+                 {
+                     (!inherits(x, "AsIs")) &&
+                     (is.numeric(x) ||
+                      (is.atomic(x) && all(is.na(x))))
+                 }))
+        parlist <- parlist[ok]
+    }
     if (which == "both") {
+        if (etc) {
+            return(parlist)
+        }
         if (any(sapply(parlist, length) > 1)) {
             if (warn)
                 warning("parameters not fully specified, returning list")
@@ -47,6 +60,9 @@ coef.hydromad <-
         result <- parlist[forSMA]
     if (which == "routing")
         result <- parlist[forRouting]
+    if (etc) {
+        return(result)
+    }
     if (any(sapply(result, length) > 1)) {
         if (warn)
             warning("parameters not fully specified, returning list")

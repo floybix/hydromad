@@ -20,7 +20,7 @@ scalar.sim <-
 }
 
 scalar.ranges <- function()
-    list(scale= NA)
+    list(scale = NA_real_)
 
 absorbScale.hydromad.scalar <- function(object, gain, parname = "scale", ...)
 {

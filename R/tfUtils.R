@@ -492,10 +492,11 @@ normalise.tf.coef <-
     function(theta, ...)
 {
     gain <- ssg.tf.coef(theta, ...)
-    if (is.na(gain) || (gain == 1))
+    if (is.na(gain) || (gain == 1) || (gain == 0))
         return(theta)
-    b <- theta[grep("^b", names(theta))]
-    theta[grep("^b", names(theta))] <- b / gain
+    ib <- grep("^b", names(theta))
+    b <- theta[ib]
+    theta[ib] <- b / gain
     theta
 }
 

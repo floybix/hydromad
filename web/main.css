@@ -57,17 +57,24 @@ code {
   margin: 0;
 }
 
-#nav li.navhead {
+#nav li.navhead, #nav li.navheadintro {
   margin-top: 0.4em;
-  background-color: #F3F530;
+  background-color: #dddd30;
   border: 2px solid black;
-  opacity: .6;
   -moz-border-radius: 16px;
   -webkit-border-radius: 16px;
 }
 
+#nav li.navheadintro {
+    background-color: #dddddd;
+}
+
+#nav li.navhead:hover {
+  background-color: #ffff30;
+}
+
 #nav li.navhead.active {
-  opacity: .8;
+  background-color: #ffff30;
   border-bottom: 1px solid black;
   -moz-border-radius-bottomleft: 0px;
   -moz-border-radius-bottomright: 0px;
@@ -90,10 +97,8 @@ code {
   border-top: 1px solid grey;
 }
 
-#nav li.navhead:hover {
-/*  -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
-  filter: alpha(opacity=80);*/
-  opacity: .8;
+#nav li.navgroup li:hover {
+    background: #eeeeee;
 }
 
 #nav a {
@@ -104,7 +109,7 @@ code {
   font-weight: bold;
 }
 
-#nav a.active {
+#nav li.navgroup a.active {
     background: #ffffff;
 }
 
@@ -181,6 +186,10 @@ code {
     float: right;
     color: black;
     background: #fff url(img/blur.jpg) top right repeat-y;
+  -moz-border-radius-bottomleft: 8px;
+  -moz-border-radius-bottomright: 8px;
+  -webkit-border-bottom-left-radius: 8px;
+  -webkit-border-bottom-right-radius: 8px;
     opacity: 0.5;
     filter: alpha(opacity=50);
 }
@@ -193,12 +202,17 @@ code {
     padding: 0;
     width: 10em;
     width: auto;
-    opacity: 0.75;
-    filter: alpha(opacity=75);
 }
 
 #tagline p, #tagline a {
     margin: 0;
     padding: 0;
     text-align: right;
+    color: black;
+}
+
+#tagline a:hover {
+    background-color: white;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
 }
