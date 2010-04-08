@@ -15,7 +15,7 @@
 eventseq(x, thresh = 0, inter = 1, mindur = 1, below = FALSE)
 
 eventapply(X, events = eventseq(X, thresh, inter, mindur, below),
-           FUN = sum, ..., by.column = TRUE,
+           FUN = sum, ..., by.column = TRUE, simplify = TRUE,
            TIMING = c("start", "middle", "end"),
            thresh = 0, inter = 1, mindur = 1, below = FALSE)
 
@@ -49,6 +49,12 @@ eventinfo(X, events = eventseq(X, thresh, inter, mindur, below),
   \item{by.column}{
 
   }
+  \item{simplify}{
+    if \code{FALSE}, the result will be returned as a list with one
+    (named) element for each event, rather than a time series like
+    object. This case allows \code{FUN} to return a complex object or
+    vectors of variable lengths.
+  }
   \item{TIMING}{
     
   }
@@ -59,7 +65,8 @@ eventinfo(X, events = eventseq(X, thresh, inter, mindur, below),
 \value{
   \code{eventseq} returns a \code{zoo} object, of the same length as
   \code{x}, with integer values indexing the identified events. Periods
-  between events are \code{NA}. 
+  between events are \code{NA}. It has a \code{levels} attribute, so you
+  can call \code{\link{nlevels}} on it to find the number of events.
 
   \code{eventapply} returns a \code{zoo} object (an irregular time
   series in this case), with the value returned from \code{FUN}

@@ -6,7 +6,8 @@
 
 ## TODO: rework this
 summary.hydromad <-
-    function(object, breaks = NULL, coerce = byDays,
+    function(object, breaks = NULL,
+             coerce = byDays,
              which = c("rel.bias", "r.squared", "r.sq.sqrt", "r.sq.log", "r.sq.monthly"),
              na.action = na.exclude,
              ...)
@@ -16,19 +17,17 @@ summary.hydromad <-
     if (!isValidModel(object))
         stop("model is not valid")
 
-    ans <- list()
-    copyVars <- c("call")
-    ans[copyVars] <- object[copyVars]
-
-    ## TODO: should this be a stand-alone function?
     hydrostats <- function(chunk) {
         ans <- numeric()
-        ans[["timesteps"]] <- NROW(chunk)
         ok <- complete.cases(chunk)
-        ans[["missing"]] <- sum(!ok)
-        ans[["mean.P"]] <- meanP <- mean(chunk[,"P"], na.rm=TRUE)
-        ans[["mean.Q"]] <- meanQ <- mean(chunk[,"Q"], na.rm=TRUE)
-        ans[["runoff"]] <- meanQ / meanP
+        meanP <- mean(chunk[ok, "P"])
+        meanQ <- mean(chunk[ok, "Q"])
+        ans <-
+            c(timesteps = NROW(chunk),
+              missing = sum(!ok),
+              mean.P = meanP,
+              mean.Q = meanQ,
+              runoff = meanQ / meanP)
         ans
     }
 
@@ -39,31 +38,29 @@ summary.hydromad <-
 
     if (!is.null(breaks)) {
         nms <- colnames(DATA)
-        DATA <- coerce(na.trim(DATA))
+        DATA <- coerce(DATA)
         colnames(DATA) <- nms
         group <- cut(time(DATA), breaks = breaks)
         group <- factor(group)
         ## remove warmup
         DATA <- stripWarmup(DATA, object$warmup)
         if (object$warmup > 0)
-            group <- group[-(1:object$warmup), drop = TRUE]
-        ## compute stats
-        basicstats <- by(DATA, group, hydrostats)
-        basicstats <- do.call(rbind, basicstats)
-        basicstats <- rbind(basicstats,
-                            overall=hydrostats(DATA))
+            group <- group[-seq_len(object$warmup), drop = TRUE]
 
-        chunkstats <- by(DATA, group, perfStats,
-                         warmup=0, na.action=na.exclude, ...)
-        ## TODO: ensure equal lengths of rows / intact names?
-        chunkstats <- do.call(rbind, chunkstats)
-        chunkstats <- rbind(chunkstats,
-                            overall=perfStats(DATA, warmup=0, na.action=na.action, ...))
-        ans <- cbind(basicstats, chunkstats)
-        ans <- data.frame(ans)
-        class(ans) <- c("summaryWithBreaks.hydromad", class(ans))
+        ans <-
+            eventapply(DATA, group, 
+                       FUN = function(x, ...)
+                         c(hydrostats(x), perfStats(x, ...)),
+                       which = which, ...,
+                       by.column = FALSE)
+        ## copy the last entry with the final date, to mark the end of last period
+        lastbit <- tail(ans, 1)
+        time(lastbit) <- end(DATA)
+        ans <- rbind(ans, lastbit)
         return(ans)
     }
+
+    ans <- list(call = object$call)
 
     ## TODO:
     #
@@ -91,19 +88,13 @@ summary.hydromad <-
         }
     }
 
+    ans <- c(ans, hydrostats(DATA))
+    
     ## call perfStats for the rest
     ans <- c(ans, perfStats(DATA, warmup = object$warmup, which = which, ...))
-
+    
     class(ans) <- "summary.hydromad"
     ans
-}
-
-print.summaryWithBreaks.hydromad <-
-    function(x, digits = max(3, getOption("digits") - 3), ...)
-{
-    ## just simplify the printed output by rounding
-    print.data.frame(x, digits=digits, ...)
-    invisible(x)
 }
 
 print.summary.hydromad <-
@@ -113,6 +104,13 @@ print.summary.hydromad <-
         cat("\nCall:\n")
         print(call)
         cat("\n")
+        if (!is.null(x$timesteps) && !is.null(x$missing))
+            cat("Time steps: ", x$timesteps, " (", x$missing, " missing).\n")
+        if (!is.null(x$mean.P) && !is.null(x$mean.Q))
+            cat("Runoff ratio (Q/P): (",
+                format(x$mean.Q, digits=digits), " / ",
+                format(x$mean.P, digits=digits), ") = ",
+                format(x$mean.Q / x$mean.P, digits=digits), "\n")
         if (!is.null(x$yic))
             cat("YIC:", format(yic, digits=digits), "\n")
         if (!is.null(x$arpe))
@@ -138,3 +136,17 @@ print.summary.hydromad <-
     })
     invisible(x)
 }
+
+print.summaryWithBreaks.hydromad <-
+    function(x, digits = max(3, getOption("digits") - 3), ...)
+{
+    ## just simplify the printed output by rounding
+    NextMethod("print")
+}
+
+##?
+#xyplot.summaryWithBreaks.hydromad <-
+#    function(x, data = NULL, ...)
+#{
+#    
+#}

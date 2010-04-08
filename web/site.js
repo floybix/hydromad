@@ -41,7 +41,9 @@ function loadItem(newItem) {
     $("#nav a.active").removeClass("active");
     var navEl = $("#nav " + jq("nav_" + newItem));
     navEl.addClass("active");
-    if (newItem != "intro") {
+    if (newItem == "intro") {
+	closeNavGroups();
+    } else {
 	// expand the corresponding nav group
 	openNavGroup(navEl.parents("li.navgroup"));
 	// load man page immediately if there is no example image
@@ -58,11 +60,18 @@ function jq(myid) {
     return '#' + myid.replace(/(:|\.)/g,'\\$1');
 }
 
+function closeNavGroups() {
+    $("#nav li.navgroup:visible").slideUp("normal", function() {
+	    $(this).prev().removeClass("active");
+	});
+}
+
 function openNavGroup(el) {
-    el.siblings("li.navgroup:visible").slideUp();
+    el.siblings("li.navgroup:visible").slideUp("normal", function() {
+	    $(this).prev().removeClass("active");
+	});
     el.slideDown();
     // set parent nav item to 'active'
-    $("#nav li.navhead.active").removeClass("active");
     el.prev().addClass("active");
     el;
 }
@@ -76,7 +85,12 @@ jQuery(function(){
 	$("#nav li.navgroup").hide();
 
 	$("#nav li.navhead a").click(function() {
-		openNavGroup($(this).parent().next());
+		el = $(this).parent().next();
+		if (el.is(":visible")) {
+		    closeNavGroups();
+		} else {
+		    openNavGroup(el);
+		}
 		return false;
 	    });
 

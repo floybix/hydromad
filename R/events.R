@@ -51,60 +51,88 @@ eventseq <-
         }
     }
     ## assign unique numbers to events
-    uruns$values[uruns$values == TRUE] <- seq_len(sum(uruns$values))
+    ids <- seq_len(sum(uruns$values))
+    uruns$values[uruns$values == TRUE] <- ids
     uruns$values[uruns$values == FALSE] <- NA
     ## expand into long format
     ev <- inverse.rle(uruns)
     ## return events in the format of 'x', typically zoo or ts
     mostattributes(ev) <- attributes(x)
+    attr(ev, "levels") <- ids
     ev
 }
 
 eventapply <-
     function(X, events = eventseq(X, thresh, inter, mindur, below),
-             FUN = sum, ..., by.column = TRUE,
+             FUN = sum, ..., by.column = TRUE, simplify = TRUE,
              TIMING = c("start", "middle", "end"),
              thresh = 0, inter = 1, mindur = 1, below = FALSE)
 {
     TIMING <- match.arg(TIMING)
     force(events)
-    ## merge series together (typically zoo or ts objects)
-    cX <- cbind(events, X)
-    events <- cX[,1]
-    X <- cX[,-1]
-    ## handle functions returning vectors
+    Xnames <- colnames(X)
+    if (!is.vector(events) && !is.factor(events)) {
+        ## merge series together (typically zoo or ts objects)
+        cX <- cbind(X, events)
+        events <- cX[,ncol(cX)]
+        X <- cX[,-ncol(cX)]
+        colnames(X) <- Xnames
+    }
+    ## extract only single numeric items if going to simplify
+    .FUN <- FUN
+    if (simplify)
+        .FUN <- function(...) {
+            tmp <- FUN(...)
+            tmp <- tmp[unlist(lapply(tmp, function(z) {
+                is.numeric(z) && !is.matrix(z) &&
+                (length(z) == 1)
+            }))]
+            unlist(tmp)
+        }
+    ## need to handle functions returning vectors as well as scalars
     if (length(dim(X)) == 2) {
         ## multiple series
-        ## TODO: test this
         if (by.column) {
             ## apply to each column separately
-            ans <- apply(X, 2, function(x) {
-                tmp <- tapply(x, events, FUN, ...)
-                if (is.list(tmp))
-                    tmp <- do.call(rbind, tmp)
-                tmp
-            })
+            ans <-
+                lapply(as.data.frame(X), function(x) {
+                    tmp <-
+                        sapply(split(x, coredata(events), drop = TRUE),
+                               .FUN, ..., simplify = simplify)
+                    if (is.matrix(tmp)) t(tmp) else tmp
+                })
+            ans <- as.matrix(do.call("data.frame", ans))
         } else {
             ## pass sub-period of multivariate series to function
-            ans <- tapply(seq(NROW(X)), events,
-                          function(ii) FUN(X[ii,,drop=FALSE], ...))
-            if (is.list(ans))
-                ans <- do.call(rbind, ans)
+            ans <-
+                sapply(split(seq_len(NROW(X)), coredata(events), drop = TRUE),
+                       function(ii) .FUN(X[ii,,drop=FALSE], ...),
+                       simplify = simplify)
+            if (is.matrix(ans))
+                ans <- t(ans)
         }
 
     } else {
         ## only one series
-        ans <- tapply(X, events, FUN, ...)
-        if (is.list(ans))
-            ans <- do.call(rbind, ans)
+        ans <- sapply(split(X, coredata(events), drop = TRUE),
+                      .FUN, ..., simplify = simplify)
+        if (is.matrix(ans))
+            ans <- t(ans)
     }
     ## select time corresponding to each event
     timeIdxFn <- switch(TIMING,
                         start = function(x) x[1],
                         middle = function(x) x[ceiling(length(x)/2)],
                         end = function(x) x[length(x)])
-    ev.index <- tapply(seq(NROW(X)), events, timeIdxFn)
-    zoo(as.matrix(ans), time(X)[ev.index])
+    ev.index <- unlist(lapply(split(seq_len(NROW(X)), coredata(events), drop = TRUE),
+                       timeIdxFn))
+    ev.times <- time(X)[ev.index]
+    if (simplify && !is.list(ans)) {
+        return(zoo(as.matrix(ans), ev.times))
+    } else {
+        names(ans) <- format(ev.times)
+        return(ans)
+    }
 }
 
 preInterEventDuration <- function(x)

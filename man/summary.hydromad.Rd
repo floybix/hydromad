@@ -24,11 +24,11 @@
   \item{coerce}{
     function to apply to a \code{ts} object to convert its index
     before applying \code{\link{cut}}. Typically \code{\link{byDays}},
-    \code{byYears}, \code{bySecs} or \code{force} (for an integer
+    \code{byYears}, \code{bySecs} or \code{identity} (for an integer
     index). 
   }
   \item{which}{
-    which performance statistics to compute. See ...
+    which performance statistics to compute. See Details.
   }
   \item{na.action}{
     an optional function to apply to the data to treat missing values before
@@ -41,18 +41,54 @@
 \details{
   The available named statistics are:
   \describe{
-    \item{rel.bias}{
-      
+    \item{bias, rel.bias}{
+      bias in data units, \eqn{\sum ( X - Q )},
+      \code{fitBias(Q, X, rel = FALSE)}.
     }
-    \item{...}{
+    \item{rel.bias}{
+      bias in data units, \eqn{\sum ( X - Q ) / \sum Q},
+      \code{fitBias(Q, X)}.     
+    }
+    \item{r.squared}{
+      R Squared (coefficient of determination),
+      \eqn{1 - \sum (Q - X)^2 / \sum (Q - \bar{Q})^2},
+      \code{fitStat(Q, X)}.
+    }
+    \item{r.sq.sqrt}{
+      R Squared (coefficient of determination) using square-root
+      transformed data (less weight on peak flows),
+      \eqn{1 - \frac{\sum |\sqrt{Q} - \sqrt{X}|^2 }{ \sum |\sqrt{Q} - \bar{\sqrt{Q}}|^2 }},
+      \code{fitStat(Q, X, trans = sqrt)}.
+    }
+    \item{r.sq.log}{
+      R Squared (coefficient of determination) using log
+      transformed data (roughly equal weight to all flow levels),
+      \eqn{1 - \frac{\sum |\log{(Q+\epsilon)} - \log{(X+\epsilon)}|^2 }{ \sum |\log{(Q+\epsilon)} - \bar{\log{(Q+\epsilon)}}|^2 }},
+      \code{fitStat(Q, X, trans = log)}.
+      By default \eqn{\epsilon} is the 90 percentile (i.e. lowest
+      decile) of the non-zero values of Q.
+    }
+    \item{r.sq.monthly}{
+      R Squared (coefficient of determination) with data aggregated into
+      blocks of 30 time steps, 
+      \code{fitStat(Q, X, aggr=30)}.
+    }
+    \item{U1}{
 
+    }
+    \item{X1}{
+      correlation of model with error lagged one time step
+      \code{cor(head(X,-1), tail(X-Q,-1))}
+    }
+    \item{arpe, yic}{
+      
     }
   }
 }
 \value{
   \code{summary} returns a list with named entries for each of the
   chosen stats (\code{which}). When \code{breaks} is given it retuns a
-  data frame of class \code{"summaryWithBreaks"}.
+  \code{zoo} object of class \code{"summaryWithBreaks"}.
 }
 \author{ Felix Andrews \email{felix@nfrac.org} }
 \seealso{

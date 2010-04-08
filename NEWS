@@ -1,6 +1,12 @@
 
 Changes in Version 0.7-1
 
+  o column names are retained in eventapply, it now has a 'simplify'
+    argument, and it just generally works better.
+
+  o 'summary' with the 'breaks' argument now returns a zoo object
+    rather than a data.frame, which makes plotting easier.
+
   o fixed bug in print.summary.runlist
 
 Changes in Version 0.7-0

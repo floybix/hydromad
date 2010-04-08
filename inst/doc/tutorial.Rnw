@@ -439,7 +439,10 @@ we do with it?
 For details, see the examples below, the user manual, and the help
 page of each function.\footnote{Note that to get help for generic
   functions it is necessary to specify the method for \code{hydromad}
-  objects: e.g. \code{?predict.hydromad} or \code{?xyplot.hydromad}}
+  objects: e.g. \code{?predict.hydromad} or
+  \code{?xyplot.hydromad}.}
+The help pages are also available from the web site
+\url{http://hydromad.catchment.org/}. 
 
 View the modelled and observed streamflow time series using
 \code{xyplot}, as in Figure \ref{fig:obs-mod-plot}.
@@ -553,7 +556,7 @@ print(xtable(perfstats), floating = FALSE)
 \begin{figure}[hpbt]
 \begin{center}
 <<mod-1990s-summary-table-code, echo=TRUE>>=
-print(summary(simAll, breaks = "5 years"), digits = 2)
+summary(simAll, breaks = "5 years")
 @
 \caption{Viewing a break-down the performance of a model over 5-year blocks. }
 \end{center}
@@ -563,21 +566,16 @@ print(summary(simAll, breaks = "5 years"), digits = 2)
 \begin{figure}[hpbt]
 \begin{center}
   \emph{To plot performance statistics over time:}
-
-  TODO - not working well - ignore this
-
 <<r2-breaks-plot-code, echo=TRUE, results=hide>>=
-yearStats <- summary(simAll, breaks = "12 months")
-statSeries <- zoo(as.matrix(yearStats), as.Date(row.names(yearStats)))
-statSeries$r.squared <- pmax(statSeries$r.squared, 0)
-c(xyplot(statSeries[,c("r.squared", "r.sq.log")],
-       outer = TRUE, type = "s", lwd = 2, ylim = c(0, 1),
-       ylab = "statistic", xlab = NULL),
-  xyplot(aggregate(Cotter$Q, function(x) as.Date(as.yearmon(x)), mean, na.rm=TRUE)),
-  xyplot(simAll, scales = list(y = list(log = TRUE))),
-  layout = c(1,4), x.same = TRUE) +
-    layer(panel.grid(v=0), under=TRUE) +
-    layer(panel.refline(v = time(statSeries)), under=TRUE)
+twoYrStats <- summary(simAll, breaks = "2 years")
+statSeries <- twoYrStats[,c("r.squared", "r.sq.sqrt", "rel.bias", "runoff")]
+## cut off crazy R Squared values below 0 (for plotting)
+statSeries[,1:2] <- pmax(statSeries[,1:2], 0)
+c(xyplot(statSeries, type = "s", lwd = 2,
+         ylab = "statistic", xlab = NULL),
+  obs.streamflow = xyplot(observed(simAll)),
+  layout = c(1,5), x.same = TRUE) +
+    layer_(panel.refline(v = time(statSeries), h = 0, lty = 2))
 @
 <<r2-breaks-plot, fig=TRUE, height=7>>=
 print(trellis.last.object())
@@ -735,23 +733,21 @@ If model calibration is failing, you can set
 happening.
 
 It is sometimes useful to look at the model state variables, available as
-\code{predict(mod, return\_state = TRUE)} (for the effective rainfall model), or
+\code{predict(mod, return\_state = TRUE)} (for the SMA model), or
 \code{predict(mod, return\_components = TRUE)} (for the routing
-module), to see if they look sensible.
+model), to see if they look sensible. 
 
 Some other things to try are
 \begin{itemize}
   \item using different calibration periods;
   \item changing the warmup period length;
-%  \item using a different prefilter (for \code{"ls"} and
-%  \code{"sriv"} fitting methods);
-  \item changing the optimisation method and/or settings: see \code{hydromad.options()}.
+  \item changing the optimisation method and/or settings.
 \end{itemize}
 
 
 \section{What Next?}
 
-This document has described only a very basic model fitting process.
+This document has described only a basic model fitting process.
 
 An overview of the available models and options is given in the user
 manual, which can be accessed as \code{vignette("hydromad")}.
@@ -759,9 +755,9 @@ manual, which can be accessed as \code{vignette("hydromad")}.
 Other documents, demonstrating more complex models and advanced
 calibration and performance assessment methods, are under development.
 
-Help pages are available for most functions (although some have not
-yet been written)... There is also a set of demos: see
-\code{demo(package = "hydromad")} for a list.
+Help pages are available for most functions, and these are also
+available online at \url{http://hydromad.catchment.org}. There is
+also a set of demos: see \code{demo(package = "hydromad")} for a list.
 
 Discuss any problems with \code{felix.andrews@anu.edu.au} at this
 pre-release stage.

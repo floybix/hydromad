@@ -107,6 +107,6 @@ lattice.options(panel.error = NULL)
 generateWebsite("hydromad", spec = spec, 
                 man.src.dir = "../man/",
                 imageSrcBase = "",
-                codeSrcBase = "http://github.com/floybix/hydromad/tree/master/R/",
+                codeSrcSpec = "http://github.com/floybix/hydromad/tree/master/R/%s",
                 themeNames = "custom_theme_2",
                 do.examples = TRUE)

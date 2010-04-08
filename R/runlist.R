@@ -35,8 +35,10 @@ coef.runlist <-
     summary(object, ..., FUN = coef)
 }
 
+
+## TODO: add a 'which' argument to extract elements of summary by name
 summary.runlist <-
-    function(object, ..., FUN = summary)
+    function(object, ..., FUN = summary, which = NULL)
 {
     stopifnot(is.list(object))
     if (length(object) == 0)
@@ -44,10 +46,14 @@ summary.runlist <-
     ## extract elements from summary which are single numbers
     cc <- lapply(object, function(x) {
         tmp <- FUN(x, ...)
-        tmp <- tmp[unlist(lapply(tmp, function(z) {
-            is.numeric(z) && !is.matrix(z) &&
-            (length(z) == 1)
-        }))]
+        if (is.null(which)) {
+            tmp <- tmp[unlist(lapply(tmp, function(z) {
+                is.numeric(z) && !is.matrix(z) &&
+                (length(z) == 1)
+            }))]
+        } else {
+            tmp <- tmp[which]
+        }
         unlist(tmp)
     })
     ## pad out missing entries with NAs
@@ -113,11 +119,13 @@ errormasscurve.runlist <-
     foo
 }
 
+## TODO! clean this up...
 xyplot.runlist <-
     function(x, data = NULL,
              residuals. = FALSE,
              coerce = byDays, #trans = NULL,
              superpose = FALSE,
+             #with.obs = !residuals.,
              with.P = FALSE,
              ...,
              x.same = TRUE, y.same = TRUE, layout = c(1, NA))
@@ -142,6 +150,10 @@ xyplot.runlist <-
         ## juxtapose, not superpose: just call xyplot on each item
         foo <- xyplot.list(xdat, ...,
                            x.same = x.same, y.same = y.same, layout = layout)
+        if (!residuals.) {
+            foo <- foo +
+                layer(panel.lines(coerce(observed(x[[1]]))), style = 2)
+        }
     }
     if (with.P) {
         foo <- c(foo, rainfall = xyplot(coerce(x[[1]]$data[,"P"]), ...),

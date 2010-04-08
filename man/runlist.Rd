@@ -16,7 +16,7 @@ as.runlist(x, ...)
 
 \S3method{coef}{runlist}(object, ...)
 
-\S3method{summary}{runlist}(object, ..., FUN = summary)
+\S3method{summary}{runlist}(object, ..., FUN = summary, which = NULL)
 }
 \arguments{
   \item{\dots}{
@@ -34,6 +34,10 @@ as.runlist(x, ...)
   \item{FUN}{
     function returning one or more named numeric values. Any returned
     values other than single numeric values will be ignored.
+  }
+  \item{which}{
+    if given, this is used to extract elements of the result from
+    \code{FUN}; otherwise, all single numeric elements are extracted.
   }
 }
 \details{
