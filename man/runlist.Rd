@@ -5,6 +5,8 @@
 \alias{coef.runlist}
 \alias{summary.runlist}
 \alias{print.summary.runlist}
+\alias{residuals.runlist}
+\alias{fitted.runlist}
 \title{ Work with a set of model runs }
 \description{
   A \code{runlist} object is simply a list of model objects.
@@ -16,7 +18,10 @@ as.runlist(x, ...)
 
 \S3method{coef}{runlist}(object, ...)
 
-\S3method{summary}{runlist}(object, ..., FUN = summary, which = NULL)
+\S3method{summary}{runlist}(object, ..., FUN = summary, items = NULL)
+
+\S3method{residuals}{runlist}(object, ...)
+\S3method{fitted}{runlist}(object, ...)
 }
 \arguments{
   \item{\dots}{
@@ -35,7 +40,7 @@ as.runlist(x, ...)
     function returning one or more named numeric values. Any returned
     values other than single numeric values will be ignored.
   }
-  \item{which}{
+  \item{items}{
     if given, this is used to extract elements of the result from
     \code{FUN}; otherwise, all single numeric elements are extracted.
   }
@@ -45,7 +50,7 @@ as.runlist(x, ...)
 }
 \value{
   \code{runlist} and \code{as.runlist} return a list of class \code{runlist}
-  and also \var{class}\code{.runlist}, where \var{class} is the first
+  and also (firstly) \var{class}\code{.runlist}, where \var{class} is the first
   class of the first element of the list.
 
   \code{summary} and \code{coef} return a data frame, with rows

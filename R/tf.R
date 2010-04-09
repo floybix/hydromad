@@ -165,13 +165,13 @@ coef.tf <- function(object, form = c("a,b", "tau,v", "alpha,beta"), ...)
     coef
 }
 
+## TODO: delete this in favour of summary.hydromad?
 summary.tf <-
     function(object,
-             which = c("rel.bias", "r.squared",
-             "r.sq.log", "residuals"),
+             stats = c("rel.bias", "r.squared", "r.sq.log", "residuals"),
              ...)
 {
-    which <- match.arg(which, several.ok=TRUE)
+    stats <- match.arg(stats, several.ok=TRUE)
     ans <- list()
     copyVars <- c("call", "order", "delay", "coefficients")
     ans[copyVars] <- object[copyVars]
@@ -193,15 +193,15 @@ summary.tf <-
                                         #	obs <- unclass(obs)[-(1:warmup)]
                                         #	mod <- unclass(mod)[-(1:warmup)]
     ## Residuals
-    if ("residuals" %in% which)
+    if ("residuals" %in% stats)
         ans$residuals <- residuals(object)
     ## ARPE
-    if ("arpe" %in% which) {
+    if ("arpe" %in% stats) {
         if (is.null(vcov(object))) ans$arpe <- NA else
         ans$arpe <- mean(ans$coef.var / (coef(object)^2))
     }
     ## YIC
-    if ("yic" %in% which) {
+    if ("yic" %in% stats) {
         if (is.null(vcov(object))) ans$arpe <- NA else
         ans$arpe <- mean(ans$coef.var / (coef(object)^2))
         var.ratio <- (var(residuals(object), na.rm = TRUE) /
@@ -209,12 +209,12 @@ summary.tf <-
         ans$yic <- log(var.ratio) + log(ans$arpe)
     }
     ## Steady State Gain
-    if ("ssg" %in% which) {
+    if ("ssg" %in% stats) {
         ans$ssg <- ssg.tf.coef(coef(object))
     }
     ## call perfStats for the rest
     DATA <- ts.intersect(Q=object$data[,"Q"], U=object$data[,"U"], X=fitted(object))
-    ans <- c(ans, as.list(perfStats(DATA, warmup=object$warmup, which=which, ...)))
+    ans <- c(ans, as.list(perfStats(DATA, warmup=object$warmup, stats=stats, ...)))
     class(ans) <- "summary.tf"
     ans
 }

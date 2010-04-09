@@ -2,6 +2,7 @@
 \alias{summary.hydromad}
 \alias{print.summary.hydromad}
 \alias{print.summaryWithBreaks.hydromad}
+\alias{summary.hydromad.runlist}
 \title{ Assess and summarise performance of Hydromad models }
 \description{
   Assess and summarise performance of Hydromad models.
@@ -9,8 +10,12 @@
 \usage{
 \method{summary}{hydromad}(object,
 	breaks = NULL, coerce = byDays,
-        which = c("rel.bias", "r.squared", "r.sq.sqrt", "r.sq.log", "r.sq.monthly"),
+        stats = c("rel.bias", "r.squared", "r.sq.sqrt", "r.sq.log", "r.sq.monthly"),
         na.action = na.exclude, ...)
+
+\method{summary}{hydromad.runlist}(object, ...,
+        stats = c("rel.bias", "r.squared", "r.sq.sqrt", "r.sq.log", "r.sq.monthly"),
+        items = stats)
 }
 \arguments{
   \item{object}{ an object of class \code{hydromad}. }
@@ -27,8 +32,11 @@
     \code{byYears}, \code{bySecs} or \code{identity} (for an integer
     index). 
   }
-  \item{which}{
+  \item{stats}{
     which performance statistics to compute. See Details.
+  }
+  \item{items}{
+    see \code{\link{summary.runlist}}.
   }
   \item{na.action}{
     an optional function to apply to the data to treat missing values before
@@ -87,7 +95,7 @@
 }
 \value{
   \code{summary} returns a list with named entries for each of the
-  chosen stats (\code{which}). When \code{breaks} is given it retuns a
+  chosen stats (\code{stats}). When \code{breaks} is given it retuns a
   \code{zoo} object of class \code{"summaryWithBreaks"}.
 }
 \author{ Felix Andrews \email{felix@nfrac.org} }

@@ -12,8 +12,6 @@ hydromad <-
              weights = NULL,
              warmup = hydromad.getOption("warmup"))
 {
-    ## TODO: keep zoo attributes?
-    DATA <- as.ts(DATA)
     ## dots `...` may contain arguments for sma and/or routing.
     ## parlist stores these -- and they may be ranges.
     ## update() takes default parameter ranges/values from hydromad.options().

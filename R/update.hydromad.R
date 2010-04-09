@@ -30,6 +30,7 @@ update.hydromad <-
     ## update DATA
     RUNSMA <- is.null(object$U)
     if (!is.null(newdata)) {
+        ## TODO: as.zoo instead!
         object$data <- as.ts(newdata)
         RUNSMA <- TRUE
     }

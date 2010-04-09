@@ -106,6 +106,6 @@ test_that("dbm simulation runs", {
     set.seed(0)
     mod0 <- hydromad(DATAQ, sma = "dbm")
     for (mod in simulate(mod0, 5)) {
-        expect_that(all(predict(mod) >= 0), is_true())
+        expect_that(all(na.trim(predict(mod)) >= 0), is_true())
     }
 })

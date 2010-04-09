@@ -6,7 +6,7 @@
 
 perfStats <-
     function(DATA, warmup = 0,
-             which = c("rel.bias", "r.squared", "r.sq.sqrt", "r.sq.log", "r.sq.monthly"),
+             stats = c("rel.bias", "r.squared", "r.sq.sqrt", "r.sq.log", "r.sq.monthly"),
              na.action = na.pass)
 {
     ## get data into the right form
@@ -19,38 +19,38 @@ perfStats <-
     mod <- if (warmup>0) DATA[-warming,"X"] else DATA[,"X"]
     ans <- numeric()
     ## R Squared
-    if ("r.squared" %in% which)
+    if ("r.squared" %in% stats)
         ans[["r.squared"]] <- fitStat(obs, mod, p=2)
     ## R Squared square-root
-    if ("r.sq.sqrt" %in% which) {
+    if ("r.sq.sqrt" %in% stats) {
         ans[["r.sq.sqrt"]] <- fitStat(obs, mod, p=2, trans = sqrt)
     }
     ## R Squared log
-    if ("r.sq.log" %in% which) {
+    if ("r.sq.log" %in% stats) {
         ans[["r.sq.log"]] <- fitStat(obs, mod, p=2, trans = log)
     }
     ## R Squared monthly
-    if ("r.sq.monthly" %in% which) {
+    if ("r.sq.monthly" %in% stats) {
         ans[["r.sq.monthly"]] <- tsFitStat(obs, mod, p=2, aggr = 30)
     }
     ## Bias
     ## Rel. Bias
-    if (any(c("bias", "rel.bias") %in% which)) {
-        if ("bias" %in% which)
+    if (any(c("bias", "rel.bias") %in% stats)) {
+        if ("bias" %in% stats)
             ans[["bias"]] <- fitBias(obs, mod, rel = FALSE)
-        if ("rel.bias" %in% which)
+        if ("rel.bias" %in% stats)
             ans[["rel.bias"]] <- fitBias(obs, mod)
     }
     ## U1, X1
-    if (("U1" %in% which) && ("U" %in% colnames(DATA))) {
+    if (("U1" %in% stats) && ("U" %in% colnames(DATA))) {
         U <- if (warmup>0) DATA[-warming,"U"] else DATA[,"U"]
         ans[["U1"]] <- cor(obs - mod, shiftWindow(U, -1), use="complete")
     }
-    if ("X1" %in% which) {
+    if ("X1" %in% stats) {
         ans[["X1"]] <- cor(obs - mod, shiftWindow(mod, -1), use="complete")
     }
     ## Observed Gain
-    if (("obsgain" %in% which) && ("U" %in% colnames(DATA)))
+    if (("obsgain" %in% stats) && ("U" %in% colnames(DATA)))
         ans[["obsgain"]] <- sum(DATA[-1,"Q"], na.rm=TRUE) /
             sum(DATA[,"U"], na.rm=TRUE)
     ans

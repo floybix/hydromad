@@ -41,15 +41,15 @@ test_that("eventapply seems to work with single series", {
     pvari <- eventapply(dat$P, evp, FUN = coredata, simplify = FALSE)
     expect_that(pvari, is_a("list"))
     expect_that(length(pvari), equals(nlevels(evp)))
-    expect_that(names(pvari), equals(format(time(psums))))
+    expect_that(names(pvari), equals(format(unname(time(psums)))))
 })
 
 test_that("eventapply seems to work with multiple series", {
     ## (1) scalar result with by.column = FALSE
     durs <- eventapply(dat, evp, FUN = nrow, by.column = FALSE)
     expect_that(durs, is_a("zoo"))
-    expect_that(NCOL(sums), equals(1))
-    expect_that(NROW(psums), equals(nlevels(evp)))
+    expect_that(NCOL(durs), equals(1))
+    expect_that(NROW(durs), equals(nlevels(evp)))
     ## (2) scalar result with by.column = TRUE (the default)
     sums <- eventapply(dat, evp, FUN = sum)
     expect_that(sums, is_a("zoo"))
@@ -58,13 +58,13 @@ test_that("eventapply seems to work with multiple series", {
     ## (3) vector result with by.column = FALSE
     ## should be exactly the same in this case!
     sums2 <- eventapply(dat, evp, FUN = colSums, by.column = FALSE)
-    stopifnot(sums, equals(sums2))
+    expect_that(sums, equals(sums2))
     ## (4) vector result with by.column = TRUE
     each2num <- eventapply(dat, evp,
                            FUN = function(x) c(mean = mean(x), sd = sd(x)))
     expect_that(colnames(each2num),
                 equals(c("P.mean", "P.sd", "Q.mean", "Q.sd", "E.mean", "E.sd")))
-    expect_that(time(each2num), equals(time(sums)))    
+    expect_that(time(each2num), equals(time(sums)))
 })
 
 

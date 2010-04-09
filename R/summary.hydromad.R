@@ -4,11 +4,20 @@
 ##
 
 
-## TODO: rework this
+summary.hydromad.runlist <-
+    function(object, ...,
+             stats = c("rel.bias", "r.squared", "r.sq.sqrt", "r.sq.log", "r.sq.monthly"),
+             items = stats)
+{
+    summary.runlist(object, ...,
+                    stats = stats,
+                    items = items)
+}
+
 summary.hydromad <-
     function(object, breaks = NULL,
              coerce = byDays,
-             which = c("rel.bias", "r.squared", "r.sq.sqrt", "r.sq.log", "r.sq.monthly"),
+             stats = c("rel.bias", "r.squared", "r.sq.sqrt", "r.sq.log", "r.sq.monthly"),
              na.action = na.exclude,
              ...)
 {
@@ -51,7 +60,7 @@ summary.hydromad <-
             eventapply(DATA, group, 
                        FUN = function(x, ...)
                          c(hydrostats(x), perfStats(x, ...)),
-                       which = which, ...,
+                       stats = stats, ...,
                        by.column = FALSE)
         ## copy the last entry with the final date, to mark the end of last period
         lastbit <- tail(ans, 1)
@@ -62,15 +71,11 @@ summary.hydromad <-
 
     ans <- list(call = object$call)
 
-    ## TODO:
-    #
-    ans$used.rfit <- object$used.rfit
-
     ## ARPE
-    if ("yic" %in% which) {
-        which <- union(which, "arpe")
+    if ("yic" %in% stats) {
+        stats <- union(stats, "arpe")
     }
-    if ("arpe" %in% which) {
+    if ("arpe" %in% stats) {
         if (is.null(vcov(object))) {
             ans$arpe <- NA_real_
         } else {
@@ -80,7 +85,7 @@ summary.hydromad <-
             cc[names(cc2)] <- cc2
             nms <- intersect(names(cc), names(coef.var))
             ans$arpe <- mean(coef.var[nms] / (cc[nms]^2))
-            if ("yic" %in% which) {
+            if ("yic" %in% stats) {
                 var.ratio <- (var(residuals(object), na.rm = TRUE) /
                               var(observed(object), na.rm = TRUE))
                 ans$yic <- log(var.ratio) + log(ans$arpe)
@@ -91,7 +96,7 @@ summary.hydromad <-
     ans <- c(ans, hydrostats(DATA))
     
     ## call perfStats for the rest
-    ans <- c(ans, perfStats(DATA, warmup = object$warmup, which = which, ...))
+    ans <- c(ans, perfStats(DATA, warmup = object$warmup, stats = stats, ...))
     
     class(ans) <- "summary.hydromad"
     ans
@@ -143,10 +148,3 @@ print.summaryWithBreaks.hydromad <-
     ## just simplify the printed output by rounding
     NextMethod("print")
 }
-
-##?
-#xyplot.summaryWithBreaks.hydromad <-
-#    function(x, data = NULL, ...)
-#{
-#    
-#}

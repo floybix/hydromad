@@ -57,10 +57,10 @@ set.seed(0)
 
 The \pkg{hydromad} package is designed for hydrological modelling and
 associated data analysis. It is focussed on a \emph{top-down},
-spatially lumped, empirical approach to environmental hydrology.
-In practice the emphasis is on models of rainfall runoff in
-catchments (watersheds). Such models predict streamflow from time
-series of (areal) rainfall and temperature or potential
+spatially lumped, empirical approach to environmental hydrology.  In
+practice the emphasis is on models of rainfall runoff in catchments
+(watersheds). Such models predict streamflow from time series of
+(areal) rainfall and temperature or potential
 evapo-transpiration. They can be calibrated to time series of observed
 data.
 
@@ -69,12 +69,12 @@ This tutorial describes how to get started with the \pkg{hydromad}
 files, converting it into the appropriate format, and fitting and
 analysing an \ihacres{} model.
 
-The example we will look at is
-the Cotter River catchment at Gingera (gauge 410730) in the
-Australian Capital Territory, Australia. This is a 148 km$^2$ catchment
-managed for urban water supply. Areal rainfall was estimated from
-several rain gauges operated by the Bureau of Meteorology and
-EcoWise. The temperature records come from Canberra Airport.
+The example we will look at is the Cotter River catchment at Gingera
+(gauge 410730) in the Australian Capital Territory, Australia. This is
+a 148 km$^2$ catchment managed for urban water supply. Areal rainfall
+was estimated from several rain gauges operated by the Bureau of
+Meteorology and EcoWise. The temperature records come from Canberra
+Airport.
 
 Once you have \proglang{R}
 running\footnote{A Windows \proglang{R} installer is available from
@@ -95,9 +95,8 @@ processed data is available directly in \proglang{R} -- just type
 exercise. If you already know how to import and handle time series in
 R, you could skip this section.
 
-A few simple
-steps are required to import and convert the data into a usable form:
-extracting dates from the files, converting streamflow
+A few simple steps are required to import and convert the data into a
+usable form: extracting dates from the files, converting streamflow
 from ML/day to mm/day, handling missing data values, and aligning the
 three time series in a common time period.
 
@@ -111,10 +110,10 @@ file.show("pq_cotter.csv")
 cat(readLines("pq_cotter.csv", n = 5), "...", sep = "\n")
 @
 
-There is no header in the file, but we know that the columns
-represent rainfall (P), streamflow (Q) and date of
-observation. The temperature file is similar. Knowing the format and
-columns we can use \code{read.table} to import the data:
+There is no header in the file, but we know that the columns represent
+rainfall (P), streamflow (Q) and date of observation. The temperature
+file is similar. Knowing the format and columns we can use
+\code{read.table} to import the data:
 <<read-files, echo=TRUE>>=
 ## rain and flow data
 pqdat <- read.table("pq_cotter.csv", sep = ",",
@@ -131,9 +130,9 @@ str(tdat)
 
 So far, the \code{Date} columns are only text; \proglang{R} does not
 know they are dates. We need to specify the date format, where
-\code{\%d} is day, \code{\%m} is month number,
-\code{\%b} is month name, \code{\%Y} is four-digit year and \code{\%y}
-is two-digit year (see \code{?strptime}).
+\code{\%d} is day, \code{\%m} is month number, \code{\%b} is month
+name, \code{\%Y} is four-digit year and \code{\%y} is two-digit year
+(see \code{?strptime}).
 <<convert-dates, echo=TRUE>>=
 pqdat$Date <- as.Date(pqdat$Date, "%d/%m/%Y")
 tdat$Date <- as.Date(tdat$Date, "%d/%m/%Y")
@@ -146,21 +145,20 @@ something like:
 pqdat$Date <- with(pqdat, as.Date(ISOdate(yr, mon, day)))
 @
 
-Negative values (-99) in the \emph{pq}
-input file represent missing data; in \proglang{R} they should be set
-to the special value \code{NA}.
-Also, some dates in the temperature file are blank, and need to be
-removed.
+Negative values (-99) in the \emph{pq} input file represent missing
+data; in \proglang{R} they should be set to the special value
+\code{NA}.  Also, some dates in the temperature file are blank, and
+need to be removed.
 <<missing-values, echo=TRUE>>=
 pqdat$P[pqdat$P < 0] <- NA
 pqdat$Q[pqdat$Q < 0] <- NA
 tdat <- subset(tdat, !is.na(Date))
 @
 
-The \pkg{hydromad} model fitting functions require that rainfall and streamflow are given in
-the same units, typically mm / day. The streamflow data in our input
-file is measured in ML / day, so we need to convert it, supplying the
-catchment area of 148 km$^2$.
+The \pkg{hydromad} model fitting functions require that rainfall and
+streamflow are given in the same units, typically mm / day. The
+streamflow data in our input file is measured in ML / day, so we need
+to convert it, supplying the catchment area of 148 km$^2$.
 <<convert-to-mm, echo=TRUE>>=
 pqdat$Q <- convertFlow(pqdat$Q, from = "ML", area.km2 = 148)
 @
@@ -168,14 +166,14 @@ pqdat$Q <- convertFlow(pqdat$Q, from = "ML", area.km2 = 148)
 For simple applications, when the data series are already
 synchronised, this data frame (or matrix) format may be enough.
 However, there are benefits in working with actual \emph{time series}
-objects: because they handle observation times, they allow
-powerful merging, treatment of missing values, rolling averages
-and other functions. While \proglang{R} has a built-in structure for
-regular time series (\code{ts}), these do not handle specific dates or
-times, only index numbers. It is recommended to work with
-\code{zoo} objects (using the \pkg{zoo} package).\footnote{\pkg{zoo}
-  objects are a generalisation of \code{ts} objects and in many cases
-  can be used in the same way; see \code{vignette("zoo")}.}
+objects: because they handle observation times, they allow powerful
+merging, treatment of missing values, rolling averages and other
+functions. While \proglang{R} has a built-in structure for regular
+time series (\code{ts}), these do not handle specific dates or times,
+only index numbers. It is recommended to work with \code{zoo} objects
+(using the \pkg{zoo} package).\footnote{\pkg{zoo} objects are a
+  generalisation of \code{ts} objects and in many cases can be used in
+  the same way; see \code{vignette("zoo")}.}
 
 <<zoo-objects, echo=TRUE>>=
 library(zoo)
@@ -183,11 +181,11 @@ tsPQ <- zoo(pqdat[,1:2], pqdat$Date, frequency = 1)
 tsT <- zoo(tdat[,1], tdat$Date, frequency = 1)
 @
 
-We can now merge the time series together into a final dataset.
-Note that the \pkg{hydromad} package
-expects temperature or evapo-transpiration data to be called \code{E},
-not \code{T}.\footnote{This avoids name conflicts since in \proglang{R},
-\code{T} is a shorthand for \code{TRUE}.}
+We can now merge the time series together into a final dataset.  Note
+that the \pkg{hydromad} package expects temperature or
+evapo-transpiration data to be called \code{E}, not
+\code{T}.\footnote{This avoids name conflicts since in \proglang{R},
+  \code{T} is a shorthand for \code{TRUE}.}
 <<zoo-merge, echo=TRUE>>=
 Cotter <- merge(tsPQ, E = tsT, all = FALSE)
 @
@@ -202,7 +200,7 @@ range(time(Cotter))
 
 This shows that the rainfall data has missing values at the
 beginning. At the other end of the series, Streamflow data is missing.
-This will not cause a problem, but let us tidy it up anyway: 
+This will not cause a problem, but let us tidy it up anyway:
 
 <<zoo-na-trim, echo=TRUE>>=
 Cotter <- na.trim(Cotter)
@@ -254,14 +252,14 @@ rm(monthlyPQE)
 
 In a real data analysis problem, data checking is a central
 issue. However, as this document aims to introduce the core modelling
-functions, only one simple check will be demonstrated here. 
+functions, only one simple check will be demonstrated here.
 
 Table \ref{tab:datasumm} shows the mean and quartiles of each input
 data series. One measure that is of key interest in hydrology is the
-\emph{runoff ratio}, the proportion of the rainfall which flows
-out of the catchment. In a simple case this is just \code{sum(Q) /
-  sum(P)}, but as we have missing values, we should only compare the
-common observations:
+\emph{runoff ratio}, the proportion of the rainfall which flows out of
+the catchment. In a simple case this is just \code{sum(Q) / sum(P)},
+but as we have missing values, we should only compare the common
+observations:
 
 <<runoff-ratio, echo=TRUE>>=
 ok <- complete.cases(Cotter[,1:2])
@@ -271,10 +269,10 @@ with(Cotter, sum(Q[ok]) / sum(P[ok]))
 This figure is within the range we would expect, so we probably have
 the right data series and units.
 
-See \code{vignette("dataChecking", package = "hydromad")} 
-(\emph{under construction}) for more on this topic, including
-analysing changes in the runoff ratio over time, and changes in
-cross correlation over time.
+See \code{vignette("dataChecking", package = "hydromad")} (\emph{under
+  construction}) for more on this topic, including analysing changes
+in the runoff ratio over time, and changes in cross correlation over
+time.
 
 
 \section{Calibration Periods}
@@ -334,7 +332,7 @@ divided into two components: SMA (Soil Moisture Accounting) and
 routing. Additionally, a specification can be given for fitting the
 routing component (\code{rfit}). If given, this is applied
 automatically to fit the routing component after the SMA parameters
-have been specified. 
+have been specified.
 
 When we first set up the model, most of the parameters are not
 uniquely specified, but rather have a range of possible values. These
@@ -355,24 +353,24 @@ cotterMod <- hydromad(ts90s, sma = "cwi", routing = "expuh")
 print(cotterMod)
 @
 
-With this model specification, we can choose to calibrate the model
-is various ways, or to simulate from the specified parameter space, or
-to run sensitivity or uncertainty analysis.
+With this model specification, we can choose to calibrate the model is
+various ways, or to simulate from the specified parameter space, or to
+run sensitivity or uncertainty analysis.
 
-Currently implemented calibration methods include simple sampling schemes
-(\code{fitBySampling}), Newton and Simplex methods with multistart or
-presampling (\code{fitByOptim}) and the more sophisticated Shuffled
-Complex Evolution (\code{fitBySCE}) and Differential Evolution
-(\code{fitByDE}) methods. 
+Currently implemented calibration methods include simple sampling
+schemes (\code{fitBySampling}), Newton and Simplex methods with
+multistart or presampling (\code{fitByOptim}) and the more
+sophisticated Shuffled Complex Evolution (\code{fitBySCE}) and
+Differential Evolution (\code{fitByDE}) methods.
 
-The objective function can be specified as the
-\code{objective} argument to these functions, or by setting
-\code{hydromad.options(objective = )}.
-It is given as an R formula (a chunk of \proglang{R} code) which may
-refer to the values \code{Q} and \code{X}, representing observed and
-modelled flow, respectively. For more advanced use it may also refer
-to \code{U} (modelled effective rainfall), and more generally it may
-refer to \code{model}, and so may extract other items of data, etc.
+The objective function can be specified as the \code{objective}
+argument to these functions, or by setting
+\code{hydromad.options(objective = )}.  It is given as an R formula (a
+chunk of \proglang{R} code) which may refer to the values \code{Q} and
+\code{X}, representing observed and modelled flow, respectively. For
+more advanced use it may also refer to \code{U} (modelled effective
+rainfall), and more generally it may refer to \code{model}, and so may
+extract other items of data, etc.
 
 Here we use the default, which is a weighted sum of the $R^2$ of
 square-root transformed data, and the relative bias:
@@ -380,10 +378,10 @@ square-root transformed data, and the relative bias:
 hydromad.getOption("objective")
 @
 
-The \code{fitStat} function implements a generalisation
-of the familiar $R^2$ (coefficient of determination) statistic.
-The exponent applied to the equation is specied as argument \code{p},
-so if \code{p = 2}, as it is by default, then it is indeed $R^2$:
+The \code{fitStat} function implements a generalisation of the
+familiar $R^2$ (coefficient of determination) statistic.  The exponent
+applied to the equation is specied as argument \code{p}, so if \code{p
+  = 2}, as it is by default, then it is indeed $R^2$:
 
 \begin{equation}
   \mathrm{fitStat} = 1 - \frac{ \sum |Q_* - X_*|^p }{ \sum |Q_* - \mathrm{E}(Q_*)|^p }
@@ -394,14 +392,13 @@ denotes transformed data, and the transform can be specified. Here we
 use the square root.
 
 The unit hydrograph module in \ihacres{} is a linear \emph{transfer
-  function}, i.e. a set of exponentially receding stores, which may be in a
-parallel or series configuration. 
+  function}, i.e. a set of exponentially receding stores, which may be
+in a parallel or series configuration.
 
 We will specify a \emph{second-order} transfer function for the unit
-hydrograph, which can be interpreted as two
-stores in parallel: ``quick'' flow and ``slow'' flow. This
-model structure often works well and is conceptually attractive. Its
-notation is $(n=2, m=1)$.
+hydrograph, which can be interpreted as two stores in parallel:
+``quick'' flow and ``slow'' flow. This model structure often works
+well and is conceptually attractive. Its notation is $(n=2, m=1)$.
 
 The model is calibrated using the \code{fitByOptim} function, which
 performs parameter sampling over the pre-specified ranges, selecting
@@ -414,8 +411,8 @@ cotterFit <- fitByOptim(cotterMod)
 @
 
 See the help pages \code{help("hydromad")} and
-\code{help("fitByOptim")} for details of some of the
-options available.
+\code{help("fitByOptim")} for details of some of the options
+available.
 
 
 \section{Model Output}
@@ -439,14 +436,13 @@ we do with it?
 For details, see the examples below, the user manual, and the help
 page of each function.\footnote{Note that to get help for generic
   functions it is necessary to specify the method for \code{hydromad}
-  objects: e.g. \code{?predict.hydromad} or
-  \code{?xyplot.hydromad}.}
+  objects: e.g. \code{?predict.hydromad} or \code{?xyplot.hydromad}.}
 The help pages are also available from the web site
-\url{http://hydromad.catchment.org/}. 
+\url{http://hydromad.catchment.org/}.
 
 View the modelled and observed streamflow time series using
-\code{xyplot}, as in Figure \ref{fig:obs-mod-plot}.
-Figures \ref{fig:print-hydromad} and \ref{fig:summary-hydromad} show the
+\code{xyplot}, as in Figure \ref{fig:obs-mod-plot}.  Figures
+\ref{fig:print-hydromad} and \ref{fig:summary-hydromad} show the
 output from using the functions \code{print()} and \code{summary()} on
 the model object.
 
@@ -505,20 +501,19 @@ simAll <- update(cotterFit, newdata = Cotter)
 
 For \emph{verification} purposes, we would like to calculate
 performance statistics for the whole dataset but excluding the
-calibration period. The easiest way to do this is to set the
-observed streamflow data in the calibration period to \code{NA}
-(missing), and then run the simulation:
+calibration period. The easiest way to do this is to set the observed
+streamflow data in the calibration period to \code{NA} (missing), and
+then run the simulation:
 <<verfication-period-one, echo=TRUE>>=
 tsVerif <- Cotter
 tsVerif$Q[time(ts90s)] <- NA
 simVerif <- update(cotterFit, newdata = tsVerif)
 @
 
-It is convenient to group these models together into a
-\code{runlist}, which is just a list of models:
+It is convenient to group these models together into a \code{runlist},
+which is just a list of models:
 <<runlist, echo=TRUE>>=
-allMods <- runlist(cotterFit = cotterFit, sim70s = sim70s, sim80s = sim80s,
-                   simVerif = simVerif)
+allMods <- runlist(calibration = cotterFit, sim70s, sim80s, simVerif)
 @
 
 The predicted time series (hydrograph) and cumulative distribution
@@ -528,7 +523,7 @@ The predicted time series (hydrograph) and cumulative distribution
 \begin{figure}[hpbt]
 \begin{center}
 <<obs-mod-plots-code, echo=TRUE, results=hide>>=
-xyplot.list(allMods[2:3], trans = log, layout = c(1,2))
+xyplot.list(allMods[2:3], layout = c(1,2))
 @
 <<obs-mod-plots, fig=TRUE>>=
 print(trellis.last.object())
@@ -580,10 +575,9 @@ c(xyplot(statSeries, type = "s", lwd = 2,
 <<r2-breaks-plot, fig=TRUE, height=7>>=
 print(trellis.last.object())
 @
-\caption{\label{fig:r2-breaks-plot} The $R^2$ performance statistic
-  plotted over time in each 12 month block. The runoff coefficient and
-  number of missing values are also shown. See also the function
-  \code{errormasscurve()}, which shows the model \emph{bias} over time. }
+\caption{\label{fig:r2-breaks-plot} Performance statistics
+  plotted over time in regular 2 year blocks. The runoff coefficient and
+  observed streamflow data are also shown. }
 \end{center}
 \end{figure}
 
@@ -600,7 +594,8 @@ qqmath(cotterFit, scales = list(y = list(log = TRUE)), type=c("l","g"))
 xyplot.list(allMods, FUN = qqmath,
             type=c("l","g"), scales = list(y = list(log = TRUE)),
             xlab = "Standard normal variate",
-            ylab = "Flow (mm/day)", panel = panel.qqmath.tails,
+            ylab = "Flow (mm/day)", 
+            f.value = ppoints(100), tails.n = 50,
             as.table = TRUE)
 @
 <<fdc-plot, fig=TRUE, height=7>>=
@@ -624,16 +619,14 @@ be used.
 \subsection{Model and Parameter Ranges}
 
 We have used an \ihacres{} CWI model in this tutorial, which is a
-metric type model.
-Another option for the effective rainfall model is
-is CMD (Catchment Moisture Deficit), which is a more
-conceptual type model, based on a mass balance equation. See the user
-manual for details.
+metric type model.  Another option for the SMA model is is CMD
+(Catchment Moisture Deficit), which is a more conceptual type model,
+based on a mass balance equation. See the user manual for details.
 
-Ranges of parameters to search when calibrating the effective rainfall model
-can be specified as arguments to the \code{hydromad} or
-\code{update()} functions. Alternatively, parameters can be fixed to
-a given value by specifying a single number.
+Ranges of parameters to search when calibrating the effective rainfall
+model can be specified as arguments to the \code{hydromad} or
+\code{update()} functions. Alternatively, parameters can be fixed to a
+given value by specifying a single number.
 
 The default ranges can be seen, and set, using \code{hydromad.options()}.
 
@@ -647,10 +640,10 @@ hydromad(ts90s, sma = "cwi", l = range(0, 200), f = 0)
 
 \subsection{Optimisation}
 
-Argument \code{samples} specifies how many
-random parameter sets will be sampled (using the predefined parameter
-ranges) to find a good starting point for further optimisation. The
-one model with best objective function value is chosen.
+Argument \code{samples} specifies how many random parameter sets will
+be sampled (using the predefined parameter ranges) to find a good
+starting point for further optimisation. The one model with best
+objective function value is chosen.
 
 The objective function can be set with argument \code{objective}. See
 the user manual for examples of different statistics.
@@ -658,22 +651,22 @@ the user manual for examples of different statistics.
 
 \subsection{Transfer Function Order}
 
-The order of the unit hydrograph transfer function may be
-varied, as well as the delay time. If there is any ambiguity in
-choosing the best delay time, each possibility should be tried.
+The order of the unit hydrograph transfer function may be varied, as
+well as the delay time. If there is any ambiguity in choosing the best
+delay time, each possibility should be tried.
 
 A recommended approach is to begin with a simple model like $(n=1,
 m=0)$, then test whether a more complex model leads to substantial
 improvement. Complex models often can not be well identified from
-observed data; in this case the calibration may fail to converge, or may
-converge to an invalid parameter set.
+observed data; in this case the calibration may fail to converge, or
+may converge to an invalid parameter set.
 
 To test different model structures systematically, a convenience
 function \code{tryModelOrders} is provided. An example is given in
 Table \ref{tab:try-model-orders}. In this case a simple SMA is used,
-where the effective rainfall is the rainfall scaled by the
-runoff coefficient calculated in a moving window with a width of 30
-time steps (actually a triangular filter with the same effective width).
+where the effective rainfall is the rainfall scaled by the runoff
+coefficient calculated in a moving window with a width of 30 time
+steps (actually a triangular filter with the same effective width).
 
 For more information on these issues see, for example,
 Jakeman et. al. (1990) and Young (2003).
@@ -732,10 +725,10 @@ If model calibration is failing, you can set
 \code{hydromad.options(catch.errors = FALSE)} to track down what is
 happening.
 
-It is sometimes useful to look at the model state variables, available as
-\code{predict(mod, return\_state = TRUE)} (for the SMA model), or
+It is sometimes useful to look at the model state variables, available
+as \code{predict(mod, return\_state = TRUE)} (for the SMA model), or
 \code{predict(mod, return\_components = TRUE)} (for the routing
-model), to see if they look sensible. 
+model), to see if they look sensible.
 
 Some other things to try are
 \begin{itemize}
@@ -756,14 +749,12 @@ Other documents, demonstrating more complex models and advanced
 calibration and performance assessment methods, are under development.
 
 Help pages are available for most functions, and these are also
-available online at \url{http://hydromad.catchment.org}. There is
-also a set of demos: see \code{demo(package = "hydromad")} for a list.
+available online at \url{http://hydromad.catchment.org}. There is also
+a set of demos: see \code{demo(package = "hydromad")} for a list.
 
 Discuss any problems with \code{felix.andrews@anu.edu.au} at this
 pre-release stage.
 
-
-\newpage
 
 \section*{Computational details}
 

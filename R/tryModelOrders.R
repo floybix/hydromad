@@ -56,9 +56,9 @@ tryModelOrders <-
 
 summary.tryModelOrders <- 
     function(object,
-             which = c("yic", "arpe", "r.squared", "r.squared.log", "ssg", "rel.bias"),
+             stats = c("yic", "arpe", "r.squared", "r.sq.log", "ssg", "rel.bias"),
              ...)
 {
     class(object) <- setdiff(class(object), "tryModelOrders")
-    summary(object, which = which, ...)
+    summary(object, stats = stats, ...)
 }

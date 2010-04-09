@@ -36,9 +36,8 @@ coef.runlist <-
 }
 
 
-## TODO: add a 'which' argument to extract elements of summary by name
 summary.runlist <-
-    function(object, ..., FUN = summary, which = NULL)
+    function(object, ..., FUN = summary, items = NULL)
 {
     stopifnot(is.list(object))
     if (length(object) == 0)
@@ -46,13 +45,13 @@ summary.runlist <-
     ## extract elements from summary which are single numbers
     cc <- lapply(object, function(x) {
         tmp <- FUN(x, ...)
-        if (is.null(which)) {
+        if (is.null(items)) {
             tmp <- tmp[unlist(lapply(tmp, function(z) {
                 is.numeric(z) && !is.matrix(z) &&
                 (length(z) == 1)
             }))]
         } else {
-            tmp <- tmp[which]
+            tmp <- tmp[items]
         }
         unlist(tmp)
     })
@@ -65,16 +64,8 @@ summary.runlist <-
                   dimnames = list(names(object), allnms))
     for (i in 1:NROW(ans))
         ans[i, names(cc[[i]])] <- cc[[i]]
-    
-#    nms <- names(cc[[1]])
-#    allsame <-
-#        all(sapply(cc, function(x) identical(names(x), nms)))
-#    ans <- cc
-#    if (allsame) {
-#        ans <- as.data.frame(do.call("rbind", cc)) #sapply(cc, identity))
     ans <- as.data.frame(ans)
-        class(ans) <- c("summary.runlist", class(ans))
-#    }
+    class(ans) <- c("summary.runlist", class(ans))
     ans
 }
 
@@ -92,6 +83,28 @@ print.runlist <-
     cat("\nList of model runs:\n")
     print.default(x, ...)
     invisible(x)
+}
+
+residuals.runlist <-
+    function(object, ...)
+{
+    ans <- lapply(object, residuals, ...)
+    bad <- sapply(ans, length) == 0
+    if (any(bad))
+        stop("residuals() returned nothing for items ",
+             toString(names(ans)[bad]))
+    do.call("cbind", ans)
+}
+
+fitted.runlist <-
+    function(object, ...)
+{
+    ans <- lapply(object, fitted, ...)
+    bad <- sapply(ans, length) == 0
+    if (any(bad))
+        stop("fitted() returned nothing for items ",
+             toString(names(ans)[bad]))
+    do.call("cbind", ans)
 }
 
 errormasscurve.runlist <-
@@ -119,16 +132,17 @@ errormasscurve.runlist <-
     foo
 }
 
+## TODO: xyplot.hydromad.runlist
+## 
+
 ## TODO! clean this up...
 xyplot.runlist <-
     function(x, data = NULL,
              residuals. = FALSE,
-             coerce = byDays, #trans = NULL,
-             superpose = FALSE,
-             #with.obs = !residuals.,
+             coerce = byDays,
+             superpose = TRUE,
              with.P = FALSE,
-             ...,
-             x.same = TRUE, y.same = TRUE, layout = c(1, NA))
+             ...)
 {
     stopifnot(is.null(data))
 
@@ -152,7 +166,8 @@ xyplot.runlist <-
                            x.same = x.same, y.same = y.same, layout = layout)
         if (!residuals.) {
             foo <- foo +
-                layer(panel.lines(coerce(observed(x[[1]]))), style = 2)
+                layer(panel.lines(obs), data = list(obs = coerce(observed(x[[1]]))),
+                      style = 2)
         }
     }
     if (with.P) {
