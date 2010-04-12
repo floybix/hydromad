@@ -8,8 +8,7 @@
   Assess and summarise performance of Hydromad models.
 }
 \usage{
-\method{summary}{hydromad}(object,
-	breaks = NULL, coerce = byDays,
+\method{summary}{hydromad}(object, breaks = NULL, 
         stats = c("rel.bias", "r.squared", "r.sq.sqrt", "r.sq.log", "r.sq.monthly"),
         na.action = na.exclude, ...)
 
@@ -25,12 +24,6 @@
     one of "sec", "min", "hour", "day", "DSTday", "week", "month" or "year",
     optionally preceded by an integer and a space, or followed by "s".
     See \code{\link{cut.Date}}.
-  }
-  \item{coerce}{
-    function to apply to a \code{ts} object to convert its index
-    before applying \code{\link{cut}}. Typically \code{\link{byDays}},
-    \code{byYears}, \code{bySecs} or \code{identity} (for an integer
-    index). 
   }
   \item{stats}{
     which performance statistics to compute. See Details.

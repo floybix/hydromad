@@ -32,7 +32,7 @@ coef.hydromad <-
         }
     }
     ## work out which arguments go to SMA function
-    sma.argnames <- names(object$sma.args)
+    sma.argnames <- names(object$sma.formals)
     forSMA <- names(parlist) %in% sma.argnames
     ## work out which arguments go to routing function
     routing <- object$routing

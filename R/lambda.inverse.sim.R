@@ -4,6 +4,8 @@
 ##
 
 
+## TODO: keep attributes of Q
+
 lambda.inverse.sim <-
     function(Q, P = NULL,
              pars = c(tau_s = 0, tau_q = 0, v_s = 1, v_3 = 0),

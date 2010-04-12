@@ -15,7 +15,6 @@ lambda.sim <-
 {
     delay <- round(delay)
     ## note U is allowed to be multi-variate, i.e. multiple columns
-    if (!is.ts(U)) U <- as.ts(U)
     U <- na.action(U)
     ## apply 'U' delay in reverse to 'X' (i.e. lag by 'delay' steps)
     ## so can take delay as 0 for simulation purposes
@@ -29,8 +28,8 @@ lambda.sim <-
     alpha_q <- exp(-1 / tau_q)
     ## lambda parameter defines dependence of v_s on U
     v_s <- v_s * (U ^ lambda)
-    v_s <- pmax(0, pmin(1, v_s)) ## ensure (0 <= v_s <= 1)
-    v_q <- pmax(0, 1 - v_s)
+    v_s <- pmax(pmin(v_s, 1), 0) ## ensure (0 <= v_s <= 1)
+    v_q <- pmax(1 - v_s, 0)
     ## note: here v_s / v_q and beta_s / beta_q are vectors!
     beta_s <- v_s * (1 - alpha_s)
     beta_q <- v_q * (1 - alpha_q)
@@ -39,7 +38,8 @@ lambda.sim <-
     ## convert loss from G[k] model into a Q[k] formulation
     lossVal <- (1 - alpha_s) * loss
     Xs <- filter_loss(beta_s * U, alpha_s, loss = lossVal, init = Xs_0)
-    Xq <- filter(beta_q * U, alpha_q, method = "recursive", init = Xq_0)
+    Xq <- beta_q * U
+    Xq[] <- filter(Xq, alpha_q, method = "recursive", init = Xq_0)
 
     ## align results to original input
     Xs <- shiftWindow(Xs, delay)
@@ -50,7 +50,7 @@ lambda.sim <-
     Xq[Xq < epsilon] <- 0
 
     if (return_components) {
-        return(ts.union(Xs = Xs, Xq = Xq))
+        return(cbind(Xs = Xs, Xq = Xq))
     } else {
         return(Xs + Xq)
     }

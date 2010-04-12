@@ -104,6 +104,8 @@ lagbind <-
                        list(dframe=dframe)))
 }
 
+
+## TODO: replace shiftWindow use with lagts when it appears in zoo
 shiftWindow <-
     function(x, delay, and.lag = FALSE, fill = NA)
 {
@@ -146,23 +148,23 @@ stripWarmup <-
     window(x, start = newstart)
 }
 
-stripWarmup.default <-
-    function(x, warmup)
-{
-    if (length(x) == 0) return(x)
-    if (warmup == 0) return(x)
-    stopifnot(warmup >= 0)
-    stopifnot(warmup < NROW(x)+1)
-    if (!is.ts(x)) x <- as.ts(x)
-    freq <- frequency(x)
-    t_warm <- tsp(x)[1] + (warmup) / freq
-    t_end <- tsp(x)[2]
-    ## following equivalent to return(window(x, start=t_warm)) but faster(?)
-    if (NCOL(x) == 1)
-        x <- x[-(1:warmup)]
-    else 	x <- x[-(1:warmup),]
-    ans <- ts(x, t_warm, t_end, freq)
-}
+#stripWarmup.default <-
+#    function(x, warmup)
+#{
+#    if (length(x) == 0) return(x)
+#    if (warmup == 0) return(x)
+#    stopifnot(warmup >= 0)
+#    stopifnot(warmup < NROW(x)+1)
+#    if (!is.ts(x)) x <- as.ts(x)
+#    freq <- frequency(x)
+#    t_warm <- tsp(x)[1] + (warmup) / freq
+#    t_end <- tsp(x)[2]
+#    ## following equivalent to return(window(x, start=t_warm)) but faster(?)
+#    if (NCOL(x) == 1)
+#        x <- x[-(1:warmup)]
+#    else 	x <- x[-(1:warmup),]
+#    ans <- ts(x, t_warm, t_end, freq)
+#}
 
 byDays <- function(x)
 {

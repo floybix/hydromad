@@ -91,7 +91,7 @@ mod1 <- update(mod0, Tmax = 15, Tmin = 5, cr = 1, cs = 1,
                kd = 2, kf = 0, rcap = 0.5,
                d = 200, f = 0.5, e = 0.1, tau_s = 10)
 testQ <- predict(mod1, return_state = TRUE)
-xyplot(ts.union(HydroTestData[,1:2], snow = testQ))
+xyplot(cbind(HydroTestData[,1:2], snow = testQ))
 }
 \keyword{ models }
 

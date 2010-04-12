@@ -3,6 +3,9 @@
 ## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
+
+## NOTE - currently all the tf() stuff converts data to ts
+
 tf <-
     function(DATA = zoo(),
              pars = numeric(),

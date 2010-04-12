@@ -33,7 +33,6 @@ armax.sim <-
         if (!all(Mod(polyroot(c(1, -a))) > .95))
             stop("AR component not in the region of stationarity")
     ## note U is allowed to be multi-variate, i.e. multiple columns
-    if (!is.ts(U)) U <- as.ts(U)
     U <- na.action(U)
     ## to return components, need to convert and pass to expuh.sim
     if (return_components) {
@@ -45,21 +44,25 @@ armax.sim <-
                          epsilon = epsilon,
                          return_components = TRUE))
     }
+    inAttr <- attributes(U)
+    U <- as.ts(U)
     ## apply 'U' delay in reverse to 'X' (i.e. lag by 'delay' steps)
     ## so can take delay as 0 for simulation purposes
     if (delay != 0)
         U <- lag(U, -delay)
     ## run ARMAX model
     init <- rep(init, length = n)
-    X <- filter(U, b, sides = 1)
+    X <- U
+    X[] <- filter(U, b, sides = 1)
     if (length(a) > 0) {
         X <- shiftWindow(X, -m, fill = 0)
-        X <- filter(X, a, method = "recursive", init = init)
+        X[] <- filter(X, a, method = "recursive", init = init)
         X <- shiftWindow(X, m)
     }
     ## zap simulated values smaller than epsilon
     X[abs(X) < epsilon] <- 0
     X <- shiftWindow(X, delay)
+    attributes(X) <- inAttr
     X
 }
 

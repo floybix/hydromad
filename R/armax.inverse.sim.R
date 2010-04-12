@@ -82,25 +82,11 @@ armax.inverse.sim <-
                 Ut <- Ut - sum(a * Qm[t - seq_len(n)])
             if (m > 0)
                 Ut <- Ut - sum(b[-1] * U[t - seq_len(m)])
-                                        #if (n >= 1) Ut <- Ut - a[1] * Qm[t-1]
-                                        #if (n >= 2) Ut <- Ut - a[2] * Qm[t-2]
-                                        #if (n >= 3) Ut <- Ut - a[3] * Qm[t-3]
-                                        #if (m >= 1) Ut <- Ut - b[2] * U[t-1]
-                                        #if (m >= 2) Ut <- Ut - b[3] * U[t-2]
-                                        #if (m >= 3) Ut <- Ut - b[4] * U[t-3]
             Ut <- Ut / b[1]
             U[t] <- max(0, min(Ut, P[t]))
             if (use.Qm) {
                 Qm[t] <- (sum(a * Qm[t - seq_len(n)]) +
                           sum(b * U[t - 0:m]))
-                                        #if (n >= 1) Qmt <- Qmt + a[1] * Qm[t-1]
-                                        #if (n >= 2) Qmt <- Qmt + a[2] * Qm[t-2]
-                                        #if (n >= 3) Qmt <- Qmt + a[3] * Qm[t-3]
-                                        #if (m >= 0) Qmt <- Qmt + b[1] * U[t]
-                                        #if (m >= 1) Qmt <- Qmt + b[2] * U[t-1]
-                                        #if (m >= 2) Qmt <- Qmt + b[3] * U[t-2]
-                                        #if (m >= 3) Qmt <- Qmt + b[4] * U[t-3]
-                                        #Qm[t] <- Qmt
             }
         }
     } else {

@@ -12,8 +12,6 @@ sacramento.sim <-
              etmult = 1, dt = 1,
              return_state = FALSE)
 {
-    ## get data into the right form
-    DATA <- as.ts(DATA)
     stopifnot(c("P","E") %in% colnames(DATA))
     ## check values
     stopifnot(uztwm >= 0)
@@ -53,8 +51,7 @@ sacramento.sim <-
             U = double(NROW(DATA)),
             NAOK = FALSE, DUP = FALSE, PACKAGE="hydromad")$U
     ## make it a time series object again
-    mostattributes(U) <- attributes(DATA)
-    class(U) <- "ts"
+    attributes(U) <- attributes(P)
     ## re-insert missing values
     U[bad] <- NA
     return(U)

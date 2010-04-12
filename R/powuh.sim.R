@@ -12,7 +12,6 @@ powuh.sim <-
 {
     delay <- round(delay)
     ## note U is allowed to be multi-variate, i.e. multiple columns
-    if (!is.ts(U)) U <- as.ts(U)
     U <- na.action(U)
     ## apply 'U' delay in reverse to 'X' (i.e. lag by 'delay' steps)
     ## so can take delay as 0 for simulation purposes
@@ -24,10 +23,11 @@ powuh.sim <-
     ## normalise:
     uh <- uh / sum(uh)
     ## initialisation
-    Upad <- window(U, start = start(U)[1] - uhsteps, extend = TRUE)
-    Upad[1:uhsteps] <- init
-    X <- filter(U, uh, sides = 1)
-    X <- window(X, start = start(U))
+    init <- matrix(init, nrow = uhsteps, ncol = NCOL(U))
+    Upad <- rbind(init, as.matrix(U))
+    Xpad <- filter(Upad, uh, sides = 1)
+    X <- U
+    X[] <- Xpad[-(1:uhsteps),]
     
     ## align results to original input
     X <- shiftWindow(X, delay)

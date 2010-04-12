@@ -20,8 +20,6 @@ awbm.sim <-
              S1_0 = 0, S2_0 = 0, S3_0 = 0,
              return_state = FALSE)
 {
-    ## get data into the right form
-    DATA <- as.ts(DATA)
     stopifnot(c("P","E") %in% colnames(DATA))
     ## check values
     stopifnot(cap1 >= 0)
@@ -35,6 +33,8 @@ awbm.sim <-
     stopifnot(0 <= area3)
     stopifnot(area1 == 1 - area2 - area3)
 
+    inAttr <- attributes(DATA[,1])
+    DATA <- as.ts(DATA)
     P <- DATA[,"P"]
     E <- DATA[,"E"] * etmult
     ## skip over missing values (maintaining the state S)
@@ -65,11 +65,6 @@ awbm.sim <-
         S1 <- ans$S1
         S2 <- ans$S2
         S3 <- ans$S3
-        ## make it a time series object again
-        mostattributes(U) <- attributes(DATA)
-        class(U) <- "ts"
-        attributes(S1) <- attributes(S2) <- attributes(S3) <-
-            attributes(U)
     } else {
         ## implementation in R for cross-checking (slow)
         U <- S1 <- S2 <- S3 <- P
@@ -92,10 +87,15 @@ awbm.sim <-
             S3_prev <- S3[t] <- max(0, S3[t] - U3 - E[t])
         }
     }
+    attributes(U) <- inAttr
     ## re-insert missing values
     U[bad] <- NA
-    if (return_state) return(ts.union(U=U, S1=S1, S2=S2, S3=S3))
-    return(U)
+    ans <- U
+    if (return_state) {
+        attributes(S1) <- attributes(S2) <- attributes(S3) <- attributes(U)
+        ans <- cbind(U=U, S1=S1, S2=S2, S3=S3)
+    }
+    return(ans)
 }
 
 awbm.ranges <- function()

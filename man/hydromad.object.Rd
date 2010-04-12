@@ -23,7 +23,8 @@
        sma, routing, rfit, warmup, weights, and.rescale)
 
 \method{predict}{hydromad}(object, newdata = NULL,
-	which = c("both", "sma", "routing"), ...)
+	which = c("both", "sma", "routing"), ...,
+        return_state = FALSE, return_components = FALSE)
 
 \method{fitted}{hydromad}(object, ..., U = FALSE, all = FALSE)
 
@@ -52,9 +53,9 @@ isValidModel(object, ...)
   }
   \item{\dots}{
     In the \code{update} method, parameter values or ranges for the SMA
-    and/or routing models can be given, as with the \code{hydromad()}
-    function. 
-    In the \code{predict} method, further arguments are passed on to the
+    and/or routing simulation functions can be given, as with the
+    \code{hydromad()} function. 
+    Further arguments to \code{predict} are ignored.
     simulation functions for the SMA and/or routing models. These
     typically can include arguments \code{return_state = TRUE} for the
     SMA, and/or \code{return_components = TRUE} for the routing.
@@ -71,10 +72,15 @@ isValidModel(object, ...)
   \item{which}{
     selects either the SMA or routing model, or both models (the
     default).
-
     For the \code{predict} method, note that if \code{which =
-      "routing"}, then \code{newdata} should be the effective rainfall
+      "routing"}, then \code{newdata} is treated as the effective rainfall
     (U). 
+  }
+  \item{return_state}{
+    passed to the SMA simulation function, to return state variables.
+  }
+  \item{return_components}{
+    passed to the routing simulation function, to return flow components.
   }
   \item{all}{
     if \code{TRUE}, return the entire time series for which data
@@ -121,7 +127,8 @@ isValidModel(object, ...)
   \code{\link{vcov}},
   etc.
 
-  The \code{\link{summary}} method is documented on a different page.
+  The \code{\link[=summary.hydromad]{summary}} method is documented on a
+  different page.
   
   Plot methods include
   \code{\link{xyplot.hydromad}},
@@ -133,6 +140,7 @@ isValidModel(object, ...)
   series. 
 }
 \value{
+  
   \code{update} returns a new \code{hydromad} object.
   
   \code{predict}, \code{fitted}, \code{observed} and \code{residuals}
@@ -140,6 +148,7 @@ isValidModel(object, ...)
   
   \code{coef} returns a named numeric vector, or a named \code{list} if
   one or more parameters are not fully specified.
+  
 }
 \author{ Felix Andrews \email{felix@nfrac.org} }
 \seealso{

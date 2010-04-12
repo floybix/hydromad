@@ -11,7 +11,7 @@
 }
 \usage{data(HydroTestData)}
 \format{
-  A \code{\link{ts}} object with 730 (365 * 2) time steps.
+  A \code{\link{zooreg}} object with 730 (365 * 2) time steps.
 
   There are three columns,
   \code{P} (simulated areal rainfall, mm/day),

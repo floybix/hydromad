@@ -1,4 +1,15 @@
 
+Changes in Version 0.7-2 (in development)
+
+  o time series data is now stored as 'zooreg' rather than 'ts',
+    and fitted(), residuals(), predict() will generally return 'zooreg'.
+    The simulation functions will keep to the format of their input data.
+
+  o xyplot() methods for 'hydromad' and 'runlist' have been rewritten.
+
+  o the package now depends on the new version of lattice, and therefore
+    depends on R version 2.11.0 or later.
+
 Changes in Version 0.7-1
 
   o column names are retained in eventapply, it now has a 'simplify'

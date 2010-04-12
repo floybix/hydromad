@@ -7,8 +7,6 @@ runoffratio.sim <-
     function(DATA, width = 30, kernel = 2, sides = 2, rrthresh = 0,
              qlag = 0, scale = 1, return_state = FALSE)
 {
-    ## get data into the right form
-    DATA <- as.ts(DATA)
     stopifnot(c("P", "Q") %in% colnames(DATA))
     P <- DATA[,"P"]
     Q <- DATA[,"Q"]
@@ -29,8 +27,12 @@ runoffratio.sim <-
     rr[!is.finite(rr)] <- 0
     rr[rr < rrthresh] <- 0
     U <- scale * P * rr
-    if (return_state) return(ts.union(U=U, rr=rr))
-    U
+    
+    ans <- U
+    if (return_state) {
+        ans <- cbind(U=U, rr=rr)
+    }
+    return(ans)
 }
 
 runoffratio.ranges <- function()

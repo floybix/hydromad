@@ -1,6 +1,5 @@
 \name{hydromad}
 \alias{hydromad}
-\alias{hydromad.sim}
 \alias{ihacres}
 \title{
   Specify rainfall - runoff (hydrology) models.
@@ -14,7 +13,7 @@
   dependent routing component.
 }
 \usage{
-hydromad(DATA = zoo(), ...,
+hydromad(DATA = zooreg(), ...,
         sma = hydromad.getOption("sma"),
         routing = hydromad.getOption("routing"),
         rfit = NULL, weights = NULL,

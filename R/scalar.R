@@ -6,8 +6,6 @@
 scalar.sim <-
     function(DATA, scale, return_state = FALSE)
 {
-    ## get data into the right form
-    DATA <- as.ts(DATA)
     if (NCOL(DATA) > 1) stopifnot("P" %in% colnames(DATA))
     P <- if (NCOL(DATA) > 1) DATA[,"P"] else DATA
     ## special value scale = NA used for initial run

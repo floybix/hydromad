@@ -32,8 +32,6 @@ fitDbmByGam <-
 dbm.sim <-
     function(DATA, power, scale = 1, qlag = 0, return_state = FALSE)
 {
-    ## get data into the right form
-    DATA <- as.ts(DATA)
     stopifnot(c("P", "Q") %in% colnames(DATA))
     P <- DATA[,"P"]
     Q <- DATA[,"Q"]

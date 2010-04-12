@@ -111,7 +111,7 @@ mod0
 set.seed(2)
 mod1 <- simulate(update(mod0, etmult = 0.01), 1, sampletype = "random")[[1]]
 testQ <- predict(mod1, return_state = TRUE)
-xyplot(window(ts.union(HydroTestData[,1:2], sacramento = testQ), start = 100))
+xyplot(window(cbind(HydroTestData[,1:2], sacramento = testQ), start = 100))
 mod1
 }
 \keyword{ models }

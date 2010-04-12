@@ -8,18 +8,13 @@
   Plot methods...
 }
 \usage{
-\method{xyplot}{hydromad}(x, data = NULL,
-	coerce = byDays, all = FALSE,
-        superpose = TRUE, with.P = FALSE,
-        screens = list(P = "rainfall", "streamflow"),
-	...)
+\method{xyplot}{hydromad}(x, data = NULL, ..., all = FALSE,
+        with.P = FALSE, screens = list(P = "rainfall", "streamflow"),
+        type = list(P = "h", "l"), superpose = TRUE)
 
-\method{qqmath}{hydromad}(x, data,
-	coerce = byDays, trans = NULL,
-	type = c("p", "l"),
-	auto.key = TRUE,
-	subset = complete.cases(obsmod),
-	...)
+\method{qqmath}{hydromad}(x, data, ..., all = FALSE,
+       type = "l", auto.key = list(lines = TRUE, points = FALSE),
+       f.value = ppoints(100), tails.n = 100)
 
 errormasscurve(x, ...)
 
@@ -28,22 +23,31 @@ tsdiag(object, gof.lag, ...)
 \arguments{
   \item{x}{ an object of class \code{hydromad}. }
   \item{data}{ ignored. }
-  \item{coerce}{ a function to apply to the time series of observed and modelled values. }
-  \item{trans}{ a function to apply to the time series. }
-  \item{superpose}{ to overlay time series in one panel. }
-  \item{with.P}{ to include the input rainfall series in the plot. }
-  \item{screens}{ panels specification, passed to \code{\link[zoo]{xyplot.zoo}}. }
-  \item{col}{ colours. }
-  \item{\dots}{ further arguments passed on to \code{\link[zoo]{xyplot.zoo}} or \code{\link[lattice]{qqmath}}. }
-  \item{type}{ colours. }
-  \item{auto.key}{ colours. }
-  \item{subset}{ colours. }
+  \item{\dots, type, auto.key}{
+    further arguments passed on to
+    \code{\link[zoo]{xyplot.zoo}} or \code{\link[lattice]{qqmath}}.
+  } 
+  \item{all}{
+
+  }
+  \item{with.P}{
+    to include the input rainfall series in the plot.
+  }
+  \item{screens}{
+    panels specification, passed to \code{\link[zoo]{xyplot.zoo}}.
+  }
+  \item{superpose}{
+    to overlay time series in one panel.
+  }
+  \item{f.value, tails.n}{
+    arguments to \code{\link[lattice]{panel.qqmath}}.
+  }
 }
 \details{
   ~~ If necessary, more details than the description above ~~
 }
 \value{
-	the trellis functions return a trellis object.
+  the trellis functions return a trellis object.
 }
 \author{
   Felix Andrews \email{felix@nfrac.org}

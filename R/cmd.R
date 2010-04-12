@@ -9,8 +9,6 @@ cmd.sim <-
              d, f, e, M_0 = d/2,
              return_state = FALSE)
 {
-    ## get data into the right form
-    DATA <- as.ts(DATA)
     stopifnot(c("P","E") %in% colnames(DATA))
     ## check values
     stopifnot(d >= 0)
@@ -22,6 +20,8 @@ cmd.sim <-
     ## f is expressed as a proportion of d
     g <- f * d
 
+    inAttr <- attributes(DATA[,1])
+    DATA <- as.ts(DATA)
     P <- DATA[,"P"]
     E <- DATA[,"E"]
     ## skip over missing values (maintaining the state M)
@@ -46,10 +46,6 @@ cmd.sim <-
         U <- ans$U
         M <- ans$M
         ET <- ans$ET
-        ## make it a time series object again
-        mostattributes(U) <- attributes(DATA)
-        class(U) <- "ts"
-        attributes(M) <- attributes(ET) <- attributes(U)
     } else {
         ## implementation in R for cross-checking (slow)
         U <- M <- ET <- P
@@ -77,10 +73,15 @@ cmd.sim <-
             ##M[t] <- M_prev <- max(0, Mf + ET[t])
         }
     }
+    attributes(U) <- inAttr
     ## re-insert missing values
     U[bad] <- NA
-    if (return_state) return(ts.union(U=U, CMD=M, ET=ET))
-    return(U)
+    ans <- U
+    if (return_state) {
+        attributes(M) <- attributes(ET) <- attributes(U)
+        ans <- cbind(U=U, CMD=M, ET=ET)
+    }
+    return(ans)
 }
 
 cmd.ranges <- function()

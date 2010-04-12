@@ -60,6 +60,9 @@ doRoutingFit <-
         rcoef <- c(rcoef, delay = rans$delay)
     object$parlist <- modifyList(object$parlist, as.list(rcoef))
     object$fitted.values <- fitted(rans, all = TRUE)
+    ## coerce fitted values back to original data format
+    ## (routing fitting functions and tf() coerce to 'ts')
+    mostattributes(object$fitted.values) <- attributes(object$data)
     tmp <- try(vcov(rans), silent = TRUE)
     if (inherits(tmp, "try-error"))
         tmp <- rans$vcov

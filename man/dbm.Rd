@@ -48,6 +48,6 @@ mod0
 
 ## simulate with some arbitrary parameter values
 testQ <- predict(update(mod0, power = 0.5, scale = 0.01, qlag = 0, tau_s = 10))
-xyplot(ts.union(HydroTestData, dbm.Q = testQ))
+xyplot(cbind(HydroTestData, dbm.Q = testQ))
 }
 \keyword{models}

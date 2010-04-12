@@ -12,11 +12,8 @@ cwi.sim <-
              s_0 = 0,
              return_state = FALSE)
 {
-    ## get data into the right form
-    DATA <- as.ts(DATA)
     if (NCOL(DATA) > 1) stopifnot("P" %in% colnames(DATA))
     if (f > 0) stopifnot("E" %in% colnames(DATA))
-    P <- if (NCOL(DATA) > 1) DATA[,"P"] else DATA
     ## special value scale = NA used for initial run for scaling
     if (is.na(scale))
         scale <- 1
@@ -27,6 +24,11 @@ cwi.sim <-
     stopifnot(l >= 0)
     stopifnot(p > 0)
     stopifnot(length(t_ref) == 1)
+
+    inAttr <- attributes(DATA[,1])
+    DATA <- as.ts(DATA)
+    P <- if (NCOL(DATA) > 1) DATA[,"P"] else DATA
+    
     ## compute soil moisture index s
     if (f == 0) {
         ## this is an invariant drying rate model
@@ -45,8 +47,14 @@ cwi.sim <-
     U <- (pmax(s - l, 0) ^ p) * P
     ## TODO: test mass balance scaling with p > 1
     U <- (scale ^ p) * U
-    if (return_state) return(ts.union(U=U, s=s, w=w))
-    return(U)
+
+    attributes(U) <- inAttr
+    ans <- U
+    if (return_state) {
+        attributes(s) <- attributes(w) <- attributes(U)
+        ans <- cbind(U=U, s=s, w=w)
+    }
+    return(ans)
 }
 
 cwi.ranges <- function()

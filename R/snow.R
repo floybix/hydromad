@@ -8,8 +8,6 @@ snow.sim <-
              cr = 1, cs = 1, LSWE_0 = 0, ISWE_0 = 0,
              d, f, e, M_0 = d/2, return_state = FALSE)
 {
-    ## get data into the right form
-    DATA <- as.ts(DATA)
     stopifnot(c("P","E") %in% colnames(DATA))
     ## check values
     stopifnot(0 <= kd)
@@ -18,6 +16,9 @@ snow.sim <-
     stopifnot(0 <= cs)
     stopifnot(0 <= rcap)
     Tmin <- min(Tmax, Tmin)
+
+    inAttr <- attributes(DATA[,1])
+    DATA <- as.ts(DATA)
     P <- DATA[,"P"]
     E <- DATA[,"E"]
 
@@ -45,10 +46,6 @@ snow.sim <-
                   NAOK=FALSE, DUP=FALSE, PACKAGE="hydromad")
         Sdischarge <- ans$U
         SWE <- ans$SWE
-        ## make it a time series object again
-        mostattributes(Sdischarge) <- attributes(DATA)
-        class(Sdischarge) <- "ts"
-        attributes(SWE) <- attributes(Sdischarge)
     } else {
         ## implementation in R for cross-checking (slow)
         ## time loop
@@ -78,15 +75,22 @@ snow.sim <-
     DATA[,"P"] <- Sdischarge
 
     ## IHACRES CMD-module
+    U <- cmd.sim(DATA, d = d, f = f, e = e, M_0 = M_0,
+                 return_state = return_state)
+
     if (return_state) {
-        U <- cmd.sim(DATA, d = d, f = f, e = e, M_0 = M_0, return_state = TRUE)
-        ans <- ts.union(U, SWE = SWE, TF = Sdischarge)
-        colnames(ans)[1:NCOL(U)] <- colnames(U)
-        return(ans)
+        cmdState <- U
+        attributes(cmdState) <-
+            modifyList(inAttr, list(dim = dim(cmdState),
+                                    dimnames = dimnames(cmdState)))
+        attributes(SWE) <- attributes(Sdischarge) <- inAttr
+        ans <- cbind(cmdState, SWE = SWE, TF = Sdischarge)
+#        colnames(ans)[1:NCOL(cmdState)] <- colnames(U) ## TODO
     } else {
-        U <- cmd.sim(DATA, d = d, f = f, e = e, M_0 = M_0, return_state = FALSE)
-        return(U)
+        attributes(U) <- inAttr
+        ans <- U
     }
+    return(ans)
 }
 
 snow.ranges <- function()

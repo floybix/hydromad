@@ -12,7 +12,7 @@
 \usage{
 expuh.sim(U, delay = 0,
           tau_s = 0, tau_q = 0, tau_3 = 0,
-          v_s = 1, v_q = NA, v_3 = 0, v_4 = 0,
+          v_s = 1, v_q = NA, v_3 = 0,
           series = 0, loss = 0,
           Xs_0 = 0, Xq_0 = 0, X3_0 = 0,
           pars = NULL,
@@ -156,8 +156,8 @@ data(HydroTestData)
 mod1 <- hydromad(HydroTestData, routing = "expuh",
                  tau_s = 30, tau_q = 5, v_s = 0.5)
 flowcomps <- predict(mod1, return_components = TRUE)
-xyplot(ts.union(`Slow component` = flowcomps[,"Xs"],
-                `Total flow` = flowcomps[,1] + flowcomps[,2]),
+xyplot(cbind(`Slow component` = flowcomps[,"Xs"],
+             `Total flow` = flowcomps[,1] + flowcomps[,2]),
        superpose = TRUE) +
   layer(panel.refline(h = 0))
 }

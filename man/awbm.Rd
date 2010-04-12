@@ -77,6 +77,6 @@ mod0
 ## simulate with some arbitrary parameter values
 mod1 <- update(mod0, cap.ave = 40, etmult = 0.1, tau_s = 10)
 testQ <- predict(mod1, return_state = TRUE)
-xyplot(ts.union(HydroTestData[,1:2], awbm = testQ))
+xyplot(cbind(HydroTestData[,1:2], awbm = testQ))
 }
 \keyword{models}

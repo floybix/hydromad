@@ -12,8 +12,6 @@ bucket.sim <-
              etmult = 1, S_0 = 0,
              return_state = FALSE)
 {
-    ## get data into the right form
-    DATA <- as.ts(DATA)
     stopifnot(c("P","E") %in% colnames(DATA))
     ## check values
     stopifnot(Sb > 0)
@@ -26,8 +24,11 @@ bucket.sim <-
     ## fc is expressed as a proportion of Sb
     Sfc <- fc * Sb
 
+    inAttr <- attributes(DATA[,1])
+    DATA <- as.ts(DATA)
     P <- DATA[,"P"]
     E <- DATA[,"E"] * etmult
+    
     ## skip over missing values (maintaining the state S)
     bad <- is.na(P) | is.na(E)
     P[bad] <- 0
@@ -51,10 +52,6 @@ bucket.sim <-
         U <- ans$U
         S <- ans$S
         ET <- ans$ET
-        ## make it a time series object again
-        mostattributes(U) <- attributes(DATA)
-        class(U) <- "ts"
-        attributes(S) <- attributes(ET) <- attributes(U)
     } else {
         ## implementation in R for cross-checking (slow)
         U <- S <- ET <- P
@@ -78,10 +75,15 @@ bucket.sim <-
             S_prev <- S[t]
         }
     }
+    attributes(U) <- inAttr
     ## re-insert missing values
     U[bad] <- NA
-    if (return_state) return(ts.union(U=U, S=S, ET=ET))
-    return(U)
+    ans <- U
+    if (return_state) {
+        attributes(S) <- attributes(ET) <- attributes(U)
+        ans <- cbind(U=U, S=S, ET=ET)
+    }
+    return(ans)
 }
 
 bucket.ranges <- function()

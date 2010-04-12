@@ -11,5 +11,5 @@ HydroTestData <- local({
     ## flow based on square of rainfall and inverse to temperature
     Q <- filter(0.1 * P^2 * (1 - E / max(E)),
                 filter = c(1.4, -0.45), method = "recursive")
-    ts.intersect(P = P, E = E, Q = Q)
+    as.zooreg(ts.intersect(P = P, E = E, Q = Q))
 })

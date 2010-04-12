@@ -4,7 +4,7 @@
 ##
 
 hydromad <-
-    function(DATA = zoo(),
+    function(DATA = zooreg(),
              ...,
              sma = hydromad.getOption("sma"),
              routing = hydromad.getOption("routing"),
@@ -12,13 +12,13 @@ hydromad <-
              weights = NULL,
              warmup = hydromad.getOption("warmup"))
 {
+    ## create the model object
+    obj <- list(call = match.call())
+    class(obj) <- "hydromad"
     ## dots `...` may contain arguments for sma and/or routing.
     ## parlist stores these -- and they may be ranges.
     ## update() takes default parameter ranges/values from hydromad.options().
     parlist <- list(...)
-    ## create the model object
-    obj <- list(call = match.call())
-    class(obj) <- "hydromad"
     obj$parlist <- parlist
     obj <- update(obj, newdata = DATA, sma = sma,
                   routing = routing, rfit = rfit,
@@ -37,8 +37,7 @@ fitted.hydromad <- function(object, ..., U = FALSE, all = FALSE)
     tmp <- if (U) object$U else object$fitted.values
     if (length(tmp) == 0)
         return(tmp)
-    if (all) return(tmp)
-    stripWarmup(tmp, object$warmup)
+    if (all) tmp else stripWarmup(tmp, object$warmup)
 }
 
 residuals.hydromad <- function(object, ..., all = FALSE)
@@ -46,8 +45,7 @@ residuals.hydromad <- function(object, ..., all = FALSE)
     f <- fitted(object, all = TRUE)
     if (length(f) == 0) return(f)
     tmp <- (object$data[,"Q"] - f)
-    if (all) return(tmp)
-    stripWarmup(tmp, object$warmup)
+    if (all) tmp else stripWarmup(tmp, object$warmup)
 }
 
 observed.hydromad <- function(object, ..., item = "Q", all = FALSE)
@@ -56,8 +54,7 @@ observed.hydromad <- function(object, ..., item = "Q", all = FALSE)
     if (item %in% colnames(object$data) == FALSE)
         return(NULL)
     tmp <- object$data[,item]
-    if (all) return(tmp)
-    stripWarmup(tmp, object$warmup)
+    if (all) tmp else stripWarmup(tmp, object$warmup)
 }
 
 vcov.hydromad <- function(object, ...)

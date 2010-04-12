@@ -135,6 +135,6 @@ mod0
 mod1 <- update(mod0, tw = 32, f = 2, scale = 0.01, tau_s = 10)
 testQ <- predict(mod1, return_state = TRUE)
 \dontshow{ .featured_example <- TRUE }
-xyplot(ts.union(HydroTestData[,1:2], cwi = testQ))
+xyplot(cbind(HydroTestData[,1:2], cwi = testQ))
 }
 \keyword{ models }

@@ -23,15 +23,14 @@ filter_tv <-
             y[i] <- x[i] + a[i] * y[i-1]
         }
     } else {
-        y <- .C(ar1_tv,
-                as.double(x),
-                as.double(a),
-                as.integer(length(x)),
-                as.double(init),
-                out = double(length(x)),
-                DUP=FALSE, PACKAGE="hydromad")$out
-        ## make it a time series object again
-        attributes(y) <- attributes(x)
+        y <- x
+        y[] <- .C(ar1_tv,
+                  as.double(x),
+                  as.double(a),
+                  as.integer(length(x)),
+                  as.double(init),
+                  out = double(length(x)),
+                  DUP=FALSE, PACKAGE="hydromad")$out
     }
     ## re-insert missing values
     y[bad] <- NA

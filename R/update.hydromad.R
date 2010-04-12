@@ -4,7 +4,7 @@
 ##
 
 update.hydromad <-
-    function(object, ..., newdata = NULL,
+    function(object, ..., newdata = NULL, 
              sma, routing, rfit, warmup, weights,
              and.rescale = TRUE)
 {
@@ -15,7 +15,7 @@ update.hydromad <-
     upcall <- match.call()
     nm <- names(upcall)
     if (!is.null(newdata)) {
-        object$call[2] <- upcall["newdata"]
+        object$call$DATA <- upcall["newdata"]
     }
     if (!is.null(nm)) {
         nm <- nm[!(nm %in% c("", "object", "newdata", "and.rescale"))]
@@ -30,8 +30,7 @@ update.hydromad <-
     ## update DATA
     RUNSMA <- is.null(object$U)
     if (!is.null(newdata)) {
-        ## TODO: as.zoo instead!
-        object$data <- as.ts(newdata)
+        object$data <- as.zooreg(newdata)
         RUNSMA <- TRUE
     }
     ## update named items
@@ -57,11 +56,11 @@ update.hydromad <-
         }
         object$sma <- sma
         object$sma.fun <- NULL
-        object$sma.args <- NULL
+        object$sma.formals <- NULL
         if (!is.null(sma)) {
             object$sma.fun <- paste(sma, ".sim", sep = "")
             force(get(object$sma.fun, mode = "function")) ## check exists
-            object$sma.args <- formals(object$sma.fun)
+            object$sma.formals <- formals(object$sma.fun)
         }
         RUNSMA <- TRUE
     }
@@ -120,7 +119,7 @@ update.hydromad <-
     }
     ## run SMA to generate U
     if (RUNSMA) {
-        object$U <- predict(object, which = "sma")
+        object$U <- as.zooreg(predict(object, which = "sma"))
     }
     ## handle routing
     routing <- object$routing
@@ -129,7 +128,7 @@ update.hydromad <-
         initX <- object$initX
         Xs_0 <- if (is.logical(initX)) 0 else initX
         if (is.null(object$initX)) {
-            Q <- observed(object)
+            Q <- observed(object, all = TRUE)
             if (!is.null(Q)) {
                 if (any(is.finite(Q[1:10]))) {
                     object$initX <- min(Q[1:10], na.rm=TRUE)
@@ -153,7 +152,8 @@ update.hydromad <-
 
             ## TODO: take starting value of filter from data
 
-            object$fitted.values <- predict(object, which = "routing")
+            object$fitted.values <-
+                as.zooreg(predict(object, which = "routing"))
         }
     }
     ## absorbScale:

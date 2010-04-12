@@ -31,10 +31,7 @@ rollccf <-
              na.action = na.contiguous,
              na.max.fraction = 1/3)
 {
-    ## get data into the right form
-    if (is.list(DATA)) DATA <- do.call(ts.intersect, lapply(DATA, as.ts))
-    if (!inherits(DATA, "zoo"))
-        DATA <- as.zoo(DATA)
+    DATA <- as.zoo(DATA)
     stopifnot(NCOL(DATA) >= 2)
     if (rises) {
         if ("Q" %in% colnames(DATA)) {

@@ -16,7 +16,6 @@ summary.hydromad.runlist <-
 
 summary.hydromad <-
     function(object, breaks = NULL,
-             coerce = byDays,
              stats = c("rel.bias", "r.squared", "r.sq.sqrt", "r.sq.log", "r.sq.monthly"),
              na.action = na.exclude,
              ...)
@@ -40,21 +39,18 @@ summary.hydromad <-
         ans
     }
 
-    DATA <- ts.intersect(P = observed(object, item = "P", all = TRUE),
-                         Q = observed(object, all = TRUE),
-                         U = fitted(object, U = TRUE, all = TRUE),
-                         X = fitted(object, all = TRUE))
+    DATA <- cbind(P = observed(object, item = "P", all = TRUE),
+                  Q = observed(object, all = TRUE),
+                  X = fitted(object, all = TRUE),
+                  U = fitted(object, U = TRUE, all = TRUE))
 
     if (!is.null(breaks)) {
-        nms <- colnames(DATA)
-        DATA <- coerce(DATA)
-        colnames(DATA) <- nms
         group <- cut(time(DATA), breaks = breaks)
         group <- factor(group)
         ## remove warmup
         DATA <- stripWarmup(DATA, object$warmup)
         if (object$warmup > 0)
-            group <- group[-seq_len(object$warmup), drop = TRUE]
+            group <- group[-seq_len(object$warmup)]
 
         ans <-
             eventapply(DATA, group, 

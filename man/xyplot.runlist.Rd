@@ -8,38 +8,41 @@
   Plot results from a set of model runs using Lattice graphics.
 }
 \usage{
-\method{xyplot}{runlist}(x, data,
-             residuals. = FALSE,
-             coerce = byDays, 
-             superpose = FALSE,
-             with.P = FALSE, ...,
-             x.same = TRUE, y.same = TRUE,
-             layout = c(1, NA))
+\method{xyplot}{runlist}(x, data = NULL, ...,
+       all = FALSE, superpose = FALSE,
+       auto.key = list(points = FALSE, lines = TRUE),
+       x.same = TRUE, y.same = NA, layout = c(1, NA))
 
-\method{qqmath}{runlist}(x, data,
-             residuals=FALSE,
-             coerce=byDays, trans=NULL,
-             superpose=TRUE,
-             auto.key=TRUE,
-             type = "b",
-             pch=".", cex=2,
-             ...)
-
-\method{errormasscurve}{runlist}(x,
-	coerce = byDays,
-        superpose = TRUE,
-        type=c("total", "average", "relative"),
-        ...)
+\method{qqmath}{runlist}(x, data = NULL, ...,
+       residuals = FALSE, all = FALSE,
+       superpose = FALSE,
+       f.value = ppoints(100), tails.n = 100,
+       type = "l", auto.key = list(lines = TRUE, points = FALSE))
 }
 \arguments{
   \item{x}{
     a \code{runlist} object, which is a list of model objects.
   }
-  \item{with.P}{
-    to include the input rainfall series in the plot.
+  \item{data}{
+    ignored.
   }
-  \item{\dots}{
+  \item{\dots, auto.key, layout, type}{
     further arguments are passed on to plotting functions.
+  }
+  \item{all}{
+    passed to \code{fitted} and \code{observed}.
+  }
+  \item{superpose}{
+    to overlay all model result series in one panel.
+  }
+  \item{x.same, y.same}{
+    passed to \code{\link[latticeExtra]{xyplot.list}}.
+  }
+  \item{residuals}{
+    to plot the residual series rather than fitted and observed series.
+  }
+  \item{f.value, tails.n}{
+    arguments to \code{\link[lattice]{panel.qqmath}}.
   }
 }
 \details{
