@@ -1,6 +1,5 @@
 \name{xyplot.runlist}
 \alias{xyplot.runlist}
-\alias{xyplot.runlist}
 \alias{qqmath.runlist}
 \alias{errormasscurve.runlist}
 \title{ Plot results from a set of model runs }
@@ -10,27 +9,25 @@
 \usage{
 \method{xyplot}{runlist}(x, data = NULL, ...,
        all = FALSE, superpose = FALSE,
-       auto.key = list(points = FALSE, lines = TRUE),
        x.same = TRUE, y.same = NA, layout = c(1, NA))
 
-\method{qqmath}{runlist}(x, data = NULL, ...,
-       residuals = FALSE, all = FALSE,
-       superpose = FALSE,
-       f.value = ppoints(100), tails.n = 100,
-       type = "l", auto.key = list(lines = TRUE, points = FALSE))
+\method{qqmath}{runlist}(x, data = NULL, ..., all = FALSE,
+       residuals = FALSE, superpose = FALSE,
+       f.value = ppoints(100), tails.n = 100, type = "l",
+       auto.key = list(lines = TRUE, points = FALSE))
 }
 \arguments{
   \item{x}{
-    a \code{runlist} object, which is a list of model objects.
+    a \code{runlist} object, which is a list of fitted model objects.
   }
   \item{data}{
     ignored.
   }
-  \item{\dots, auto.key, layout, type}{
+  \item{\dots, layout, type, auto.key}{
     further arguments are passed on to plotting functions.
   }
   \item{all}{
-    passed to \code{fitted} and \code{observed}.
+    passed to \code{fitted()} and \code{observed()}.
   }
   \item{superpose}{
     to overlay all model result series in one panel.

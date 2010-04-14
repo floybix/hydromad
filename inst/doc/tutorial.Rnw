@@ -449,7 +449,7 @@ the model object.
 \begin{figure}[hpbt]
 \begin{center}
 <<obs-mod-plot-the70s-code, echo=TRUE, results=hide>>=
-xyplot(cotterFit, scales = list(y = list(log = TRUE)))
+xyplot(cotterFit, with.P = TRUE)
 @
 <<obs-mod-plot-the70s, fig=TRUE, height=4>>=
 print(trellis.last.object())
@@ -523,7 +523,8 @@ The predicted time series (hydrograph) and cumulative distribution
 \begin{figure}[hpbt]
 \begin{center}
 <<obs-mod-plots-code, echo=TRUE, results=hide>>=
-xyplot.list(allMods[2:3], layout = c(1,2))
+xyplot.list(allMods[2:3], layout = c(1,2),
+            scales = list(y = list(log = TRUE)))
 @
 <<obs-mod-plots, fig=TRUE>>=
 print(trellis.last.object())
@@ -568,9 +569,9 @@ statSeries <- twoYrStats[,c("r.squared", "r.sq.sqrt", "rel.bias", "runoff")]
 statSeries[,1:2] <- pmax(statSeries[,1:2], 0)
 c(xyplot(statSeries, type = "s", lwd = 2,
          ylab = "statistic", xlab = NULL),
-  obs.streamflow = xyplot(observed(simAll)),
+  `observed streamflow` = xyplot(observed(simAll)),
   layout = c(1,5), x.same = TRUE) +
-    layer_(panel.refline(v = time(statSeries), h = 0, lty = 2))
+    layer_(panel.refline(v = time(statSeries), h = 0))
 @
 <<r2-breaks-plot, fig=TRUE, height=7>>=
 print(trellis.last.object())
@@ -628,13 +629,17 @@ model can be specified as arguments to the \code{hydromad} or
 \code{update()} functions. Alternatively, parameters can be fixed to a
 given value by specifying a single number.
 
-The default ranges can be seen, and set, using \code{hydromad.options()}.
+The default ranges can be seen, and set, using the function
+\code{hydromad.options()}. 
 
-To include the extra parameters \code{l} and/or \code{p}, used for
-arid zone catchments, specify ranges. An example:
+The example, in the CWI model, the threshold parameter \code{l} (used for
+intermittent or ephemeral rivers), defaults to a fixed value of 0. To
+allow calibration of this parameter, specify a numerical
+range. Similarly, the temperature dependence parameter \code{f}
+defaults to the range $[0,8]$; to fix its value, just specify it:
 
 <<echo=TRUE, eval=FALSE>>=
-hydromad(ts90s, sma = "cwi", l = range(0, 200), f = 0)
+hydromad(ts90s, sma = "cwi", l = c(0, 200), f = 0)
 @
 
 
@@ -749,7 +754,7 @@ Other documents, demonstrating more complex models and advanced
 calibration and performance assessment methods, are under development.
 
 Help pages are available for most functions, and these are also
-available online at \url{http://hydromad.catchment.org}. There is also
+available online at \url{http://hydromad.catchment.org/}. There is also
 a set of demos: see \code{demo(package = "hydromad")} for a list.
 
 Discuss any problems with \code{felix.andrews@anu.edu.au} at this

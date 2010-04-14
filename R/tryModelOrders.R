@@ -41,7 +41,7 @@ tryModelOrders <-
             } else if (!isValidModel(mod)) {
                 message(toString(mod, width = 60))
             } else {
-                modsumm <- summary(mod, which = c("yic", "r.squared"))
+                modsumm <- summary(mod, stats = c("yic", "r.squared"))
                 YIC <- modsumm$yic
                 R2 <- modsumm$r.squared
                 message(" YIC = ", signif(YIC, 4),

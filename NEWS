@@ -1,5 +1,5 @@
 
-Changes in Version 0.7-2 (in development)
+Changes in Version 0.7-2
 
   o time series data is now stored as 'zooreg' rather than 'ts',
     and fitted(), residuals(), predict() will generally return 'zooreg'.
