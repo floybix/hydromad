@@ -61,7 +61,26 @@ mod0 <- hydromad(HydroTestData, sma = "runoffratio", routing = "expuh")
 mod0
 
 ## simulate with some arbitrary parameter values
-testQ <- predict(update(mod0, width = 30, rrthresh = 0.2, tau_s = 10))
-xyplot(cbind(HydroTestData, runoffratio.Q = testQ))
+mod1 <- update(mod0, width = 30, rrthresh = 0.2, tau_s = 10)
+
+## plot results with state variables
+testQ <- predict(mod1, return_state = TRUE)
+xyplot(cbind(HydroTestData[,1:2], runoffratio = testQ))
+
+## show effect of increase/decrease in each parameter
+parRanges <- list(width = c(10, 180), qlag = c(-30, 30),
+                  rrthresh = c(0,0.4))
+parsims <- mapply(val = parRanges, nm = names(parRanges),
+  FUN = function(val, nm) {
+    lopar <- min(val)
+    hipar <- max(val)
+    names(lopar) <- names(hipar) <- nm
+    fitted(runlist(decrease = update(mod1, newpars = lopar),
+                   increase = update(mod1, newpars = hipar)))
+  }, SIMPLIFY = FALSE)
+
+\dontshow{ .featured_example <- TRUE }
+xyplot.list(parsims, superpose = TRUE, layout = c(1,NA)) +
+  layer(panel.lines(fitted(mod1), col = "grey", lwd = 2))
 }
 \keyword{models}

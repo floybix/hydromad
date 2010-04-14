@@ -4,10 +4,24 @@
 ##
 
 update.hydromad <-
-    function(object, ..., newdata = NULL, 
+    function(object, ..., newdata = NULL, newpars = NULL,
              sma, routing, rfit, warmup, weights,
              and.rescale = TRUE)
 {
+    if (length(newpars) > 0) {
+        ## re-call this function with elements of newpars
+        if (length(names(newpars)) < length(newpars) ||
+            any(names(newpars) == ""))
+        {
+            stop("elements of 'newpars' must be named")
+        }
+        ccall <- match.call()
+        ccall[[1]] <- quote(hydromad:::update.hydromad)
+        ccall <- as.call(modifyList(as.list(ccall),
+                                    as.list(newpars)))
+        ccall$newpars <- NULL
+        return(eval.parent(ccall))
+    }
     ## update timestamp
     object$last.updated <- Sys.time()
 

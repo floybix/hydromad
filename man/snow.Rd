@@ -88,10 +88,30 @@ mod0
 
 ## simulate with some arbitrary parameter values
 mod1 <- update(mod0, Tmax = 15, Tmin = 5, cr = 1, cs = 1, 
-               kd = 2, kf = 0, rcap = 0.5,
+               kd = 3, kf = 1, rcap = 0.5,
                d = 200, f = 0.5, e = 0.1, tau_s = 10)
+
+## plot results with state variables
 testQ <- predict(mod1, return_state = TRUE)
 xyplot(cbind(HydroTestData[,1:2], snow = testQ))
+
+## show effect of increase/decrease in each parameter
+parlist <- list(Tmax = c(10, 20), Tmin = c(0, 10),
+                cr = c(0.5, 2), cs = c(0.5, 2),
+                kd = c(2, 5), kf = c(0, 2), rcap = c(0, 1))
+parsims <- mapply(val = parlist, nm = names(parlist),
+  FUN = function(val, nm) {
+    lopar <- min(val)
+    hipar <- max(val)
+    names(lopar) <- names(hipar) <- nm
+    fitted(runlist(decrease = update(mod1, newpars = lopar),
+                   increase = update(mod1, newpars = hipar)))
+  }, SIMPLIFY = FALSE)
+
+\dontshow{ .featured_example <- TRUE }
+xyplot.list(parsims, superpose = TRUE, layout = c(1,NA),
+            strip = FALSE, strip.left = TRUE) +
+  layer(panel.lines(fitted(mod1), col = "grey", lwd = 2))
 }
 \keyword{ models }
 

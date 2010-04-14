@@ -76,21 +76,22 @@ coef.hydromad <-
     UseMethod("coef<-")
 
 "coef<-.hydromad" <-
-    function(object, all = TRUE, ..., value)
+    function(object, ..., value)
 {
     pars <- as.list(value)
     ## all elements must have names
-    stopifnot(length(names(pars)) == length(pars))
-    stopifnot(all(sapply(names(pars), nchar) > 0))
-    if (all) {
-        ## find existing parameters not named in 'value', to remove:
-        curNames <- names(coef(object, ..., warn = FALSE))
-        remNames <- curNames[curNames %in% names(pars) == FALSE]
-        ## set them to NULL to delete them from the coef() list:
-        remList <- rep(list(NULL), length(remNames))
-        names(remList) <- remNames
-        pars <- c(pars, remList)
+    if (length(names(pars)) < length(pars) ||
+        any(names(pars) == ""))
+    {
+        stop("elements to assign to coef() must be named")
     }
+    ## find existing parameters not named in 'value', to remove:
+    curNames <- names(coef(object, ..., warn = FALSE))
+    remNames <- curNames[curNames %in% names(pars) == FALSE]
+    ## set them to NULL to delete them from the coef() list:
+    remList <- rep(list(NULL), length(remNames))
+    names(remList) <- remNames
+    pars <- c(pars, remList)
     ## use 'update' to make the changes
     do.call("update", c(quote(object), pars))
 }

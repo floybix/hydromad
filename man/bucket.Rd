@@ -61,8 +61,25 @@ mod0
 
 ## simulate with some arbitrary parameter values
 mod1 <- update(mod0, Sb = 10, fc = 0.5, M = 0.5, etmult = 0.05,
-                     a.ei = 0, a.ss = 0, tau_s = 10)
+                     a.ei = 0.05, a.ss = 0.01, tau_s = 10)
+## plot results with state variables
 testQ <- predict(mod1, return_state = TRUE)
 xyplot(cbind(HydroTestData[,1:2], bucket = testQ))
+
+## show effect of increase/decrease in each parameter
+parRanges <- hydromad.getOption("bucket")
+parsims <- mapply(val = parRanges, nm = names(parRanges),
+  FUN = function(val, nm) {
+    lopar <- min(val)
+    hipar <- max(val)
+    names(lopar) <- names(hipar) <- nm
+    fitted(runlist(decrease = update(mod1, newpars = lopar),
+                   increase = update(mod1, newpars = hipar)))
+  }, SIMPLIFY = FALSE)
+
+\dontshow{ .featured_example <- TRUE }
+xyplot.list(parsims, superpose = TRUE, layout = c(1,NA),
+            strip = FALSE, strip.left = TRUE) +
+  layer(panel.lines(fitted(mod1), col = "grey", lwd = 2))
 }
 \keyword{models}

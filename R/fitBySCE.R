@@ -30,8 +30,7 @@ fitBySCE <-
     bestModel <- MODEL
     bestFunVal <- Inf
     do_sce <- function(pars) {
-        thisMod <- MODEL
-        coef(thisMod, all = FALSE) <- pars
+        thisMod <- update(MODEL, newpars = pars)
         if (!isValidModel(thisMod))
             return(NA)
         thisVal <- objFunVal(thisMod, objective = objective)

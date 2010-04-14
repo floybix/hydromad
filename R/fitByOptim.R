@@ -98,8 +98,7 @@ fitByOptim <-
 
             if (any(pars < lower)) return(NA)
             if (any(pars > upper)) return(NA)
-            thisMod <- MODEL
-            coef(thisMod, all = FALSE) <- pars
+            thisMod <- update(MODEL, newpars = pars)
             if (!isValidModel(thisMod))
                 return(NA)
             thisVal <- objFunVal(thisMod, objective = objective)

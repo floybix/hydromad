@@ -109,10 +109,28 @@ mod0
 
 ## simulate with some arbitrary parameter values
 set.seed(2)
-mod1 <- simulate(update(mod0, etmult = 0.01), 1, sampletype = "random")[[1]]
+mod1 <- simulate(update(mod0, etmult = 0.01), 1, sampletype =
+"random")[[1]]
+
 testQ <- predict(mod1, return_state = TRUE)
 xyplot(window(cbind(HydroTestData[,1:2], sacramento = testQ), start = 100))
 mod1
+
+## show effect of increase/decrease in each parameter
+parRanges <- hydromad.getOption("sacramento")
+parsims <- mapply(val = parRanges, nm = names(parRanges),
+  FUN = function(val, nm) {
+    lopar <- min(val)
+    hipar <- max(val)
+    names(lopar) <- names(hipar) <- nm
+    fitted(runlist(decrease = update(mod1, newpars = lopar),
+                   increase = update(mod1, newpars = hipar)))
+  }, SIMPLIFY = FALSE)
+
+\dontshow{ .featured_example <- TRUE }
+xyplot.list(parsims, superpose = TRUE, layout = c(1,NA),
+            strip = FALSE, strip.left = TRUE) +
+  layer(panel.lines(fitted(mod1), col = "grey", lwd = 2))
 }
 \keyword{ models }
 

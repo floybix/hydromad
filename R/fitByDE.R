@@ -32,8 +32,7 @@ fitByDE <-
     bestFunVal <- Inf
     do_de <- function(pars) {
         names(pars) <- names(parlist)
-        thisMod <- MODEL
-        coef(thisMod, all = FALSE) <- pars
+        thisMod <- update(MODEL, newpars = pars)
         if (!isValidModel(thisMod))
             return(1e8)
         thisVal <- objFunVal(thisMod, objective = objective)

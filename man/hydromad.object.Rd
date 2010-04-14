@@ -19,7 +19,7 @@
   observed input and output time-series data.
 }
 \usage{
-\method{update}{hydromad}(object, ..., newdata,
+\method{update}{hydromad}(object, ..., newdata, newpars,
        sma, routing, rfit, warmup, weights, and.rescale)
 
 \method{predict}{hydromad}(object, newdata = NULL,
@@ -35,7 +35,7 @@
 \method{coef}{hydromad}(object, which = c("both", "sma", "routing"),
      ..., warn = TRUE, etc = FALSE)
 
-\method{coef}{hydromad}(object, all = TRUE, ...) <- value
+\method{coef}{hydromad}(object, ...) <- value
 
 \method{vcov}{hydromad}(object, ...)
 %% deviance?
@@ -46,19 +46,21 @@ isValidModel(object, ...)
   \item{object}{
     an object of class \code{hydromad}.
   }
-  \item{newdata}{
-    a \code{\link{ts}}-like object or list containing a new time series
-    dataset. It should have named components \code{P}, \code{E} and
-    optionally \code{Q}.
-  }
   \item{\dots}{
     In the \code{update} method, parameter values or ranges for the SMA
     and/or routing simulation functions can be given, as with the
     \code{hydromad()} function. 
     Further arguments to \code{predict} are ignored.
-    simulation functions for the SMA and/or routing models. These
-    typically can include arguments \code{return_state = TRUE} for the
-    SMA, and/or \code{return_components = TRUE} for the routing.
+  }
+  \item{newdata}{
+    a \code{\link{ts}}-like object containing a new time series
+    dataset (replacing the original \code{DATA} argument given to the
+    \code{hydromad} function).
+  }
+  \item{newpars}{
+    a named list or vector of parameter values; this is equivalent to
+    specifying the same values as named arguments (as in
+    \dQuote{\dots}).
   }
   \item{sma, routing, rfit, warmup, weights}{
     same arguments as for the \code{\link{hydromad}} function. The

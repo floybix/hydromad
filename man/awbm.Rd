@@ -76,7 +76,24 @@ mod0
 
 ## simulate with some arbitrary parameter values
 mod1 <- update(mod0, cap.ave = 40, etmult = 0.1, tau_s = 10)
+
+## plot results with state variables
 testQ <- predict(mod1, return_state = TRUE)
 xyplot(cbind(HydroTestData[,1:2], awbm = testQ))
+
+## show effect of increase/decrease in each parameter
+parRanges <- list(cap.ave = c(1, 1000), etmult = c(0.01, 1))
+parsims <- mapply(val = parRanges, nm = names(parRanges),
+  FUN = function(val, nm) {
+    lopar <- min(val)
+    hipar <- max(val)
+    names(lopar) <- names(hipar) <- nm
+    fitted(runlist(decrease = update(mod1, newpars = lopar),
+                   increase = update(mod1, newpars = hipar)))
+  }, SIMPLIFY = FALSE)
+
+\dontshow{ .featured_example <- TRUE }
+xyplot.list(parsims, superpose = TRUE, layout = c(1,NA)) +
+  layer(panel.lines(fitted(mod1), col = "grey", lwd = 2))
 }
 \keyword{models}

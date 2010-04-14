@@ -32,8 +32,7 @@ fitBySampling <-
                               sep = "=", collapse = ",")
             message(run_name)
         }
-        thisMod <- MODEL
-        coef(thisMod, all = FALSE) <- thisPars
+        thisMod <- update(MODEL, newpars = thisPars)
         if (!isValidModel(thisMod))
             next
         thisVal <- objFunVal(thisMod, objective = objective,

@@ -37,8 +37,7 @@ simulate.hydromad <-
         if (isTRUE(hydromad.getOption("trace"))) {
             message(run_name)
         }
-        thisMod <- MODEL
-        coef(thisMod, all = FALSE) <- thisPars
+        thisMod <- update(MODEL, newpars = thisPars)
         ## store model or derived result
         result[[i]] <-
             if (is.null(FUN)) thisMod else FUN(thisMod, ...)
