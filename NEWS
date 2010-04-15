@@ -4,6 +4,10 @@ Changes in Version 0.7-3 (in development)
   o the update() method now has a 'newpars' argument, to supply parameter
     values as a named vector rather than a series of named arguments.
 
+  o improved the "tutorial" vignette.
+
+  o improved examples for SMA models.
+
 Changes in Version 0.7-2
 
   o time series data is now stored as 'zooreg' rather than 'ts',

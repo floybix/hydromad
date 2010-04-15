@@ -60,14 +60,86 @@ associated data analysis. It is focussed on a \emph{top-down},
 spatially lumped, empirical approach to environmental hydrology.  In
 practice the emphasis is on models of rainfall runoff in catchments
 (watersheds). Such models predict streamflow from time series of
-(areal) rainfall and temperature or potential
-evapo-transpiration. They can be calibrated to time series of observed
-data.
+areal rainfall and temperature or potential evapo-transpiration. They
+can be calibrated to time series of observed data.
+
+As \emph{spatially lumped} models, they do not explicitly represent
+spatial variation over the catchment area. In particular, the standard
+formulations do not attempt to model effects of changes in land
+cover. These models are usually calibrated to a period of observed
+streamflow, and the parameters defining the modelled relationship
+between rainfall, evaporation and flow are assumed to be
+\emph{stationary} in this period.
+
+The modelling framework in the \pkg{hydromad} package is based on the
+two-component \ihacres{} structure: (1) a \emph{soil moisture
+  accounting} (SMA) module; and (2) a \emph{routing} or \emph{unit
+  hydrograph} module (Figure \ref{fig:ihacres-framework}). The SMA
+model converts rainfall and temperature into \emph{effective
+  rainfall} --- the amount of rainfall which eventually reaches the
+catchment outlet as streamflow (i.e. that which is not lost as
+evaporation etc). The routing module converts effective rainfall into
+streamflow, which amounts to defining the peak response and shape of
+the recession curve. It is usually a linear transfer function, which
+can be as simple as a single exponential recession (i.e. constant
+decay rate), although variants with non-linearities are also
+available.
+
+\begin{figure}[hbpt!]
+\begin{center}
+\setkeys{Gin}{width=0.9\textwidth}
+<<ihacres-framework, fig=TRUE, width=6, height=1>>=
+library(grid)
+## framework diagram structure:
+## --> |box| --> |box| -->
+grid.newpage()
+pushViewport(viewport(gp = gpar(fontsize = 10)))
+arr <- arrow(length = unit(1, "char"))
+## first arrows: rainfall and evaporation (inputs)
+grid.lines(y = 0.75, x = c(0.0, 0.2), arrow = arr)
+grid.lines(y = 0.5, x = c(0.0, 0.2), arrow = arr)
+grid.lines(y = 0.25, x = c(0.0, 0.2), arrow = arr, gp = gpar(lty=2))
+grid.text(y = 0.75, x = 0.1, label = "rainfall \n")
+grid.text(y = 0.5, x = 0.1, label = "temp. / PET \n")
+grid.text(y = 0.25, x = 0.1, label = "other inputs \n")
+## first box: loss module
+grid.rect(x = 0.3, width = 0.2, height = 0.9)
+grid.text(x = 0.3, label = "Soil Moisture\nAccounting (SMA)\nmodel")
+## second arrow: effective rainfall
+grid.lines(y = 0.5, x = c(0.4, 0.6), arrow = arr)
+grid.text(y = 0.5, x = 0.5, label = "effective\n rainfall")
+## second box: routing module
+grid.rect(x = 0.7, width = 0.2, height = 0.9)
+grid.text(x = 0.7, label = "(unit hydrograph)\n routing model")
+## third arrow: streamflow (output)
+grid.lines(y = 0.5, x = c(0.8, 1.0), arrow = arr)
+grid.text(y = 0.5, x = 0.9, label = "streamflow \n")
+upViewport()
+@
+\caption{\label{fig:ihacres-framework}
+  The modelling framework in the \pkg{hydromad} package (the
+  \ihacres{} structure). 
+}
+\end{center}
+\end{figure}
+
+The \pkg{hydromad} package is intended for:
+\begin{itemize}
+\item defining and fitting spatially-lumped hydrological models to
+  observed data;
+\item simulating these models, including model state variables and
+  component flow separation.
+\item evaluating and comparing these models: summarising performance
+  by different measures and over time, using graphical displays
+  (hydrograph, flow duration curve, residuals, etc) and statistics;
+\item integration with other types of data analysis and model analysis
+  in \proglang{R}, including sensitivity and uncertainty analyis.
+\end{itemize}
 
 This tutorial describes how to get started with the \pkg{hydromad}
 \proglang{R} package. It covers the basics of reading data in from
 files, converting it into the appropriate format, and fitting and
-analysing an \ihacres{} model.
+analysing a simple model.
 
 The example we will look at is the Cotter River catchment at Gingera
 (gauge 410730) in the Australian Capital Territory, Australia. This is
@@ -321,10 +393,7 @@ period. It will then be applied to the other periods to
 cross-check model performance.
 
 
-\section{Model Calibration}
-
-An \ihacres{} CWI model (Catchment Wetness Index, also known as the
-\emph{Classic} version) will be fitted to 
+\section{Model Specification}
 
 A \code{hydromad} object encapsulates the chosen model form, parameter
 values (or ranges of values), as well as results. The model form is
@@ -340,7 +409,7 @@ defaults are taken from \code{hydromad.options()}, and they can be
 over-ridden by arguments to the \code{hydromad} function.
 
 A good starting point is the classic \ihacres{} model of
-\cite{JakemanHornberger:1993}, which is a Soil Moisture Accounting
+Jakeman and Hornberger (1993), which is a Soil Moisture Accounting
 model referred to here as \code{"cwi"} (Catchment Wetness Index). The
 routing component is a Unit Hydrograph composed of exponential
 components, a structure referred to here as \code{"expuh"}.
@@ -353,9 +422,11 @@ cotterMod <- hydromad(ts90s, sma = "cwi", routing = "expuh")
 print(cotterMod)
 @
 
-With this model specification, we can choose to calibrate the model is
+With this model specification, we can choose to calibrate the model in
 various ways, or to simulate from the specified parameter space, or to
 run sensitivity or uncertainty analysis.
+
+\subsection{Calibration}
 
 Currently implemented calibration methods include simple sampling
 schemes (\code{fitBySampling}), Newton and Simplex methods with
@@ -389,7 +460,7 @@ applied to the equation is specied as argument \code{p}, so if \code{p
 
 where $Q$ and $X$ are the observed and modelled values. Subscript $*$
 denotes transformed data, and the transform can be specified. Here we
-use the square root.
+use the square root. See \code{?summary} for more examples.
 
 The unit hydrograph module in \ihacres{} is a linear \emph{transfer
   function}, i.e. a set of exponentially receding stores, which may be
@@ -418,19 +489,19 @@ available.
 \section{Model Output}
 
 Now that we have an object representing a calibrated model, what can
-we do with it?
+we do with it? There are many standard \proglang{R} functions which
+have methods for \code{hydromad} objects, which allow one to:
 
 \begin{description}
-\item[view model info] \code{print(mod)} and \code{summary(mod)}.
-\item[extract parameter values] \code{coef(mod)}.
-\item[access data] \code{fitted(mod)}, \code{residuals(mod)},
-  \code{observed(mod)}. These exclude the warm-up
-  period by default.
-\item[run with new data] \code{predict(mod, newdata=...)} or
-  \code{update(mod, ...)}.
-\item[simulate from parameter ranges] \code{simulate(mod, N, ...)}.
-\item[plot hydrograph] \code{xyplot(mod)}; see below.
-\item[plot flow duration curve] \code{qqmath(mod)}.
+\item[view model info] \code{print()}, \code{summary()}, and
+  \code{objFunVal()}. 
+\item[extract parameter values] \code{coef()}.
+\item[access data] \code{fitted()}, \code{residuals()}, and
+  \code{observed()}. These exclude the warm-up period by default.
+\item[run with new data] \code{update()} or \code{predict()}.
+\item[simulate from parameter ranges] \code{simulate()}.
+\item[plot the hydrograph] \code{xyplot()}.
+\item[plot flow duration curve] \code{qqmath()}.
 \end{description}
 
 For details, see the examples below, the user manual, and the help
@@ -440,11 +511,14 @@ page of each function.\footnote{Note that to get help for generic
 The help pages are also available from the web site
 \url{http://hydromad.catchment.org/}.
 
-View the modelled and observed streamflow time series using
-\code{xyplot}, as in Figure \ref{fig:obs-mod-plot}.  Figures
-\ref{fig:print-hydromad} and \ref{fig:summary-hydromad} show the
-output from using the functions \code{print()} and \code{summary()} on
-the model object.
+Most basically, one can extract the modelled streamflow time series
+with the function \code{fitted()}, and this can of course be used with
+any of \proglang{R}'s library of analysis functions. A quick way to
+view the modelled and observed streamflow time series together is to
+call \code{xyplot()} on the model object, as in Figure
+\ref{fig:obs-mod-plot}. Figures \ref{fig:print-hydromad} and
+\ref{fig:summary-hydromad} also show the output from calling the
+functions \code{print()} and \code{summary()} on the model object.
 
 \begin{figure}[hpbt]
 \begin{center}
@@ -511,7 +585,7 @@ simVerif <- update(cotterFit, newdata = tsVerif)
 @
 
 It is convenient to group these models together into a \code{runlist},
-which is just a list of models:
+which is just a list of fitted models:
 <<runlist, echo=TRUE>>=
 allMods <- runlist(calibration = cotterFit, sim70s, sim80s, simVerif)
 @
@@ -523,8 +597,7 @@ The predicted time series (hydrograph) and cumulative distribution
 \begin{figure}[hpbt]
 \begin{center}
 <<obs-mod-plots-code, echo=TRUE, results=hide>>=
-xyplot.list(allMods[2:3], layout = c(1,2),
-            scales = list(y = list(log = TRUE)))
+xyplot(allMods[2:3] scales = list(y = list(log = TRUE)))
 @
 <<obs-mod-plots, fig=TRUE>>=
 print(trellis.last.object())
@@ -588,16 +661,16 @@ print(trellis.last.object())
   \emph{To plot the flow duration curve for modelled vs observed
     data in the calibration period:}
 <<fdc-1-plot-code, echo=TRUE, eval=FALSE>>=
-qqmath(cotterFit, scales = list(y = list(log = TRUE)), type=c("l","g"))
+qqmath(cotterFit, scales = list(y = list(log = TRUE)), type = c("l","g"))
 @
-  \emph{To plot a flow duration curves for each of the simulated models:}
+  \emph{To plot a flow duration curve for each of the simulated models:}
 <<fdc-plot-code, echo=TRUE, results=hide>>=
-xyplot.list(allMods, FUN = qqmath,
-            type=c("l","g"), scales = list(y = list(log = TRUE)),
-            xlab = "Standard normal variate",
-            ylab = "Flow (mm/day)", 
-            f.value = ppoints(100), tails.n = 50,
-            as.table = TRUE)
+qqmath(allMods, type = c("l","g"), 
+       scales = list(y = list(log = TRUE)),
+       xlab = "Standard normal variate",
+       ylab = "Flow (mm/day)", 
+       f.value = ppoints(100), tails.n = 50,
+       as.table = TRUE)
 @
 <<fdc-plot, fig=TRUE, height=7>>=
 print(trellis.last.object())
@@ -617,12 +690,11 @@ groundwater, etc, different models or calibration methods will need to
 be used.
 
 
-\subsection{Model and Parameter Ranges}
+\subsection{Model Structure and Parameter Ranges}
 
 We have used an \ihacres{} CWI model in this tutorial, which is a
-metric type model.  Another option for the SMA model is is CMD
-(Catchment Moisture Deficit), which is a more conceptual type model,
-based on a mass balance equation. See the user manual for details.
+simple metric type model. Other SMA models are included in the
+package, or one can define a new model. See the user manual for details.
 
 Ranges of parameters to search when calibrating the effective rainfall
 model can be specified as arguments to the \code{hydromad} or
@@ -632,46 +704,54 @@ given value by specifying a single number.
 The default ranges can be seen, and set, using the function
 \code{hydromad.options()}. 
 
-The example, in the CWI model, the threshold parameter \code{l} (used for
-intermittent or ephemeral rivers), defaults to a fixed value of 0. To
-allow calibration of this parameter, specify a numerical
+The example, in the CWI model, the threshold parameter \code{l} (used
+for intermittent or ephemeral rivers), defaults to a fixed value of
+0. To allow calibration of this parameter, specify a numerical
 range. Similarly, the temperature dependence parameter \code{f}
-defaults to the range $[0,8]$; to fix its value, just specify it:
+defaults to the range $[0,8]$; to fix it to a given value, just
+specify it:
 
 <<echo=TRUE, eval=FALSE>>=
 hydromad(ts90s, sma = "cwi", l = c(0, 200), f = 0)
 @
 
+\subsection{Optimisation settings}
 
-\subsection{Optimisation}
+Each of the fitting functions has several options, and the help pages
+should be consulted for details. An important option is the choice of
+objective function; see the discussion above about how to specify it.
 
-Argument \code{samples} specifies how many random parameter sets will
-be sampled (using the predefined parameter ranges) to find a good
-starting point for further optimisation. The one model with best
-objective function value is chosen.
-
-The objective function can be set with argument \code{objective}. See
-the user manual for examples of different statistics.
+In the simple cases of using \code{fitBySampling} or
+\code{fitByOptim}, the argument \code{samples} specifies how many
+random parameter sets will be sampled (from the predefined parameter
+ranges), and argument \code{sampletype} chooses Uniform Random, Latin
+Hypercube, or ``all combinations'' (a regular grid of values). The one
+model with best objective function value is chosen. In the case of
+\code{fitByOptim} this is then improved locally with an optimisation
+algorithm.
 
 
 \subsection{Transfer Function Order}
 
-The order of the unit hydrograph transfer function may be varied, as
-well as the delay time. If there is any ambiguity in choosing the best
-delay time, each possibility should be tried.
+When using \code{armax} or \code{expuh} routing, the order of the
+transfer function may be varied, as well as the delay time. If there
+is any ambiguity in choosing the best delay time, each possibility
+should be tried. 
 
-A recommended approach is to begin with a simple model like $(n=1,
-m=0)$, then test whether a more complex model leads to substantial
-improvement. Complex models often can not be well identified from
-observed data; in this case the calibration may fail to converge, or
-may converge to an invalid parameter set.
+A recommended approach is to begin with a simple model, say a first
+order model $(n=1, m=0)$, then test whether a more complex model leads
+to substantial improvement. Complex models often can not be well
+identified from observed data; in this case the calibration may fail
+to converge, or may converge to a physically unreasonable parameter set.
 
 To test different model structures systematically, a convenience
 function \code{tryModelOrders} is provided. An example is given in
 Table \ref{tab:try-model-orders}. In this case a simple SMA is used,
-where the effective rainfall is the rainfall scaled by the runoff
-coefficient calculated in a moving window with a width of 30 time
-steps (actually a triangular filter with the same effective width).
+called \code{runoffratio}, where the effective rainfall is the
+rainfall scaled by the runoff coefficient calculated in a moving
+window of 30 time steps.\footnote{To increase smoothness, actually a
+triangular filter is used with the same effective width as a moving
+average of width 30; see the help page \code{?runoffratio.sim}.}
 
 For more information on these issues see, for example,
 Jakeman et. al. (1990) and Young (2003).
@@ -691,36 +771,28 @@ print(xtable(perfstats), floating = FALSE)
 @
 \caption{\label{tab:try-model-orders}
   Fit and information statistics from fitting different unit
-  hydrograph transfer functions with SRIV algorithm. The inputs were
-  generated by a simple runoff coefficient model. }
+  hydrograph transfer functions with SRIV algorithm. The effective
+  rainfall input was generated by a simple runoff coefficient model. }
 \end{center}
 \end{table}
 
 
 \subsection{Unit Hydrograph Fitting Methods}
 
-Another alternative is to fit the unit hydrograph to the observed
-streamflow data -- though usually constrained by rainfall -- and then
-use that as a fixed component while calibrating the effective rainfall
-model. This can be done with \code{rfit = list("inverse", ...)}. (There
-are many options here also).
+Unit Hydrograph routing models are typically fitted using least
+squares or SRIV algorithms. One alternative is to fit the unit
+hydrograph to the observed streamflow data -- though usually
+constrained by rainfall -- and then use that as a fixed component
+while calibrating the effective rainfall model. This can be done with
+\code{rfit = list("inverse", ...)}. (There are many options here also).
 
-Or specified unit hydrograph parameters can be fitted together with
-the SMA parameters (using fitBySampling, etc).
-
-
-\subsection{Extensions to the Unit Hydrograph}
-
-The unit hydrograph can be extended in two ways. The \emph{lambda}
-model allows the partitioning of flow between quick and slow stores to
-vary depending on the magnitude (intensity) of effective
-rainfall. High intensity events to be dominated by quick flow.
-
-The other extension is a baseflow loss parameter, which specifies a
-constant loss of volume from the slow flow component. This will be
-generalised in future to vary over time.
-
-See the user manual for details.
+Another option is to fit the rouing parameters together with the SMA
+parameters, by specifying ranges of values for each, just like the
+other parameters. This will work with the general fitting functions
+(\code{fitBySCE}, etc). A typical specification for a second-order
+Unit Hydrograph is:
+\code{hydromad(..., routing = "expuh", 
+      tau_s = c(5,100), tau_q = c(0,5), v_s = c(0,1))}.
 
 
 \subsection{Other Options}
@@ -747,18 +819,14 @@ Some other things to try are
 
 This document has described only a basic model fitting process.
 
-An overview of the available models and options is given in the user
-manual, which can be accessed as \code{vignette("hydromad")}.
-
-Other documents, demonstrating more complex models and advanced
-calibration and performance assessment methods, are under development.
+%An overview of the available models and options is given in the user
+%manual, which can be accessed as \code{vignette("hydromad")}.
 
 Help pages are available for most functions, and these are also
 available online at \url{http://hydromad.catchment.org/}. There is also
 a set of demos: see \code{demo(package = "hydromad")} for a list.
 
-Discuss any problems with \code{felix.andrews@anu.edu.au} at this
-pre-release stage.
+Please discuss any problems or suggestions with the package maintainer.
 
 
 \section*{Computational details}

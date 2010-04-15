@@ -14,7 +14,8 @@ plot.hydromad <-
 xyplot.hydromad <-
     function(x, data = NULL, ..., scales = list(),
              all = FALSE, superpose = TRUE,
-             with.P = FALSE, type = "l", type.P = "h",
+             with.P = FALSE, type = "l",
+             type.P = c("h", if ("g" %in% type) "g"),
              layout = c(1, NA))
 {
     stopifnot(is.null(data))
@@ -40,7 +41,8 @@ xyplot.hydromad <-
 xyplot.hydromad.runlist <-
     function(x, data = NULL, ..., scales = list(),
              all = FALSE, superpose = FALSE,
-             with.P = FALSE, type = "l", type.P = "h",
+             with.P = FALSE, type = "l",
+             type.P = c("h", if ("g" %in% type) "g"),
              layout = c(1, NA))
 {
     stopifnot(is.null(data))
