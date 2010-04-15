@@ -97,8 +97,8 @@ eventinfo(X, events = eventseq(X, thresh, inter, mindur, below),
 \seealso{
   \code{\link{cut.Date}},
   \code{\link{tapply}},
-  \code{\link[zoo]{rollapply}},
-  \code{\link[latticeExtra]{panel.xblocks}},
+  \code{\link{rollapply}},
+  \code{\link{panel.xblocks}},
   \code{clusters} in the \pkg{evd} package.
 }
 \examples{

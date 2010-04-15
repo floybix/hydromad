@@ -22,7 +22,7 @@ fitByDE(MODEL,
     \code{Q}, \code{X} and/or \code{U}. See \code{\link{objFunVal}}.
   }
   \item{control}{
-    settings for the DE algorithm. See \code{\link[DEoptim]{DEoptim.control}}.
+    settings for the DE algorithm. See \code{\link{DEoptim.control}}.
   }
 }
 \details{
@@ -36,7 +36,7 @@ fitByDE(MODEL,
   Felix Andrews \email{felix@nfrac.org}
 }
 \seealso{
-  \code{\link[DEoptim]{DEoptim}},
+  \code{\link{DEoptim}},
   \code{\link{objFunVal}}
 }
 \examples{

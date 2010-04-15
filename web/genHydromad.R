@@ -47,8 +47,8 @@ spec[["soil moisture accounting"]] <-
          list("cmd", helpname = "IHACRES.CMD.model", codefile = "cmd.R"),
          list("bucket"),
          list("awbm"),
-         list("sacramento"),
-         list("snow"),
+         list("sacramento", height = 700),
+         list("snow", height = 500),
          list("runoffratio"),
          list("dbm")
          )

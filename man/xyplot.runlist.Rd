@@ -33,13 +33,13 @@
     to overlay all model result series in one panel.
   }
   \item{x.same, y.same}{
-    passed to \code{\link[latticeExtra]{xyplot.list}}.
+    passed to \code{\link{xyplot.list}}.
   }
   \item{residuals}{
     to plot the residual series rather than fitted and observed series.
   }
   \item{f.value, tails.n}{
-    arguments to \code{\link[lattice]{panel.qqmath}}.
+    arguments to \code{\link{panel.qqmath}}.
   }
 }
 \details{
@@ -51,9 +51,9 @@
 \author{ Felix Andrews \email{felix@nfrac.org} }
 \seealso{
   \code{\link{runlist}},
-  \code{\link[lattice]{xyplot.ts}},
-  \code{\link[lattice]{xyplot}},
-  \code{\link[lattice]{qqmath}}
+  \code{\link{xyplot.ts}},
+  \code{\link{xyplot}},
+  \code{\link{qqmath}}
 }
 \examples{
 data(HydroTestData)

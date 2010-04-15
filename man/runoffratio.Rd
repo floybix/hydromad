@@ -69,7 +69,7 @@ xyplot(cbind(HydroTestData[,1:2], runoffratio = testQ))
 
 ## show effect of increase/decrease in each parameter
 parRanges <- list(width = c(10, 180), qlag = c(-30, 30),
-                  rrthresh = c(0,0.4))
+                  rrthresh = c(0,0.5))
 parsims <- mapply(val = parRanges, nm = names(parRanges),
   FUN = function(val, nm) {
     lopar <- min(val)
@@ -80,7 +80,8 @@ parsims <- mapply(val = parRanges, nm = names(parRanges),
   }, SIMPLIFY = FALSE)
 
 \dontshow{ .featured_example <- TRUE }
-xyplot.list(parsims, superpose = TRUE, layout = c(1,NA)) +
+xyplot.list(parsims, superpose = TRUE, layout = c(1,NA),
+            main = "Simple parameter perturbation example") +
   layer(panel.lines(fitted(mod1), col = "grey", lwd = 2))
 }
 \keyword{models}

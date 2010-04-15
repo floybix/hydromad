@@ -72,7 +72,7 @@ swimp(flow.ML, thresh = 0,
   ...
 }
 \value{
-  a \code{\link[zoo]{zoo}} object (time series object).
+  a \code{\link{zoo}} object (time series object).
 }
 \references{
   ...

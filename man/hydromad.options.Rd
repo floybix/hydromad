@@ -4,7 +4,7 @@
 \title{ User default settings for hydromad }
 \description{
   A basic user settings facility, like \code{\link{options}} and
-  \code{\link[lattice]{lattice.options}}.
+  \code{\link{lattice.options}}.
 }
 \usage{
 hydromad.options(...)
@@ -21,7 +21,7 @@ hydromad.getOption(name)
 }
 \details{
   These functions are direct copies of the lattice equivalents:
-  see \code{\link[lattice]{lattice.options}}.
+  see \code{\link{lattice.options}}.
 
   The available options can be seen with \code{str(hydromad.options())}.
   Many of these simply provide defaults for corresponding arguments

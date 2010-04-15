@@ -9,7 +9,7 @@ HydroTestData <- local({
     ## sine wave for temperature
     E <- ts(15 + 15 * sin(seq(0, 4*pi, length = len)))
     ## flow based on square of rainfall and inverse to temperature
-    Q <- filter(0.1 * P^2 * (1 - E / max(E)),
+    Q <- filter(0.01 * P^2 * (1 - E / max(E)),
                 filter = c(1.4, -0.45), method = "recursive")
     as.zooreg(ts.intersect(P = P, E = E, Q = Q))
 })

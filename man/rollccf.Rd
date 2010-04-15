@@ -1,5 +1,4 @@
 \name{rollccf}
-\Rdversion{1.1}
 \alias{rollccf}
 \alias{xyplot.rollccf}
 \title{
@@ -70,15 +69,15 @@ rollccf(DATA = data.frame(Q = , P = ),
   }
   \item{type, type.data}{
     drawing styles for the cross correlation series and input data
-    series. See \code{\link[lattice]{panel.xyplot}}.
+    series. See \code{\link{panel.xyplot}}.
   }
   \item{par.settings, layout, strip, ylim, xlab, as.table, ...}{
-    passed to \code{\link[lattice]{xyplot}}.
+    passed to \code{\link{xyplot}}.
   }
 }
 \details{
   This is a fairly straightforward application of
-  \code{\link[zoo]{rollapply}} with the \code{\link{ccf}} function. It
+  \code{\link{rollapply}} with the \code{\link{ccf}} function. It
   may be better to do a time-varying regression between the two series.
 }
 \value{
@@ -94,7 +93,7 @@ rollccf(DATA = data.frame(Q = , P = ),
 }
 \seealso{
   \code{\link{ccf}},
-  \code{\link[zoo]{rollapply}}
+  \code{\link{rollapply}}
 }
 \examples{
 data(Canning)

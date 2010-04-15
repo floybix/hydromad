@@ -10,7 +10,7 @@
 }
 \usage{data(Wye)}
 \format{
-  A \code{\link[zoo]{zoo}} object, of class \code{c("zooreg", "zoo")}.
+  A \code{\link{zoo}} object, of class \code{c("zooreg", "zoo")}.
   It is a regular time series indexed by hours, in \code{POSIXct} format.
 
   There are two columns,

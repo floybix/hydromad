@@ -129,7 +129,8 @@ parsims <- mapply(val = parRanges, nm = names(parRanges),
 
 \dontshow{ .featured_example <- TRUE }
 xyplot.list(parsims, superpose = TRUE, layout = c(1,NA),
-            strip = FALSE, strip.left = TRUE) +
+            strip = FALSE, strip.left = TRUE,
+            main = "Simple parameter perturbation example") +
   layer(panel.lines(fitted(mod1), col = "grey", lwd = 2))
 }
 \keyword{ models }

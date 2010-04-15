@@ -1,6 +1,5 @@
 \name{HydroTestData}
 \alias{HydroTestData}
-\docType{data}
 \title{
   A simple simulated dataset for use in testing hydrological
   models. 

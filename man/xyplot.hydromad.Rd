@@ -11,12 +11,14 @@
 \usage{
 \method{xyplot}{hydromad}(x, data = NULL, ..., scales = list(),
         all = FALSE, superpose = TRUE,
-        with.P = FALSE, type = "l", type.P = "h",
+        with.P = FALSE, type = "l",
+        type.P = c("h", if ("g" \%in\% type) "g"),
         layout = c(1, NA))
 
 \method{xyplot}{hydromad.runlist}(x, data = NULL, ..., scales = list(),
        all = FALSE, superpose = FALSE,
-       with.P = FALSE, type = "l", type.P = "h",
+       with.P = FALSE, type = "l",
+       type.P = c("h", if ("g" \%in\% type) "g"),
        layout = c(1, NA))
 
 \method{qqmath}{hydromad}(x, data, ..., all = FALSE, type = "l",
@@ -32,7 +34,7 @@ tsdiag(object, gof.lag, ...)
   \item{data}{ ignored. }
   \item{\dots, scales, type, auto.key}{
     further arguments passed on to
-    \code{\link[zoo]{xyplot.zoo}} or \code{\link[lattice]{qqmath}}.
+    \code{\link{xyplot.zoo}} or \code{\link{qqmath}}.
   } 
   \item{all}{
     passed to \code{fitted()} and \code{observed()}.
@@ -47,7 +49,7 @@ tsdiag(object, gof.lag, ...)
     to overlay observed and modelled time series in one panel.
   }
   \item{f.value, tails.n}{
-    arguments to \code{\link[lattice]{panel.qqmath}}.
+    arguments to \code{\link{panel.qqmath}}.
   }
 }
 \details{
@@ -61,8 +63,8 @@ tsdiag(object, gof.lag, ...)
 }
 \seealso{
   \code{\link{hydromad.object}},
-  \code{\link[lattice]{xyplot}},
-  \code{\link[lattice]{xyplot.ts}}
+  \code{\link{xyplot}},
+  \code{\link{xyplot.ts}}
 }
 \examples{
 data(Canning)

@@ -1,5 +1,4 @@
 \name{Canning}
-\Rdversion{1.1}
 \alias{Canning}
 \docType{data}
 \title{
@@ -16,7 +15,7 @@
 }
 \usage{data(Canning)}
 \format{
-  A \code{\link[zoo]{zoo}} object, of class \code{c("zooreg", "zoo")}.
+  A \code{\link{zoo}} object, of class \code{c("zooreg", "zoo")}.
   It is a regular time series indexed by days, in \code{Date} format.
 
   There are three columns,

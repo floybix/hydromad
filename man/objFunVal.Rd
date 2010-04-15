@@ -23,12 +23,19 @@ objFunVal(model, objective = hydromad.getOption("objective"),
 }
 \details{
  
-  Q
+  The objective function is given as a \code{\link{formula}} object
+  which may refer to the values \code{Q} and \code{X}, representing
+  observed and modelled flow, respectively. For more advanced use it may
+  also refer to \code{U} (modelled effective rainfall), and more
+  generally it may refer to \code{model}, and so may extract other items
+  of data, etc.
 
-  X
-
+  The default (unless changed in \code{hydromad.options("objective")} is
+  a weighted sum of the R Squared (coefficient of determination) of
+  square-root transformed data, and the relative bias.
   
-  
+  See \code{\link{summary.hydromad}} for examples of how to specify other
+  fit statistics.
   
 }
 \value{
