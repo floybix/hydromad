@@ -41,7 +41,7 @@
 if (!file.exists("figs")) dir.create("figs")
 library(hydromad)
 library(xtable)
-ltheme <- canonical.theme("pdf")
+ltheme <- custom.theme.2()
 ltheme$strip.background$col <- grey(7/8)
 ltheme$strip.shingle$col <- grey(6/8)
 ltheme$fontsize = list(text = 11)
@@ -122,6 +122,8 @@ upViewport()
 }
 \end{center}
 \end{figure}
+
+\setkeys{Gin}{width=1.0\textwidth}
 
 The \pkg{hydromad} package is intended for:
 \begin{itemize}
@@ -211,11 +213,17 @@ tdat$Date <- as.Date(tdat$Date, "%d/%m/%Y")
 @
 
 If the day, month and year were in separate columns of the file, with
-names \code{"day"}, \code{"mon"} and \code{"yr"} then you would do
+names \code{"day"}, \code{"mon"} and \code{"yr"} then you could do
 something like:
 <<convert-dates-from-columns, echo=TRUE, eval=FALSE>>=
 pqdat$Date <- with(pqdat, as.Date(ISOdate(yr, mon, day)))
 @
+
+If you have sub-daily time steps, a good choice is to use the
+\code{chron()} function from the \pkg{chron} package to represent the
+time index.\footnote{There is a time class built into \proglang{R},
+  called \code{POSIXct}, but this represents time zones which can
+  sometimes lead to complications.}
 
 Negative values (-99) in the \emph{pq} input file represent missing
 data; in \proglang{R} they should be set to the special value
@@ -302,7 +310,7 @@ xyplot(Cotter)
 @
   \emph{To plot a section of the time series:}
 <<rawdataplot-code, echo=TRUE, eval=FALSE>>=
-xyplot(Cotter, xlim = as.Date(c("1974-01-01","1975-01-01")))
+xyplot(window(Cotter, start = "1974-01-01", end = "1975-01-01"))
 @
   \emph{And to plot the time series aggregated to a monthly time step:}
 <<dataplot-code, echo=TRUE, results=hide>>=
@@ -323,8 +331,8 @@ rm(monthlyPQE)
 \section{Data checking}
 
 In a real data analysis problem, data checking is a central
-issue. However, as this document aims to introduce the core modelling
-functions, only one simple check will be demonstrated here.
+issue. However, as this document aims to introduce the core modelling 
+functions, only a simple check will be demonstrated here.
 
 Table \ref{tab:datasumm} shows the mean and quartiles of each input
 data series. One measure that is of key interest in hydrology is the
@@ -338,59 +346,37 @@ ok <- complete.cases(Cotter[,1:2])
 with(Cotter, sum(Q[ok]) / sum(P[ok]))
 @ 
 
-This figure is within the range we would expect, so we probably have
-the right data series and units.
+This figure is within the range we would expect, so is looks like we
+have the right data series and units.
 
-See \code{vignette("dataChecking", package = "hydromad")} (\emph{under
-  construction}) for more on this topic, including analysing changes
-in the runoff ratio over time, and changes in cross correlation over
-time.
-
-
-\section{Calibration Periods}
-
-Let us define some calibration periods. The streamflow in each of
-these periods is shown in Figure \ref{fig:calperiodsplot}.
-<<define-periods, echo=TRUE>>=
-ts70s <- window(Cotter, start = "1970-01-01", end = "1979-12-31")
-ts80s <- window(Cotter, start = "1980-01-01", end = "1989-12-31")
-ts90s <- window(Cotter, start = "1990-01-01", end = "1999-12-31")
-@
+As a more detailed, graphical check, we can calculate smoothed
+versions of the rainfall and streamflow time series, and plot these
+together as in Figure \ref{fig:rain-flow-smoother-plot}. This shows, in
+a very general way, the relationship between average rainfall and
+average streamflow. If there is no apparent relationship at this
+stage, then the data requires serious examination.
 
 \begin{figure}[hpbt]
 \begin{center}
-  \emph{To plot one streamflow period:}
-<<oneperiodplot-code, echo=TRUE, eval=FALSE>>=
-xyplot(ts90s$Q)
+  \emph{To plot smoothed rainfall and streamflow together:}
+<<rain-flow-smoother-code, echo=TRUE, results=hide>>=
+xyplot(simpleSmoothTs(Cotter[,c("P","Q")], width = 365, c = 2, n = 300), 
+       superpose = TRUE, type = c("l", "g"), ylab = "average mm / day")
 @
-  \emph{To plot log-transformed streamflow in one period:}
-<<oneperiodlogplot-code, echo=TRUE, eval=FALSE>>=
-xyplot(log10(ts90s$Q), type = c("l","g"))
-@
-  \emph{And to plot multiple periods on log scale:}
-<<calperiodsplot-code, echo=TRUE, results=hide>>=
-#cuts <- as.Date(c("1970-01-01", "1980-01-01",
-#                  "1990-01-01", "2000-01-01"))
-#dates <- time(Cotter)
-#Q <- coredata(Cotter$Q)
-#xyplot(Q ~ dates | cut(dates, cuts), type = c("l", "g"),
-#       scales = list(x = "sliced", y = list(log = TRUE)),
-#       layout = c(1, 3))
-xyplot(list(the70s = ts70s$Q, the80s = ts80s$Q, the90s = ts90s$Q),
-       scales = list(y = list(log = TRUE)), type = c("l", "g"),
-       layout = c(1,3))
-@
-<<calperiodsplot, fig=TRUE, height=8>>=
+<<rain-flow-smoother-plot, fig=TRUE>>=
 print(trellis.last.object())
 @
-\caption{\label{fig:calperiodsplot} Streamflow data in each of the
-  chosen calibration periods. }
+\caption{\label{fig:rain-flow-smoother-plot} 
+  Smoothed versions of the rainfall and streamflow time series. Here
+  we are using a triangular filter (c = 2) with an effective bandwidth
+  of 365 days.
+}
 \end{center}
 \end{figure}
 
-In the next section, a model will be fitted to the data in one calibration
-period. It will then be applied to the other periods to
-cross-check model performance.
+See \code{vignette("dataChecking", package = "hydromad")} (\emph{under
+  construction}) for more on this topic, including analysing changes
+in the runoff ratio, cross correlation and lag times.
 
 
 \section{Model Specification}
@@ -402,6 +388,15 @@ routing. Additionally, a specification can be given for fitting the
 routing component (\code{rfit}). If given, this is applied
 automatically to fit the routing component after the SMA parameters
 have been specified.
+
+Let us define some data periods. We will fit a model to one, the
+calibration period, and then simulate it on the other periods to
+cross-check model performance.
+<<define-periods, echo=TRUE>>=
+ts70s <- window(Cotter, start = "1970-01-01", end = "1979-12-31")
+ts80s <- window(Cotter, start = "1980-01-01", end = "1989-12-31")
+ts90s <- window(Cotter, start = "1990-01-01", end = "1999-12-31")
+@
 
 When we first set up the model, most of the parameters are not
 uniquely specified, but rather have a range of possible values. These
@@ -455,12 +450,12 @@ applied to the equation is specied as argument \code{p}, so if \code{p
   = 2}, as it is by default, then it is indeed $R^2$:
 
 \begin{equation}
-  \mathrm{fitStat} = 1 - \frac{ \sum |Q_* - X_*|^p }{ \sum |Q_* - \mathrm{E}(Q_*)|^p }
+  \mathrm{fitStat}(Q,X) = 1 - \frac{ \sum |Q_* - X_*|^p }{ \sum |Q_* - \mathrm{E}(Q_*)|^p }
 \end{equation}
 
 where $Q$ and $X$ are the observed and modelled values. Subscript $*$
 denotes transformed data, and the transform can be specified. Here we
-use the square root. See \code{?summary} for more examples.
+use the square root. See \code{?summary.hydromad} for more examples.
 
 The unit hydrograph module in \ihacres{} is a linear \emph{transfer
   function}, i.e. a set of exponentially receding stores, which may be
@@ -471,10 +466,10 @@ hydrograph, which can be interpreted as two stores in parallel:
 ``quick'' flow and ``slow'' flow. This model structure often works
 well and is conceptually attractive. Its notation is $(n=2, m=1)$.
 
-The model is calibrated using the \code{fitByOptim} function, which
-performs parameter sampling over the pre-specified ranges, selecting
-the best of these, and finally runs an optimisation algorithm to
-improve the result locally.
+For this simple example, the model will be calibrated using the
+\code{fitByOptim} function, which performs parameter sampling over the
+pre-specified ranges, selecting the best of these, and finally runs an
+optimisation algorithm to improve the result locally.
 
 <<model-fit, echo=TRUE>>=
 cotterMod <- update(cotterMod, rfit = list("sriv", order = c(n=2, m=1)))
@@ -492,17 +487,16 @@ Now that we have an object representing a calibrated model, what can
 we do with it? There are many standard \proglang{R} functions which
 have methods for \code{hydromad} objects, which allow one to:
 
-\begin{description}
-\item[view model info] \code{print()}, \code{summary()}, and
+\begin{itemize}
+\item \textbf{view model info} using \code{print()}, \code{summary()}, and
   \code{objFunVal()}. 
-\item[extract parameter values] \code{coef()}.
-\item[access data] \code{fitted()}, \code{residuals()}, and
-  \code{observed()}. These exclude the warm-up period by default.
-\item[run with new data] \code{update()} or \code{predict()}.
-\item[simulate from parameter ranges] \code{simulate()}.
-\item[plot the hydrograph] \code{xyplot()}.
-\item[plot flow duration curve] \code{qqmath()}.
-\end{description}
+\item \textbf{extract parameter values} using \code{coef()}.
+\item \textbf{access data} with \code{fitted()}, \code{residuals()}, and
+  \code{observed()}. (These exclude the warm-up period by default.)
+\item \textbf{run with new data} using \code{update()} or \code{predict()}.
+\item \textbf{simulate from parameter ranges} using \code{simulate()}.
+\item \textbf{generate plots} using \code{xyplot()}, \code{qqmath()}, etc.
+\end{itemize}
 
 For details, see the examples below, the user manual, and the help
 page of each function.\footnote{Note that to get help for generic
@@ -597,7 +591,7 @@ The predicted time series (hydrograph) and cumulative distribution
 \begin{figure}[hpbt]
 \begin{center}
 <<obs-mod-plots-code, echo=TRUE, results=hide>>=
-xyplot(allMods[2:3] scales = list(y = list(log = TRUE)))
+xyplot(allMods[2:3], scales = list(y = list(log = TRUE)))
 @
 <<obs-mod-plots, fig=TRUE>>=
 print(trellis.last.object())
@@ -792,7 +786,7 @@ other parameters. This will work with the general fitting functions
 (\code{fitBySCE}, etc). A typical specification for a second-order
 Unit Hydrograph is:
 \code{hydromad(..., routing = "expuh", 
-      tau_s = c(5,100), tau_q = c(0,5), v_s = c(0,1))}.
+      tau\_s = c(5,100), tau\_q = c(0,5), v\_s = c(0,1))}.
 
 
 \subsection{Other Options}
