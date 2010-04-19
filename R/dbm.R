@@ -49,7 +49,7 @@ dbm.sim <-
 dbm.ranges <- function()
     list(power = c(0.01, 0.9),
          qlag = c(-1, 2),
-         scale = NA)
+         scale = NA_real_)
 
 absorbScale.hydromad.dbm <- function(object, gain, ...)
 {

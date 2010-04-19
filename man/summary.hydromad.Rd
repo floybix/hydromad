@@ -9,27 +9,29 @@
 }
 \usage{
 \method{summary}{hydromad}(object, breaks = NULL, 
-        stats = c("rel.bias", "r.squared", "r.sq.sqrt", "r.sq.log", "r.sq.monthly"),
+        stats = hydromad.getOption("summary.stats"),
         na.action = na.exclude, ...)
 
 \method{summary}{hydromad.runlist}(object, ...,
-        stats = c("rel.bias", "r.squared", "r.sq.sqrt", "r.sq.log", "r.sq.monthly"),
+        stats = hydromad.getOption("summary.stats"),
         items = stats)
 }
 \arguments{
   \item{object}{ an object of class \code{hydromad}. }
   \item{breaks}{
     if specified, break up the time series and calculate statistics for each chunk.
-    Can be a vector of cut points \emph{or} number of intervals to cut into \emph{or} an interval specification,
-    one of "sec", "min", "hour", "day", "DSTday", "week", "month" or "year",
-    optionally preceded by an integer and a space, or followed by "s".
+    Can be a vector of cut points \emph{or} number of intervals to cut
+    into \emph{or} an interval specification, one of "sec", "min",
+    "hour", "day", "DSTday", "week", "month" or "year", optionally
+    preceded by an integer and a space, or followed by "s". 
     See \code{\link{cut.Date}}.
   }
   \item{stats}{
-    which performance statistics to compute. See Details.
+    which performance statistics to compute. The definitions are looked
+    up by name in \code{hydromad.options("stats")}. See Details.
   }
   \item{items}{
-    see \code{\link{summary.runlist}}.
+    passed to \code{\link{summary.runlist}}.
   }
   \item{na.action}{
     an optional function to apply to the data to treat missing values before
@@ -40,39 +42,66 @@
   }
 }
 \details{
-  The available named statistics are:
+  Definitions of statistics are looked up by name in
+  \code{hydromad.options("stats")}, so you can add new statistics
+  there. See \code{\link{objFunVal}} for details.
+  
+  The default set of available statistics is:
   \describe{
-    \item{bias, rel.bias}{
-      bias in data units, \eqn{\sum ( X - Q )},
-      \code{fitBias(Q, X, rel = FALSE)}.
+    \item{bias}{
+      bias in data units, \eqn{\sum ( X - Q )}
     }
     \item{rel.bias}{
-      bias in data units, \eqn{\sum ( X - Q ) / \sum Q},
-      \code{fitBias(Q, X)}.     
+      bias as a fraction of the total observed flow,
+      \eqn{\sum ( X - Q ) / \sum Q}
     }
     \item{r.squared}{
-      R Squared (coefficient of determination),
-      \eqn{1 - \sum (Q - X)^2 / \sum (Q - \bar{Q})^2},
-      \code{fitStat(Q, X)}.
+      R Squared (Coefficient of Determination / Nash-Sutcliffe Efficiency),
+      \eqn{1 - \sum (Q - X)^2 / \sum (Q - \bar{Q})^2}
     }
     \item{r.sq.sqrt}{
       R Squared (coefficient of determination) using square-root
       transformed data (less weight on peak flows),
-      \eqn{1 - \frac{\sum |\sqrt{Q} - \sqrt{X}|^2 }{ \sum |\sqrt{Q} - \bar{\sqrt{Q}}|^2 }},
-      \code{fitStat(Q, X, trans = sqrt)}.
+      \eqn{1 - \frac{\sum |\sqrt{Q} - \sqrt{X}|^2 }{ \sum |\sqrt{Q} - \bar{\sqrt{Q}}|^2 }}
     }
     \item{r.sq.log}{
       R Squared (coefficient of determination) using log
       transformed data (roughly equal weight to all flow levels),
-      \eqn{1 - \frac{\sum |\log{(Q+\epsilon)} - \log{(X+\epsilon)}|^2 }{ \sum |\log{(Q+\epsilon)} - \bar{\log{(Q+\epsilon)}}|^2 }},
-      \code{fitStat(Q, X, trans = log)}.
+      \eqn{1 - \frac{\sum |\log{(Q+\epsilon)} - \log{(X+\epsilon)}|^2 }
+	            {\sum |\log{(Q+\epsilon)} - \bar{\log{(Q+\epsilon)}}|^2 }}.
       By default \eqn{\epsilon} is the 90 percentile (i.e. lowest
       decile) of the non-zero values of Q.
     }
+    \item{r.sq.diff}{
+      
+    }
+    \item{r.sq.rank}{
+      R Squared (coefficient of determination) using rank-transformed
+      data. To avoid trivial differences, the data are first rounded to
+      \code{(log10(max(Q)) - 3)} decimal places. Ties are represented by
+      their minimum rank (so that all zero values will have rank 1).
+    }
     \item{r.sq.monthly}{
       R Squared (coefficient of determination) with data aggregated into
-      blocks of 30 time steps, 
-      \code{fitStat(Q, X, aggr=30)}.
+      calendar months.
+    }
+    \item{persistence}{
+
+    }
+    \item{r.sq.seasonal}{
+
+    }
+    \item{events.med5sum}{
+
+    }
+    \item{events.med5dur}{
+
+    }
+    \item{abs.err}{
+
+    }
+    \item{RMSE}{
+
     }
     \item{U1}{
 
@@ -81,7 +110,9 @@
       correlation of model with error lagged one time step
       \code{cor(head(X,-1), tail(X-Q,-1))}
     }
-    \item{arpe, yic}{
+    \item{ARPE}{
+    }
+    \item{YIC}{
       
     }
   }

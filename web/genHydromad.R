@@ -31,7 +31,7 @@ spec[["assessment"]] <-
 
 spec[["calibration"]] <-
     list(
-         list("objFunVal", codefile = "fitStat.R", do.example = FALSE),
+         list("objFunVal", do.example = FALSE),
          list("fitBySampling", do.example = FALSE),
          list("fitByOptim", do.example = FALSE),
          list("fitBySCE", do.example = FALSE),

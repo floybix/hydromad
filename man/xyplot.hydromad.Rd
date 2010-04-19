@@ -27,7 +27,7 @@
 
 errormasscurve(x, ...)
 
-tsdiag(object, gof.lag, ...)
+\method{tsdiag}{hydromad}(object, gof.lag, ...)
 }
 \arguments{
   \item{x}{ an object of class \code{hydromad}. }

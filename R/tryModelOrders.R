@@ -41,8 +41,9 @@ tryModelOrders <-
             } else if (!isValidModel(mod)) {
                 message(toString(mod, width = 60))
             } else {
-                modsumm <- summary(mod, stats = c("yic", "r.squared"))
-                YIC <- modsumm$yic
+                modsumm <- summary(mod, stats = c("YIC", "r.squared"),
+                                   with.hydrostats = FALSE)
+                YIC <- modsumm$YIC
                 R2 <- modsumm$r.squared
                 message(" YIC = ", signif(YIC, 4),
                         ", R^2 = ", signif(R2, 4))
@@ -56,7 +57,7 @@ tryModelOrders <-
 
 summary.tryModelOrders <- 
     function(object,
-             stats = c("yic", "arpe", "r.squared", "r.sq.log", "ssg", "rel.bias"),
+             stats = c("YIC", "ARPE", "r.squared", "r.sq.log", "persistence"),
              ...)
 {
     class(object) <- setdiff(class(object), "tryModelOrders")

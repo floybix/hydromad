@@ -363,7 +363,7 @@ stage, then the data requires serious examination.
 xyplot(simpleSmoothTs(Cotter[,c("P","Q")], width = 365, c = 2, n = 300), 
        superpose = TRUE, type = c("l", "g"), ylab = "average mm / day")
 @
-<<rain-flow-smoother-plot, fig=TRUE>>=
+<<rain-flow-smoother-plot, fig=TRUE, height=3.5>>=
 print(trellis.last.object())
 @
 \caption{\label{fig:rain-flow-smoother-plot} 
@@ -605,10 +605,10 @@ print(trellis.last.object())
 \begin{table}[hpbt]
 \begin{center}
 <<mod-cal-stats-table-code, echo=TRUE, eval=FALSE>>=
-summary(allMods)
+summary(allMods, with.hydrostats = FALSE)
 @
 <<mod-cal-stats-table, results=tex>>=
-perfstats <- summary(allMods)
+perfstats <- summary(allMods, with.hydrostats = FALSE)
 print(xtable(perfstats), floating = FALSE)
 @
 \caption{\label{tab:mod-cal-stats} Performance statistics for a set of models. }
@@ -638,7 +638,7 @@ c(xyplot(statSeries, type = "s", lwd = 2,
          ylab = "statistic", xlab = NULL),
   `observed streamflow` = xyplot(observed(simAll)),
   layout = c(1,5), x.same = TRUE) +
-    layer_(panel.refline(v = time(statSeries), h = 0))
+    layer_(panel.refline(h = 0, v = time(statSeries)))
 @
 <<r2-breaks-plot, fig=TRUE, height=7>>=
 print(trellis.last.object())

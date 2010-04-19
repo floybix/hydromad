@@ -6,7 +6,7 @@
 
 summary.hydromad.runlist <-
     function(object, ...,
-             stats = c("rel.bias", "r.squared", "r.sq.sqrt", "r.sq.log", "r.sq.monthly"),
+             stats = hydromad.getOption("summary.stats"),
              items = stats)
 {
     summary.runlist(object, ...,
@@ -16,7 +16,8 @@ summary.hydromad.runlist <-
 
 summary.hydromad <-
     function(object, breaks = NULL,
-             stats = c("rel.bias", "r.squared", "r.sq.sqrt", "r.sq.log", "r.sq.monthly"),
+             stats = hydromad.getOption("summary.stats"),
+             with.hydrostats = TRUE,
              na.action = na.exclude,
              ...)
 {
@@ -26,25 +27,33 @@ summary.hydromad <-
         stop("model is not valid")
 
     hydrostats <- function(chunk) {
-        ans <- numeric()
         ok <- complete.cases(chunk)
         meanP <- mean(chunk[ok, "P"])
         meanQ <- mean(chunk[ok, "Q"])
-        ans <-
-            c(timesteps = NROW(chunk),
-              missing = sum(!ok),
-              mean.P = meanP,
-              mean.Q = meanQ,
-              runoff = meanQ / meanP)
-        ans
+        list(timesteps = NROW(chunk),
+             missing = sum(!ok),
+             mean.P = meanP,
+             mean.Q = meanQ,
+             runoff = meanQ / meanP)
     }
 
+    ## pull out definitions of statistics
+    stats2 <- setdiff(stats, c("ARPE", "YIC"))
+    stats.def <- hydromad.getOption("stats")[stats2]
+    bad <- sapply(stats.def, is.null)
+    if (any(bad))
+        stop("no definition found for statistics: ",
+             toString(stats[bad]))
+    
     DATA <- cbind(P = observed(object, item = "P", all = TRUE),
                   Q = observed(object, all = TRUE),
                   X = fitted(object, all = TRUE),
                   U = fitted(object, U = TRUE, all = TRUE))
 
-    if (!is.null(breaks)) {
+    if (is.null(breaks)) {
+        ## remove warmup
+        DATA <- stripWarmup(DATA, object$warmup)
+    } else {
         group <- cut(time(DATA), breaks = breaks)
         group <- factor(group)
         ## remove warmup
@@ -54,9 +63,8 @@ summary.hydromad <-
 
         ans <-
             eventapply(DATA, group, 
-                       FUN = function(x, ...)
-                         c(hydrostats(x), perfStats(x, ...)),
-                       stats = stats, ...,
+                       FUN = function(x)
+                         unlist(c(hydrostats(x), objFunVal(x, objective = stats.def))),
                        by.column = FALSE)
         ## copy the last entry with the final date, to mark the end of last period
         lastbit <- tail(ans, 1)
@@ -67,32 +75,32 @@ summary.hydromad <-
 
     ans <- list(call = object$call)
 
-    ## ARPE
-    if ("yic" %in% stats) {
-        stats <- union(stats, "arpe")
-    }
-    if ("arpe" %in% stats) {
-        if (is.null(vcov(object))) {
-            ans$arpe <- NA_real_
-        } else {
+    ## ARPE and YIC
+    if (any(c("ARPE", "YIC") %in% stats)) {
+        arpe <- NA_real_
+        if (!is.null(vcov(object))) {
             coef.var <- diag(vcov(object))
             cc <- coef(object, "routing")
             cc2 <- tfParsConvert(cc, "a,b")
             cc[names(cc2)] <- cc2
             nms <- intersect(names(cc), names(coef.var))
-            ans$arpe <- mean(coef.var[nms] / (cc[nms]^2))
-            if ("yic" %in% stats) {
-                var.ratio <- (var(residuals(object), na.rm = TRUE) /
-                              var(observed(object), na.rm = TRUE))
-                ans$yic <- log(var.ratio) + log(ans$arpe)
-            }
+            arpe <- mean(coef.var[nms] / (cc[nms]^2))
+        }
+        if ("ARPE" %in% stats) {
+            ans$ARPE <- arpe
+        }
+        if ("YIC" %in% stats) {
+            var.ratio <- (var(residuals(object), na.rm = TRUE) /
+                          var(observed(object), na.rm = TRUE))
+            ans$YIC <- log(var.ratio) + log(arpe)
         }
     }
 
-    ans <- c(ans, hydrostats(DATA))
+    if (with.hydrostats)
+        ans <- c(ans, hydrostats(DATA))
     
-    ## call perfStats for the rest
-    ans <- c(ans, perfStats(DATA, warmup = object$warmup, stats = stats, ...))
+    ## call objFunVal for the rest
+    ans <- c(ans, objFunVal(DATA, objective = stats.def))
     
     class(ans) <- "summary.hydromad"
     ans
@@ -101,40 +109,35 @@ summary.hydromad <-
 print.summary.hydromad <-
     function(x, digits = max(3, getOption("digits") - 3), ...)
 {
-    with(x, {
-        cat("\nCall:\n")
-        print(call)
-        cat("\n")
-        if (!is.null(x$timesteps) && !is.null(x$missing))
-            cat("Time steps: ", x$timesteps, " (", x$missing, " missing).\n")
-        if (!is.null(x$mean.P) && !is.null(x$mean.Q))
-            cat("Runoff ratio (Q/P): (",
-                format(x$mean.Q, digits=digits), " / ",
-                format(x$mean.P, digits=digits), ") = ",
-                format(x$mean.Q / x$mean.P, digits=digits), "\n")
-        if (!is.null(x$yic))
-            cat("YIC:", format(yic, digits=digits), "\n")
-        if (!is.null(x$arpe))
-            cat("ARPE (%):", format(arpe * 100, digits=digits), "\n")
-        if (!is.null(x$r.squared))
-            cat("R Squared:", format(r.squared, digits=digits), "\n")
-        if (!is.null(x$r.sq.sqrt))
-            cat("R Squared sqrt:", format(r.sq.sqrt, digits=digits), "\n")
-        if (!is.null(x$r.sq.log))
-            cat("R Squared log:", format(r.sq.log, digits=digits), "\n")
-        if (!is.null(x$r.sq.monthly))
-            cat("R Squared monthly:", format(r.sq.monthly, digits=digits), "\n")
-        if (!is.null(x$bias))
-            cat("Bias (units, total):", format(bias, digits=digits), "\n")
-        if (!is.null(x$rel.bias))
-            cat("Rel. Bias (%):", format(rel.bias * 100, digits=digits), "\n")
-        if (!is.null(x$U1))
-            cat("Error corr. with lag input (U1):", format(U1, digits=digits), "\n")
-        if (!is.null(x$X1))
-            cat("Error corr. with lag output (X1):", format(X1, digits=digits), "\n")
-        if (!is.null(x$ssg))
-            cat("Steady State Gain:", format(ssg, digits=digits), "\n")
-    })
+    cat("\nCall:\n")
+    print(x$call)
+    cat("\n")
+    if (!is.null(x$timesteps) && !is.null(x$missing)) {
+        cat("Time steps: ", x$timesteps, " (", x$missing, " missing).\n")
+    }
+    if (!is.null(x$mean.P) && !is.null(x$mean.Q))
+        cat("Runoff ratio (Q/P): (",
+            format(x$mean.Q, digits=digits), " / ",
+            format(x$mean.P, digits=digits), ") = ",
+            format(x$mean.Q / x$mean.P, digits=digits), "\n")
+    if (!is.null(x$YIC))
+        cat("YIC:", format(x$YIC, digits=digits), "\n")
+    if (!is.null(x$ARPE))
+        cat("ARPE (%):", format(x$ARPE * 100, digits=digits), "\n")
+    ## remove these already-shown ones
+    nms <- setdiff(names(x),
+                   c("call", "timesteps", "missing",
+                     "mean.Q", "mean.P", "runoff",
+                     "YIC", "ARPE"))
+    for (nm in nms) {
+        xi <- x[[nm]]
+        if (is.numeric(xi) && length(xi) == 1) {
+            nm <- gsub("\\.", " ", nm)
+            cat(nm, ": ", format(xi, digits = digits), "\n", sep = "")
+        }
+    }
+    cat("\n", 'See hydromad.getOption("stats") for definitions.',
+        "\n", sep = "")
     invisible(x)
 }
 

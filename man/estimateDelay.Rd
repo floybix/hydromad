@@ -8,7 +8,7 @@
 \usage{
 estimateDelay(DATA = data.frame(U=, Q=), rises = TRUE, rank = FALSE,
 	n.estimates = 1, lag.max = hydromad.getOption("max.delay"),
-        na.action = na.exclude, plot = TRUE, main = NULL, ...)
+        na.action = na.exclude, plot = FALSE, main = NULL, ...)
 }
 \arguments{
   \item{DATA}{ a \code{\link{ts}}-like object or list with named components:

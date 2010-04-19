@@ -4,6 +4,10 @@ Changes in Version 0.7-3 (in development)
   o the update() method now has a 'newpars' argument, to supply parameter
     values as a named vector rather than a series of named arguments.
 
+  o the summary() method now takes a 'stats' argument, and definitions of 
+    these are looked up in hydromad.options("stats"). The default set of
+    stats is given (as a set of names) in hydromad.options("summary.stats").
+
   o improved the "tutorial" vignette.
 
   o improved examples for SMA models.

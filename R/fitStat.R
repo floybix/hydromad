@@ -3,162 +3,24 @@
 ## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
-
-perfStats <-
-    function(DATA, warmup = 0,
-             stats = c("rel.bias", "r.squared", "r.sq.sqrt", "r.sq.log", "r.sq.monthly"),
-             na.action = na.pass)
-{
-    ## get data into the right form
-    DATA <- as.ts(DATA)
-    DATA <- na.action(DATA)
-    stopifnot(c("Q","X") %in% colnames(DATA))
-    stopifnot(nrow(DATA) > warmup)
-    warming <- seq_len(warmup)
-    obs <- if (warmup>0) DATA[-warming,"Q"] else DATA[,"Q"]
-    mod <- if (warmup>0) DATA[-warming,"X"] else DATA[,"X"]
-    ans <- numeric()
-    ## R Squared
-    if ("r.squared" %in% stats)
-        ans[["r.squared"]] <- fitStat(obs, mod, p=2)
-    ## R Squared square-root
-    if ("r.sq.sqrt" %in% stats) {
-        ans[["r.sq.sqrt"]] <- fitStat(obs, mod, p=2, trans = sqrt)
-    }
-    ## R Squared log
-    if ("r.sq.log" %in% stats) {
-        ans[["r.sq.log"]] <- fitStat(obs, mod, p=2, trans = log)
-    }
-    ## R Squared monthly
-    if ("r.sq.monthly" %in% stats) {
-        ans[["r.sq.monthly"]] <- tsFitStat(obs, mod, p=2, aggr = 30)
-    }
-    ## Bias
-    ## Rel. Bias
-    if (any(c("bias", "rel.bias") %in% stats)) {
-        if ("bias" %in% stats)
-            ans[["bias"]] <- fitBias(obs, mod, rel = FALSE)
-        if ("rel.bias" %in% stats)
-            ans[["rel.bias"]] <- fitBias(obs, mod)
-    }
-    ## U1, X1
-    if (("U1" %in% stats) && ("U" %in% colnames(DATA))) {
-        U <- if (warmup>0) DATA[-warming,"U"] else DATA[,"U"]
-        ans[["U1"]] <- cor(obs - mod, shiftWindow(U, -1), use="complete")
-    }
-    if ("X1" %in% stats) {
-        ans[["X1"]] <- cor(obs - mod, shiftWindow(mod, -1), use="complete")
-    }
-    ## Observed Gain
-    if (("obsgain" %in% stats) && ("U" %in% colnames(DATA)))
-        ans[["obsgain"]] <- sum(DATA[-1,"Q"], na.rm=TRUE) /
-            sum(DATA[,"U"], na.rm=TRUE)
-    ans
-}
-
-objFunVal <-
-    function(model, objective = hydromad.getOption("objective"),
-             nan.ok = FALSE)
-{
-    if (inherits(objective, "formula"))
-        objective <- objective[[2]]
-    stopifnot(is.language(objective) || is.function(objective))
-    if (!isValidModel(model))
-        return(NA_real_)
-    ## these can be referred to in `objective`
-    delayedAssign("Q", observed(model))
-    delayedAssign("X", fitted(model))
-    delayedAssign("U", fitted(model, U = TRUE))
-    val <- eval(objective)
-    if (is.nan(val) && !nan.ok)
-        stop("objective function returned NaN")
-    stopifnot(is.numeric(val))
-    stopifnot(length(val) == 1)
-    as.numeric(val)
-}
-
-bestByObjFun <-
-    function(models,
-             objective = hydromad.getOption("objective"),
-             maximum = TRUE,
-             orStop = FALSE)
-{
-    stopifnot(is.list(models) && (length(models) > 0))
-    ## screen out invalid models
-    ok <- sapply(models, isValidModel)
-    if (!any(ok)) {
-        if (orStop)
-            stop("found no valid models")
-        ## otherwise just return an invalid model
-        return(models[[1]])
-    }
-    models <- models[ok]
-    if (length(models) == 1)
-        return(models[[1]])
-    objVals <-
-        lapply(models, objFunVal, objective = objective)
-    objVals <- unlist(objVals) * ifelse(maximum, 1, -1)
-    models[[ which.max(objVals) ]]
-}
-
-
-zooFitStat <-
-    function(obs, mod,
-             ...)
-{
-
-}
-
 tsFitStat <-
-    function(obs, mod,
-             ref = c("mean", "linear", "seasonal",
-                      "blocks30", "blocks90", "blocks365"),
-             trans = NULL,
-             aggr = NULL,
-             events = NULL,
-             offset = identical(trans, log),
+    function(obs, mod, ref = NULL, p = 2,
+             trans = NULL, offset = identical(trans, log),
              na.action = na.pass,
-             p = 2)
+             aggr = NULL, events = NULL)
 {
-    obs <- as.ts(obs)
-    mod <- as.ts(mod)
-    stopifnot(length(obs) == length(mod))
-    if (is.numeric(ref) && (length(ref) > 1))
-        ref <- as.ts(ref)
-    if (is.character(ref)) {
-        if (length(ref) > 1)
-            ref <- ref[1]
-        if (any(grep("blocks", ref))) {
-            block <- as.numeric(gsub("blocks", "", ref))
-            ref <- "blocks"
-        }
-        ref <-
-            switch(ref,
-                   mean = mean(obs, na.rm = TRUE),
-                   linear = {
-                       ts(predict(lm(obs ~ time(obs)), newdata = time(obs)),
-                          start = start(obs), frequency = frequency(obs))
-                   },
-                   seasonal = {
-                       ## TODO
-                       stop("'seasonal' not yet implemented")
-                   },
-                   blocks = {
-                       levs <- rep(seq(1, ceiling(length(obs)/block)),
-                                   each = block, length = length(obs))
-                       vals <- tapply(obs, levs, FUN = mean, na.rm = TRUE)
-                       ts(rep(vals, each = block, length = length(obs)),
-                          start = start(obs), frequency = frequency(obs))
-                   })
+    if (is.null(ref)) {
+        ref <- mean(obs, na.rm = TRUE)
     }
-    #if (length(ref) == 1) {
+    if (length(ref) == 1) {
         ## if reference model is a single number (typically the mean)
-        ## then we can do a quick version if not aggregating
-    ref <- ts(rep(ref, length = length(obs)),
-              start = start(obs), frequency = frequency(obs))
-    stopifnot(length(ref) == length(obs))
+        ## turn it into a time series like 'obs'
+        tmp <- ref
+        ref <- obs
+        ref[] <- tmp
+    }
     ## merge time series
-    dat <- ts.intersect(obs = obs, mod = mod, ref = ref)
+    dat <- cbind(obs = obs, mod = mod, ref = ref)
     if (NROW(dat) <= 1) {
         warning("merged time series have no data; incompatible times?")
         return(NA_real_)
@@ -196,41 +58,55 @@ tsFitStat <-
 
 
 fitStat <-
-    function(obs, mod,
-             ref = NULL,
-             trans = NULL,
-             offset = identical(trans, log),
-             p = 2)
+    function(obs, mod, ref = NULL, p = 2,
+             trans = NULL, offset = identical(trans, log))
 {
+    if (!identical(attributes(obs), attributes(mod))) {
+        warning("attributes of 'obs' and 'mod' are not identical; need to use tsFitStat?")
+    }
+    obs <- coredata(obs)
+    mod <- coredata(mod)
     stopifnot(length(obs) == length(mod))
+    ## only use pairwise common data
+    ok <- complete.cases(obs, mod)
+    if (length(ref) > 1) {
+        ref <- coredata(ref)
+        ok <- ok & !is.na(ref)
+        ref <- ref[ok]
+    }
+    obs <- obs[ok]
+    mod <- mod[ok]
     if (!is.null(trans)) {
         ## offset = TRUE takes the observed 10%ile of non-zero values
-        if (isTRUE(offset))
-            offset <- quantile(obs[obs > 0], p=0.1, na.rm=TRUE)
+        if (isTRUE(offset)) {
+            offset <- quantile(obs[obs > 0], p = 0.1)
+        }
         trans <- asSimpleFunction(trans, offset = offset)
         obs <- trans(obs)
         mod <- trans(mod)
         if (!is.null(ref))
             ref <- trans(ref)
     }
-    ## default ref is the mean of transformed 'obs'
-    if (is.null(ref))
-        ref <- mean(obs, na.rm = TRUE)
+    ## check again, just in case 'trans' changed the length
     stopifnot(length(obs) == length(mod))
+    ## default ref is the mean of transformed 'obs'
+    if (is.null(ref)) {
+        ref <- mean(obs, na.rm = TRUE)
+    }
     ## calculate absolute error for model and reference
     ## and apply power p
     err <- abs(obs - mod) ^ p
     referr <- abs(obs - ref) ^ p
-    ## only use pairwise common data
-    ok <- complete.cases(err, referr)
-    ans <- sum(err[ok]) / sum(referr[ok])
+    ans <- sum(err) / sum(referr)
     1 - ans
 }
+
+## no longer exported:
 
 fitBias <-
     function(obs, mod, relative.bias = TRUE, na.rm = TRUE)
 {
-    stopifnot(length(obs) == length(mod))
+    ## will signal a warning if not same length (or a multiple):
     err <- mod - obs
     ans <- mean(err, na.rm = na.rm)
     if (relative.bias)

@@ -1,20 +1,36 @@
 \name{objFunVal}
 \alias{objFunVal}
+\alias{objFunVal.hydromad}
+\alias{objFunVal.default}
 \title{ Calculate objective function value for a fitted model. }
 \description{
   Calculate objective function value for a fitted model.
 }
 \usage{
-objFunVal(model, objective = hydromad.getOption("objective"),
-          nan.ok = FALSE)
+objFunVal(x, objective, ...)
+
+\method{objFunVal}{hydromad}(x, objective = hydromad.getOption("objective"),
+          ..., all = FALSE, nan.ok = FALSE)
+
+\method{objFunVal}{default}(x, objective = hydromad.getOption("objective"),
+          ..., nan.ok = FALSE)
 }
 \arguments{
-  \item{model}{
-    a fitted \code{hydromad} model object, i.e. it must have specific
-    parameter values, not ranges.
+  \item{x}{
+    object from which to calculate stats. For the \code{hydromad} method,
+    this should be a fitted \code{hydromad} model object, i.e. it must
+    have specific parameter values, not ranges. For the default method,
+    this should be a matrix-like object with named columns \code{Q},
+    \code{X} and optionally \code{U} and \code{P}.
   }
   \item{objective}{
     the objective function, as a \code{formula}. See Details.
+  }
+  \item{...}{
+    ignored.
+  }
+  \item{all}{
+    passed to \code{fitted} and \code{observed}.
   }
   \item{nan.ok}{
     by default, an error is thrown if the result is \code{NaN}. Set this
