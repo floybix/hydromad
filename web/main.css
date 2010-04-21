@@ -57,7 +57,7 @@ code {
   margin: 0;
 }
 
-#nav li.navhead, #nav li.navheadintro {
+#nav li.navhead, #nav li.navheadtop {
   margin-top: 0.4em;
   background-color: #dddd30;
   border: 2px solid black;
@@ -65,7 +65,7 @@ code {
   -webkit-border-radius: 16px;
 }
 
-#nav li.navheadintro {
+#nav li.navheadtop {
     background-color: #dddddd;
 }
 

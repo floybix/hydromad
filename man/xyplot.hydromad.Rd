@@ -32,7 +32,7 @@ errormasscurve(x, ...)
 \arguments{
   \item{x}{ an object of class \code{hydromad}. }
   \item{data}{ ignored. }
-  \item{\dots, scales, type, auto.key}{
+  \item{\dots, scales, type, auto.key, layout}{
     further arguments passed on to
     \code{\link{xyplot.zoo}} or \code{\link{qqmath}}.
   } 
@@ -51,9 +51,9 @@ errormasscurve(x, ...)
   \item{f.value, tails.n}{
     arguments to \code{\link{panel.qqmath}}.
   }
-}
-\details{
-  ~~ If necessary, more details than the description above ~~
+  \item{object, gof.lag}{
+    passed to the \code{arima} method of \code{\link{tsdiag}}.
+  }
 }
 \value{
   the trellis functions return a trellis object.
@@ -64,7 +64,8 @@ errormasscurve(x, ...)
 \seealso{
   \code{\link{hydromad.object}},
   \code{\link{xyplot}},
-  \code{\link{xyplot.ts}}
+  \code{\link{xyplot.ts}},
+  \code{\link{xyplot.list}}
 }
 \examples{
 data(Canning)

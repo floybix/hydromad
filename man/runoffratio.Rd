@@ -29,7 +29,7 @@ runoffratio.sim(DATA, width = 30, kernel = 2, sides = 2, rrthresh = 0,
     2 for time-centered estimates, 1 for estimates using data backward
     in time only.
   }
-  \item{rrthesh}{
+  \item{rrthresh}{
     a theshold value of the runoff ratio, below which there is no
     effective rainfall.
   }

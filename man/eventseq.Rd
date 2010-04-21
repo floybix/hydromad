@@ -27,27 +27,41 @@ eventinfo(X, events = eventseq(X, thresh, inter, mindur, below),
   \item{x, X}{
     a \code{\link{ts}} or \code{\link{zoo}} object.
     May be multivariate, i.e. have multiple columns.
+    In this case, events are defined jointly over the multiple
+    time series: events continue while any series exceeds the
+    threshold (or remains below the threshold if \code{below = TRUE}. 
   }
   \item{thresh}{
-    
+    threshold value: the data must be strictly above this level (or, if
+    \code{below = TRUE}, below this level) to define an event. 
   }
   \item{inter}{
-    
+    the minimum number of time steps that can separate events. Any
+    inter-event durations shorter than this will be subsumed into the
+    surrounding event.
   }
   \item{mindur}{
-    
+    the minimum number of time steps required to define an event. Any
+    events whose duration is shorter than this will be ignored (not
+    identified as an event).
   }
   \item{below}{
-
+    to identify events where the data falls below \code{thresh}.
   }
   \item{events}{
-    
+    a \code{factor}-like object, perhaps \code{\link{ts}} or
+    \code{\link{zoo}}. Its levels (unique values) define events, and
+    \code{NA} values are ignored. If \code{events} is a factor or
+    vector, its values are assumed to correspond to \code{X}; otherwise,
+    it is assumed to be a time series object and is merged
+    (\code{cbind}ed) with \code{X}.
   }
-  \item{FUN, \dots}{
-    
-  }
-  \item{by.column}{
-
+  \item{FUN, \dots, by.column}{
+    a function to apply to the values in each event. In the default case
+    of \code{by.column = TRUE}, \code{FUN} will be passed a vector of
+    values from one column of \code{X}. When \code{by.column = FALSE},
+    which only makes sense when \code{X} is a matrix, \code{FUN} will be
+    passed a matrix. The dots (\code{\dots}) are passed on too.
   }
   \item{simplify}{
     if \code{FALSE}, the result will be returned as a list with one
@@ -56,7 +70,9 @@ eventinfo(X, events = eventseq(X, thresh, inter, mindur, below),
     vectors of variable lengths.
   }
   \item{TIMING}{
-    
+    defines how to construct the time index of the result. Should the
+    time corresponding to an event be taken from the \code{time()} of
+    its start, middle, or end?
   }
 }
 \details{

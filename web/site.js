@@ -30,7 +30,8 @@ function setAnchor(newItem) {
 
 function loadItem(newItem) {
     // record in access log
-//    pageTracker._trackPageview("/item/" + newItem);
+    pageTracker._trackPageview("/item/" + newItem);
+    isTopLevel = (newItem == "intro") || (newItem == "INDEX");
     // animate change of page
     if (currentItem != newItem) {
 	$(jq(currentItem)).slideUp();
@@ -41,7 +42,7 @@ function loadItem(newItem) {
     $("#nav a.active").removeClass("active");
     var navEl = $("#nav " + jq("nav_" + newItem));
     navEl.addClass("active");
-    if (newItem == "intro") {
+    if (isTopLevel) {
 	closeNavGroups();
     } else {
 	// expand the corresponding nav group
@@ -106,7 +107,7 @@ jQuery(function(){
 		helplink = $(this);
 		href = helplink.attr("href");
 		// record in access log
-		//	pageTracker._trackPageview(href);
+		pageTracker._trackPageview(href);
 		helplink.slideUp();
 		loader = $('<div class="loading">Loading...</div>');
 		helplink.after(loader);

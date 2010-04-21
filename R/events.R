@@ -79,6 +79,7 @@ eventapply <-
         colnames(X) <- Xnames
     }
     ## extract only single numeric items if going to simplify
+    ## TODO: need this?
     .FUN <- FUN
     if (simplify)
         .FUN <- function(...) {

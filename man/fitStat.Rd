@@ -47,7 +47,7 @@ fitBias(obs, mod, relative.bias = TRUE, na.rm = TRUE)
     a function to apply to the time series, which is expected to fill in
     or remove missing values (note, this is optional).
   }
-  \code{aggr}{
+  \item{aggr}{
     to aggregate the time series before calculating fit statistics
     (and before applying \code{trans} or \code{offset}). \code{aggr}
     should be a list of arguments to the \code{aggregate} function,
@@ -60,7 +60,7 @@ fitBias(obs, mod, relative.bias = TRUE, na.rm = TRUE)
     (aggregate into months), \code{list(by = cut, breaks = "3 months")}
     (aggregate into 3 months), etc.
   }
-  \code{events}{
+  \item{events}{
     to aggregate the time series into discrete events before calculating
     fit statistics (and before applying \code{trans} or
     \code{offset}). \code{events} should be a list of argument to the

@@ -15,6 +15,17 @@
 <!-- NOTE: THE FILE index.html IS GENERATED FROM template.html -->
 
 
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-2193730-8");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+
 <div id="banner">
   <img class="title" src="hydromad_title.png" alt="hydromad" />
   <!--h1 class="title">hydromad</h1-->
@@ -23,13 +34,18 @@
 
 <div id="nav">
 <ul>
-<li class="navheadintro">
+<li class="navheadtop">
   <a href="#"
      title="Information about the hydromad package"
      class="active"
      id="nav_intro">introduction</a>
 </li>
 @NAV
+<li class="navheadtop">
+  <a href="#INDEX"
+     title="Index"
+     id="nav_INDEX">index</a>
+</li>
 </ul>
 </div>
 
@@ -56,9 +72,17 @@
       and <em>CMD</em> soil moisture accounting models, and unit
       hydrograph transfer functions for the routing.</p>
 
+    <p>
+      <img src="ihacres_framework.png" 
+	   alt="The IHACRES model framework as used in the hydromad package"
+	   style="border:0" />
+    </p>
+
     <p>This site serves as a reference for the R functions and datasets
     in the package. A gentler introduction can be found in the
-    vignette <a href="tutorial.pdf"><b>hydromad</b> Tutorial</a>.
+    vignette <a href="tutorial.pdf" onClick="javascript:
+    pageTracker._trackPageview('/downloads/tutorial.pdf'); "><b>hydromad</b>
+    Tutorial</a>. 
       <!--and <a href="#">Data checking with <b>hydromad</b></a>--> 
     <!--The package is described in the paper
       <blockquote>
@@ -87,6 +111,11 @@
   </div>
 
 @CONTENT
+
+  <div class="item" id="INDEX">
+    <h2 class="itemname">index</h2>
+    @INDEX
+  </div>
 
 </div>
 

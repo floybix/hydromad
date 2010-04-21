@@ -28,8 +28,10 @@ statDefns <- function()
                                      mean(rx, na.rm = TRUE) }),
          "events.med5sum" =
          ~ tsFitStat(Q, X, events = list(thresh = median(Q, na.rm = TRUE), inter = 5, FUN = sum)),
-         "events.med5dur" =
-         ~ tsFitStat(Q, X, events = list(thresh = median(Q, na.rm = TRUE), inter = 5, FUN = length)),
+         "events.med5max" =
+         ~ tsFitStat(Q, X, events = list(thresh = median(Q, na.rm = TRUE), inter = 5, FUN = max)),
+         "events.med5min" =
+         ~ tsFitStat(Q, X, events = list(thresh = median(Q, na.rm = TRUE), below = TRUE, mindur = 5, FUN = min)),
          "abs.err" = ~ mean(abs(X - Q), na.rm = TRUE),
          "RMSE" = ~ sqrt(mean((Q - X)^2, na.rm = TRUE)),
          "U1" = ~ cor(Q - X, shiftWindow(U, -1), use="complete"),

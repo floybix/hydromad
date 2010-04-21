@@ -10,7 +10,7 @@
 \usage{
 \method{summary}{hydromad}(object, breaks = NULL, 
         stats = hydromad.getOption("summary.stats"),
-        na.action = na.exclude, ...)
+        with.hydrostats = TRUE, na.action = na.exclude, ...)
 
 \method{summary}{hydromad.runlist}(object, ...,
         stats = hydromad.getOption("summary.stats"),
@@ -30,8 +30,10 @@
     which performance statistics to compute. The definitions are looked
     up by name in \code{hydromad.options("stats")}. See Details.
   }
-  \item{items}{
-    passed to \code{\link{summary.runlist}}.
+  \item{with.hydrostats}{
+    to also include \code{timesteps}, \code{missing} (number of
+    timesteps with missing data), \code{mean.P}, \code{mean.Q},
+    \code{runoff} (mean rainfall and streamflow, and their ratio).
   }
   \item{na.action}{
     an optional function to apply to the data to treat missing values before
@@ -40,11 +42,14 @@
   \item{\dots}{
     ignored.
   }
+  \item{items}{
+    passed to \code{\link{summary.runlist}}.
+  }
 }
 \details{
   Definitions of statistics are looked up by name in
   \code{hydromad.options("stats")}, so you can add new statistics
-  there. See \code{\link{objFunVal}} for details.
+  there. See also \code{\link{objFunVal}}.
   
   The default set of available statistics is:
   \describe{
@@ -73,7 +78,8 @@
       decile) of the non-zero values of Q.
     }
     \item{r.sq.diff}{
-      
+      R Squared (coefficient of determination) of differences between
+      successive time steps, i.e. rises and falls.
     }
     \item{r.sq.rank}{
       R Squared (coefficient of determination) using rank-transformed
@@ -86,16 +92,34 @@
       calendar months.
     }
     \item{persistence}{
-
+      R Squared (coefficient of determination) where the reference model
+      predicts each time step as the previous observed value. This
+      statistic therefore represents a model's performance compared to a
+      \dQuote{naive} one-time-step forecast.
     }
     \item{r.sq.seasonal}{
-
+      R Squared (coefficient of determination) where the reference model
+      is the mean in each calendar month, rather than the default which
+      is the overall mean.
     }
     \item{events.med5sum}{
-
+      R Squared (coefficient of determination) of flow totals in each
+      \dQuote{event}, defined by flow exceeding the median observed
+      flow, and with a minimum separation between events of 5 time
+      steps. Events are defined jointly over the observed and modelled
+      time series: events continue while either series exceeds the
+      threshold. 
     }
-    \item{events.med5dur}{
-
+    \item{events.med5max}{
+      R Squared (coefficient of determination) of flow maxima in each
+      \dQuote{event}, defined by flow exceeding the median observed
+      flow, and with a minimum separation between events of 5 time steps.
+    }
+    \item{events.med5min}{
+      R Squared (coefficient of determination) of flow minima
+      \strong{between} each \dQuote{event}, defined by flow exceeding
+      the median observed flow, and with a minimum separation between
+      events of 5 time steps. 
     }
     \item{abs.err}{
 
