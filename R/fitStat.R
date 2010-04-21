@@ -4,8 +4,7 @@
 ##
 
 tsFitStat <-
-    function(obs, mod, ref = NULL, p = 2,
-             trans = NULL, offset = identical(trans, log),
+    function(obs, mod, ref = NULL, ...,
              na.action = na.pass,
              aggr = NULL, events = NULL)
 {
@@ -52,14 +51,14 @@ tsFitStat <-
         ## apply FUN to events 'ev', in each series
         dat <- eventapply(dat, ev, FUN = FUN)
     }
-    fitStat(dat[,"obs"], dat[,"mod"], ref = dat[,"ref"],
-            trans = trans, offset = offset, p = p)
+    fitStat(dat[,"obs"], dat[,"mod"], ref = dat[,"ref"], ...)
 }
 
 
 fitStat <-
     function(obs, mod, ref = NULL, p = 2,
-             trans = NULL, offset = identical(trans, log))
+             trans = NULL, offset = identical(trans, log),
+             negatives.ok = FALSE)
 {
     if (!identical(attributes(obs), attributes(mod))) {
         warning("attributes of 'obs' and 'mod' are not identical; need to use tsFitStat?")
@@ -76,6 +75,13 @@ fitStat <-
     }
     obs <- obs[ok]
     mod <- mod[ok]
+    ## negative values can cause errors with log()
+    if (negatives.ok == FALSE) {
+        obs <- pmax(obs, 0)
+        mod <- pmax(mod, 0)
+        if (!is.null(ref))
+            ref <- pmax(ref, 0)
+    }
     if (!is.null(trans)) {
         ## offset = TRUE takes the observed 10%ile of non-zero values
         if (isTRUE(offset)) {
@@ -101,16 +107,15 @@ fitStat <-
     1 - ans
 }
 
-## no longer exported:
-
 fitBias <-
-    function(obs, mod, relative.bias = TRUE, na.rm = TRUE)
+    function(obs, mod, relative.bias = TRUE)
 {
     ## will signal a warning if not same length (or a multiple):
     err <- mod - obs
-    ans <- mean(err, na.rm = na.rm)
+    ok <- !is.na(err)
+    ans <- mean(err[ok])
     if (relative.bias)
-        ans <- ans / mean(obs[!is.na(err)])
+        ans <- ans / mean(obs[ok])
     ans
 }
 

@@ -99,27 +99,3 @@ objFunVal.hydromad <-
     else
         objFunVal1(objective)
 }
-
-bestByObjFun <-
-    function(models,
-             objective = hydromad.getOption("objective"),
-             maximum = TRUE,
-             orStop = FALSE)
-{
-    stopifnot(is.list(models) && (length(models) > 0))
-    ## screen out invalid models
-    ok <- sapply(models, isValidModel)
-    if (!any(ok)) {
-        if (orStop)
-            stop("found no valid models")
-        ## otherwise just return an invalid model
-        return(models[[1]])
-    }
-    models <- models[ok]
-    if (length(models) == 1)
-        return(models[[1]])
-    objVals <-
-        lapply(models, objFunVal, objective = objective)
-    objVals <- unlist(objVals) * ifelse(maximum, 1, -1)
-    models[[ which.max(objVals) ]]
-}

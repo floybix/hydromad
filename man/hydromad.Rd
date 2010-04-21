@@ -13,7 +13,7 @@
   dependent routing component.
 }
 \usage{
-hydromad(DATA = zooreg(), ...,
+hydromad(DATA = zoo(), ...,
         sma = hydromad.getOption("sma"),
         routing = hydromad.getOption("routing"),
         rfit = NULL, weights = NULL,

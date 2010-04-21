@@ -89,8 +89,6 @@ useDynLib(hydromad, inverse_filter_lambda)
 
 ## tf.R
 S3method(print, tf)
-S3method(summary, tf)
-S3method(print, summary.tf)
 S3method(coef, tf)
 S3method(update, tf)
 S3method(predict, tf)
@@ -114,7 +112,7 @@ export(cmd.sim)
 useDynLib(hydromad, sma_cmd)
 
 export(bucket.sim)
-#useDynLib(hydromad, sma_bucket)
+useDynLib(hydromad, sma_bucket)
 
 export(awbm.sim)
 useDynLib(hydromad, sma_awbm)
@@ -143,11 +141,11 @@ export(fitByDE)
 
 ## TODO: fitByGenoud?
 
-export(objFunVal,
-       bestByObjFun,
-       tsFitStat,
-       fitStat,
-       fitBias)
+export(tsFitStat)
+export(fitStat)
+export(fitBias)
+
+export(objFunVal)
 S3method(objFunVal, default)
 S3method(objFunVal, hydromad)
 

@@ -34,13 +34,14 @@ bucket.sim <-
     P[bad] <- 0
     E[bad] <- 0
     COMPILED <- (hydromad.getOption("pure.R.code") == FALSE)
-    if (FALSE && COMPILED) {
-        ans <- .C(NA, #sma_bucket, TODO
+    if (COMPILED) {
+        ans <- .C(sma_bucket,
                 as.double(P),
                 as.double(E),
                 as.integer(NROW(DATA)),
                 as.double(Sb),
                 as.double(fc),
+                as.double(Sfc),
                 as.double(a.ei),
                 as.double(M),
                 as.double(a.ss),

@@ -4,7 +4,7 @@
 ##
 
 hydromad <-
-    function(DATA = zooreg(),
+    function(DATA = zoo(),
              ...,
              sma = hydromad.getOption("sma"),
              routing = hydromad.getOption("routing"),
