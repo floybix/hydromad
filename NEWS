@@ -1,5 +1,11 @@
 
-Changes in Version 0.8-0 (in development)
+Changes in Version 0.8-1 (in development)
+
+  o arguments to eventseq() and eventapply() have changed.
+
+  o estimateDelay() now has a 'negative.ok' argument.
+
+Changes in Version 0.8-0
 
   o the "bucket" SMA now has a C code back-end.
 

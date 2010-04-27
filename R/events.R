@@ -2,21 +2,15 @@
 ## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
-event.clusters <- function(...) {
-    .Deprecated("eventseq")
-    eventseq(...)
-}
-
-eventAttributes <- function(...) {
-    .Deprecated("eventinfo")
-    eventinfo(...)
-}
-
-
-## based on the arguments of evd::clusters
 eventseq <-
-    function(x, thresh = 0, inter = 1, mindur = 1, below = FALSE)
+    function(x, thresh = 0, mingap = 1, mindur = 1,
+             below = FALSE, all = FALSE, inter = NA)
 {
+    if (!is.na(inter)) {
+        .Deprecated(msg = "The 'inter' argument is deprecated. Use 'mingap'.")
+        if (missing(mingap))
+            mingap <- inter
+    }
     if (below) {
         x <- -x
         thresh <- -thresh
@@ -24,19 +18,19 @@ eventseq <-
     ## assume NAs are below threshold
     x[is.na(x)] <- -Inf
     ## find runs above threshold
-    ## (runs are merged across columns)
+    ## (runs continue while any series/column is above thresh)
     uruns <- if (length(dim(x)) == 2)
         rle(rowSums(coredata(x) > thresh) > 0)
     else rle(coredata(x) > thresh)
     ## find drops (between runs) whose length is too short
-    if (inter > 1) {
-        nondrop <- with(uruns, values == FALSE & lengths < inter)
+    if (mingap > 1) {
+        nondrop <- with(uruns, values == FALSE & lengths < mingap)
         if (any(nondrop)) {
             ## (leave initial period alone)
             nondrop[1] <- FALSE
             ## set short drops to be part of the surrounding cluster
             uruns$values[nondrop] <- TRUE
-            uruns <- rle(inverse.rle(uruns))
+            uruns <- rle(inverse.rle(uruns)) ## could be faster?
         }
     }
     ## find events whose length is too short
@@ -51,25 +45,36 @@ eventseq <-
         }
     }
     ## assign unique numbers to events
-    ids <- seq_len(sum(uruns$values))
-    uruns$values[uruns$values == TRUE] <- ids
-    uruns$values[uruns$values == FALSE] <- NA
+    runvals <- uruns$values
+    ids <- seq_len(sum(runvals))
+    uruns$values[runvals == TRUE] <- ids
+    if (all) {
+        ## assign negative numbers to inter-events
+        inter.ids <- - seq_len(sum(runvals == FALSE))
+        uruns$values[runvals == FALSE] <- inter.ids
+        ids <- c(ids, inter.ids)
+    } else {
+        ## set inter-event periods to NA
+        uruns$values[runvals == FALSE] <- NA
+    }
     ## expand into long format
     ev <- inverse.rle(uruns)
     ## return events in the format of 'x', typically zoo or ts
     mostattributes(ev) <- attributes(x)
-    attr(ev, "levels") <- ids
+    class(ev) <- unique(c("eventseq", class(ev)))
+    #attr(ev, "levels") <- ids
     ev
 }
 
+levels.eventseq <- function(x)
+    unique(x[!is.na(coredata(x))])
+
 eventapply <-
-    function(X, events = eventseq(X, thresh, inter, mindur, below),
+    function(X, events,
              FUN = sum, ..., by.column = TRUE, simplify = TRUE,
-             TIMING = c("start", "middle", "end"),
-             thresh = 0, inter = 1, mindur = 1, below = FALSE)
+             TIMING = c("start", "middle", "end"))
 {
     TIMING <- match.arg(TIMING)
-    force(events)
     Xnames <- colnames(X)
     if (!is.vector(events) && !is.factor(events)) {
         ## merge series together (typically zoo or ts objects)
@@ -146,12 +151,10 @@ preInterEventDuration <- function(x)
 }
 
 eventinfo <-
-    function(X, events = eventseq(X, thresh, inter, mindur, below),
-             FUN = mean, ...,
-             thresh = 0, inter = 1, mindur = 1, below = FALSE)
+    function(X, events,
+             FUN = mean, ...)
 {
     stopifnot(inherits(X, "zoo"))
-    force(events)
     ## TODO: allow FUN to return multiple values?
     xValues <- eventapply(X, events = events, FUN = FUN, ...)
     xLengths <- eventapply(X, events = events, FUN = length,

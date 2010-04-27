@@ -2,9 +2,7 @@
 \alias{eventseq}
 \alias{eventapply}
 \alias{eventinfo}
-%% old names, delete eventually:
-\alias{event.clusters}
-\alias{eventAttributes}
+\alias{levels.eventseq}
 \title{
   Identify discrete events from time series and apply functions to them.
 }
@@ -12,16 +10,16 @@
   Identify discrete events from time series and apply functions to them.
 }
 \usage{
-eventseq(x, thresh = 0, inter = 1, mindur = 1, below = FALSE)
+eventseq(x, thresh = 0, mingap = 1, mindur = 1,
+         below = FALSE, all = FALSE, inter = NA)
 
-eventapply(X, events = eventseq(X, thresh, inter, mindur, below),
-           FUN = sum, ..., by.column = TRUE, simplify = TRUE,
-           TIMING = c("start", "middle", "end"),
-           thresh = 0, inter = 1, mindur = 1, below = FALSE)
+eventapply(X, events, FUN = sum, ...,
+           by.column = TRUE, simplify = TRUE,
+           TIMING = c("start", "middle", "end"))
 
-eventinfo(X, events = eventseq(X, thresh, inter, mindur, below),
-          FUN = mean, ...,
-          thresh = 0, inter = 1, mindur = 1, below = FALSE)
+eventinfo(X, events, FUN = mean, ...)
+
+\method{levels}{eventseq}(x)
 }
 \arguments{
   \item{x, X}{
@@ -35,10 +33,10 @@ eventinfo(X, events = eventseq(X, thresh, inter, mindur, below),
     threshold value: the data must be strictly above this level (or, if
     \code{below = TRUE}, below this level) to define an event. 
   }
-  \item{inter}{
+  \item{mingap, inter}{
     the minimum number of time steps that can separate events. Any
     inter-event durations shorter than this will be subsumed into the
-    surrounding event.
+    surrounding event. (\code{inter} is the old name, now deprecated).
   }
   \item{mindur}{
     the minimum number of time steps required to define an event. Any
@@ -47,6 +45,13 @@ eventinfo(X, events = eventseq(X, thresh, inter, mindur, below),
   }
   \item{below}{
     to identify events where the data falls below \code{thresh}.
+  }
+  \item{all}{
+    to include the periods between events as additional levels (i.e. as
+    events in themselves). These inter-events will be assigned negative
+    levels, while the actual events will have positive levels. Otherwise
+    -- in the default case -- these inter-event periods are left as
+    \code{NA}. 
   }
   \item{events}{
     a \code{factor}-like object, perhaps \code{\link{ts}} or
@@ -75,14 +80,14 @@ eventinfo(X, events = eventseq(X, thresh, inter, mindur, below),
     its start, middle, or end?
   }
 }
-\details{
-  
-}
 \value{
-  \code{eventseq} returns a \code{zoo} object, of the same length as
-  \code{x}, with integer values indexing the identified events. Periods
-  between events are \code{NA}. It has a \code{levels} attribute, so you
-  can call \code{\link{nlevels}} on it to find the number of events.
+  
+  \code{eventseq} returns a vector of the same class as its input
+  \code{x}, plus \code{"eventseq"}, with integer values indexing the
+  identified events. Periods between events are left as \code{NA},
+  unless \code{all = TRUE} in which case they will have unique negative
+  integer values. The result has a \code{levels} method, so you can
+  call \code{\link{nlevels}} on it to find the number of events.
 
   \code{eventapply} returns a \code{zoo} object (an irregular time
   series in this case), with the value returned from \code{FUN}
@@ -120,7 +125,7 @@ eventinfo(X, events = eventseq(X, thresh, inter, mindur, below),
 \examples{
 data(SalmonBrook)
 x <- window(SalmonBrook, start = "1990-01-01", end = "1995-01-01")
-ev <- eventseq(x$Q, thresh = 1, inter = 5)
+ev <- eventseq(x$Q, thresh = 1, mingap = 5)
 str(ev)
 summary(ev)
 eventapply(x$Q, ev, FUN = sum)

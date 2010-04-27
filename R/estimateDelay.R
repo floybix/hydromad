@@ -6,14 +6,17 @@
 
 estimateDelay <-
     function(DATA = data.frame(U=, Q=),
-             rises = TRUE, rank = FALSE, n.estimates = 1,
+             rises = TRUE, rank = FALSE, 
              lag.max = hydromad.getOption("max.delay"),
+             n.estimates = 1, negative.ok = FALSE,
              na.action = na.exclude, plot = FALSE, main = NULL,
              ...)
 {
     ## get data into the right form
     DATA <- as.ts(DATA)
     DATA <- na.action(DATA)
+    if (NROW(DATA) <= 1)
+        return(NA_integer_)
     ## which column represents streamflow?
     iQ <- 1
     if ("Q" %in% colnames(DATA)) {
@@ -38,16 +41,17 @@ estimateDelay <-
         if (do.rises) main <- paste(main, "with rises only")
     }
     if (sum(complete.cases(Q, U)) == 0)
-        return(NA)
+        return(NA_integer_)
     ans <- ccf(Q, U, lag.max = lag.max, na.action = na.action,
                plot = plot, main = main, ...)
     ##ans$lag[which.max(ans$acf)]
     est <- ans$lag[order(ans$acf, decreasing=TRUE)]
-    #if (est[1] < 0) warning("delay estimate is negative, check your data")
     ## omit any negative delays or NAs
-    invalid <- is.na(est) | (est < 0)
-    #invalid[1] <- FALSE
+    invalid <- is.na(est)
+    if (negative.ok == FALSE)
+        invalid <- invalid | (est < 0)
     est <- est[!invalid]
+    if (length(est) == 0) return(NA_integer_)
     est <- est[seq(n.estimates)]
     ## convert from "basic units" to time steps
     est <- est * frequency(Q)

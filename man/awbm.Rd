@@ -49,7 +49,11 @@ awbm.sim(DATA, cap.ave,
   weights.
 
   This is the soil moisture accounting component; the model described in
-  the literature has a two-store routing component also:
+  the literature has a two-store routing component also, with parameters
+  \var{BFI}, \eqn{K_b} and \eqn{K_s}. These correspond directly to the
+  \code{\link{expuh}} routing model parameters \code{v_s}, \code{tau_s}
+  and \code{tau_q}, so the full model can be specified as:
+  
   \code{hydromad(..., sma = "awbm", routing = "expuh",
     rfit = list("sriv", order = c(2, 1)))}
 }

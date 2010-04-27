@@ -55,8 +55,8 @@ spec[["soil moisture accounting"]] <-
 
 spec[["routing"]] <-
     list(
-         list("armax", codefile = "armax.sim.R"),
-         list("expuh", codefile = "expuh.sim.R"),
+         list("armax", codefile = "armax.sim.R", do.example = FALSE),
+         list("expuh", codefile = "expuh.sim.R", do.example = FALSE),
          list("lambda", codefile = "lambda.sim.R", do.example = FALSE),
          list("powuh", codefile = "powuh.sim.R", do.example = FALSE)
          )
@@ -76,7 +76,8 @@ spec[["utilities"]] <-
          list("convertFlow", do.example = FALSE),
          list("rollccf"),
          list("parameterSets", do.example = FALSE),
-         list("observed", do.example = FALSE)
+         list("observed", do.example = FALSE),
+         list("SCEoptim", do.example = FALSE)
          )
 
 spec[["datasets"]] <-

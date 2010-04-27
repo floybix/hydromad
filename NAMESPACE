@@ -179,6 +179,7 @@ export(convertFlow)
 export(eventseq, 
        eventapply,
        eventinfo)
+S3method(levels, eventseq)
 
 ## utilities.R
 export(tsCleanup,
