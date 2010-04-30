@@ -1,9 +1,12 @@
 
 HydroTestData <- local({
-    len <- 730
+    timeseq <- seq(as.POSIXct("2000-01-01", tz = "GMT"),
+                   as.POSIXct("2000-03-31", tz = "GMT"),
+                   by = "3 hours")
+    len <- length(timeseq)
     ## regular rainfall impulse
     P <- ts(rep(0, length = len))
-    P[seq(10, len-1, by = 20)] <- 5
+    P[seq(10, len-1, by = 24)] <- 5
     ## make one rain event much larger
     P[quantile(which(P > 0), 0.67, type = 1)] <- 20
     ## sine wave for temperature
@@ -11,5 +14,5 @@ HydroTestData <- local({
     ## flow based on square of rainfall and inverse to temperature
     Q <- filter(0.01 * P^2 * (1 - E / max(E)),
                 filter = c(1.4, -0.45), method = "recursive")
-    as.zooreg(ts.intersect(P = P, E = E, Q = Q))
+    as.zooreg(zoo(cbind(P = P, E = E, Q = Q), order.by = timeseq))
 })

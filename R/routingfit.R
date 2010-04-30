@@ -33,6 +33,7 @@ doRoutingFit <-
                           Q = object$data[,"Q"])
         }
         fnName <- paste(routing, method, "fit", sep = ".")
+        ## throw an error if we can't find a function of that name
         force(get(fnName, mode = "function"))
         if (isInverseMethod && hydromad.getOption("trace"))
             message("== fitting routing by ", fnName, " method ==")

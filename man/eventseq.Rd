@@ -2,7 +2,7 @@
 \alias{eventseq}
 \alias{eventapply}
 \alias{eventinfo}
-\alias{levels.eventseq}
+%\alias{levels.eventseq}
 \title{
   Identify discrete events from time series and apply functions to them.
 }
@@ -10,7 +10,7 @@
   Identify discrete events from time series and apply functions to them.
 }
 \usage{
-eventseq(x, thresh = 0, mingap = 1, mindur = 1,
+eventseq(x, thresh = 0, mingap = 1, mindur = 1, n = NA,
          below = FALSE, all = FALSE, inter = NA)
 
 eventapply(X, events, FUN = sum, ...,
@@ -19,7 +19,7 @@ eventapply(X, events, FUN = sum, ...,
 
 eventinfo(X, events, FUN = mean, ...)
 
-\method{levels}{eventseq}(x)
+%\method{levels}{eventseq}(x)
 }
 \arguments{
   \item{x, X}{
@@ -42,6 +42,12 @@ eventinfo(X, events, FUN = mean, ...)
     the minimum number of time steps required to define an event. Any
     events whose duration is shorter than this will be ignored (not
     identified as an event).
+  }
+  \item{n}{
+    number of events to be identified: if this is given, then a value of
+    \code{thresh} is automatically chosen such that about this many
+    events are returned. A warning is given if the actual number of
+    events is not within 5 percent of \code{n}. 
   }
   \item{below}{
     to identify events where the data falls below \code{thresh}.
@@ -82,12 +88,11 @@ eventinfo(X, events, FUN = mean, ...)
 }
 \value{
   
-  \code{eventseq} returns a vector of the same class as its input
-  \code{x}, plus \code{"eventseq"}, with integer values indexing the
-  identified events. Periods between events are left as \code{NA},
-  unless \code{all = TRUE} in which case they will have unique negative
-  integer values. The result has a \code{levels} method, so you can
-  call \code{\link{nlevels}} on it to find the number of events.
+  \code{eventseq} returns a zoo object, with core data consisting of an
+  ordered \code{\link{factor}}, representing the identified events, and
+  the same time index as \code{x}. Periods between events are left as
+  \code{NA}, unless \code{all = TRUE} in which case they are treated as
+  separate events.
 
   \code{eventapply} returns a \code{zoo} object (an irregular time
   series in this case), with the value returned from \code{FUN}
@@ -127,12 +132,19 @@ data(SalmonBrook)
 x <- window(SalmonBrook, start = "1990-01-01", end = "1995-01-01")
 ev <- eventseq(x$Q, thresh = 1, mingap = 5)
 str(ev)
+## number of events:
+nlevels(ev)
 summary(ev)
 eventapply(x$Q, ev, FUN = sum)
 eventapply(x, ev, FUN = mean)
 eventinfo(x$Q, ev)
 
 xyplot(x) + layer_(panel.xblocks(ev, col = "grey"))
+
+set.seed(0)
+ee <- eventseq(rnorm(100), n = 10, mingap = 2)
+nlevels(ee)
+
 }
 \keyword{ ts }
 \keyword{ utilities }

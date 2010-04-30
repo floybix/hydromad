@@ -35,9 +35,13 @@ tsFitStat <-
     if (!is.null(aggr)) {
         if (is.numeric(aggr))
             aggr <- list(ndeltat = aggr)
-        if (!is.list(aggr))
-            stop("unrecognised value of 'aggr'")
-        dat <- do.call("aggregate", c(list(dat), aggr))
+        if (is.character(aggr)) {
+            dat <- aggregate(dat, by = cut(time(dat), aggr))
+        } else {
+            if (!is.list(aggr))
+                stop("unrecognised value of 'aggr'")
+            dat <- do.call("aggregate", c(alist(dat), aggr))
+        }
     }
     if (!is.null(events)) {
         if (!is.list(events))
@@ -47,7 +51,7 @@ tsFitStat <-
         events$FUN <- NULL
         ## compute events using first 2 series only (obs & mod)
         ev <- do.call("eventseq",
-                      c(list(dat[,1:2]), events))
+                      c(alist(dat[,1:2]), events))
         ## apply FUN to events 'ev', in each series
         dat <- eventapply(dat, ev, FUN = FUN)
     }
@@ -75,6 +79,8 @@ fitStat <-
     }
     obs <- obs[ok]
     mod <- mod[ok]
+    if (length(obs) == 0)
+        return(NA_real_)
     ## negative values can cause errors with log()
     if (negatives.ok == FALSE) {
         obs <- pmax(obs, 0)

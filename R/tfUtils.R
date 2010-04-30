@@ -202,10 +202,10 @@ abToTauV <-
                         duplicated(signif(alpha, 5), fromLast = TRUE))
                 if (any(dup)) {
                     series <- 1
-                    ## by convention, components s & 3 are in series
+                    ## by convention, components q & 3 are in series
                     adup <- head(alpha[dup], 1)
-                    alpha_s <- alpha_3 <- adup
-                    alpha_q <- head(alpha[!dup], 1)
+                    alpha_q <- alpha_3 <- adup
+                    alpha_s <- head(alpha[!dup], 1)
                 }
             #}
             if (all(b[-(1:2)] == 0)) {
@@ -257,11 +257,11 @@ abToTauV <-
             ## third-order model
             if (series == 1) {
                 ## one component in parallel with two in series
-                ## (s & 3 are in series; q in parallel)
-                beta_q <- b[3] / (alpha_s * alpha_3)
-                beta_s <- sqrt((-b[2] - beta_q * (alpha_s + alpha_3)) /
-                               alpha_q * (b[1] - beta_q))
-                beta_3 <- (b[1] - beta_q) / beta_s
+                ## (q & 3 are in series; s in parallel)
+                beta_s <- b[3] / (alpha_q * alpha_3)
+                beta_q <- sqrt((-b[2] - beta_s * (alpha_q + alpha_3)) /
+                               alpha_s * (b[1] - beta_s))
+                beta_3 <- (b[1] - beta_s) / beta_q
 
             } else if (series == 2) {
                 ## one component in series with two in parallel
@@ -347,8 +347,7 @@ tauVToAB <-
             v_q <- 1 - v_s - v_3
         }
         if (series == 1) {
-            ## note for (2,0) model: v_3 = 0, v_q = 1
-            v_q <- 1 - v_s * v_3
+            v_q <- 1
         }
         if (series == 2) {
             v_q <- 1 - v_s
@@ -404,11 +403,11 @@ tauVToAB <-
             ## third-order model
             if (series == 1) {
                 ## two components in series and one in parallel
-                ## (s & 3 are in series; q in parallel)
-                b[1] <- beta_s * beta_3 + beta_q
-                b[2] <- -(beta_s * beta_3 * alpha_q +
-                          beta_q * (alpha_s + alpha_3))
-                b[3] <- beta_q * alpha_s * alpha_3
+                ## (q & 3 are in series; s in parallel)
+                b[1] <- beta_q * beta_3 + beta_s
+                b[2] <- -(beta_q * beta_3 * alpha_s +
+                          beta_s * (alpha_q + alpha_3))
+                b[3] <- beta_s * alpha_q * alpha_3
 
             } else if (series == 2) {
                 ## one component in series with two in parallel
@@ -539,7 +538,7 @@ describeTF <- function(theta, ...)
                 series <- round(partv[["series"]])
         }
         if (series == 0) ans <- "S + Q + 3 (three in parallel)"
-        if (series == 1) ans <- "(S * 3) + Q (two in series, one in parallel)"
+        if (series == 1) ans <- "(Q * 3) + S (two in series, one in parallel)"
         if (series == 2) ans <- "(S + Q) * 3 (two in parallel, one in series)"
         if (series == 3) ans <- "S * Q * 3 in series"
         if ((m == 0) != (series == 3))

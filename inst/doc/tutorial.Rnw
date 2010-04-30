@@ -374,9 +374,9 @@ print(trellis.last.object())
 \end{center}
 \end{figure}
 
-See \code{vignette("dataChecking", package = "hydromad")} (\emph{under
-  construction}) for more on this topic, including analysing changes
-in the runoff ratio, cross correlation and lag times.
+%See \code{vignette("dataChecking", package = "hydromad")} (\emph{under
+%  construction}) for more on this topic, including analysing changes
+%in the runoff ratio, cross correlation and lag times.
 
 
 \section{Model Specification}
@@ -473,7 +473,7 @@ optimisation algorithm to improve the result locally.
 
 <<model-fit, echo=TRUE>>=
 cotterMod <- update(cotterMod, rfit = list("sriv", order = c(n=2, m=1)))
-cotterFit <- fitByOptim(cotterMod)
+cotterFit <- fitByOptim(cotterMod, samples = 100)
 @
 
 See the help pages \code{help("hydromad")} and

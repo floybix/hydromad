@@ -41,8 +41,7 @@ expuh.sim <-
             v_q <- 1 - v_s - v_3
         }
         if (series == 1) {
-            ## note for (2,0) model: v_3 = 0, v_q = 1
-            v_q <- 1 - v_s * v_3
+            v_q <- 1
         }
         if (series == 2) {
             v_q <- 1 - v_s
@@ -84,9 +83,9 @@ expuh.sim <-
             ## third-order model
             if (series == 1) {
                 ## two components in series and one in parallel
-                ## (s & 3 are in series; q in parallel)
-                Xs[] <- filter(beta_3 * Xs, alpha_3, method = "recursive", init = X3_0)
-                Xq[] <- filter(beta_q * U, alpha_q, method = "recursive", init = Xq_0)
+                ## (q & 3 are in series; s in parallel)
+                X3[] <- filter(beta_3 * U, alpha_3, method = "recursive", init = X3_0)
+                Xq[] <- filter(beta_q * X3, alpha_q, method = "recursive", init = Xq_0)
                 X3[] <- 0
             } else if (series == 2) {
                 ## one component in series with two in parallel

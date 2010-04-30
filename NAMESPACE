@@ -176,10 +176,10 @@ S3method(qqmath, runlist)
 export(convertFlow)
 
 ## events.R
-export(eventseq, 
+export(findThresh,
+       eventseq, 
        eventapply,
        eventinfo)
-S3method(levels, eventseq)
 
 ## utilities.R
 export(tsCleanup,

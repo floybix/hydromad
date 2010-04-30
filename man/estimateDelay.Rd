@@ -6,21 +6,23 @@
   (rises in) the corresponding output time series.
 }
 \usage{
-estimateDelay(DATA = data.frame(U=, Q=), rises = TRUE, rank = FALSE,
-	n.estimates = 1, lag.max = hydromad.getOption("max.delay"),
-        na.action = na.exclude, plot = FALSE, main = NULL, ...)
+estimateDelay(DATA = data.frame(U=, Q=), rises = TRUE, 
+              lag.max = hydromad.getOption("max.delay"),
+              n.estimates = 1, negative.ok = FALSE,
+              na.action = na.exclude,
+              plot = FALSE, main = NULL, ...)
 }
 \arguments{
-  \item{DATA}{ a \code{\link{ts}}-like object or list with named components:
+  \item{DATA}{ a \code{\link{ts}}-like object with named components:
 	\describe{
 	  \item{\code{U}}{ input (forcing) time series. }
 	  \item{\code{Q}}{ output (response) time series. }
 	}
   }
   \item{rises}{ use only rises in the output to estimate delay. }
-  \item{rank}{ use rank correlation between input and output. }
-  \item{n.estimates}{ number of estimates of delay to produce. }
   \item{lag.max}{ largest delay (in time steps) to consider. }
+  \item{n.estimates}{ number of estimates of delay to produce. }
+  \item{negative.ok}{ to allow negative delay times to be considered. }
   \item{na.action}{ handler for missing values.
 	The default removes leading and trailing NAs only.
   	Use \code{na.exclude} to remove all NAs, but the result

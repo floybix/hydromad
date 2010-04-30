@@ -25,9 +25,6 @@ fitBySCE(MODEL,
     settings for the SCE algorithm. See \code{\link{SCEoptim}}.
   }
 }
-\details{
-
-}
 \value{
   the best model from those sampled, according to the given
   \code{objective} function.

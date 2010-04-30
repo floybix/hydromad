@@ -6,7 +6,7 @@
 
 estimateDelay <-
     function(DATA = data.frame(U=, Q=),
-             rises = TRUE, rank = FALSE, 
+             rises = TRUE,
              lag.max = hydromad.getOption("max.delay"),
              n.estimates = 1, negative.ok = FALSE,
              na.action = na.exclude, plot = FALSE, main = NULL,
@@ -24,17 +24,16 @@ estimateDelay <-
     }
     Q <- DATA[,iQ]
     U <- DATA[,if (iQ==1) 2 else 1]
+
+    if (all(Q == 0, na.rm = TRUE))
+        return(NA_integer_)
+    
     ylab <- "CCF"
     do.rises <- rises
     if (do.rises) {
         ## backwards difference, i.e. rises are placed at their end time
         rises <- function(x) { x[] <- c(0, pmax(diff(x), 0)); x }
         Q <- rises(Q)
-    }
-    if (rank) {
-        Q[] <- rank(zapsmall(Q), na.last="keep")
-        U[] <- rank(zapsmall(U), na.last="keep")
-        ylab <- "rank CCF"
     }
     if (is.null(main)) {
         main <- "Cross-correlation"

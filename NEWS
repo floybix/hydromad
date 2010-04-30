@@ -1,9 +1,21 @@
 
 Changes in Version 0.8-1 (in development)
 
+  o new function findThresh() and correponding argument 'n' to
+    eventseq(), to identify a given number of events.
+
+  o fixed the "r.sq.monthly" statistic (it gave an error).
+
+  o added a new "r.sq.smooth7" statistic.
+
   o arguments to eventseq() and eventapply() have changed.
 
   o estimateDelay() now has a 'negative.ok' argument.
+
+  o the setting 'series = 1' to expuh.sim() now places the "s"
+    component in parallel, rather than the "q" component.
+
+  o 'HydroTestData' now has a (POSIXct) 3 hourly time index.
 
 Changes in Version 0.8-0
 

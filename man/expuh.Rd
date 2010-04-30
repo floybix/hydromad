@@ -81,7 +81,7 @@ normalise.expuh(theta)
 
   \deqn{v = \beta / (1 - \alpha)}
   
-  If there are two components in parallel, these are conventially called
+  If there are two components in parallel, these are conventionally called
   slow (\var{s}) and quick (\var{q}) flow components. The total
   simulated flow \var{X} is the sum of these;
   \eqn{X[t] = X_s[t] + X_q[t]}, and: 
@@ -110,12 +110,10 @@ normalise.expuh(theta)
       1. 
     }
     \item{\code{series = 1}}{
-      one component in parallel with two in series: the \code{s}
+      one component in parallel with two in series: the \code{q}
       component is in series with the \code{3} component, and the
-      \code{q} component is in parallel:
-      \var{X = (s * 3) + q}. In this case \code{v_q} defaults to
-      \code{1 - v_s * v_3} in order to ensure that the total volume is
-      1.
+      \code{s} component is in parallel:
+      \var{X = (q * 3) + s}. In this case \code{v_q} defaults to 1.
     }
     \item{\code{series = 2}}{
       two components in parallel with one in series: the \code{s}

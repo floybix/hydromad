@@ -64,7 +64,8 @@ summary.hydromad <-
         ans <-
             eventapply(DATA, group, 
                        FUN = function(x)
-                         unlist(c(hydrostats(x), objFunVal(x, objective = stats.def))),
+                         unlist(c(if (with.hydrostats) hydrostats(x),
+                                  objFunVal(x, objective = stats.def))),
                        by.column = FALSE)
         ## copy the last entry with the final date, to mark the end of last period
         lastbit <- tail(ans, 1)

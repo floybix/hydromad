@@ -6,19 +6,29 @@ context("Event handling functions")
 data(SalmonBrook)
 dat <- window(SalmonBrook, start = "1990-01-01", end = "1994-01-01")
 
-evp <- eventseq(dat$P, inter = 7)
+evp <- eventseq(dat$P, mingap = 7)
 evq <- eventseq(dat$Q, thresh = 3)
 evq.ts <- eventseq(as.ts(dat$Q), thresh = 3)
 
 test_that("eventseq seems to work", {
     expect_that(evp, is_a("zoo"))
-    expect_that(evq.ts, is_a("ts"))
-    expect_that(time(evp), equals(time(dat)))
-    expect_that(time(evq.ts), equals(time(as.ts(dat))))
+    expect_that(evq.ts, is_a("zoo"))
+    expect_that(coredata(evp), is_a("factor"))
+    expect_that(index(evp), equals(index(dat)))
+    expect_that(index(evq.ts), equals(index(as.ts(dat))))
     expect_that(coredata(evq), equals(coredata(evq.ts)))
     expect_that(nlevels(evp), equals(39))
     expect_that(nlevels(evq), equals(14))
     expect_that(sum(is.na(coredata(evp))), equals(524))
+})
+
+test_that("findThresh seems to work", {
+    set.seed(0)
+    x <- rnorm(100)
+    t1 <- findThresh(x, n = 20)
+    t2 <- findThresh(x, n = 5, mingap = 2)
+    expect_that(nlevels(eventseq(x, t1)) - 20, equals(0, tol = 1))
+    expect_that(nlevels(eventseq(x, t2, mingap = 2)) - 5, equals(0))
 })
 
 test_that("eventapply seems to work with single series", {
@@ -26,7 +36,7 @@ test_that("eventapply seems to work with single series", {
     ## (1) scalar result:
     psums <- eventapply(dat$P, evp)
     expect_that(psums, is_a("zoo"))
-    expect_that(time(psums), is_a("Date"))
+    expect_that(index(psums), is_a("Date"))
     expect_that(NCOL(psums), equals(1))
     expect_that(NROW(psums), equals(nlevels(evp)))
     ## factor events are not sync'd (cbinded) with the data series
@@ -41,7 +51,7 @@ test_that("eventapply seems to work with single series", {
     pvari <- eventapply(dat$P, evp, FUN = coredata, simplify = FALSE)
     expect_that(pvari, is_a("list"))
     expect_that(length(pvari), equals(nlevels(evp)))
-    expect_that(names(pvari), equals(format(unname(time(psums)))))
+    expect_that(names(pvari), equals(format(unname(index(psums)))))
 })
 
 test_that("eventapply seems to work with multiple series", {
@@ -64,8 +74,14 @@ test_that("eventapply seems to work with multiple series", {
                            FUN = function(x) c(mean = mean(x), sd = sd(x)))
     expect_that(colnames(each2num),
                 equals(c("P.mean", "P.sd", "Q.mean", "Q.sd", "E.mean", "E.sd")))
-    expect_that(time(each2num), equals(time(sums)))
+    expect_that(index(each2num), equals(index(sums)))
 })
 
-
-## TODO: test eventinfo
+test_that("eventinfo looks ok", {
+    info <- eventinfo(dat$P, evp)
+    expect_that(info, is_a("data.frame"))
+    expect_that(colnames(info),
+                is_identical_to(c("Time", "Month", "Year",
+                                  "Value", "Duration", "PreDuration")))
+    expect_that(nrow(info), equals(nlevels(evp)))
+})

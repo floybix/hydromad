@@ -91,6 +91,11 @@
       R Squared (coefficient of determination) with data aggregated into
       calendar months.
     }
+    \item{r.sq.smooth7}{
+      R Squared (coefficient of determination) using data smoothed with
+      a triangular kernel with an effective bandwidth of 7 time steps
+      (the actual width of the kernel is about 40\% larger).
+    }
     \item{persistence}{
       R Squared (coefficient of determination) where the reference model
       predicts each time step as the previous observed value. This
@@ -151,6 +156,23 @@
   \code{\link{hydromad}}
 }
 \examples{
+
+data(HydroTestData)
+mod0 <- hydromad(HydroTestData, sma = "scalar",
+                 routing = "expuh", tau_s = 10)
+mod0
+
+summary(mod0)
+
+summary(mod0, breaks = "months")
+#summary(mod0, breaks = 3)
+
+allstats <- names(hydromad.getOption("stats"))
+summary(mod0, stats = allstats)
+
+objFunVal(mod0, objective = hydromad.getOption("stats")$r.sq.log)
+
+str(objFunVal(mod0, objective = hydromad.getOption("stats")))
 
 }
 \keyword{ methods }

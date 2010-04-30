@@ -44,10 +44,10 @@ fitBias(obs, mod, relative.bias = TRUE)
     \code{\link{aggregate.ts}}, or the \code{"zoo"} method,
     \code{\link{aggregate.zoo}}. The former accepts a \code{ndeltat}
     argument to specify the size of blocks to aggregate, and the latter
-    accepts a \code{"by"} argument to specify the blocks. Common
-    examples for \code{zoo} objects are \code{list(by = as.yearmon)}
-    (aggregate into months), \code{list(by = cut, breaks = "3 months")}
-    (aggregate into 3 months), etc.
+    accepts a \code{"by"} argument to specify the blocks. 
+    If \code{aggr} is a character string, this is used as a time step
+    specification for \code{\link[=cut.Date]{cut}}ting the time index:
+    see examples below.
   }
   \item{events}{
     to aggregate the time series into discrete events before calculating
@@ -94,7 +94,59 @@ fitBias(obs, mod, relative.bias = TRUE)
   \code{\link{objFunVal}}
 }
 \examples{
+## generate some data -- it is autocorrelated so the use of these
+## stats is extremely problematic!
+set.seed(0)
+U <- ts(pmax(0, rgamma(200, shape=0.1, scale=20) - 5))
+## simulate error as multiplicative uniform random
+Ue <- U * runif(200, min = 0.5, max = 1.5)
+## and resample 10 percent of time steps
+ii <- sample(seq_along(U), 20)
+Ue[ii] <- rev(U[ii])
+## apply recursive filter
+Q <- filter(U, 0.7, method = "r")
+X <- filter(Ue, 0.75, method = "r")
 
+## convert to 'zoo' objects with Date index
+Q <- zoo(Q, as.Date("2000-01-01") + 1:200)
+X <- zoo(X, time(Q))
+
+xyplot(merge(Q, X), superpose = TRUE)
+
+fitStat(Q, X)
+
+## use absolute residuals rather than squared residuals
+## (less weight on large residuals)
+fitStat(Q, X, p = 1)
+
+fitStat(Q, X, trans = sqrt)
+
+fitStat(Q, X, trans = log)
+
+## monthly maximum values
+tsFitStat(Q, X, aggr = list(by = as.yearmon, FUN = max))
+
+## sums over 7 day blocks
+tsFitStat(Q, X, aggr = list(by = function(x) cut(x, "7 days"), FUN = sum))
+
+## ...which is the same as:
+tsFitStat(Q, X, aggr = "7 days")
+
+## use a different reference model (one-step-ahead forecast)
+tsFitStat(Q, X, ref = lag(Q,-1))
+
+## see how the reference model performs in terms of R Squared
+tsFitStat(Q, lag(Q,-1))
+
+## event-based stats (events identified from Q series only)
+tsFitStat(Q, X, events = list(thresh = 5, FUN = mean))
+
+## include periods between events
+tsFitStat(Q, X, events = list(thresh = 5, FUN = mean, all = TRUE))
+
+## display the identified events:
+xyplot(merge(Q, X), superpose = TRUE) +
+  layer_(panel.xblocks(eventseq(Q, thresh = 5), col = "lightgrey"))
 }
 \keyword{ ts }
 

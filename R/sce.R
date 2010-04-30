@@ -50,9 +50,7 @@ SCEoptim <- function(FUN, par, ...,
                 lower = -Inf, upper = Inf,
                 control = list())
 {
-    if (is.character(FUN))
-        FUN <- get(FUN, mode = "function")
-    stopifnot(is.function(FUN))
+    FUN <- match.fun(FUN)
     stopifnot(is.numeric(par))
     stopifnot(length(par) > 0)
     stopifnot(is.numeric(lower))

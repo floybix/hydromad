@@ -18,7 +18,9 @@ statDefns <- function()
          ~ fitStat(Q, X, trans = function(x)
                    rank(zapsmall(x, digits = 3), ties = "min", na.last = "keep")),
          "r.sq.monthly" =
-         ~ tsFitStat(Q, X, aggr = list(by = cut, breaks = "months", FUN = sum)),
+         ~ tsFitStat(Q, X, aggr = list(by = cut(time(Q), "months"), FUN = sum)),
+         "r.sq.smooth7" =
+         ~ tsFitStat(Q, X, trans = function(x) simpleSmoothTs(x, width = 7, c = 2)),
          "persistence" = ~ tsFitStat(Q, X, ref = lag(Q, -1)),
          "r.sq.seasonal" =
          ~ tsFitStat(Q, X, ref = ave(Q, months(time(Q)))),

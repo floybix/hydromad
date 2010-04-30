@@ -11,8 +11,8 @@ n2m2 <- c(tau_s = 30, tau_q = 2, v_s = 0.3, v_3 = 0.1)
 ## "series = 0": three components in parallel (default)
 n3s0 <- c(tau_s = 30, tau_q = 5, tau_3 = 1, v_s = 0.3, v_3 = 0.1) ## v_q = 1 - v_s - v_3
 ## "series = 1": two components in series and one in parallel
-## (s & 3 are in series; q in parallel)
-n3s1 <- c(tau_s = 30, tau_q = 5, tau_3 = 1, v_s = 1, v_3 = 0.1, series = 1) ## v_q = 1 - (v_s * v_3)
+## (q & 3 are in series; s in parallel)
+n3s1 <- c(tau_s = 30, tau_q = 5, tau_3 = 1, v_s = 0.3, v_3 = 0.7, series = 1) ## v_q = 1
 ## "series = 2": one component in series with two in parallel
 ## (3 in series; s & q in parallel)
 n3s2 <- c(tau_s = 30, tau_q = 5, tau_3 = 1, v_s = 0.3, v_3 = 0.1, series = 2) ## v_q = 1 - v_s
