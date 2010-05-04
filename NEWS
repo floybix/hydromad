@@ -8,6 +8,8 @@ Changes in Version 0.8-1 (in development)
 
   o added a new "r.sq.smooth7" statistic.
 
+  o summary() now gives a warning for NaN stats, not an error.
+
   o arguments to eventseq() and eventapply() have changed.
 
   o estimateDelay() now has a 'negative.ok' argument.

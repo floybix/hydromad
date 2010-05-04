@@ -59,8 +59,12 @@ objFunVal.default <-
             obj <- obj[[2]]
         stopifnot(is.language(obj))
         val <- eval(obj)
-        if (is.nan(val) && !nan.ok)
-            stop("objective function returned NaN")
+        if (is.nan(val)) {
+            if (identical(nan.ok, "warn"))
+                warning("objective function returned NaN")
+            else if (isTRUE(nan.ok))
+                stop("objective function returned NaN")
+        }
         stopifnot(is.numeric(val))
         stopifnot(length(val) == 1)
         as.numeric(val)

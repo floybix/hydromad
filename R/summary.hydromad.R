@@ -65,7 +65,7 @@ summary.hydromad <-
             eventapply(DATA, group, 
                        FUN = function(x)
                          unlist(c(if (with.hydrostats) hydrostats(x),
-                                  objFunVal(x, objective = stats.def))),
+                                  objFunVal(x, objective = stats.def, nan.ok = "warn"))),
                        by.column = FALSE)
         ## copy the last entry with the final date, to mark the end of last period
         lastbit <- tail(ans, 1)
@@ -101,7 +101,7 @@ summary.hydromad <-
         ans <- c(ans, hydrostats(DATA))
     
     ## call objFunVal for the rest
-    ans <- c(ans, objFunVal(DATA, objective = stats.def))
+    ans <- c(ans, objFunVal(DATA, objective = stats.def, nan.ok = "warn"))
     
     class(ans) <- "summary.hydromad"
     ans
