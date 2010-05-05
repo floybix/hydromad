@@ -36,8 +36,10 @@ statDefns <- function()
          ~ tsFitStat(Q, X, events = list(thresh = median(Q, na.rm = TRUE), below = TRUE, mindur = 5, FUN = min)),
          "abs.err" = ~ mean(abs(X - Q), na.rm = TRUE),
          "RMSE" = ~ sqrt(mean((Q - X)^2, na.rm = TRUE)),
-         "U1" = ~ cor(Q - X, shiftWindow(U, -1), use="complete"),
-         "X1" = ~ cor(Q - X, shiftWindow(X, -1), use="complete")
+         "ar1" = ~ cor(head(Q-X, -1), tail(Q-X, -1), use = "complete"),
+         "X0" = ~ cor(Q-X, X, use = "complete"),
+         "X1" = ~ cor(head(Q-X, -1), tail(X, -1), use = "complete"),
+         "U1" = ~ cor(head(Q-X, -1), tail(U, -1), use = "complete")
          )
 }
 

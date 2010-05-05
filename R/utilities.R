@@ -114,18 +114,21 @@ shiftWindow <-
     ## a negative delay shifts the window forward in time
     if (delay == 0) return(x)
     attribs <- attributes(x)
+    x <- coredata(x)
     if (NCOL(x) == 1) {
         res <- if (delay > 0)
             c(rep(fill, delay), x[-(length(x)-seq(delay)+1)])
         else c(x[-seq(abs(delay))], rep(fill, abs(delay)))
     } else {
         res <- if (delay > 0)
-            x[ c(rep(fill, delay), seq(1, NCOL(x) - delay)), ]
-        else x[ c(seq(abs(delay)+1, NCOL(x)), rep(fill, abs(delay))), ]
+            x[ c(rep(NA, delay), seq(1, NCOL(x) - delay)), ]
+        else x[ c(seq(abs(delay)+1, NCOL(x)), rep(NA, abs(delay))), ]
+        res[1:delay,] <- fill
     }
     attributes(res) <- attribs
     if (and.lag == FALSE) {
-        ## already implicitly lagged above, the following keeps values in sync:
+        ## values are already implicitly lagged above;
+        ## the following keeps values in sync with the time index:
         res <- lag(res, delay)
     }
     res
