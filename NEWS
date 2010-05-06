@@ -1,12 +1,15 @@
 
-Changes in Version 0.8-1 (in development)
+Changes in Version 0.8-2 (in development)
+
+  o xyplot() applied to a hydromad.runlist now recognises the 'scales' 
+    argument (it was erroneously ignored previously).
+
+Changes in Version 0.8-1
 
   o fixed the "r.sq.monthly" statistic (it gave an error).
 
-  o added new statistics "r.sq.smooth7", "ar1" and "X0".
-
-  o fixed a bug in the internal function shiftWindow(), which 
-    triggered errors when using the "X1" and "U1" stats.
+  o added new statistics "r.sq.smooth7", "ar1" and "X0", and
+    fixed "X1" and "U1" (they threw an error).
 
   o summary() now gives a warning for NaN stats, not an error.
 

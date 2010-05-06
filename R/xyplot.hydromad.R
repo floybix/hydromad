@@ -32,7 +32,7 @@ xyplot.hydromad <-
                    scales = scales, superpose = superpose,
                    type = type.P)
         foo <- c(streamflow = foo, rainfall = rainPlot,
-                 x.same = TRUE, y.same = NA, layout = layout)
+                 x.same = NA, y.same = NA, layout = layout)
     }
     foo$call <- sys.call(sys.parent())
     foo
@@ -51,11 +51,11 @@ xyplot.hydromad.runlist <-
         ## include observed series from item 1 (assuming all are the same!)
         tsdat <- cbind(observed = observed(x[[1]], all = all),
                        fitted(x, all = all))
-        foo <- xyplot(tsdat, ..., superpose = superpose,
+        foo <- xyplot(tsdat, ..., superpose = superpose, scales = scales,
                       type = type, layout = layout)
     } else {
         ## fitted models juxtaposed, each with observed flow superposed
-        foo <- xyplot.list(x, ..., all = all,
+        foo <- xyplot.list(x, ..., all = all, scales = scales,
                            superpose = TRUE, with.P = FALSE,
                            type = type, layout = layout)
     }
