@@ -1,5 +1,5 @@
-\name{fitByDE}
-\alias{fitByDE}
+\name{fitByDream}
+\alias{fitByDream}
 \title{
   Fit a hydromad model using the DE (Differential Evolution) algorithm.
 }
@@ -7,7 +7,7 @@
   Fit a hydromad model using the DE (Differential Evolution) algorithm.
 }
 \usage{
-fitByDE(MODEL, 
+fitByDream(MODEL, 
         objective = hydromad.getOption("objective"),
         control = hydromad.getOption("de.control"))
 }
@@ -26,24 +26,24 @@ fitByDE(MODEL,
   }
   \item{vcov}{
     if \code{vcov = TRUE}, the parameter variance-covariance matrix
-    will be estimated from the final population.
+    will be estimated from the last half of the sequences.
     It can be extract using \code{\link{vcov}}.
   }
 }
 \value{
   the best model from those sampled, according to the given
-  \code{objective} function. The result from \code{\link[DEoptim]{DEoptim}} is
+  \code{objective} function. The result from \code{\link[dream]{dream}} is
   stored as item \code{fit.result}.
 }
 \author{
   Felix Andrews \email{felix@nfrac.org}
 }
 \seealso{
-  \code{\link[DEoptim]{DEoptim}},
+  \code{\link[dream]{dream}},
   \code{\link{objFunVal}}
 }
 \examples{
-if (require("DEoptim")) {
+if (require("dream")) {
 
   data(Cotter)
   x <- Cotter[1:1000]
@@ -52,11 +52,12 @@ if (require("DEoptim")) {
   modx <- hydromad(x, sma = "cwi", routing = "powuh")
   modx
   
-  tmp <- fitByDE(modx, control = DEoptim.control(itermax = 10))
+  tmp <- fitByDream(modx, control = list(maxtime = 30))
   str(tmp$fit.result)
 
-  xyplot(as.ts(tmp$fit.result$member$bestvalit), type = "b",
-       xlab = "iterations", ylab = "objective function value")
+  summary(tmp$fit.result)
+
+  plot(tmp$fit.result)
 }
 }
 \keyword{ optimization }

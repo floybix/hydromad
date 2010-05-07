@@ -4,14 +4,16 @@
 ##
 
 
-fitByDE <-
+fitByDream <-
     function(MODEL,
-             objective = hydromad.getOption("objective"),
-             control = hydromad.getOption("de.control"),
+             func.type = "calc.rmse",
+             measurement = list(data = observed(MODEL)),
+             #### TODO: can use objective as likelihood?
+             objective = hydromad.getOption("objective"), 
+             control = hydromad.getOption("dream.control"),
              vcov = FALSE)
 {
-    library(DEoptim)
-    control <- do.call("DEoptim.control", control)
+    library(dream)
     start_time <- proc.time()
     parlist <- as.list(coef(MODEL, warn = FALSE))
     ## remove any missing parameters
@@ -26,34 +28,28 @@ fitByDE <-
     ## remove any fixed parameters
     parlist <- parlist[!isfixed]
     if (!isTRUE(hydromad.getOption("trace")))
-            control$trace <- FALSE
-    lower <- sapply(parlist, min)
-    upper <- sapply(parlist, max)
+            control$REPORT <- 0
     bestModel <- MODEL
     bestFunVal <- Inf
-    do_de <- function(pars) {
+    do_dream <- function(pars) {
         names(pars) <- names(parlist)
         thisMod <- update(MODEL, newpars = pars)
         if (!isValidModel(thisMod))
             return(1e8)
-        thisVal <- objFunVal(thisMod, objective = objective)
-        if (thisVal < bestFunVal) {
-            bestModel <<- thisMod
-            bestFunVal <<- thisVal
-        }
-        thisVal
+        as.numeric(fitted(thisMod))
     }
-    ans <- DEoptim(do_de, lower = lower, upper = upper,
-                    control = control)
-    bestModel$funevals <- ans$optim$nfeval
+    ans <- dream(do_dream, pars = parlist,
+                 func.type = func.type,
+                 control = control,
+                 measurement = measurement)
+    bestModel$funevals <- ans$fun.evals
     bestModel$timing <- signif(proc.time() - start_time, 4)[1:3]
     bestModel$objective <- objective
     if (vcov) {
         ## estimate covariance matrix from final population
-        ## TODO
-        #bestModel$cov.mat <-
-        ## ans$member$pop
-        warning("vcov not yet implemented")
+        start <- end(ans$Sequences)/2+1
+        bestModel$cov.mat <-
+            cov(as.matrix(window(ans$Sequences, start = start)))
     }
     bestModel$fit.call <- match.call()
     bestModel$fit.result <- ans

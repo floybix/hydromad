@@ -10,10 +10,10 @@
 fitByOptim(MODEL, objective = hydromad.getOption("objective"),
            method = hydromad.getOption("optim.method"),
            control = hydromad.getOption("optim.control"),
-           hessian = TRUE,
            samples = hydromad.getOption("fit.samples"),
            sampletype = c("latin.hypercube", "random", "all.combinations"),
-           multistart = FALSE, initpars = NULL)
+           multistart = FALSE,
+           vcov = FALSE, hessian = vcov, initpars = NULL)
 }
 \arguments{
   \item{MODEL}{
@@ -29,9 +29,6 @@ fitByOptim(MODEL, objective = hydromad.getOption("objective"),
     optimisation algorithm and settings. See \code{\link{optim}}. The
     default, "Nelder-Mead" (a simplex algorithm), is recommended.
   }
-  \item{hessian}{
-    
-  }
   \item{samples}{
     number of parameter sets to test.
   }
@@ -39,8 +36,17 @@ fitByOptim(MODEL, objective = hydromad.getOption("objective"),
     sampling scheme -- see \code{\link{parameterSets}}.
   }
   \item{multistart}{
-%%     ~~Describe \code{multistart} here~~
-}
+    if this is \code{TRUE}, then each of the initial parameter samples
+    (based on \code{samples} and \code{sampletype}) are used as a
+    starting value for a separate optimisation run, and the best result
+    is kept.
+  }
+  \item{vcov, hessian}{
+    if \code{vcov = TRUE}, the parameter variance-covariance matrix
+    will be estimated as the inverse of
+    the hessian matrix returned by \code{optim()}. This may be a very
+    poor estimate! It can be extract using \code{\link{vcov}}.
+  }
   \item{initpars}{
     initial parameter set.
   }
@@ -50,7 +56,8 @@ fitByOptim(MODEL, objective = hydromad.getOption("objective"),
 }
 \value{
   the best model from those sampled, according to the given
-  \code{objective} function.
+  \code{objective} function. The result from \code{\link{optim}} is
+  stored as item \code{fit.result}.
 }
 \author{
   Felix Andrews \email{felix@nfrac.org}

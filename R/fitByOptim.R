@@ -9,10 +9,11 @@ fitByOptim <-
              objective = hydromad.getOption("objective"),
              method = hydromad.getOption("optim.method"),
              control = hydromad.getOption("optim.control"),
-             hessian = TRUE,
              samples = hydromad.getOption("fit.samples"),
              sampletype = c("latin.hypercube", "random", "all.combinations"),
              multistart = FALSE,
+             vcov = FALSE,
+             hessian = vcov,
              initpars = NULL)
 {
     start_time <- proc.time()
@@ -37,7 +38,6 @@ fitByOptim <-
         funevals <- 0
         for (i in seq(NROW(psets))) {
             thisPars <- as.list(psets[i,,drop=FALSE])
-
             thisMod <-
                 try(fitByOptim(MODEL, objective = objective,
                                method = method, control = control,
@@ -54,7 +54,10 @@ fitByOptim <-
             }
         }
         bestModel$funevals <- funevals
+        bestModel$timing <- signif(proc.time() - start_time, 4)[1:3]
+        bestModel$fit.call <- match.call()
         return(bestModel)
+        
     } else {
         ## single optimisation run.
         lower <- sapply(parlist, min)
@@ -119,9 +122,6 @@ fitByOptim <-
             bestModel$msg <- ans
             return(bestModel)
         }
-        if (hessian) {
-            bestModel$cov.mat <- ans$hessian
-        }
         if (ans$convergence != 0) {
             msg <- if (ans$convergence == 1) {
                 "optim() reached maximum iterations"
@@ -137,7 +137,12 @@ fitByOptim <-
         bestModel$funevals <- ans$counts[1] + pre.funevals
         bestModel$timing <- signif(proc.time() - start_time, 4)[1:3]
         bestModel$objective <- objective
+        if (vcov) {
+            ## approximate covariance matrix from inverse of hessian (often poor!)
+            bestModel$cov.mat <- solve(ans$hessian)
+        }
         bestModel$fit.call <- match.call()
+        bestModel$fit.result <- ans
         return(bestModel)
     }
 }

@@ -139,6 +139,8 @@ export(fitBySCE)
 
 export(fitByDE)
 
+export(fitByDream)
+
 ## TODO: fitByGenoud?
 
 export(tsFitStat)

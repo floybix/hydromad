@@ -24,10 +24,16 @@ fitBySCE(MODEL,
   \item{control}{
     settings for the SCE algorithm. See \code{\link{SCEoptim}}.
   }
+  \item{vcov}{
+    if \code{vcov = TRUE}, the parameter variance-covariance matrix
+    will be estimated from the final population.
+    It can be extract using \code{\link{vcov}}.
+  }
 }
 \value{
   the best model from those sampled, according to the given
-  \code{objective} function.
+  \code{objective} function. The result from \code{\link{SCEoptim}} is
+  stored as item \code{fit.result}.
 }
 \author{
   Felix Andrews \email{felix@nfrac.org}
@@ -37,6 +43,19 @@ fitBySCE(MODEL,
   \code{\link{objFunVal}}
 }
 \examples{
+data(Cotter)
+x <- Cotter[1:1000]
 
+## IHACRES CWI model with power law unit hydrograph
+modx <- hydromad(x, sma = "cwi", routing = "powuh")
+modx
+
+tmp <- fitBySCE(modx, control = list(returnpop = TRUE))
+str(tmp$fit.result)
+
+iterfits <- t(tmp$fit.result$POP.FIT.ALL)
+xyplot(as.ts(apply(iterfits, 1, min)), type = "b",
+       xlab = "iterations", ylab = "objective function value") +
+layer(panel.xyplot(1:nrow(iterfits), iterfits, type = c("p","a"), lwd = 2))
 }
 \keyword{ optimization }

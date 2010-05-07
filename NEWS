@@ -1,6 +1,16 @@
 
 Changes in Version 0.8-2 (in development)
 
+  o new function fitByDream(), using the dream package.
+    This still needs more thought; the objective function can not 
+    be used directly.
+
+  o fitByOptim, fitBySCE, fitByDE now store the result from their 
+    respective optimisation functions in the model object as "fit.result".
+
+  o fitByOptim, fitBySCE, fitByDE all now have a vcov argument, 
+    default FALSE, to estimate the parameter variance-covariance matrix.
+
   o xyplot() applied to a hydromad.runlist now recognises the 'scales' 
     argument (it was erroneously ignored previously).
 

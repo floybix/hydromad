@@ -7,7 +7,8 @@
 fitBySCE <-
     function(MODEL, 
              objective = hydromad.getOption("objective"),
-             control = hydromad.getOption("sce.control"))
+             control = hydromad.getOption("sce.control"),
+             vcov = FALSE)
 {
     start_time <- proc.time()
     parlist <- as.list(coef(MODEL, warn = FALSE))
@@ -42,18 +43,23 @@ fitBySCE <-
     }
     ans <- SCEoptim(do_sce, initpars, lower = lower, upper = upper,
                     control = control)
-    if (isTRUE(control$returnpop))
-        return(ans)
     if (ans$convergence != 0) {
         if (!isTRUE(hydromad.getOption("quiet"))) {
             warning(ans$message)
         }
         bestModel$msg <- ans$message
     }
-    bestModel$sce.iterations <- ans$iterations
     bestModel$funevals <- ans$counts
     bestModel$timing <- signif(proc.time() - start_time, 4)[1:3]
     bestModel$objective <- objective
+    if (vcov) {
+        ## estimate covariance matrix from final population
+        ## TODO
+        #bestModel$cov.mat <-
+        #ans$POP.ALL
+        warning("vcov not yet implemented")
+    }
     bestModel$fit.call <- match.call()
+    bestModel$fit.result <- ans
     return(bestModel)
 }
