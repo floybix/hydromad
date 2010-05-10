@@ -9,6 +9,7 @@ fitByDream <-
              func.type = "calc.rmse",
              measurement = list(data = observed(MODEL)),
              #### TODO: can use objective as likelihood?
+             loglik = ~ -0.5 * sum((Q-X)^2),
              objective = hydromad.getOption("objective"), 
              control = hydromad.getOption("dream.control"),
              vcov = FALSE)
@@ -29,19 +30,20 @@ fitByDream <-
     parlist <- parlist[!isfixed]
     if (!isTRUE(hydromad.getOption("trace")))
             control$REPORT <- 0
-    bestModel <- MODEL
-    bestFunVal <- Inf
     do_dream <- function(pars) {
         names(pars) <- names(parlist)
         thisMod <- update(MODEL, newpars = pars)
         if (!isValidModel(thisMod))
-            return(1e8)
-        as.numeric(fitted(thisMod))
+            return(-1e8)
+        #as.numeric(fitted(thisMod))
+        objFunVal(thisMod, objective = loglik)
     }
     ans <- dream(do_dream, pars = parlist,
-                 func.type = func.type,
-                 control = control,
-                 measurement = measurement)
+                 func.type = "logposterior.density", #func.type,
+                 #measurement = measurement,
+                 control = control)
+    bestPars <- coef(ans, method = "sample.ml")
+    bestModel <- update(MODEL, newpars = bestPars)
     bestModel$funevals <- ans$fun.evals
     bestModel$timing <- signif(proc.time() - start_time, 4)[1:3]
     bestModel$objective <- objective
