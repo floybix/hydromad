@@ -1,4 +1,9 @@
 
+Changes in Version 0.8-3 (in development)
+
+  o added hydromad.options("loglik"), used by fitByDream() and 
+    a new logLik() method.
+
 Changes in Version 0.8-2
 
   o new function fitByDream(), using the dream package.

@@ -94,12 +94,14 @@ summary(foo)
 ## parameter correlation matrix (dodgy!) with symbols
 symnum(cov2cor(vcov(foo)))
 
-## return value from optim (+ objseq added):
+## return value from optim (with 'objseq' added):
 str(foo$fit.result)
 
+## plot objective function value convergence over time
 ppp <- foo$fit.result$objseq
-convergenceTs <- ts(ppp, deltat = foo$funevals / length(ppp))
+convergenceTs <- ts(ppp, end = foo$funevals,
+  deltat = foo$funevals / length(ppp))
 xyplot(convergenceTs, type = "b",
-    xlab = "function evaluations", ylab = "objective fn. value")
+  xlab = "function evaluations", ylab = "objective fn. value")
 }
 \keyword{ optimization }

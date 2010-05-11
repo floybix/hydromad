@@ -23,6 +23,7 @@
          warmup = 100,
          normalise = TRUE,
          fit.samples = 100,
+         loglik = ~ sum(dnorm(Q-X, sd = 1.2345, log = TRUE), na.rm = TRUE),
          objective = ~ -2 * fitStat(Q, X, trans = sqrt) + abs(fitBias(Q, X)),
          summary.stats = c("rel.bias", "r.squared", "r.sq.sqrt", "r.sq.log", "persistence"),
          stats = statDefns(),

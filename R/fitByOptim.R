@@ -68,6 +68,7 @@ fitByOptim <-
 #        lower[is.na(lower)] <- -Inf
 #        upper[is.na(upper)] <- Inf
         pre.funevals <- 0
+        preMODEL <- MODEL
         if (!is.null(initpars)) {
             ## initial parameter values were specified.
             initpars <- unlist(initpars)[names(parlist)]
@@ -89,8 +90,12 @@ fitByOptim <-
             control$trace <- 0
         bestModel <- MODEL
         bestFunVal <- Inf
-        objseq <- rep(NA_real_, 100)
-        i <- 0
+        objseq <- numeric()
+        if (pre.funevals > 0) {
+            objseq <- preMODEL$fit.result$objseq
+        }
+        i <- length(objseq)
+        objseq <- c(objseq, rep(NA_real_, 100))
         do_optim <- function(pars) {
             ## TODO: handle boundaries better
             #i <- which(pars < lower)
@@ -103,6 +108,7 @@ fitByOptim <-
             #}
 
             i <<- i + 1
+            
             ## TODO: just set params to bounded values?
 
             if (any(pars < lower)) return(NA)

@@ -4,10 +4,10 @@
   Fit a hydromad model using the DREAM (DiffeRential Evolution Adaptive Metropolis) algorithm.
 }
 \description{
-  Fit a hydromad model using the DE (DiffeRential Evolution Adaptive Metropolis) algorithm.
+  Fit a hydromad model using the DREAM (DiffeRential Evolution Adaptive Metropolis) algorithm.
 }
 \usage{
-fitByDream(MODEL, loglik = ~ -0.5 * sum((Q-X)^2),
+fitByDream(MODEL, loglik = hydromad.getOption("loglik"),
            control = hydromad.getOption("dream.control"),
            vcov = TRUE)
 }
@@ -55,35 +55,58 @@ fitByDream(MODEL, loglik = ~ -0.5 * sum((Q-X)^2),
   \code{\link{objFunVal}}
 }
 \examples{
-if (require("dream")) {
+library("dream")
 
-  data(Cotter)
-  x <- Cotter[1:1000]
+data(Cotter)
+x <- Cotter[1:1000]
 
-  ## IHACRES CWI model with power law unit hydrograph
-  modx <- hydromad(x, sma = "cwi", routing = "powuh")
-  modx
-  
-  foo <- fitByDream(modx, control = list(maxtime = 30))
+## IHACRES CWI model with power law unit hydrograph
+modx <- hydromad(x, sma = "cwi", routing = "powuh")
+modx
 
-  summary(foo)
+foo <- fitByDream(modx, control = list(maxtime = 30))
 
-  ## parameter correlation matrix with symbols
-  symnum(cov2cor(vcov(foo)))
+summary(foo)
 
-  ## return value from dream:
-  str(foo$fit.result)
+## parameter correlation matrix with symbols
+symnum(cov2cor(vcov(foo)))
 
-  ppp <- foo$fit.result$hist.logp
-  convergenceTs <- ts(-ppp, deltat = foo$funevals / nrow(ppp))
-  xyplot(window(convergenceTs, start = 50),
-    superpose = TRUE, auto.key = FALSE,
-    xlab = "function evaluations", ylab = "neg. log likelihood")
+## return value from dream:
+str(foo$fit.result)
 
-  ## MCMC diagnostics:
-  summary(foo$fit.result)
-  plot(foo$fit.result)
+## plot log-likelihood value convergence over time
+ppp <- foo$fit.result$hist.logp
+convergenceTs <- ts(-ppp, end = foo$funevals,
+  deltat = foo$funevals / nrow(ppp))
+xyplot(window(convergenceTs, start = 50),
+  superpose = TRUE, auto.key = FALSE,
+  xlab = "function evaluations", ylab = "neg. log likelihood")
 
-}
+## calculate corresponding objective function values over time.
+## could do it in a straightforward way by evaluating model at
+## each time step and for each chain, but would take a long time!
+## so instead, only re-calculate objective when likelihood improves.
+bestLik <- apply(ppp, 1, max) ## best of the chains at each step
+improved <- c(TRUE, diff(cummax(bestLik)) != 0)
+message("proportion of steps with improvement: ",
+        round(mean(improved), 3))
+seqn <- foo$fit.result$Sequences
+## calculate r squared for each time step with improvement
+improv.rsq <- sapply(which(improved), function(i) {
+    ichain <- which.max(ppp[i,])
+    ipars <- seqn[[ichain]][i,]
+    objFunVal(update(modx, newpars = ipars),
+              objective = ~ fitStat(Q,X))
+})
+rsq <- rep(0, NROW(ppp))
+rsq[improved] <- improv.rsq
+rsq <- cummax(rsq)
+rsqTs <- ts(rsq, end = foo$funevals,
+  deltat = foo$funevals / length(rsq))
+xyplot(rsqTs, type = "b",
+  xlab = "function evaluations", ylab = "objective fn. value")
+
+## MCMC diagnostics and more are available:
+methods(class = "dream")
 }
 \keyword{ optimization }

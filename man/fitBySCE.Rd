@@ -70,12 +70,13 @@ summary(foo)
 ## return value from SCE:
 str(foo$fit.result)
 
+## plot objective function value convergence over time
 ppp <- t(foo$fit.result$POP.FIT.ALL)
-convergenceTs <- ts(ppp, deltat = foo$funevals / NROW(ppp))
-
-xyplot(convergenceTs, screens = 1, type = "p", ylim = c(NA,-1.3),
+convergenceTs <- ts(ppp, end = foo$funevals,
+  deltat = foo$funevals / nrow(ppp))
+xyplot(convergenceTs, screens = 1, type = "p",
+  jitter.x = TRUE, ylim = c(NA, -1.3),
   xlab = "function evaluations", ylab = "objective fn. value") +
-layer(panel.average(..., horiz = FALSE, lwd = 2)) +
-layer(panel.average(..., horiz = FALSE, fun = min, lwd = 2, col = 1))
+layer(panel.average(..., horiz = FALSE, fun = min, lwd = 2))
 }
 \keyword{ optimization }

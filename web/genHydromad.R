@@ -35,9 +35,8 @@ spec[["calibration"]] <-
          list("fitBySampling", do.example = FALSE),
          list("fitByOptim", do.example = FALSE),
          list("fitBySCE", do.example = FALSE),
-         list("fitByDE", do.example = FALSE)
-         #list("fitByDream")
-         #list("mcmcByDream")
+         list("fitByDE", do.example = FALSE),
+         list("fitByDream", do.example = FALSE)
          )
 
 spec[["soil moisture accounting"]] <-
@@ -63,9 +62,9 @@ spec[["routing"]] <-
 
 spec[["routing fitting"]] <-
     list(
-         list("armax.ls.fit"),
-         list("armax.sriv.fit"),
-         list("armax.inverse.fit"),
+         list("armax.ls.fit", do.example = FALSE),
+         list("armax.sriv.fit", do.example = FALSE),
+         list("armax.inverse.fit", do.example = FALSE),
          #"lambda.inverse.fit"
          list("tryModelOrders", do.example = FALSE),
          list("estimateDelay", do.example = FALSE)

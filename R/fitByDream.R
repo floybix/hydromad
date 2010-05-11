@@ -3,12 +3,14 @@
 ## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
-
 fitByDream <-
     function(MODEL,
              #func.type = "calc.rmse",
              #measurement = list(data = observed(MODEL)),
-             loglik = ~ -0.5 * sum((Q-X)^2),
+             loglik = hydromad.getOption("loglik"),
+             #loglik = ~ sum(dnorm(Q-X, sd = 1.2345, log = TRUE), na.rm = TRUE),
+             #loglik = ~ sum(dnorm(log(Q+1)-log(X+1), sd = 0.1, log = TRUE), na.rm = TRUE),
+             #loglik = ~ -0.5 * sum((Q-X)^2),
              control = hydromad.getOption("dream.control"),
              vcov = TRUE)
 {

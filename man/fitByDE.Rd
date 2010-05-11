@@ -55,27 +55,27 @@ fitByDE(MODEL,
   \code{\link{objFunVal}}
 }
 \examples{
-if (require("DEoptim")) {
+library("DEoptim")
 
-  data(Cotter)
-  x <- Cotter[1:1000]
+data(Cotter)
+x <- Cotter[1:1000]
 
-  ## IHACRES CWI model with power law unit hydrograph
-  modx <- hydromad(x, sma = "cwi", routing = "powuh")
-  modx
-  
-  foo <- fitByDE(modx, control = DEoptim.control(itermax = 10))
+## IHACRES CWI model with power law unit hydrograph
+modx <- hydromad(x, sma = "cwi", routing = "powuh")
+modx
 
-  summary(foo)
+foo <- fitByDE(modx, control = DEoptim.control(itermax = 10))
 
-  ## return value from DE:
-  str(foo$fit.result)
+summary(foo)
 
-  ppp <- foo$fit.result$member$bestvalit
-  convergenceTs <- ts(foo$fit.result$member$bestvalit,
-    deltat = foo$funevals / length(ppp))
-  xyplot(convergenceTs, type = "b",
-    xlab = "function evaluations", ylab = "objective fn. value")
-}
+## return value from DE:
+str(foo$fit.result)
+
+## plot objective function value convergence over time
+ppp <- foo$fit.result$member$bestvalit
+convergenceTs <- ts(foo$fit.result$member$bestvalit,
+  end = foo$funevals, deltat = foo$funevals / length(ppp))
+xyplot(convergenceTs, type = "b",
+  xlab = "function evaluations", ylab = "objective fn. value")
 }
 \keyword{ optimization }
