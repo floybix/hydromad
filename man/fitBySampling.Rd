@@ -29,7 +29,7 @@ fitBySampling(MODEL, objective = hydromad.getOption("objective"),
   }
 }
 \details{
-
+  See \code{\link{parameterSets}}.
 }
 \value{
   the best model from those sampled, according to the given
@@ -45,5 +45,20 @@ fitBySampling(MODEL, objective = hydromad.getOption("objective"),
 }
 \examples{
 
+data(Cotter)
+x <- Cotter[1:1000]
+
+## IHACRES CWI model with armax unit hydrograph fitted by least squares
+modx <- hydromad(x, sma = "cwi", routing = "armax", rfit = "ls")
+modx
+
+foo <- fitBySampling(modx)
+
+summary(foo)
+
+ppp <- foo$fit.result$objseq
+convergenceTs <- ts(ppp, deltat = foo$funevals / length(ppp))
+xyplot(convergenceTs, type = "b",
+    xlab = "function evaluations", ylab = "objective fn. value")
 }
 \keyword{ optimization }

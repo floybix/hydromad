@@ -1,12 +1,12 @@
 
-Changes in Version 0.8-2 (in development)
+Changes in Version 0.8-2
 
   o new function fitByDream(), using the dream package.
-    This still needs more thought; the objective function can not 
-    be used directly.
+    NB: this uses a likelihood function, not the objective function.
 
-  o fitByOptim, fitBySCE, fitByDE now store the result from their 
-    respective optimisation functions in the model object as "fit.result".
+  o the fitting functions now store the result from their 
+    respective optimisation functions in the model object as "fit.result",
+    and fitByOptim and fitBySampling now record the objective over time.
 
   o fitByOptim, fitBySCE, fitByDE all now have a vcov argument, 
     default FALSE, to estimate the parameter variance-covariance matrix.

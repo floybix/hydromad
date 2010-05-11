@@ -9,7 +9,8 @@
 \usage{
 fitBySCE(MODEL, 
          objective = hydromad.getOption("objective"),
-         control = hydromad.getOption("sce.control"))
+         control = hydromad.getOption("sce.control"),
+         vcov = FALSE)
 }
 \arguments{
   \item{MODEL}{
@@ -32,8 +33,19 @@ fitBySCE(MODEL,
 }
 \value{
   the best model from those sampled, according to the given
-  \code{objective} function. The result from \code{\link{SCEoptim}} is
-  stored as item \code{fit.result}.
+  \code{objective} function. Also, these extra elements are inserted:
+  \item{fit.result}{
+    the result from \code{\link{SCEoptim}}.
+  }
+  \item{objective}{
+    the \code{objective} function used.
+  }
+  \item{funevals}{
+    total number of evaluations of the model simulation function.
+  }
+  \item{timing}{
+    timing vector as returned by \code{system.time}.
+  }
 }
 \author{
   Felix Andrews \email{felix@nfrac.org}
@@ -50,12 +62,20 @@ x <- Cotter[1:1000]
 modx <- hydromad(x, sma = "cwi", routing = "powuh")
 modx
 
-tmp <- fitBySCE(modx, control = list(returnpop = TRUE))
-str(tmp$fit.result)
+foo <- fitBySCE(modx,
+  control = list(returnpop = TRUE, maxtime = 30))
 
-iterfits <- t(tmp$fit.result$POP.FIT.ALL)
-xyplot(as.ts(apply(iterfits, 1, min)), type = "b",
-       xlab = "iterations", ylab = "objective function value") +
-layer(panel.xyplot(1:nrow(iterfits), iterfits, type = c("p","a"), lwd = 2))
+summary(foo)
+
+## return value from SCE:
+str(foo$fit.result)
+
+ppp <- t(foo$fit.result$POP.FIT.ALL)
+convergenceTs <- ts(ppp, deltat = foo$funevals / NROW(ppp))
+
+xyplot(convergenceTs, screens = 1, type = "p", ylim = c(NA,-1.3),
+  xlab = "function evaluations", ylab = "objective fn. value") +
+layer(panel.average(..., horiz = FALSE, lwd = 2)) +
+layer(panel.average(..., horiz = FALSE, fun = min, lwd = 2, col = 1))
 }
 \keyword{ optimization }

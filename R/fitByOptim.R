@@ -35,6 +35,7 @@ fitByOptim <-
         psets <- parameterSets(parlist, samples = samples, method = sampletype)
         bestModel <- MODEL
         bestFunVal <- Inf
+        objseq <- numeric()
         funevals <- 0
         for (i in seq(NROW(psets))) {
             thisPars <- as.list(psets[i,,drop=FALSE])
@@ -47,6 +48,7 @@ fitByOptim <-
             if (!isValidModel(thisMod))
                 next
             funevals <- funevals + thisMod$funevals
+            objseq <- c(objseq, thisMod$fit.result$objseq)
             thisVal <- objFunVal(thisMod, objective = objective)
             if (thisVal < bestFunVal) {
                 bestModel <- thisMod
@@ -56,6 +58,7 @@ fitByOptim <-
         bestModel$funevals <- funevals
         bestModel$timing <- signif(proc.time() - start_time, 4)[1:3]
         bestModel$fit.call <- match.call()
+        bestModel$fit.result$objseq <- objseq
         return(bestModel)
         
     } else {
@@ -86,6 +89,8 @@ fitByOptim <-
             control$trace <- 0
         bestModel <- MODEL
         bestFunVal <- Inf
+        objseq <- rep(NA_real_, 100)
+        i <- 0
         do_optim <- function(pars) {
             ## TODO: handle boundaries better
             #i <- which(pars < lower)
@@ -97,6 +102,7 @@ fitByOptim <-
             #    return( 1e12 + (sum(pars[i] - upper[i])) * 1e6 )
             #}
 
+            i <<- i + 1
             ## TODO: just set params to bounded values?
 
             if (any(pars < lower)) return(NA)
@@ -105,6 +111,7 @@ fitByOptim <-
             if (!isValidModel(thisMod))
                 return(NA)
             thisVal <- objFunVal(thisMod, objective = objective)
+            objseq[i] <<- thisVal
             if (thisVal < bestFunVal) {
                 bestModel <<- thisMod
                 bestFunVal <<- thisVal
@@ -142,6 +149,7 @@ fitByOptim <-
             bestModel$cov.mat <- solve(ans$hessian)
         }
         bestModel$fit.call <- match.call()
+        ans$objseq <- objseq[1:i]
         bestModel$fit.result <- ans
         return(bestModel)
     }

@@ -27,7 +27,7 @@ fitByOptim(MODEL, objective = hydromad.getOption("objective"),
   }
   \item{method, control}{
     optimisation algorithm and settings. See \code{\link{optim}}. The
-    default, "Nelder-Mead" (a simplex algorithm), is recommended.
+    default, "Nelder-Mead" (a simplex algorithm), is generally the most robust.
   }
   \item{samples}{
     number of parameter sets to test.
@@ -52,12 +52,24 @@ fitByOptim(MODEL, objective = hydromad.getOption("objective"),
   }
 }
 \details{
-
+  See \code{\link{optim}} for a brief description of the available
+  algorithms, including references to literature.
 }
 \value{
   the best model from those sampled, according to the given
-  \code{objective} function. The result from \code{\link{optim}} is
-  stored as item \code{fit.result}.
+  \code{objective} function. Also, these extra elements are inserted:
+  \item{fit.result}{
+    the result from \code{\link{optim}}.
+  }
+  \item{objective}{
+    the \code{objective} function used.
+  }
+  \item{funevals}{
+    total number of evaluations of the model simulation function.
+  }
+  \item{timing}{
+    timing vector as returned by \code{system.time}.
+  }
 }
 \author{
   Felix Andrews \email{felix@nfrac.org}
@@ -68,6 +80,26 @@ fitByOptim(MODEL, objective = hydromad.getOption("objective"),
   \code{\link{objFunVal}}
 }
 \examples{
+data(Cotter)
+x <- Cotter[1:1000]
 
+## IHACRES CWI model with power law unit hydrograph
+modx <- hydromad(x, sma = "cwi", routing = "powuh")
+modx
+
+foo <- fitByOptim(modx, vcov = TRUE)
+
+summary(foo)
+
+## parameter correlation matrix (dodgy!) with symbols
+symnum(cov2cor(vcov(foo)))
+
+## return value from optim (+ objseq added):
+str(foo$fit.result)
+
+ppp <- foo$fit.result$objseq
+convergenceTs <- ts(ppp, deltat = foo$funevals / length(ppp))
+xyplot(convergenceTs, type = "b",
+    xlab = "function evaluations", ylab = "objective fn. value")
 }
 \keyword{ optimization }

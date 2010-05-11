@@ -25,6 +25,7 @@ fitBySampling <-
     psets <- parameterSets(parlist, samples = samples, method = sampletype)
     bestModel <- MODEL
     bestFunVal <- Inf
+    objseq <- rep(NA_real_, NROW(psets))
     for (i in seq(NROW(psets))) {
         thisPars <- as.list(psets[i,,drop=FALSE])
         if (isTRUE(hydromad.getOption("trace"))) {
@@ -37,6 +38,7 @@ fitBySampling <-
             next
         thisVal <- objFunVal(thisMod, objective = objective,
                              nan.ok = hydromad.getOption("catch.errors"))
+        objseq[i] <- thisVal
         if (is.na(thisVal))
             next
         if (thisVal < bestFunVal) {
@@ -48,6 +50,6 @@ fitBySampling <-
     bestModel$timing <- signif(proc.time() - start_time, 4)[1:3]
     bestModel$objective <- objective
     bestModel$fit.call <- match.call()
-    bestModel$fit.result <- list()
+    bestModel$fit.result <- list(objseq = objseq)
     bestModel
 }

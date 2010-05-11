@@ -6,13 +6,11 @@
 
 fitByDream <-
     function(MODEL,
-             func.type = "calc.rmse",
-             measurement = list(data = observed(MODEL)),
-             #### TODO: can use objective as likelihood?
+             #func.type = "calc.rmse",
+             #measurement = list(data = observed(MODEL)),
              loglik = ~ -0.5 * sum((Q-X)^2),
-             objective = hydromad.getOption("objective"), 
              control = hydromad.getOption("dream.control"),
-             vcov = FALSE)
+             vcov = TRUE)
 {
     library(dream)
     start_time <- proc.time()
@@ -39,14 +37,13 @@ fitByDream <-
         objFunVal(thisMod, objective = loglik)
     }
     ans <- dream(do_dream, pars = parlist,
-                 func.type = "logposterior.density", #func.type,
-                 #measurement = measurement,
+                 func.type = "logposterior.density",
                  control = control)
     bestPars <- coef(ans, method = "sample.ml")
     bestModel <- update(MODEL, newpars = bestPars)
     bestModel$funevals <- ans$fun.evals
     bestModel$timing <- signif(proc.time() - start_time, 4)[1:3]
-    bestModel$objective <- objective
+    bestModel$objective <- loglik
     if (vcov) {
         ## estimate covariance matrix from final population
         start <- end(ans$Sequences)/2+1
