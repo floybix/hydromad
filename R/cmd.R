@@ -6,14 +6,16 @@
 ## IHACRES Catchment Moisture Deficit (CMD) model.
 cmd.sim <-
     function(DATA,
-             d, f, e, M_0 = d/2,
+             f, e, d, shape = 0,
+             M_0 = d/2,
              return_state = FALSE)
 {
     stopifnot(c("P","E") %in% colnames(DATA))
     ## check values
-    stopifnot(d >= 0)
     stopifnot(f >= 0)
     stopifnot(e >= 0)
+    stopifnot(d >= 0)
+    stopifnot(shape >= 0)
     ## default initial state
     if (is.na(M_0)) M_0 <- d / 2
 
@@ -35,9 +37,10 @@ cmd.sim <-
                 as.double(P),
                 as.double(E),
                 as.integer(NROW(DATA)),
-                as.double(d),
                 as.double(g),
                 as.double(e),
+                as.double(d),
+                as.double(shape),
                 as.double(M_0),
                 U = double(NROW(DATA)),
                 M = double(NROW(DATA)),
@@ -51,16 +54,44 @@ cmd.sim <-
         U <- M <- ET <- P
         M_prev <- M_0
         for (t in seq(1, length(P))) {
-            ## rainfall reduces CMD (Mf)
+            ## default, for when P[t] == 0:
+            Mf <- M_prev
+            ## select form of dU/dP relationship
             if (P[t] > 0) {
-                if (M_prev < d)
-                    Mf <- M_prev * exp(-P[t] / d)
-                else if (M_prev < d + P[t])
-                    Mf <- d * exp((-P[t] + M_prev - d) / d)
-                else
-                    Mf <- M_prev - P[t]
-            } else {
-                Mf <- M_prev
+                ## rainfall reduces CMD (Mf)
+                if (shape < 1) {
+                    ## linear form: dU/dP = 1 - (M/d)
+                    if (M_prev < d) {
+                        Mf <- M_prev * exp(-P[t] / d)
+                    } else if (M_prev < d + P[t]) {
+                        Mf <- d * exp((-P[t] + M_prev - d) / d)
+                    } else {
+                        Mf <- M_prev - P[t]
+                    }
+                }
+                else if (shape == 1) {
+                    ## hyperbolic form: dU/dP = 1 - ??
+                    if (M_prev < d) {
+                        Mf <- 1 / tan((M_prev / d) * (pi / 2))
+                        Mf <- (2 * d / pi) * atan(1 / (pi * P[t] / (2 * d) + Mf))
+                    } else if (M_prev < d + P[t]) {
+                        Mf <- (2 * d / pi) * atan(2 * d / (pi * (d - M_prev + P[t])))
+                    } else {
+                        Mf <- M_prev - P[t]
+                    }
+                }
+                else { ## shape > 1
+                    ## power form: dU/dP = 1 - (M/d)^b
+                    a <- 10 ^ (shape / 50)
+                    if (M_prev < d) {
+                        Mf <- M_prev * (1 - ((1-a) * P[t] / (d^a)) /
+                                        (M_prev ^ (1-a))) ^ (1/(1-a))
+                    } else if (M_prev < d + P[t]) {
+                        Mf <- d * (1 - (1-a) * (P[t] - M_prev + d) / d) ^ (1/(1-a))
+                    } else {
+                        Mf <- M_prev - P[t]
+                    }
+                }
             }
             ## drainage (rainfall not accounted for in -dM)
             U[t] <- max(0, P[t] - M_prev + Mf)
@@ -70,7 +101,6 @@ cmd.sim <-
             ## mass balance
             M[t] <- M_prev - P[t] + U[t] + ET[t]
             M_prev <- M[t] <- max(0, M[t])
-            ##M[t] <- M_prev <- max(0, Mf + ET[t])
         }
     }
     attributes(U) <- inAttr
@@ -85,6 +115,6 @@ cmd.sim <-
 }
 
 cmd.ranges <- function()
-    list(d = c(50, 550),
-         f = c(0.01, 3),
-         e = c(0.01, 1.5))
+    list(f = c(0.01, 3),
+         e = c(0.01, 1.5),
+         d = c(50, 550))

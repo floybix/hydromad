@@ -41,15 +41,15 @@ spec[["calibration"]] <-
 
 spec[["soil moisture accounting"]] <-
     list(
-         list("scalar"),
-         list("cwi", helpname = "IHACRES.CWI.model", codefile = "cwi.R"),
-         list("cmd", helpname = "IHACRES.CMD.model", codefile = "cmd.R"),
-         list("bucket"),
-         list("awbm"),
-         list("sacramento", height = 700),
-         list("snow", height = 500),
-         list("runoffratio"),
-         list("dbm")
+         list("scalar", do.example = FALSE),
+         list("cwi", helpname = "IHACRES.CWI.model", codefile = "cwi.R", do.example = FALSE),
+         list("cmd", helpname = "IHACRES.CMD.model", codefile = "cmd.R", do.example = FALSE),
+         list("bucket", do.example = FALSE),
+         list("awbm", do.example = FALSE),
+         list("sacramento", height = 700, do.example = FALSE),
+         list("snow", height = 500, do.example = FALSE),
+         list("runoffratio", do.example = FALSE),
+         list("dbm", do.example = FALSE)
          )
 
 spec[["routing"]] <-

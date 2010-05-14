@@ -9,8 +9,8 @@
   drainage, evapo-transpiration, and changes in catchment moisture.
 }
 \usage{
-cmd.sim(DATA, d, f, e, M_0 = d/2,
-        return_state = FALSE)
+cmd.sim(DATA, f, e, d, shape = 0,
+        M_0 = d/2, return_state = FALSE)
 }
 \arguments{
   \item{DATA}{
@@ -21,36 +21,48 @@ cmd.sim(DATA, d, f, e, M_0 = d/2,
 	temperature as an indicator of this. }
     }
   }
-  \item{d}{ CMD threshold for producing flow. }
   \item{f}{ CMD stress threshold as a proportion of \code{d}. }
   \item{e}{ temperature to PET conversion factor. }
+  \item{d}{ CMD threshold for producing flow. }
+  \item{shape}{
+    defines form of the \eqn{dU/dP} relationship:
+    \code{shape = 0} is the linear form, \code{shape = 1} is the hyperbolic
+    form, and \code{shape > 1} is the power form.
+  }
   \item{M_0}{ starting CMD value. }
   \item{return_state}{ to return state variables as well as the effective rainfall. }
 }
 \details{
-	The mass balance step is:
-	\deqn{M[t] = M[t-1] - P[t] + E_T[t] + U[t]}
+  The mass balance step is:
+  \deqn{M[t] = M[t-1] - P[t] + E_T[t] + U[t]}
 
-	where \eqn{M} represents catchment moisture deficit (CMD),
-	constrained below by 0 (the nominal fully saturated level).
-	P is catchment areal rainfall, \eqn{E_T} is evapo-transpiration, and
-	U is drainage (effective rainfall). All are, typically, in units of
-	mm per time step.
+  where \eqn{M} represents catchment moisture deficit (CMD), constrained
+  below by 0 (the nominal fully saturated level).  P is catchment areal
+  rainfall, \eqn{E_T} is evapo-transpiration, and U is drainage
+  (effective rainfall). All are, typically, in units of mm per time
+  step.
 
-	Rainfall effectiveness (i.e. drainage proportion) is
-	a simple \emph{instantaneous} function of the CMD, with a threshold at \eqn{M = d}:
-	\deqn{\frac{\mathrm{d}U}{\mathrm{d}P} = 1 - \min(1, M/d)}{
-	      dU/dP = 1 - min(1, M/d)}
+  Rainfall effectiveness (i.e. drainage proportion) is a simple
+  \emph{instantaneous} function of the CMD, with a threshold at \eqn{M =
+  d}. In the default linear form this is:
 
-	The actual drainage each time step involves the integral of that relation.
+  \deqn{\frac{\mathrm{d}U}{\mathrm{d}P} = 1 - \min(1, M/d)}{
+    dU/dP = 1 - min(1, M/d)}
 
-	Evapo-transpiration (as a proportion of the potential rate, \code{E[t]})
-	is also a simple function of the CMD, with a threshold at \eqn{M = f d}{M = f * d}:
-	\deqn{E_T[t] = e E[t] \min(1, \exp\left(2\left(1 - \frac{M_f}{fd}\right)\right))}{
-	      E_T[t] = e E[t] \min(1, \exp(2(1 - M_f / (fd))))}
+  The power form is
 
-        Note that the evapo-transpiration calculation is based on \eqn{M_f},
-	which is the CMD after precipitation and drainage have been accounted for.
+  \deqn{\frac{\mathrm{d}U}{\mathrm{d}P} = 1 - \min(1, (M/d)^b)}{
+    dU/dP = 1 - min(1, (M/d)^b)}
+
+  The actual drainage each time step involves the integral of that relation.
+
+  Evapo-transpiration (as a proportion of the potential rate, \code{E[t]})
+  is also a simple function of the CMD, with a threshold at \eqn{M = f d}{M = f * d}:
+  \deqn{E_T[t] = e E[t] \min(1, \exp\left(2\left(1 - \frac{M_f}{fd}\right)\right))}{
+    E_T[t] = e E[t] \min(1, \exp(2(1 - M_f / (fd))))}
+
+  Note that the evapo-transpiration calculation is based on \eqn{M_f},
+  which is the CMD after precipitation and drainage have been accounted for.
 }
 \value{
   \code{cmd.sim} returns the modelled time series of effective rainfall,
