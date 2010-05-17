@@ -9,7 +9,7 @@
 \usage{
 snow.sim(DATA, Tmax, Tmin, kd, kf, rcap, Tmelt = Tmin,
          cr = 1, cs = 1, LSWE_0 = 0, ISWE_0 = 0,
-         d, f, e, M_0 = d/2, return_state = FALSE)
+         ..., return_state = FALSE)
 }
 \arguments{
   \item{DATA}{ a \code{\link{ts}}-like object with named columns:
@@ -41,7 +41,7 @@ snow.sim(DATA, Tmax, Tmin, kd, kf, rcap, Tmelt = Tmin,
   }
   \item{cr}{ correction factor for rainfall. }
   \item{cs}{ correction factor for snowfall. }
-  \item{d, f, e, M_0}{
+  \item{\dots}{
     parameters for the \link{IHACRES.CMD.model}.
   }
   \item{return_state}{

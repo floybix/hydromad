@@ -66,8 +66,8 @@ fitBias(obs, mod, relative.bias = TRUE)
   \item{offset}{
     a constant offset to apply to all data before calculating the fit
     statistic (and before applying \code{trans}). If equal to
-    \code{TRUE}, the offset is taken as the 10\% quantile of the
-    positive values of \code{obs}.  
+    \code{TRUE}, the offset is taken as the 10\% quantile (i.e. lowest
+    decile) of the non-zero values of \code{obs}.
   }
   \item{negatives.ok}{
     if \code{FALSE}, the default case, all values in \code{obs},

@@ -74,7 +74,7 @@
       transformed data (roughly equal weight to all flow levels),
       \eqn{1 - \frac{\sum |\log{(Q+\epsilon)} - \log{(X+\epsilon)}|^2 }
 	            {\sum |\log{(Q+\epsilon)} - \bar{\log{(Q+\epsilon)}}|^2 }}.
-      By default \eqn{\epsilon} is the 90 percentile (i.e. lowest
+      Here \eqn{\epsilon} is the 10 percentile (i.e. lowest
       decile) of the non-zero values of Q.
     }
     \item{r.sq.diff}{

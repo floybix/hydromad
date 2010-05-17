@@ -6,7 +6,7 @@
 snow.sim <-
     function(DATA, Tmax, Tmin, kd, kf, rcap, Tmelt = Tmin,
              cr = 1, cs = 1, LSWE_0 = 0, ISWE_0 = 0,
-             d, f, e, M_0 = d/2, return_state = FALSE)
+             ..., return_state = FALSE)
 {
     stopifnot(c("P","E") %in% colnames(DATA))
     ## check values
@@ -75,8 +75,7 @@ snow.sim <-
     DATA[,"P"] <- Sdischarge
 
     ## IHACRES CMD-module
-    U <- cmd.sim(DATA, d = d, f = f, e = e, M_0 = M_0,
-                 return_state = return_state)
+    U <- cmd.sim(DATA, ..., return_state = return_state)
 
     if (return_state) {
         cmdState <- U
@@ -101,6 +100,7 @@ snow.ranges <- function()
          kd=c(2, 5),
          kf=c(0, 2),
          rcap=c(0, 1),
-         d = c(50, 550),
          f = c(0.01, 3),
-         e = c(0.01, 1.5))
+         e = c(0.01, 1.5),
+         d = 200)
+
