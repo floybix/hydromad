@@ -204,7 +204,7 @@ hydromad(DATA = zoo(), ...,
 \examples{
 data(Cotter)
 x <- Cotter[1:1000]
-xyplot(x)
+
 ## IHACRES CWI model with exponential unit hydrograph
 ## an unfitted model, with ranges of possible parameter values
 modx <- hydromad(x, sma = "cwi", routing = "expuh",
@@ -214,7 +214,6 @@ modx
 fitx <- fitByOptim(modx)
 fitx
 summary(fitx)
-\dontshow{.featured_example <- TRUE}
 xyplot(fitx, with.P = TRUE, type = c("l", "g"))
 
 data(Canning)

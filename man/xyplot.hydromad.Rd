@@ -74,7 +74,7 @@ mod <-
     hydromad(cannCal, sma = "cwi", tw = 162, f = 2, l = 300,
              t_ref = 0, scale = 0.000284,
              routing = "expuh", tau_s = 4.3, delay = 1, warmup = 200)
-\dontshow{ .featured_example <- "xyplot" }
+
 xyplot(mod, with.P = TRUE)
 
 c(streamflow = xyplot(mod),
@@ -86,10 +86,9 @@ xyplot(residuals(mod)) +
   layer(panel.tskernel(..., width = 180, c = 2, col = 1, lwd = 2)) +
   layer(panel.tskernel(..., width = 360, c = 2, lwd = 2))
 
-\dontshow{ .featured_example <- "qqmath" }
 qqmath(mod, scales = list(y = list(log = TRUE)), distribution = qnorm,
        type = c("g", "l"))
-\dontshow{ .featured_example <- "errormasscurve" }
+
 errormasscurve(mod, type = c("g", "l"))
 }
 \keyword{ hplot }
