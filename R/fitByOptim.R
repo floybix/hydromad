@@ -29,6 +29,11 @@ fitByOptim <-
     }
     ## remove any fixed parameters
     parlist <- parlist[!isfixed]
+    ## if only one parameter, use specialised function
+    if (length(parlist) == 1) {
+        warning("only one parameter; switching to fitByOptim1")
+        return(fitByOptim1(MODEL, objective = objective))
+    }
     if (multistart) {
         ## multiple optimisation runs with different starting points.
         ## generate parameter sets

@@ -3,32 +3,6 @@
 ## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
-fitDbmByGam <-
-    function(MODEL, ...)
-{
-    start_time <- proc.time()
-    parlist <- as.list(coef(MODEL, warn = FALSE))
-    qlag <- parlist$qlag
-    ## TODO: test each qlag
-    qlag <- 0
-    Q <- MODEL$data[,"Q"]
-    P <- MODEL$data[,"P"]
-    ## TODO: should use a time-varying parameter model?
-    pqTf <- armax.sriv.fit(cbind(U = P, Q = Q), order = c(1,0))
-    tfc <- coef(pqTf)
-    ar1 <- tfc[["a_1"]]
-    bb <- pmax(Q - ar1 * lag(Q,-1), 0) / lag(P, qlag)
-    ## TODO: use gam to find form of bb ~ Q
-    library(mgcv)
-    foo <- gam(bb ~ s(Q[-1]), subset = is.finite(bb))
-    plot(foo)
-    ## TODO: parameterise as power law
-    bestModel$funevals <- 0
-    bestModel$timing <- proc.time() - start_time
-    return(bestModel)
-
-}
-
 dbm.sim <-
     function(DATA, power, scale = 1, qlag = 0, return_state = FALSE)
 {
@@ -47,7 +21,7 @@ dbm.sim <-
 }
 
 dbm.ranges <- function()
-    list(power = c(0.01, 0.9),
+    list(power = c(0, 0.9),
          qlag = c(-1, 2),
          scale = NA_real_)
 

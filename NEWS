@@ -7,6 +7,10 @@ Changes in Version 0.8-3 (in development)
   o added hydromad.options("loglik"), used by fitByDream() and 
     a new logLik() method.
 
+  o new function fitByOptim1(), for optimising a single parameter.
+
+  o new function fitDbmToPeaks() for use with sma = "dbm".
+
   o fixed error when using rfit methods with "expuh" routing.
 
   o fixed error when using coef() on a runlist.

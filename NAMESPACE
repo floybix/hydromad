@@ -128,12 +128,14 @@ export(runoffratio.sim)
 export(dbm.sim)
 export(absorbScale.hydromad.dbm)
 
-
 ## CALIBRATION METHODS
+
+export(fitDbmToPeaks)
 
 export(fitBySampling)
 
 export(fitByOptim)
+export(fitByOptim1)
 
 export(fitBySCE)
 

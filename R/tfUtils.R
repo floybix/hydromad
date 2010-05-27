@@ -62,7 +62,7 @@ tfParsConvert <-
             return(abToTauV(pars, alphabeta = TRUE))
         return(pars)
     }
-    warning("unknown parameter set")
+    #warning("unknown parameter set")
     pars
 }
 
@@ -472,11 +472,11 @@ ssg.tf.coef <-
     function(theta, ...)
 {
     if (length(theta) == 0)
-        return(1)
+        return(NA_real_)
     ## loss term interferes with gain calculation
     if ("loss" %in% names(theta))
         if (theta[["loss"]] != 0)
-            return(NA)
+            return(NA_real_)
     ## in lambda model, gain is defined to be 1
     ## (simulation function constrains total volume to 1)
     if ("lambda" %in% names(theta))
@@ -484,6 +484,8 @@ ssg.tf.coef <-
             return(1)
     a <- theta[grep("^a", names(theta))]
     b <- theta[grep("^b", names(theta))]
+    if (length(b) == 0)
+        return(NA_real_)
     sum(b) / (1 - sum(a))
 }
 

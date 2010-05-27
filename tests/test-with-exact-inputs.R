@@ -101,4 +101,5 @@ test_that("SMA joint fitting methods work with exact inputs", {
     expect_that(summary(fitByOptim(jspec))$r.squared > 0.97, is_true())
     expect_that(summary(fitBySCE(jspec))$r.squared > 0.9999, is_true())
     expect_that(summary(fitByDE(jspec))$r.squared > 0.999, is_true())
+    expect_that(summary(fitByDream(jspec))$r.squared > 0.999, is_true())
 })

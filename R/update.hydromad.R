@@ -55,6 +55,7 @@ update.hydromad <-
         }
         class(object) <- "hydromad"
         if (!is.null(sma)) {
+            stopifnot(is.character(sma))
             ## take default parameter ranges/values from hydromad.options()
             pardefs <- hydromad.getOption(sma)
             if (is.null(pardefs)) {
@@ -84,6 +85,7 @@ update.hydromad <-
             object$parlist <- as.list(coef(object, "sma", etc = TRUE))
         }
         if (!is.null(routing)) {
+            stopifnot(is.character(routing))
             ## take default parameter ranges/values from hydromad.options()
             object$parlist <-
                 modifyList(as.list(hydromad.getOption(routing)),
@@ -159,6 +161,8 @@ update.hydromad <-
 
         } else {
             ## just run routing simulation
+
+            ## parameters not fixed, can not run
             if (!isFullySpecified(object))
                 return(object)
 

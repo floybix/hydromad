@@ -16,7 +16,7 @@ runlist(...)
 
 as.runlist(x, ...)
 
-\S3method{coef}{runlist}(object, ...)
+\S3method{coef}{runlist}(object, ..., items = NULL)
 
 \S3method{summary}{runlist}(object, ..., FUN = summary, items = NULL)
 

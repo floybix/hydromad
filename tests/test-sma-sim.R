@@ -25,6 +25,19 @@ test_that("cmd simulation is the same in R and C", {
     }
 })
 
+test_that("cmd power-form simulation is the same in R and C", {
+    set.seed(0)
+    mod0 <- hydromad(DATA, sma = "cmd", shape = 2)
+    for (mod in simulate(mod0, 5)) {
+        Csim <- predict(mod)
+        expect_that(all(Csim >= 0), is_true())
+        hydromad.options(pure.R.code = TRUE)
+        pureRsim <- predict(mod)
+        hydromad.options(pure.R.code = FALSE)
+        expect_that(Csim, equals(pureRsim))
+    }
+})
+
 test_that("cwi simulation is the same in R and C", {
     set.seed(0)
     mod0 <- hydromad(DATA, sma = "cwi") 

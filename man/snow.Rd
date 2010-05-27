@@ -39,8 +39,15 @@ snow.sim(DATA, Tmax, Tmin, kd, kf, rcap, Tmelt = Tmin,
   \item{rcap}{
     retention parameter for liquid water capacity of snowpack.
   }
-  \item{cr}{ correction factor for rainfall. }
-  \item{cs}{ correction factor for snowfall. }
+  \item{cr}{
+    correction factor for rainfall.
+  }
+  \item{cs}{
+    correction factor for snowfall.
+  }
+  \item{LSWE_0, ISWE_0}{
+    initial values of state variables.
+  }
   \item{\dots}{
     parameters for the \link{IHACRES.CMD.model}.
   }
