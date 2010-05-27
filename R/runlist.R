@@ -30,9 +30,9 @@ as.runlist <- function(x, ...)
     structure(NextMethod("["), class = class(x))
 
 coef.runlist <-
-    function(object, ...)
+    function(object, ..., items = NULL)
 {
-    summary(object, ..., FUN = coef)
+    summary(object, ..., FUN = coef, items = items)
 }
 
 

@@ -7,6 +7,10 @@ Changes in Version 0.8-3 (in development)
   o added hydromad.options("loglik"), used by fitByDream() and 
     a new logLik() method.
 
+  o fixed error when using rfit methods with "expuh" routing.
+
+  o fixed error when using coef() on a runlist.
+
 Changes in Version 0.8-2
 
   o new function fitByDream(), using the dream package.

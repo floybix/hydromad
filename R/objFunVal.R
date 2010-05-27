@@ -50,9 +50,11 @@ objFunVal.default <-
     function(x, objective = hydromad.getOption("objective"),
              ..., nan.ok = FALSE)
 {
+    stopifnot(is.numeric(x) || is.data.frame(x))
+    stopifnot(length(colnames(x)) > 0)
     ## these can be referred to in `objective`
+    X <- x[,"X"]
     delayedAssign("Q", x[,"Q"])
-    delayedAssign("X", x[,"X"])
     delayedAssign("U", x[,"U"])
     delayedAssign("P", x[,"P"])
     objFunVal1 <- function(obj)
@@ -77,14 +79,17 @@ objFunVal.default <-
         objFunVal1(objective)
 }
 
+objFunVal.tf <-
 objFunVal.hydromad <-
     function(x, objective = hydromad.getOption("objective"),
              ..., all = FALSE, nan.ok = FALSE)
 {
-    ## these can be referred to in `objective`
     model <- x
+    ## these can be referred to in `objective`
+    X <- fitted(x, all = all)
+    if (length(X) == 0)
+        stop("fitted() returned nothing")
     delayedAssign("Q", observed(x, all = all))
-    delayedAssign("X", fitted(x, all = all))
     delayedAssign("U", fitted(x, all = all, U = TRUE))
     delayedAssign("P", observed(x, all = all, item = "P"))
     isValidModel <- isValidModel(x)

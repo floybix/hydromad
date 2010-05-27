@@ -110,7 +110,6 @@ update.hydromad <-
     object$residuals <- NULL
     object$msg <- NULL
     ## allow a fixed routing model to be fit once
-    object <- doParseRfit(object)
     object <- doRoutingFit(object, inverseFitOnly = TRUE)
     ## update parameters.
     ## the arguments in `...` may be intended for sma and/or routing
@@ -151,8 +150,7 @@ update.hydromad <-
         }
         ## TODO: use initX!
 
-        rfit <- object$rfit
-        if (!is.null(rfit)) {
+        if (!is.null(object$rfit)) {
             ## fit the routing model.
             object <- doRoutingFit(object)
             ## it may have failed:
@@ -240,30 +238,3 @@ absorbScale <- function(object, gain, ...)
 
 absorbScale.hydromad <- function(object, gain, ...)
     return(NULL)
-
-
-doParseRfit <-
-    function(object)
-{
-    ## put 'rfit' into standard list form; AND
-    ## calculate prefilter and add to 'rfit' specification
-    routing <- object$routing
-    rfit <- object$rfit
-    if (is.null(routing))
-        return(object)
-    if (is.null(rfit))
-        return(object)
-    ## rfit was given
-    if (identical(rfit, TRUE))
-        rfit <- list()
-    if (is.character(rfit))
-        rfit <- list(rfit)
-    if (!is.list(rfit))
-        stop("unrecognised value of 'rfit'")
-
-    ## TODO: set normalise = FALSE for armax/expuh if an absorbScale is available
-    ## ?
-    
-    object$rfit <- rfit
-    return(object)
-}
