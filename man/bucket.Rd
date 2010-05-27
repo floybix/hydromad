@@ -77,7 +77,6 @@ parsims <- mapply(val = parRanges, nm = names(parRanges),
                    increase = update(mod1, newpars = hipar)))
   }, SIMPLIFY = FALSE)
 
-\dontshow{ .featured_example <- TRUE }
 xyplot.list(parsims, superpose = TRUE, layout = c(1,NA),
             strip = FALSE, strip.left = TRUE,
             main = "Simple parameter perturbation example") +

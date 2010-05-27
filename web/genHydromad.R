@@ -10,86 +10,86 @@ spec <- list()
 
 spec[["modelling framework"]] <-
     list(
-         list("hydromad"),
-         list("methods...", helpname = "hydromad.object", do.example = FALSE,
+         list("hydromad", do.example = TRUE),
+         list("methods...", helpname = "hydromad.object",
               codefile = "update.hydromad.R"),
-         list("simulate", helpname = "simulate.hydromad"),
-         list("runlist", do.example = FALSE),
-         list("hydromad.options", do.example = FALSE, codefile = "options.R")
+         list("simulate", helpname = "simulate.hydromad", do.example = TRUE),
+         list("runlist"),
+         list("hydromad.options", codefile = "options.R")
          )
 
 spec[["assessment"]] <-
     list(
-         list("summary", helpname = "summary.hydromad", do.example = FALSE),
-         list("eventseq"),
-         list("xyplot", helpname = "xyplot.hydromad"),
-         list("xyplot.runlist"),
-         list("errormasscurve", helpname = "xyplot.hydromad"),
-         list("qqmath", helpname = "xyplot.hydromad"),
-         list("fitStat", do.example = FALSE)
+         list("summary", helpname = "summary.hydromad"),
+         list("eventseq", do.example = TRUE),
+         list("xyplot", helpname = "xyplot.hydromad", do.example = TRUE),
+         list("xyplot.runlist", do.example = TRUE),
+         list("errormasscurve", -1, helpname = "xyplot.hydromad", do.example = TRUE),
+         list("qqmath", -2, helpname = "xyplot.hydromad", do.example = TRUE),
+         list("fitStat")
          )
 
 spec[["calibration"]] <-
     list(
-         list("objFunVal", do.example = FALSE),
-         list("fitBySampling", do.example = FALSE),
-         list("fitByOptim", do.example = FALSE),
-         list("fitBySCE", do.example = FALSE),
-         list("fitByDE", do.example = FALSE),
-         list("fitByDream", do.example = FALSE)
+         list("objFunVal"),
+         list("fitBySampling"),
+         list("fitByOptim"),
+         list("fitBySCE"),
+         list("fitByDE"),
+         list("fitByDream")
          )
 
 spec[["soil moisture accounting"]] <-
     list(
-         list("scalar", do.example = FALSE),
-         list("cwi", helpname = "IHACRES.CWI.model", codefile = "cwi.R", do.example = FALSE),
-         list("cmd", helpname = "IHACRES.CMD.model", codefile = "cmd.R", do.example = FALSE),
-         list("bucket", do.example = FALSE),
-         list("awbm", do.example = FALSE),
-         list("sacramento", height = 700, do.example = FALSE),
-         list("snow", height = 500, do.example = FALSE),
-         list("runoffratio", do.example = FALSE),
-         list("dbm", do.example = FALSE)
+         list("scalar"),
+         list("cwi", helpname = "IHACRES.CWI.model", codefile = "cwi.R"),
+         list("cmd", helpname = "IHACRES.CMD.model", codefile = "cmd.R"),
+         list("bucket"),
+         list("awbm"),
+         list("sacramento", height = 700),
+         list("snow", height = 500),
+         list("runoffratio"),
+         list("dbm")
          )
 
 spec[["routing"]] <-
     list(
-         list("armax", codefile = "armax.sim.R", do.example = FALSE),
-         list("expuh", codefile = "expuh.sim.R", do.example = FALSE),
-         list("lambda", codefile = "lambda.sim.R", do.example = FALSE),
-         list("powuh", codefile = "powuh.sim.R", do.example = FALSE)
+         list("armax", codefile = "armax.sim.R"),
+         list("expuh", codefile = "expuh.sim.R"),
+         list("lambda", codefile = "lambda.sim.R"),
+         list("powuh", codefile = "powuh.sim.R")
          )
 
 spec[["routing fitting"]] <-
     list(
-         list("armax.ls.fit", do.example = FALSE),
-         list("armax.sriv.fit", do.example = FALSE),
-         list("armax.inverse.fit", do.example = FALSE),
+         list("armax.ls.fit"),
+         list("armax.sriv.fit"),
+         list("armax.inverse.fit"),
          #"lambda.inverse.fit"
-         list("tryModelOrders", do.example = FALSE),
-         list("estimateDelay", do.example = FALSE)
+         list("tryModelOrders"),
+         list("estimateDelay")
          )
 
 spec[["utilities"]] <-
     list(
-         list("convertFlow", do.example = FALSE),
-         list("rollccf"),
-         list("parameterSets", do.example = FALSE),
-         list("observed", do.example = FALSE),
-         list("SCEoptim", do.example = FALSE)
+         list("convertFlow"),
+         list("rollccf", do.example = TRUE),
+         list("parameterSets"),
+         list("observed"),
+         list("SCEoptim")
          )
 
 spec[["datasets"]] <-
     list(
-         list("BinghamTrib", codefile = "../data/BinghamTrib.R"),
-         list("Canning", codefile = NA),
-         list("Cotter", codefile = NA),
+         list("BinghamTrib", codefile = "../data/BinghamTrib.R", do.example = TRUE),
+         list("Canning", codefile = NA, do.example = TRUE),
+         list("Cotter", codefile = NA, do.example = TRUE),
          #list("Molonglo"),
-         list("Murrindindi", codefile = NA),
-         list("Queanbeyan", codefile = NA),
-         list("SalmonBrook", codefile = NA),
-         list("Wye", codefile = NA),
-         list("HydroTestData", codefile = "../data/HydroTestData.R")
+         list("Murrindindi", codefile = NA, do.example = TRUE),
+         list("Queanbeyan", codefile = NA, do.example = TRUE),
+         list("SalmonBrook", codefile = NA, do.example = TRUE),
+         list("Wye", codefile = NA, do.example = TRUE),
+         list("HydroTestData", codefile = "../data/HydroTestData.R", do.example = TRUE)
          )
 
 #spec[["wetlands"]] <-
@@ -98,7 +98,7 @@ spec[["datasets"]] <-
 #         list("poweroid")
 #         )
 
-source("http://latticeextra.r-forge.r-project.org/generate.R")
+#source("http://latticeextra.r-forge.r-project.org/generate.R")
 source("../../latticeextra/www/generate.R")
 
 ## stop on errors
@@ -108,5 +108,5 @@ generateWebsite("hydromad", spec = spec,
                 man.src.dir = "../man/",
                 imageSrcBase = "",
                 codeSrcSpec = "http://github.com/floybix/hydromad/tree/master/R/%s",
-                themeNames = "custom_theme_2",
-                do.examples = TRUE)
+                themes = list(custom_theme_2 = custom.theme.2()),
+                do.examples = FALSE)
