@@ -4,7 +4,7 @@
 ##
 
 dbm.sim <-
-    function(DATA, power, scale = 1, qlag = 0, return_state = FALSE)
+    function(DATA, power, qlag = 0, scale = 1, return_state = FALSE)
 {
     stopifnot(c("P", "Q") %in% colnames(DATA))
     P <- DATA[,"P"]

@@ -9,7 +9,7 @@
   This SMA uses streamflow data, so can not be used for prediction.
 }
 \usage{
-dbm.sim(DATA, power, scale = 1, qlag = 0, return_state = FALSE)
+dbm.sim(DATA, power, qlag = 0, scale = 1, return_state = FALSE)
 }
 \arguments{
   \item{DATA}{
@@ -19,14 +19,14 @@ dbm.sim(DATA, power, scale = 1, qlag = 0, return_state = FALSE)
   \item{power}{
     power to apply to streamflow values.
   }
+  \item{qlag}{
+    number of time steps to lag the streamflow (relative to rainfall)
+    before multiplication.
+  }
   \item{scale}{
     constant multiplier of the result, for mass balance.
     If this parameter is set to \code{NA} (as it is by default)
     in \code{\link{hydromad}} it will be set by mass balance calculation. 
-  }
-  \item{qlag}{
-    number of time steps to lag the streamflow (relative to rainfall)
-    before multiplication.
   }
   \item{return_state}{ignored.}
 }

@@ -95,11 +95,15 @@ test_that("Inverse (armax) fitting works for all orders with exact inputs", {
 })
 
 test_that("SMA joint fitting methods work with exact inputs", {
-    set.seed(0)
-    jspec <- update(spec, routing = "expuh", tau_q = c(0,3), tau_s = c(3,100), v_s = c(0,1))
+    jspec <- update(spec, routing = "expuh",
+                    tau_q = c(0,3), tau_s = c(3,100), v_s = c(0,1))
     ## TODO: suppress optim() output
-    expect_that(summary(fitByOptim(jspec))$r.squared > 0.97, is_true())
-    expect_that(summary(fitBySCE(jspec))$r.squared > 0.9999, is_true())
-    expect_that(summary(fitByDE(jspec))$r.squared > 0.999, is_true())
-    expect_that(summary(fitByDream(jspec))$r.squared > 0.999, is_true())
+    set.seed(0)
+    expect_that(summary(fitByOptim(jspec))$r.squared > 0.99, is_true())
+    set.seed(0)
+    expect_that(summary(fitBySCE(jspec, control = list(maxeval = 150)))$r.squared > 0.99, is_true())
+    set.seed(0)
+    expect_that(summary(fitByDE(jspec, control = list(itermax = 5)))$r.squared > 0.99, is_true())
+    set.seed(0)
+    expect_that(summary(fitByDream(jspec, control = list(ndraw = 150)))$r.squared > 0.99, is_true())
 })
