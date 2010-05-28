@@ -12,28 +12,35 @@ statDefns <- function()
          ~ { ok <- complete.cases(X,Q); mean((X-Q)[ok]) / mean(Q[ok]) },
          "r.squared" = ~ fitStat(Q, X),
          "r.sq.sqrt" = ~ fitStat(Q, X, trans = sqrt),
-         "r.sq.log" = ~ fitStat(Q, X, trans = log),
+         "r.sq.log" = ~ fitStat(Q, X, trans = log, offset = TRUE),
          "r.sq.diff" = ~ fitStat(diff(Q), diff(X)),
          "r.sq.rank" =
          ~ fitStat(Q, X, trans = function(x)
-                   rank(zapsmall(x, digits = 3), ties = "min", na.last = "keep")),
+                   rank(round(log10(zapsmall(x, digits = 3)), digits = 2),
+                        na.last = "keep")),
          "r.sq.monthly" =
          ~ tsFitStat(Q, X, aggr = list(by = cut(time(Q), "months"), FUN = sum)),
          "r.sq.smooth7" =
          ~ tsFitStat(Q, X, trans = function(x) simpleSmoothTs(x, width = 7, c = 2)),
-         "persistence" = ~ tsFitStat(Q, X, ref = lag(Q, -1)),
          "r.sq.seasonal" =
          ~ tsFitStat(Q, X, ref = ave(Q, months(time(Q)))),
          "r.sq.vs.P" =
          ~ fitStat(Q, X, ref = { rx <- filter(P, ar(Q, demean=FALSE)$ar, "r");
                                  rx * mean(Q, na.rm = TRUE) /
                                      mean(rx, na.rm = TRUE) }),
-         "events.med5sum" =
-         ~ tsFitStat(Q, X, events = list(thresh = median(Q, na.rm = TRUE), inter = 5, FUN = sum)),
-         "events.med5max" =
-         ~ tsFitStat(Q, X, events = list(thresh = median(Q, na.rm = TRUE), inter = 5, FUN = max)),
-         "events.med5min" =
-         ~ tsFitStat(Q, X, events = list(thresh = median(Q, na.rm = TRUE), below = TRUE, mindur = 5, FUN = min)),
+         "persistence" = ~ tsFitStat(Q, X, ref = lag(Q, -1)),
+         "events.medsums" =
+         ~ tsFitStat(Q, X, events = list(thresh = median(Q, na.rm = TRUE),
+                           mingap = 5, mindur = 5, all = TRUE, FUN = sum)),
+         "events.90sums" =
+         ~ tsFitStat(Q, X, events = list(thresh = quantile(Q, 0.9, na.rm = TRUE),
+                           mingap = 5, all = TRUE, FUN = sum)),
+         "events.90max" =
+         ~ tsFitStat(Q, X, events = list(thresh = quantile(Q, 0.9, na.rm = TRUE),
+                           mingap = 5, FUN = max)),
+         "events.90min" =
+         ~ tsFitStat(Q, X, events = list(thresh = quantile(Q, 0.9, na.rm = TRUE),
+                           below = TRUE, mindur = 5, FUN = min)),
          "abs.err" = ~ mean(abs(X - Q), na.rm = TRUE),
          "RMSE" = ~ sqrt(mean((Q - X)^2, na.rm = TRUE)),
          "ar1" = ~ cor(head(Q-X, -1), tail(Q-X, -1), use = "complete"),

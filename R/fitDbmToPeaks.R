@@ -14,19 +14,22 @@ fitDbmToPeaks <-
     if (is.na(delay))
         delay <- estimateDelay(MODEL$data[,c("P","Q")])
     parlist <- as.list(coef(MODEL, which = "sma", warn = FALSE))
+    qlags <- seq(round(min(parlist$qlag)), round(max(parlist$qlag)))
     if (length(parlist$power) == 1)
         stop("'power' should be a free parameter")
+    ## mask all values except where rainfall is above threshold
     P <- observed(MODEL, item = "P", all = TRUE)
     if (is.null(P.thresh))
         P.thresh <- quantile(coredata(P), 0.9, na.rm = TRUE)
     dat <- MODEL$data
     dat$P[P < P.thresh] <- NA
+    ## use NULL routing, but with a delay to match P:Q peaks
     peakMod <- update(MODEL, newdata = dat,
-                      power = parlist$power, qlag = parlist$qlag,
                       routing = "armax", delay = delay, rfit = NULL)
     bestMod <- MODEL
     bestObjVal <- Inf
-    lapply(parlist$qlag, function(qlagi) {
+    lapply(qlags, function(qlagi) {
+        ## fit 'power' parameter -- only one free parameter here
         modi <- fitByOptim1(update(peakMod, qlag = qlagi), objective = objective)
         obji <- objFunVal(modi, objective = objective)
         if (hydromad.getOption("trace"))

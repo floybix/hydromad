@@ -83,9 +83,13 @@
     }
     \item{r.sq.rank}{
       R Squared (coefficient of determination) using rank-transformed
-      data. To avoid trivial differences, the data are first rounded to
-      \code{(log10(max(Q)) - 3)} decimal places. Ties are represented by
-      their minimum rank (so that all zero values will have rank 1).
+      data. To avoid trivial differences, data values with an absolute
+      difference of less than about 0.1\% of the maximum flow are treated as
+      equal, and also those with a relative difference of less than
+      about 1\% are treated as equal (technically, the data are transformed as
+      \code{round(x, digits = round(3 - log10(max(Q))))} and then
+      \code{round(log10(x), digits = 2)} Ties are represented by their
+      average rank.
     }
     \item{r.sq.monthly}{
       R Squared (coefficient of determination) with data aggregated into
@@ -96,53 +100,57 @@
       a triangular kernel with an effective bandwidth of 7 time steps
       (the actual width of the kernel is about 40\% larger).
     }
-    \item{persistence}{
-      R Squared (coefficient of determination) where the reference model
-      predicts each time step as the previous observed value. This
-      statistic therefore represents a model's performance compared to a
-      \dQuote{naive} one-time-step forecast.
-    }
     \item{r.sq.seasonal}{
       R Squared (coefficient of determination) where the reference model
       is the mean in each calendar month, rather than the default which
       is the overall mean.
     }
-    \item{events.med5sum}{
-      R Squared (coefficient of determination) of flow totals in each
-      \dQuote{event}, defined by flow exceeding the median observed
-      flow, and with a minimum separation between events of 5 time
-      steps. Events are defined jointly over the observed and modelled
-      time series: events continue while either series exceeds the
-      threshold. 
+    \item{persistence}{
+      R Squared (coefficient of determination) where the reference model
+      predicts each time step as the previous observed value. This
+      statistic therefore represents a model's performance compared to a
+      \emph{naive} one-time-step forecast.
     }
-    \item{events.med5max}{
+    \item{events.medsums}{
+      R Squared (coefficient of determination) of flow totals in and
+      between each \emph{event}, defined by observed flow exceeding
+      the median level, with a minimum duration of 5 time steps, and
+      a minimum separation between events of 5 time steps.  
+    }
+    \item{events.90sums}{
+      R Squared (coefficient of determination) of flow totals in and
+      between each \emph{event}, defined by observed flow exceeding
+      the 90 percentile level, with a minimum separation between events
+      of 5 time steps.  
+    }
+    \item{events.90max}{
       R Squared (coefficient of determination) of flow maxima in each
-      \dQuote{event}, defined by flow exceeding the median observed
-      flow, and with a minimum separation between events of 5 time steps.
+      \emph{event}, defined by observed flow exceeding the 90
+      percentile level, with a minimum separation between events of 5
+      time steps.
     }
-    \item{events.med5min}{
+    \item{events.90min}{
       R Squared (coefficient of determination) of flow minima
-      \strong{between} each \dQuote{event}, defined by flow exceeding
-      the median observed flow, and with a minimum separation between
+      \strong{between} each \emph{event}, defined by observed flow exceeding
+      the 90 percentile level, and with a minimum separation between
       events of 5 time steps. 
     }
     \item{abs.err}{
-
+      the mean absolute error.
     }
     \item{RMSE}{
-
+      Root Mean Squared Error.
     }
-    \item{U1}{
-
+    \item{X0}{
+      correlation of modelled flow with the model residuals.
     }
     \item{X1}{
-      correlation of model with error lagged one time step
-      \code{cor(head(X,-1), tail(X-Q,-1))}
+      correlation of modelled flow with the model residuals from the
+      previous time step. 
     }
     \item{ARPE}{
-    }
-    \item{YIC}{
-      
+      Average Relative Parameter Error. Requires that a
+      variance-covariance matrix was estimated during calibration.
     }
   }
 }

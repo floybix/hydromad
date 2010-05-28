@@ -51,7 +51,7 @@ tsFitStat <-
         events$FUN <- NULL
         ## compute events using first 2 series only (obs & mod)
         ev <- do.call("eventseq",
-                      c(alist(dat[,1:2]), events))
+                      c(alist(dat[,"obs"]), events))
         ## apply FUN to events 'ev', in each series
         dat <- eventapply(dat, ev, FUN = FUN)
     }
