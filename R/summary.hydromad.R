@@ -60,7 +60,10 @@ summary.hydromad <-
         DATA <- stripWarmup(DATA, object$warmup)
         if (object$warmup > 0)
             group <- group[-seq_len(object$warmup)]
-
+        ## remove any groups with only one data point
+        bad <- table(group) <= 1
+        levels(group)[bad] <- NA
+        
         ans <-
             eventapply(DATA, group, 
                        FUN = function(x)

@@ -92,6 +92,7 @@ fitStat <-
         ## offset = TRUE takes the observed 10%ile of non-zero values
         if (isTRUE(offset)) {
             offset <- quantile(obs[obs > 0], p = 0.1)
+            if (!is.finite(offset)) offset <- 0
         }
         trans <- asSimpleFunction(trans, offset = offset)
         obs <- trans(obs)

@@ -30,16 +30,16 @@ statDefns <- function()
                                      mean(rx, na.rm = TRUE) }),
          "persistence" = ~ tsFitStat(Q, X, ref = lag(Q, -1)),
          "events.medsums" =
-         ~ tsFitStat(Q, X, events = list(thresh = median(Q, na.rm = TRUE),
+         ~ tsFitStat(Q, X, events = list(thresh = median(coredata(Q), na.rm = TRUE),
                            mingap = 5, mindur = 5, all = TRUE, FUN = sum)),
          "events.90sums" =
-         ~ tsFitStat(Q, X, events = list(thresh = quantile(Q, 0.9, na.rm = TRUE),
+         ~ tsFitStat(Q, X, events = list(thresh = quantile(coredata(Q), 0.9, na.rm = TRUE),
                            mingap = 5, all = TRUE, FUN = sum)),
          "events.90max" =
-         ~ tsFitStat(Q, X, events = list(thresh = quantile(Q, 0.9, na.rm = TRUE),
+         ~ tsFitStat(Q, X, events = list(thresh = quantile(coredata(Q), 0.9, na.rm = TRUE),
                            mingap = 5, FUN = max)),
          "events.90min" =
-         ~ tsFitStat(Q, X, events = list(thresh = quantile(Q, 0.9, na.rm = TRUE),
+         ~ tsFitStat(Q, X, events = list(thresh = quantile(coredata(Q), 0.9, na.rm = TRUE),
                            below = TRUE, mindur = 5, FUN = min)),
          "abs.err" = ~ mean(abs(X - Q), na.rm = TRUE),
          "RMSE" = ~ sqrt(mean((Q - X)^2, na.rm = TRUE)),
