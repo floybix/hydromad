@@ -8,10 +8,10 @@ fitByOptim <-
     function(MODEL,
              objective = hydromad.getOption("objective"),
              method = hydromad.getOption("optim.method"),
-             control = hydromad.getOption("optim.control"),
              samples = hydromad.getOption("fit.samples"),
              sampletype = c("latin.hypercube", "random", "all.combinations"),
              multistart = FALSE,
+             control = list(),
              vcov = FALSE,
              hessian = vcov,
              initpars = NULL)
@@ -89,8 +89,10 @@ fitByOptim <-
             initpars <- sapply(parlist, mean)
         }
         ## now optimise
-        control <- modifyList(hydromad.getOption("optim.control"),
-                              control)
+        control0 <- hydromad.getOption("optim.control")
+        if (method == "PORT")
+            control0 <- hydromad.getOption("nlminb.control")
+        control <- modifyList(control0, control)
         if (isTRUE(hydromad.getOption("quiet")))
             control$trace <- 0
         bestModel <- MODEL
@@ -131,17 +133,29 @@ fitByOptim <-
         }
         if (!isTRUE(hydromad.getOption("catch.errors.optim")))
             try <- force ## i.e. skip the try()
-        lowerb <- if (method == "L-BFGS-B") lower else -Inf
-        upperb <- if (method == "L-BFGS-B") upper else Inf
-        ans <- try(optim(initpars, do_optim, method = method,
-                         lower = lowerb, upper = upperb,
-                         control = control, hessian = hessian))
+        lowerb <- -Inf
+        upperb <- Inf
+        if (method %in% c("L-BFGS-B", "PORT")) {
+            lowerb <- lower
+            upperb <- upper
+        }
+        if (method == "PORT") {
+            ans <- try(nlminb(initpars, do_optim,
+                              lower = lower, upper = upper,
+                              control = control))
+        } else {
+            ans <- try(optim(initpars, do_optim, method = method,
+                             lower = lowerb, upper = upperb,
+                             control = control, hessian = hessian))
+        }
         if (inherits(ans, "try-error")) {
             bestModel$msg <- ans
             return(bestModel)
         }
         if (ans$convergence != 0) {
-            msg <- if (ans$convergence == 1) {
+            msg <- if (method == "PORT") {
+                ans$message
+            } else if (ans$convergence == 1) {
                 "optim() reached maximum iterations"
             } else {
                 paste("optim() returned convergence code",
@@ -152,7 +166,7 @@ fitByOptim <-
             }
             bestModel$msg <- msg
         }
-        bestModel$funevals <- ans$counts[1] + pre.funevals
+        bestModel$funevals <- i
         bestModel$timing <- signif(proc.time() - start_time, 4)[1:3]
         bestModel$objective <- objective
         if (vcov) {

@@ -71,24 +71,23 @@ streamflow, and the parameters defining the modelled relationship
 between rainfall, evaporation and flow are assumed to be
 \emph{stationary} in this period.
 
-The modelling framework in the \pkg{hydromad} package is based on the
-two-component \ihacres{} structure: (1) a \emph{soil moisture
-  accounting} (SMA) module; and (2) a \emph{routing} or \emph{unit
-  hydrograph} module (Figure \ref{fig:ihacres-framework}). The SMA
-model converts rainfall and temperature into \emph{effective
-  rainfall} --- the amount of rainfall which eventually reaches the
-catchment outlet as streamflow (i.e. that which is not lost as
-evaporation etc). The routing module converts effective rainfall into
-streamflow, which amounts to defining the peak response and shape of
-the recession curve. It is usually a linear transfer function, which
-can be as simple as a single exponential recession (i.e. constant
-decay rate), although variants with non-linearities are also
-available.
+The modelling framework in the \pkg{hydromad} package is based on a
+two-component structure: (1) a \emph{soil moisture accounting} (SMA)
+module; and (2) a \emph{routing} or \emph{unit hydrograph} module
+(Figure \ref{fig:model-framework}). The SMA model converts rainfall
+and temperature into \emph{effective rainfall} --- the amount of
+rainfall which eventually reaches the catchment outlet as streamflow
+(i.e. that which is not lost as evaporation etc). The routing module
+converts effective rainfall into streamflow, which amounts to defining
+the peak response and shape of the recession curve. It is usually a
+linear transfer function, which can be as simple as a single
+exponential recession (i.e. constant decay rate), although variants
+with non-linearities are also available.
 
 \begin{figure}[hbpt!]
 \begin{center}
 \setkeys{Gin}{width=0.9\textwidth}
-<<ihacres-framework, fig=TRUE, width=6, height=1>>=
+<<model-framework, fig=TRUE, width=6, height=1>>=
 library(grid)
 ## framework diagram structure:
 ## --> |box| --> |box| -->
@@ -116,9 +115,8 @@ grid.lines(y = 0.5, x = c(0.8, 1.0), arrow = arr)
 grid.text(y = 0.5, x = 0.9, label = "streamflow \n")
 upViewport()
 @
-\caption{\label{fig:ihacres-framework}
-  The modelling framework in the \pkg{hydromad} package (the
-  \ihacres{} structure). 
+\caption{\label{fig:model-framework}
+  The modelling framework in the \pkg{hydromad} package. 
 }
 \end{center}
 \end{figure}

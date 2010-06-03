@@ -77,7 +77,7 @@ SCEoptim(FUN, par, ..., lower = -Inf, upper = Inf, control = list())
       maximum number of function evaluations. Defaults to \code{Inf}.
     }
     \item{\code{maxtime}}{
-      maximum duration of optimization in seconds. Defaults to \code{60}.
+      maximum duration of optimization in seconds. Defaults to \code{Inf}.
     }
     \item{\code{returnpop}}{
       whether to return populations from all iterations. Defaults to \code{FALSE}.

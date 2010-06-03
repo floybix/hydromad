@@ -29,7 +29,7 @@
 ## http://www.mathworks.com.au/matlabcentral/fileexchange/7671
 
 
-## NOTE: keep this in synch with the help page!
+## NOTE: keep this in sync with the help page!
 sceDefaults <- function()
     list(ncomplex = 5,           ## number of complexes
          cce.iter = NA,          ## number of iteration in inner loop (CCE algorithm)
@@ -40,7 +40,7 @@ sceDefaults <- function()
          tolsteps = 7,           ## number of iterations within reltol to confirm convergence
          maxit = Inf,            ## maximum number of iterations
          maxeval = Inf,          ## maximum number of function evaluations
-         maxtime = 60,           ## maximum duration of optimization in seconds
+         maxtime = Inf,          ## maximum duration of optimization in seconds
          returnpop = FALSE,      ## whether to return populations from all iterations
          trace = 0,              ## level of user feedback
          REPORT = 10)            ## number of iterations between reports when trace >= 1

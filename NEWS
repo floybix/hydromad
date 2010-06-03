@@ -3,6 +3,10 @@ Changes in Version 0.8-4 (in development)
 
   o revised statistics.
 
+  o new method "PORT", based on nlminb(), for fitByOptim().
+
+  o changes some default options for SCEoptim() and fitBy*().
+
 Changes in Version 0.8-3
 
   o new power and hyperbolic forms of the CMD model,

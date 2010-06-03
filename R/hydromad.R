@@ -134,7 +134,7 @@ print.hydromad <-
                              }), check.names = FALSE),
                       digits = digits)
             }
-            cat("\n")
+            #cat("\n")
         }
     }
     if (!is.null(x$rfit)) {
@@ -146,13 +146,15 @@ print.hydromad <-
         cat("\nMessage: ", toString(x$msg), "\n")
     }
     if (!is.null(x$fit.call)) {
-        cat("\nFit call:\n")
+        cat("\nFit: (see $fit.result)\n")
         print(x$fit.call)
-        cat("Fit info:\n",
-            toString(deparse(x[c("funevals", "timing", "objective")],
-                             control = c(), width = 500),
-                     width = getOption("width")), "\n")
-    }
+        cat("Function evaluations: ", x$funevals, " in ",
+            x$timing[3], " seconds", "\n")
+        cat("Objective: ",
+            toString(deparse(x$objective, control = c(),
+                             width = 500),
+                     width = getOption("width")))
+   }
     if (length(x$info.rfit) > 0) {
         cat("\nRouting fit info: ",
             toString(deparse(x$info.rfit, control = c(), width = 500),
