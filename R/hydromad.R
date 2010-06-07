@@ -146,7 +146,7 @@ print.hydromad <-
         cat("\nMessage: ", toString(x$msg), "\n")
     }
     if (!is.null(x$fit.call)) {
-        cat("\nFit: (see $fit.result)\n")
+        cat("\nFit: (parameter ranges $opar, result $fit.result)\n")
         print(x$fit.call)
         cat("Function evaluations: ", x$funevals, " in ",
             x$timing[3], " seconds", "\n")

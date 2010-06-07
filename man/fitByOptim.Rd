@@ -9,11 +9,11 @@
 \usage{
 fitByOptim(MODEL, objective = hydromad.getOption("objective"),
            method = hydromad.getOption("optim.method"),
-           control = hydromad.getOption("optim.control"),
+           control = list(),
            samples = hydromad.getOption("fit.samples"),
            sampletype = c("latin.hypercube", "random", "all.combinations"),
-           multistart = FALSE,
-           vcov = FALSE, hessian = vcov, initpars = NULL)
+           multistart = FALSE, initpars = NULL,
+           vcov = FALSE, hessian = vcov)
 }
 \arguments{
   \item{MODEL}{

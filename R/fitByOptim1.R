@@ -10,7 +10,7 @@ fitByOptim1 <-
              tol = .Machine$double.eps^0.25)
 {
     start_time <- proc.time()
-    parlist <- as.list(coef(MODEL, warn = FALSE))
+    parlist <- oparlist <- as.list(coef(MODEL, warn = FALSE))
     ## remove any missing parameters
     isok <- sapply(parlist, function(x) !any(is.na(x)))
     parlist <- parlist[isok]
@@ -49,6 +49,7 @@ fitByOptim1 <-
     bestModel$funevals <- i
     bestModel$timing <- signif(proc.time() - start_time, 4)[1:3]
     bestModel$objective <- objective
+    bestModel$oparlist <- oparlist
     bestModel$objseq <- objseq[1:i]
     bestModel$fit.call <- match.call()
     bestModel$fit.result <- ans

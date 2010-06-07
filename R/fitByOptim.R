@@ -8,16 +8,14 @@ fitByOptim <-
     function(MODEL,
              objective = hydromad.getOption("objective"),
              method = hydromad.getOption("optim.method"),
+             control = list(),
              samples = hydromad.getOption("fit.samples"),
              sampletype = c("latin.hypercube", "random", "all.combinations"),
-             multistart = FALSE,
-             control = list(),
-             vcov = FALSE,
-             hessian = vcov,
-             initpars = NULL)
+             multistart = FALSE, initpars = NULL,
+             vcov = FALSE, hessian = vcov)
 {
     start_time <- proc.time()
-    parlist <- as.list(coef(MODEL, warn = FALSE))
+    parlist <- oparlist <- as.list(coef(MODEL, warn = FALSE))
     ## remove any missing parameters
     isok <- sapply(parlist, function(x) !any(is.na(x)))
     parlist <- parlist[isok]
@@ -169,6 +167,7 @@ fitByOptim <-
         bestModel$funevals <- i
         bestModel$timing <- signif(proc.time() - start_time, 4)[1:3]
         bestModel$objective <- objective
+        bestModel$oparlist <- oparlist
         if (vcov) {
             ## approximate covariance matrix from inverse of hessian (often poor!)
             bestModel$cov.mat <- solve(ans$hessian)

@@ -7,13 +7,12 @@
 fitByDE <-
     function(MODEL,
              objective = hydromad.getOption("objective"),
-             control = hydromad.getOption("de.control"),
-             vcov = FALSE)
+             control = hydromad.getOption("de.control"))
 {
     library(DEoptim)
     control <- do.call("DEoptim.control", control)
     start_time <- proc.time()
-    parlist <- as.list(coef(MODEL, warn = FALSE))
+    parlist <- oparlist <- as.list(coef(MODEL, warn = FALSE))
     ## remove any missing parameters
     isok <- sapply(parlist, function(x) !any(is.na(x)))
     parlist <- parlist[isok]
@@ -48,13 +47,7 @@ fitByDE <-
     bestModel$funevals <- ans$optim$nfeval
     bestModel$timing <- signif(proc.time() - start_time, 4)[1:3]
     bestModel$objective <- objective
-    if (vcov) {
-        ## estimate covariance matrix from final population
-        ## TODO
-        #bestModel$cov.mat <-
-        ## ans$member$pop
-        warning("vcov not yet implemented")
-    }
+    bestModel$oparlist <- oparlist
     bestModel$fit.call <- match.call()
     bestModel$fit.result <- ans
     return(bestModel)

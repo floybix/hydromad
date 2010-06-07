@@ -16,7 +16,7 @@ fitByDream <-
 {
     library(dream)
     start_time <- proc.time()
-    parlist <- as.list(coef(MODEL, warn = FALSE))
+    parlist <- oparlist <- as.list(coef(MODEL, warn = FALSE))
     ## remove any missing parameters
     isok <- sapply(parlist, function(x) !any(is.na(x)))
     parlist <- parlist[isok]
@@ -46,6 +46,7 @@ fitByDream <-
     bestModel$funevals <- ans$fun.evals
     bestModel$timing <- signif(proc.time() - start_time, 4)[1:3]
     bestModel$objective <- loglik
+    bestModel$oparlist <- oparlist
     if (vcov) {
         ## estimate covariance matrix from final population
         start <- end(ans$Sequences)/2+1

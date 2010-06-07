@@ -9,8 +9,7 @@
 \usage{
 fitByDE(MODEL, 
         objective = hydromad.getOption("objective"),
-        control = hydromad.getOption("de.control"),
-        vcov = FALSE)
+        control = hydromad.getOption("de.control"))
 }
 \arguments{
   \item{MODEL}{
@@ -24,11 +23,6 @@ fitByDE(MODEL,
   }
   \item{control}{
     settings for the DE algorithm. See \code{\link[DEoptim]{DEoptim.control}}.
-  }
-  \item{vcov}{
-    if \code{vcov = TRUE}, the parameter variance-covariance matrix
-    will be estimated from the final population.
-    It can be extract using \code{\link{vcov}}.
   }
 }
 \value{

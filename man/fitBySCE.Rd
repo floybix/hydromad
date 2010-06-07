@@ -9,8 +9,7 @@
 \usage{
 fitBySCE(MODEL, 
          objective = hydromad.getOption("objective"),
-         control = hydromad.getOption("sce.control"),
-         vcov = FALSE)
+         control = hydromad.getOption("sce.control"))
 }
 \arguments{
   \item{MODEL}{
@@ -24,11 +23,6 @@ fitBySCE(MODEL,
   }
   \item{control}{
     settings for the SCE algorithm. See \code{\link{SCEoptim}}.
-  }
-  \item{vcov}{
-    if \code{vcov = TRUE}, the parameter variance-covariance matrix
-    will be estimated from the final population.
-    It can be extract using \code{\link{vcov}}.
   }
 }
 \value{
