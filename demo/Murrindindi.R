@@ -15,11 +15,11 @@ summary(murrRef)
 murrMod <- hydromad(murrCal, sma = "cwi", routing = "armax",
                     rfit = list("sriv", order = c(2,1)), warmup = 200)
 murrMod <- fitBySampling(murrMod, sampletype = "all",
-                         objective = ~ fitStat(Q, X))
+                         objective = hmadstat("r.squared", negate = TRUE))
 summary(murrMod)
 ## breakdown of performance in simulation over whole dataset
 summary(update(murrMod, newdata = Murrindindi), breaks = "years")
 
 ## CMD version -- try different UH model structures
 cmdTest <- tryModelOrders(hydromad(murrCal, sma = "cmd"), n = 1:3, m = 0:2, delay = 0:1)
-ordersSummary(cmdTest)
+summary(cmdTest)

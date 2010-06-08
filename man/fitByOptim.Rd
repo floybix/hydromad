@@ -8,12 +8,11 @@
 }
 \usage{
 fitByOptim(MODEL, objective = hydromad.getOption("objective"),
-           method = hydromad.getOption("optim.method"),
-           control = hydromad.getOption("optim.control"),
+           method = hydromad.getOption("optim.method"), control = list(),
            samples = hydromad.getOption("fit.samples"),
            sampletype = c("latin.hypercube", "random", "all.combinations"),
-           multistart = FALSE,
-           vcov = FALSE, hessian = vcov, initpars = NULL)
+           initpars = NULL, multistart = FALSE,
+           vcov = FALSE, hessian = vcov)
 }
 \arguments{
   \item{MODEL}{
@@ -22,8 +21,8 @@ fitByOptim(MODEL, objective = hydromad.getOption("objective"),
     by \emph{ranges} of values rather than exact values.
   }
   \item{objective}{
-    objective function to minimise, given as a \code{formula} involving
-    \code{Q}, \code{X} and/or \code{U}. See \code{\link{objFunVal}}.
+    objective function to minimise, given as a \code{function(Q, X, ...)}.
+    See \code{\link{objFunVal}}.
   }
   \item{method, control}{
     optimisation algorithm and settings. See \code{\link{optim}}. The
@@ -34,6 +33,9 @@ fitByOptim(MODEL, objective = hydromad.getOption("objective"),
   }
   \item{sampletype}{
     sampling scheme -- see \code{\link{parameterSets}}.
+  }
+  \item{initpars}{
+    initial parameter set.
   }
   \item{multistart}{
     if this is \code{TRUE}, then each of the initial parameter samples
@@ -46,9 +48,6 @@ fitByOptim(MODEL, objective = hydromad.getOption("objective"),
     will be estimated as the inverse of
     the hessian matrix returned by \code{optim()}. This may be a very
     poor estimate! It can be extract using \code{\link{vcov}}.
-  }
-  \item{initpars}{
-    initial parameter set.
   }
 }
 \details{

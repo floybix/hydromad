@@ -117,4 +117,5 @@ cmd.sim <-
 cmd.ranges <- function()
     list(f = c(0.01, 3),
          e = c(0.01, 1.5),
-         d = c(50, 550))
+         d = c(50, 550),
+         shape = 0)

@@ -107,6 +107,12 @@ fitted.runlist <-
     do.call("cbind", ans)
 }
 
+update.runlist <-
+    function(object, ...)
+{
+    as.runlist(lapply(object, update, ...))
+}
+
 ## TODO: delete?
 errormasscurve.runlist <-
     function(x,

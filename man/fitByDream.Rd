@@ -19,8 +19,8 @@ fitByDream(MODEL, loglik = hydromad.getOption("loglik"),
   }
   \item{loglik}{
     log-likelihood function (log of the posterior probability density),
-    given as a \code{formula} involving 
-    \code{Q}, \code{X} and/or \code{U}. See \code{\link{objFunVal}}.
+    given as a \code{function(Q, X, ...)}.
+    See \code{\link{objFunVal}}.
   }
   \item{control}{
     settings for the DREAM algorithm. See \code{\link[dream]{dream}}.

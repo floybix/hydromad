@@ -7,14 +7,11 @@
 fitByOptim <-
     function(MODEL,
              objective = hydromad.getOption("objective"),
-             method = hydromad.getOption("optim.method"),
+             method = hydromad.getOption("optim.method"), control = list(),
              samples = hydromad.getOption("fit.samples"),
              sampletype = c("latin.hypercube", "random", "all.combinations"),
-             multistart = FALSE,
-             control = list(),
-             vcov = FALSE,
-             hessian = vcov,
-             initpars = NULL)
+             initpars = NULL, multistart = FALSE,
+             vcov = FALSE, hessian = vcov)
 {
     start_time <- proc.time()
     parlist <- as.list(coef(MODEL, warn = FALSE))

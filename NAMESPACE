@@ -25,8 +25,6 @@ S3method(predict, hydromad)
 S3method(update, hydromad)
 
 S3method(coef, hydromad)
-export("coef<-")
-S3method("coef<-", hydromad)
 
 export(absorbScale)
 S3method(absorbScale, hydromad)
@@ -170,6 +168,7 @@ S3method(summary, runlist)
 S3method(print, runlist)
 S3method(residuals, runlist)
 S3method(fitted, runlist)
+S3method(update, runlist)
 S3method(errormasscurve, runlist)
 S3method(xyplot, runlist)
 S3method(qqmath, runlist)
@@ -198,7 +197,9 @@ export(rollccf,
        xyplot.rollccf,
        ccfForLags)
 
-## options.R
+export(hydromad.stats,
+       hmadstat)
+
 export(hydromad.options,
        hydromad.getOption)
 

@@ -4,6 +4,7 @@
 ##
 
 
+## TODO: remove this eventually, it is deprecated
 statDefns <- function()
 {
     list(
@@ -64,12 +65,18 @@ objFunVal.default <-
     delayedAssign("Q", x[,"Q"])
     delayedAssign("U", x[,"U"])
     delayedAssign("P", x[,"P"])
-    objFunVal1 <- function(obj)
+    objFunVal1 <- function(obj, ...)
     {
-        if (inherits(obj, "formula"))
+        if (inherits(obj, "formula")) {
+            #.Deprecated(msg = "'objective' as a formula is deprecated: use a function(Q,X,...)")
             obj <- obj[[2]]
-        stopifnot(is.language(obj))
-        val <- eval(obj)
+            val <- eval(obj)
+        } else {
+            if (!is.function(obj))
+                stop("'objective' should be a function, not a ",
+                     toString(class(obj)))
+            val <- obj(Q, X, ..., U = U, P = P)
+        }
         if (is.nan(val)) {
             if (identical(nan.ok, "warn"))
                 warning("objective function returned NaN")
@@ -81,9 +88,9 @@ objFunVal.default <-
         as.numeric(val)
     }
     if (is.list(objective))
-        lapply(objective, objFunVal1)
+        lapply(objective, objFunVal1, ...)
     else
-        objFunVal1(objective)
+        objFunVal1(objective, ...)
 }
 
 objFunVal.tf <-
@@ -100,14 +107,20 @@ objFunVal.hydromad <-
     delayedAssign("U", fitted(x, all = all, U = TRUE))
     delayedAssign("P", observed(x, all = all, item = "P"))
     isValidModel <- isValidModel(x)
-    objFunVal1 <- function(obj)
+    objFunVal1 <- function(obj, ...)
     {
         if (!isValidModel)
             return(NA_real_)
-        if (inherits(obj, "formula"))
+        if (inherits(obj, "formula")) {
+            #.Deprecated(msg = "'objective' as a formula is deprecated: use a function(Q,X,...)")
             obj <- obj[[2]]
-        stopifnot(is.language(obj))
-        val <- eval(obj)
+            val <- eval(obj)
+        } else {
+            if (!is.function(obj))
+                stop("'objective' should be a function, not a ",
+                     toString(class(obj)))
+            val <- obj(Q, X, ..., U = U, P = P, model = model)
+        }
         if (is.nan(val) && !nan.ok)
             stop("objective function returned NaN")
         stopifnot(is.numeric(val))
@@ -115,7 +128,7 @@ objFunVal.hydromad <-
         as.numeric(val)
     }
     if (is.list(objective))
-        lapply(objective, objFunVal1)
+        lapply(objective, objFunVal1, ...)
     else
-        objFunVal1(objective)
+        objFunVal1(objective, ...)
 }

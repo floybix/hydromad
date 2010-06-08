@@ -20,7 +20,20 @@ test_that("basic summary() works", {
 })
 
 test_that("all statistics can be evaluated", {
-    ss <- objFunVal(mod, hydromad.getOption("stats"))
+    ss <- objFunVal(mod, hydromad.stats())
     expect_that(ss, is_a("list"))
     expect_that(all(is.finite(unlist(ss))), is_true())
+})
+
+test_that("custom objective functions work", {
+    spec <- update(mod, v_s = c(0,1))
+    set.seed(0)
+    fit1 <- fitByOptim1(spec, hmadstat("r.squared", negate = TRUE))
+    expect_that(fit1, is_a("hydromad")) 
+    set.seed(0)
+    fit2 <- fitByOptim1(spec, function(Q,X,...) {
+        - hmadstat("r.sq.log")(Q,X) + hmadstat("rel.bias")(Q,X)
+    })
+    expect_that(fit2, is_a("hydromad"))
+    expect_that(coef(fit1)[["v_s"]] != coef(fit2)[["v_s"]], is_true())
 })

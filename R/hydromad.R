@@ -81,7 +81,7 @@ vcov.hydromad <- function(object, ...)
 logLik.hydromad <-
     function(object, loglik = hydromad.getOption("loglik"), ...)
 {
-    val <- objFunVal(object, objective = loglik)
+    val <- objFunVal(object, objective = loglik, ...)
     ## TODO: for a fitted model we do not know how many parameters were fitted
     ## guess:
     attr(val, "df") <- length(coef(object))

@@ -1,5 +1,23 @@
 
-Changes in Version 0.8-4 (in development)
+Changes in Version 0.8-5 (in development)
+
+  o statistics are now managed by new functions hydromad.stats()
+    and hmadstat(). The use of hydromad.options("stats") is now
+    deprecated.
+
+  o statistics and objective functions are now represented as
+    functions rather than formulae. Formulae can still be
+    specified for the 'objective' argument, for convenience.
+
+  o changed tsFitStat() to calculate 'ref' as mean(trans(obs)) 
+    rather than trans(mean(obs)), as was always intended.
+    Also fitStat() now removes any NAs introduced by 'trans'.
+
+  o the coef()<- assignment method has been removed.
+
+  o new update() method for runlists, which simple uses lapply().
+
+Changes in Version 0.8-4
 
   o revised statistics.
 

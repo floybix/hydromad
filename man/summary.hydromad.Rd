@@ -28,7 +28,7 @@
   }
   \item{stats}{
     which performance statistics to compute. The definitions are looked
-    up by name in \code{hydromad.options("stats")}. See Details.
+    up by name in \code{\link{hydromad.stats}()}. See Details.
   }
   \item{with.hydrostats}{
     to also include \code{timesteps}, \code{missing} (number of
@@ -48,111 +48,8 @@
 }
 \details{
   Definitions of statistics are looked up by name in
-  \code{hydromad.options("stats")}, so you can add new statistics
-  there. See also \code{\link{objFunVal}}.
-  
-  The default set of available statistics is:
-  \describe{
-    \item{bias}{
-      bias in data units, \eqn{\sum ( X - Q )}
-    }
-    \item{rel.bias}{
-      bias as a fraction of the total observed flow,
-      \eqn{\sum ( X - Q ) / \sum Q}
-    }
-    \item{r.squared}{
-      R Squared (Coefficient of Determination / Nash-Sutcliffe Efficiency),
-      \eqn{1 - \sum (Q - X)^2 / \sum (Q - \bar{Q})^2}
-    }
-    \item{r.sq.sqrt}{
-      R Squared (coefficient of determination) using square-root
-      transformed data (less weight on peak flows),
-      \eqn{1 - \frac{\sum |\sqrt{Q} - \sqrt{X}|^2 }{ \sum |\sqrt{Q} - \bar{\sqrt{Q}}|^2 }}
-    }
-    \item{r.sq.log}{
-      R Squared (coefficient of determination) using log
-      transformed data (roughly equal weight to all flow levels),
-      \eqn{1 - \frac{\sum |\log{(Q+\epsilon)} - \log{(X+\epsilon)}|^2 }
-	            {\sum |\log{(Q+\epsilon)} - \bar{\log{(Q+\epsilon)}}|^2 }}.
-      Here \eqn{\epsilon} is the 10 percentile (i.e. lowest
-      decile) of the non-zero values of Q.
-    }
-    \item{r.sq.diff}{
-      R Squared (coefficient of determination) of differences between
-      successive time steps, i.e. rises and falls.
-    }
-    \item{r.sq.rank}{
-      R Squared (coefficient of determination) using rank-transformed
-      data. To avoid trivial differences, data values with an absolute
-      difference of less than about 0.1\% of the maximum flow are treated as
-      equal, and also those with a relative difference of less than
-      about 1\% are treated as equal (technically, the data are transformed as
-      \code{round(x, digits = round(3 - log10(max(Q))))} and then
-      \code{round(log10(x), digits = 2)} Ties are represented by their
-      average rank.
-    }
-    \item{r.sq.monthly}{
-      R Squared (coefficient of determination) with data aggregated into
-      calendar months.
-    }
-    \item{r.sq.smooth7}{
-      R Squared (coefficient of determination) using data smoothed with
-      a triangular kernel with an effective bandwidth of 7 time steps
-      (the actual width of the kernel is about 40\% larger).
-    }
-    \item{r.sq.seasonal}{
-      R Squared (coefficient of determination) where the reference model
-      is the mean in each calendar month, rather than the default which
-      is the overall mean.
-    }
-    \item{persistence}{
-      R Squared (coefficient of determination) where the reference model
-      predicts each time step as the previous observed value. This
-      statistic therefore represents a model's performance compared to a
-      \emph{naive} one-time-step forecast.
-    }
-    \item{events.medsums}{
-      R Squared (coefficient of determination) of flow totals in and
-      between each \emph{event}, defined by observed flow exceeding
-      the median level, with a minimum duration of 5 time steps, and
-      a minimum separation between events of 5 time steps.  
-    }
-    \item{events.90sums}{
-      R Squared (coefficient of determination) of flow totals in and
-      between each \emph{event}, defined by observed flow exceeding
-      the 90 percentile level, with a minimum separation between events
-      of 5 time steps.  
-    }
-    \item{events.90max}{
-      R Squared (coefficient of determination) of flow maxima in each
-      \emph{event}, defined by observed flow exceeding the 90
-      percentile level, with a minimum separation between events of 5
-      time steps.
-    }
-    \item{events.90min}{
-      R Squared (coefficient of determination) of flow minima
-      \strong{between} each \emph{event}, defined by observed flow exceeding
-      the 90 percentile level, and with a minimum separation between
-      events of 5 time steps. 
-    }
-    \item{abs.err}{
-      the mean absolute error.
-    }
-    \item{RMSE}{
-      Root Mean Squared Error.
-    }
-    \item{X0}{
-      correlation of modelled flow with the model residuals.
-    }
-    \item{X1}{
-      correlation of modelled flow with the model residuals from the
-      previous time step. 
-    }
-    \item{ARPE}{
-      Average Relative Parameter Error. Requires that a
-      variance-covariance matrix was estimated during calibration.
-    }
-  }
+  \code{\link{hydromad.stats}()}, and you can also use that
+  function to add new statistics. 
 }
 \value{
   \code{summary} returns a list with named entries for each of the
@@ -161,7 +58,9 @@
 }
 \author{ Felix Andrews \email{felix@nfrac.org} }
 \seealso{
-  \code{\link{hydromad}}
+  \code{\link{hydromad.stats}},
+  \code{\link{objFunVal}} for a way to calculate statistic values directly;
+  \code{\link{hydromad.object}}
 }
 \examples{
 
@@ -175,12 +74,12 @@ summary(mod0)
 summary(mod0, breaks = "months")
 #summary(mod0, breaks = 3)
 
-allstats <- names(hydromad.getOption("stats"))
+allstats <- names(hydromad.stats())
 summary(mod0, stats = allstats)
 
-objFunVal(mod0, objective = hydromad.getOption("stats")$r.sq.log)
+objFunVal(mod0, hmadstat("r.sq.log"))
 
-str(objFunVal(mod0, objective = hydromad.getOption("stats")))
+str(objFunVal(mod0, hydromad.stats()))
 
 }
 \keyword{ methods }

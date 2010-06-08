@@ -31,4 +31,5 @@ summary(smods, pars = FALSE)
 
 ## flow duration curves
 xyplot.list(smods, FUN = qqmath, trans = log,
-            panel = panel.qqmath.approx, type = c("g","b"))
+            f.value = ppoints(100), tails.n = 50,
+            type = c("g","b"))

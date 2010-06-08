@@ -6,8 +6,6 @@
 \alias{observed.hydromad}
 \alias{residuals.hydromad}
 \alias{coef.hydromad}
-\alias{coef<-}
-\alias{coef<-.hydromad}
 \alias{vcov.hydromad}
 \alias{isValidModel}
 \alias{print.hydromad}
@@ -34,8 +32,6 @@
 
 \method{coef}{hydromad}(object, which = c("both", "sma", "routing"),
      ..., warn = TRUE, etc = FALSE)
-
-\method{coef}{hydromad}(object, ...) <- value
 
 \method{vcov}{hydromad}(object, ...)
 %% deviance?
@@ -88,9 +84,6 @@ isValidModel(object, ...)
     if \code{TRUE}, return the entire time series for which data
     exists. Otherwise, the warmup period (specified in the original call
     to \code{\link{hydromad}} is stripped off.
-  }
-  \item{value}{
-    ...
   }
   \item{U}{
     to return modelled effective rainfall (the output from SMA) rather

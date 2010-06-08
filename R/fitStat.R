@@ -8,18 +8,12 @@ tsFitStat <-
              na.action = na.pass,
              aggr = NULL, events = NULL)
 {
-    if (is.null(ref)) {
-        ref <- mean(obs, na.rm = TRUE)
-    }
-    if (length(ref) == 1) {
-        ## if reference model is a single number (typically the mean)
-        ## turn it into a time series like 'obs'
-        tmp <- ref
-        ref <- obs
-        ref[] <- tmp
-    }
     ## merge time series
-    dat <- cbind(obs = obs, mod = mod, ref = ref)
+    if (length(ref) > 1) {
+        dat <- cbind(obs = obs, mod = mod, ref = ref)
+    } else {
+        dat <- cbind(obs = obs, mod = mod)
+    }
     if (NROW(dat) <= 1) {
         warning("merged time series have no data; incompatible times?")
         return(NA_real_)
@@ -55,7 +49,9 @@ tsFitStat <-
         ## apply FUN to events 'ev', in each series
         dat <- eventapply(dat, ev, FUN = FUN)
     }
-    fitStat(dat[,"obs"], dat[,"mod"], ref = dat[,"ref"], ...)
+    if (length(ref) > 1)
+        ref <- dat[,"ref"]
+    fitStat(dat[,"obs"], dat[,"mod"], ref = ref, ...)
 }
 
 
@@ -74,6 +70,7 @@ fitStat <-
     ok <- complete.cases(obs, mod)
     if (length(ref) > 1) {
         ref <- coredata(ref)
+        stopifnot(length(ref) == length(mod))
         ok <- ok & !is.na(ref)
         ref <- ref[ok]
     }
@@ -99,12 +96,19 @@ fitStat <-
         mod <- trans(mod)
         if (!is.null(ref))
             ref <- trans(ref)
+        ## check again, just in case 'trans' changed the length
+        if (length(obs) != length(mod))
+            stop("length(obs) != length(mod) after transformation")
+        ## check again for missing values introduced by 'trans'
+        ok2 <- complete.cases(obs, mod)
+        obs <- obs[ok2]
+        mod <- mod[ok2]
+        if (length(ref) > 1)
+            ref <- ref[ok2]
     }
-    ## check again, just in case 'trans' changed the length
-    stopifnot(length(obs) == length(mod))
     ## default ref is the mean of transformed 'obs'
     if (is.null(ref)) {
-        ref <- mean(obs, na.rm = TRUE)
+        ref <- mean(obs)
     }
     ## calculate absolute error for model and reference
     ## and apply power p

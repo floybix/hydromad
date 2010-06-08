@@ -18,8 +18,8 @@ fitBySampling(MODEL, objective = hydromad.getOption("objective"),
     by \emph{ranges} of values rather than exact values.
   }
   \item{objective}{
-    objective function to minimise, given as a \code{formula} involving
-    \code{Q}, \code{X} and/or \code{U}. See \code{\link{objFunVal}}.
+    objective function to minimise, given as a \code{function(Q, X, ...)}.
+    See \code{\link{objFunVal}}.
   }
   \item{samples}{
     number of parameter sets to test.

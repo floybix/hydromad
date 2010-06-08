@@ -39,10 +39,10 @@ summary.hydromad <-
 
     ## pull out definitions of statistics
     stats2 <- setdiff(stats, c("ARPE", "YIC"))
-    stats.def <- hydromad.getOption("stats")[stats2]
+    stats.def <- hydromad.stats(stats2)
     bad <- sapply(stats.def, is.null)
     if (any(bad))
-        stop("no definition found for statistics: ",
+        stop("no definition found in hydromad.stats() for: ",
              toString(stats[bad]))
     
     DATA <- cbind(P = observed(object, item = "P", all = TRUE),
@@ -140,7 +140,7 @@ print.summary.hydromad <-
             cat(nm, ": ", format(xi, digits = digits), "\n", sep = "")
         }
     }
-    cat("\n", 'See hydromad.getOption("stats") for definitions.',
+    cat("\n", "See hydromad.stats(", deparse(nms), ") for definitions.",
         "\n", sep = "")
     invisible(x)
 }

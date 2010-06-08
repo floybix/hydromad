@@ -429,12 +429,12 @@ Differential Evolution (\code{fitByDE}) methods.
 
 The objective function can be specified as the \code{objective}
 argument to these functions, or by setting
-\code{hydromad.options(objective = )}.  It is given as an R formula (a
-chunk of \proglang{R} code) which may refer to the values \code{Q} and
-\code{X}, representing observed and modelled flow, respectively. For
-more advanced use it may also refer to \code{U} (modelled effective
-rainfall), and more generally it may refer to \code{model}, and so may
-extract other items of data, etc.
+\code{hydromad.options(objective = )}.  It is given as an R function
+which may refer to the values \code{Q} and \code{X}, representing
+observed and modelled flow, respectively. For more advanced use it may
+also refer to \code{U} (modelled effective rainfall), and more
+generally it may refer to \code{model}, and so may extract other items
+of data, parameters, etc.
 
 Here we use the default, which is a weighted sum of the $R^2$ of
 square-root transformed data, and the relative bias:
@@ -443,17 +443,19 @@ hydromad.getOption("objective")
 @
 
 The \code{fitStat} function implements a generalisation of the
-familiar $R^2$ (coefficient of determination) statistic.  The exponent
-applied to the equation is specied as argument \code{p}, so if \code{p
-  = 2}, as it is by default, then it is indeed $R^2$:
+familiar $R^2$ (coefficient of determination) statistic:
 
 \begin{equation}
-  \mathrm{fitStat}(Q,X) = 1 - \frac{ \sum |Q_* - X_*|^p }{ \sum |Q_* - \mathrm{E}(Q_*)|^p }
+  \mathrm{fitStat}(Q,X) = 1 - \frac{ \sum |Q_* - X_*|^2 }{ \sum |Q_* - R_*|^2 }
 \end{equation}
 
-where $Q$ and $X$ are the observed and modelled values. Subscript $*$
-denotes transformed data, and the transform can be specified. Here we
-use the square root. See \code{?summary.hydromad} for more examples.
+where $Q$ and $X$ are the observed and modelled values; $R$ is the
+result from a reference model, which is the baseline for
+comparison. It defaults to the mean of observed data
+$\mathrm{E}(Q_*)$, corresponding to the typical $R^2$ statistic.
+Subscript $*$ denotes transformed data, and the transform can be
+specified. Here we use the square root. See \code{?hydromad.stats}
+for more examples.
 
 The unit hydrograph module in \ihacres{} is a linear \emph{transfer
   function}, i.e. a set of exponentially receding stores, which may be

@@ -24,7 +24,7 @@ objFunVal(x, objective, ...)
     \code{X} and optionally \code{U} and \code{P}.
   }
   \item{objective}{
-    the objective function, as a \code{formula}. See Details.
+    the objective function, or a list of objective functions. See Details.
   }
   \item{...}{
     ignored.
@@ -39,32 +39,36 @@ objFunVal(x, objective, ...)
 }
 \details{
  
-  The objective function is given as a \code{\link{formula}} object
-  which may refer to the values \code{Q} and \code{X}, representing
-  observed and modelled flow, respectively. For more advanced use it may
-  also refer to \code{U} (modelled effective rainfall), and more
-  generally it may refer to \code{model}, and so may extract other items
-  of data, etc.
+  The objective function is given as a function with arguments \code{Q},
+  \code{X} and \code{\dots}, and optionally other arguments.  \code{Q}
+  and \code{X} represent observed and modelled flow, respectively.
+  It should return a single numeric value.
+  
+  For more advanced use it may also refer to arguments \code{U}
+  (modelled effective rainfall), or \code{P} (observed rainfall), and
+  more generally it may refer to \code{model}, and so may extract other
+  items of data, parameters, etc.
 
-  The default (unless changed in \code{hydromad.options("objective")} is
+  The default (unless changed in \code{hydromad.options("objective")}) is
   a weighted sum of the R Squared (coefficient of determination) of
   square-root transformed data, and the relative bias.
   
-  See \code{\link{summary.hydromad}} for examples of how to specify other
+  See \code{\link{hydromad.stats}} for examples of how to specify other
   fit statistics.
-  
 }
 \value{
-  the objective function value. It must be numeric and of length one;
-  anything else is an error.
+  the objective function value, or a list of objective function
+  values. They must be numeric and of length one; anything else is an
+  error.
 }
 \author{ Felix Andrews \email{felix@nfrac.org} }
 \seealso{
-  \link{hydromad.object},
-  \code{\link{hydromad.options}}
+  \code{\link{hydromad.stats}},
+  \link{hydromad.object}
 }
 \examples{
-
+dat <- data.frame(Q = rnorm(10), X = rnorm(10))
+objFunVal(dat, hmadstat("RMSE"))
 }
 \keyword{ utilities }
 
