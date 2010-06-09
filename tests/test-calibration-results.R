@@ -42,10 +42,10 @@ test_that("cmd+powuh SCE gives reasonable result", {
     modx <- hydromad(x, sma = "cmd", routing = "powuh")
     ## now try to fit it
     set.seed(0)
-    fitx <- fitBySCE(modx)
+    fitx <- fitBySCE(modx, control = list(maxit = 3))
     s <- summary(fitx)
-    expect_that(s$r.squared > 0.5, is_true())
-    expect_that(s$r.sq.log > 0.7, is_true())
-    expect_that(abs(s$rel.bias) < 0.1, is_true())
+    expect_that(s$r.squared > 0.6, is_true())
+    expect_that(s$r.sq.log > 0.6, is_true())
+    expect_that(abs(s$rel.bias) < 0.05, is_true())
 })
 

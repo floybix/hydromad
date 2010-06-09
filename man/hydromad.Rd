@@ -210,8 +210,8 @@ x <- Cotter[1:1000]
 modx <- hydromad(x, sma = "cwi", routing = "expuh",
                  tau_s = c(2,100), v_s = c(0,1))
 modx
-## now try to fit it
-fitx <- fitByOptim(modx)
+## now try to fit it (roughly - only 1 iteration of SCE!)
+fitx <- fitBySCE(modx, control = list(maxit = 1))
 fitx
 summary(fitx)
 xyplot(fitx, with.P = TRUE, type = c("l", "g"))
@@ -225,8 +225,8 @@ xyplot(x)
 mod0 <- hydromad(x, sma = "cwi", l = c(0, 100), 
              routing = "armax", rfit = list("inverse", order = c(1,1)))
 mod0
-## now try to fit it - roughly - in 10 seconds
-fit1 <- fitBySCE(mod0, control = list(maxtime = 10))
+## now try to fit the free parameters using a Simplex method
+fit1 <- fitByOptim(mod0)
 fit1
 summary(fit1)
 xyplot(fit1)

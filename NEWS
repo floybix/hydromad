@@ -5,6 +5,8 @@ Changes in Version 0.8-6 (in development)
 
   o the 'elitism' option to SCEoptim() now defaults to 1 (linear weights).
 
+  o fitByOptim() now handles boundaries differently, perhaps avoiding errors.
+
 Changes in Version 0.8-5
 
   o statistics are now managed by new functions hydromad.stats()

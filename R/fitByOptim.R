@@ -102,21 +102,20 @@ fitByOptim <-
         objseq <- c(objseq, rep(NA_real_, 100))
         do_optim <- function(pars) {
             ## TODO: handle boundaries better
-            #i <- which(pars < lower)
-            #if (any(i)) {
-            #    return( 1e12 + (sum(lower[i] - pars[i])) * 1e6 )
-            #}
-            #i <- which(pars > upper)
-            #if (any(i)) {
-            #    return( 1e12 + (sum(pars[i] - upper[i])) * 1e6 )
-            #}
-
-            i <<- i + 1
+            ## just set params to bounded values?
+            k <- which(pars < lower)
+            if (any(k)) {
+                return( 1e12 + (sum(lower[k] - pars[k])) * 1e6 )
+            }
+            k <- which(pars > upper)
+            if (any(k)) {
+                return( 1e12 + (sum(pars[k] - upper[k])) * 1e6 )
+            }
+            #if (any(pars < lower)) return(NA)
+            #if (any(pars > upper)) return(NA)
             
-            ## TODO: just set params to bounded values?
+            i <<- i + 1
 
-            if (any(pars < lower)) return(NA)
-            if (any(pars > upper)) return(NA)
             thisMod <- update(MODEL, newpars = pars)
             if (!isValidModel(thisMod))
                 return(NA)

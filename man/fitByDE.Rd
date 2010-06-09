@@ -64,7 +64,7 @@ x <- Cotter[1:1000]
 modx <- hydromad(x, sma = "cwi", routing = "powuh")
 modx
 
-foo <- fitByDE(modx, control = DEoptim.control(itermax = 10))
+foo <- fitByDE(modx, control = DEoptim.control(itermax = 5))
 
 summary(foo)
 
@@ -72,10 +72,7 @@ summary(foo)
 str(foo$fit.result)
 
 ## plot objective function value convergence over time
-ppp <- foo$fit.result$member$bestvalit
-convergenceTs <- ts(foo$fit.result$member$bestvalit,
-  end = foo$funevals, deltat = foo$funevals / length(ppp))
-xyplot(convergenceTs, type = "b",
+xyplot(optimtrace(foo), type = "b",
   xlab = "function evaluations", ylab = "objective fn. value")
 }
 \keyword{ optimization }

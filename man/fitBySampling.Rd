@@ -57,10 +57,7 @@ foo <- fitBySampling(modx)
 summary(foo)
 
 ## plot objective function value improvement over time
-ppp <- foo$fit.result$objseq
-convergenceTs <- ts(ppp, end = foo$funevals,
-  deltat = foo$funevals / length(ppp))
-xyplot(convergenceTs, type = "b",
+xyplot(optimtrace(foo), type = "b",
   xlab = "function evaluations", ylab = "objective fn. value")
 }
 \keyword{ optimization }

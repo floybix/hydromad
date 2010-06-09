@@ -105,10 +105,7 @@ symnum(cov2cor(vcov(foo)))
 str(foo$fit.result)
 
 ## plot objective function value convergence over time
-ppp <- foo$fit.result$objseq
-convergenceTs <- ts(ppp, end = foo$funevals,
-  deltat = foo$funevals / length(ppp))
-xyplot(convergenceTs, type = "b",
+xyplot(optimtrace(foo), type = "b",
   xlab = "function evaluations", ylab = "objective fn. value")
 }
 \keyword{ optimization }
