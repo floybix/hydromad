@@ -1,5 +1,11 @@
 
-Changes in Version 0.8-5 (in development)
+Changes in Version 0.8-6 (in development)
+
+  o new function optimtrace() to extract history of fitting process.
+
+  o the 'elitism' option to SCEoptim() now defaults to 1 (linear weights).
+
+Changes in Version 0.8-5
 
   o statistics are now managed by new functions hydromad.stats()
     and hmadstat(). The use of hydromad.options("stats") is now

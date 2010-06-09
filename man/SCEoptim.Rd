@@ -55,7 +55,7 @@ SCEoptim(FUN, par, ..., lower = -Inf, upper = Inf, control = list())
       (1992) describe a 'trapezoidal' (i.e. linear weighting) scheme,
       which corresponds to \code{elitism = 1}.
       Higher values give more weight towards the better parameter sets.
-      Defaults to \code{2}.
+      Defaults to \code{1}.
     }
     \item{\code{initsample}}{
       sampling scheme for initial values: "latin" (hypercube) or "random".
@@ -71,7 +71,7 @@ SCEoptim(FUN, par, ..., lower = -Inf, upper = Inf, control = list())
       defaults to \code{7}.
     }
     \item{\code{maxit}}{
-      maximum number of iterations. Defaults to \code{Inf}.
+      maximum number of iterations. Defaults to \code{10000}.
     }
     \item{\code{maxeval}}{
       maximum number of function evaluations. Defaults to \code{Inf}.
@@ -80,7 +80,8 @@ SCEoptim(FUN, par, ..., lower = -Inf, upper = Inf, control = list())
       maximum duration of optimization in seconds. Defaults to \code{Inf}.
     }
     \item{\code{returnpop}}{
-      whether to return populations from all iterations. Defaults to \code{FALSE}.
+      whether to return populations (parameter sets) from all
+      iterations. Defaults to \code{FALSE}. 
     }
     \item{\code{trace}}{
       an integer specifying the level of user feedback. Defaults to \code{0}.
@@ -99,10 +100,13 @@ SCEoptim(FUN, par, ..., lower = -Inf, upper = Inf, control = list())
   \item{counts}{ number of function evaluations. }
   \item{iterations}{ number of iterations of the CCE algorithm. }
   \item{time}{ number of seconds taken. }
-  \item{POP.ALL, POP.FIT.ALL}{
-    if \code{(control$returnpop = TRUE)}, the parameter sets and their
-    objective function values from each iteration are returned in a
-    three dimensional array.
+  \item{POP.FIT.ALL}{
+    objective function values from each iteration in a two dimensional
+    array. 
+  }
+  \item{POP.ALL}{
+    if \code{(control$returnpop = TRUE)}, the parameter sets from each
+    iteration are returned in a three dimensional array.
   }
   \item{control}{ the list of options settings in effect. }
 }

@@ -143,6 +143,9 @@ export(fitByDream)
 
 ## TODO: fitByGenoud?
 
+export(optimtrace)
+S3method(optimtrace, default)
+
 export(tsFitStat)
 export(fitStat)
 export(fitBias)

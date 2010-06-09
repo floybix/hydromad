@@ -34,11 +34,11 @@ sceDefaults <- function()
     list(ncomplex = 5,           ## number of complexes
          cce.iter = NA,          ## number of iteration in inner loop (CCE algorithm)
          fnscale = 1,            ## function scaling factor (set to -1 for maximisation)
-         elitism = 2,            ## controls amount of weighting in sampling towards the better parameter sets
+         elitism = 1,            ## controls amount of weighting in sampling towards the better parameter sets
          initsample = "latin",   ## sampling scheme for initial values -- "latin" or "random"
          reltol = 1e-5,          ## convergence threshold: relative improvement factor required in an SCE iteration
          tolsteps = 7,           ## number of iterations within reltol to confirm convergence
-         maxit = Inf,            ## maximum number of iterations
+         maxit = 10000,          ## maximum number of iterations
          maxeval = Inf,          ## maximum number of function evaluations
          maxtime = Inf,          ## maximum duration of optimization in seconds
          returnpop = FALSE,      ## whether to return populations from all iterations
@@ -74,16 +74,21 @@ SCEoptim <- function(FUN, par, ...,
         stop("unrecognised options: ",
              toString(names(control)[!isValid]))
 
+    returnpop <- control$returnpop
+    trace <- control$trace
     nCOMPLEXES <- control$ncomplex
     CCEITER <- control$cce.iter
     MAXIT <- control$maxit
-    returnpop <- control$returnpop
-    trace <- control$trace
-    elitism <- control$elitism
+    MAXEVAL <- control$maxeval
 
     ## recommended number of CCE steps in Duan et al 1994:
     if (is.na(CCEITER))
         CCEITER <- 2 * NDIM + 1
+
+    if (is.finite(MAXEVAL)) {
+        ## upper bound on number of iterations to reach MAXEVAL
+        MAXIT <- min(MAXIT, ceiling(MAXEVAL / (nCOMPLEXES * CCEITER)))
+    }
 
     ## define number of points in each complex
     nPOINTS_COMPLEX <- 2 * NDIM + 1
@@ -152,16 +157,16 @@ SCEoptim <- function(FUN, par, ...,
     }
 
     ## only store all iterations if requested -- could be big!
+    if (!is.finite(MAXIT)) {
+        MAXIT <- 10000
+        warning("setting maximum iterations to 10000")
+    }
     if (returnpop) {
-        if (is.infinite(MAXIT)) {
-            MAXIT <- 10000
-            warning("setting maximum iterations to 10000 (returnpop=TRUE)")
-        }
         POP.ALL <- array(as.numeric(NA), dim = c(nPOINTS, NDIM, MAXIT))
         if (!is.null(names(par)))
             dimnames(POP.ALL)[[2]] <- names(par)
-        POP.FIT.ALL <- array(as.numeric(NA), dim = c(nPOINTS, MAXIT))
     }
+    POP.FIT.ALL <- array(as.numeric(NA), dim = c(nPOINTS, MAXIT))
 
     ## the output object
     obj <- list()
@@ -191,8 +196,8 @@ SCEoptim <- function(FUN, par, ...,
 
     if (returnpop) {
         POP.ALL[,,1] <- POPULATION
-        POP.FIT.ALL[,1] <- POP.FITNESS
     }
+    POP.FIT.ALL[,1] <- POP.FITNESS
 
     ## store best solution from last two iterations
     prevBestVals <- rep(Inf, control$tolsteps)
@@ -232,7 +237,7 @@ SCEoptim <- function(FUN, par, ...,
                 ## sample points with "trapezoidal" i.e. linear probability
                 weights <- rev(ppoints(nPOINTS_COMPLEX))
                 ## 'elitism' parameter can give more weight to the better results:
-                weights <- weights ^ elitism
+                weights <- weights ^ control$elitism
                 LOCATION <- sample(seq(1,nPOINTS_COMPLEX), size = nPOINTS_SIMPLEX,
                                    prob = weights)
 
@@ -321,8 +326,8 @@ SCEoptim <- function(FUN, par, ...,
         POPULATION <- POPULATION[idx,,drop=FALSE]
         if (returnpop) {
             POP.ALL[,,i] <- POPULATION
-            POP.FIT.ALL[,i] <- POP.FITNESS
         }
+        POP.FIT.ALL[,i] <- POP.FITNESS
 
         curBest <- POP.FITNESS[1]
 
@@ -389,8 +394,8 @@ SCEoptim <- function(FUN, par, ...,
         ## store information on the population at each iteration
         obj$POP.ALL <- POP.ALL[,,1:i]
         dimnames(obj$POP.ALL)[[3]] <- paste("iteration", 1:i)
-        obj$POP.FIT.ALL <- POP.FIT.ALL[,1:i]
     }
+    obj$POP.FIT.ALL <- POP.FIT.ALL[,1:i]
 
     obj
 }

@@ -13,6 +13,9 @@ fitByOptim(MODEL, objective = hydromad.getOption("objective"),
            sampletype = c("latin.hypercube", "random", "all.combinations"),
            initpars = NULL, multistart = FALSE,
            vcov = FALSE, hessian = vcov)
+
+fitByOptim1(MODEL, objective = hydromad.getOption("objective"),
+            tol = .Machine$double.eps^0.25)
 }
 \arguments{
   \item{MODEL}{
@@ -26,7 +29,9 @@ fitByOptim(MODEL, objective = hydromad.getOption("objective"),
   }
   \item{method, control}{
     optimisation algorithm and settings. See \code{\link{optim}}. The
-    default, "Nelder-Mead" (a simplex algorithm), is generally the most robust.
+    default is \code{"Nelder-Mead"} (a simplex algorithm).
+    An additional method \code{"PORT"} can be given, which calls
+    \code{\link{nlminb}}. 
   }
   \item{samples}{
     number of parameter sets to test.
@@ -48,6 +53,9 @@ fitByOptim(MODEL, objective = hydromad.getOption("objective"),
     will be estimated as the inverse of
     the hessian matrix returned by \code{optim()}. This may be a very
     poor estimate! It can be extract using \code{\link{vcov}}.
+  }
+  \item{tol}{
+    convergence tolerance, see \code{\link{nlminb}}. 
   }
 }
 \details{
