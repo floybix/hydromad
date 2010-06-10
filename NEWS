@@ -1,5 +1,5 @@
 
-Changes in Version 0.8-6 (in development)
+Changes in Version 0.8-6
 
   o new function optimtrace() to extract history of fitting process.
 

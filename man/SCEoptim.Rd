@@ -101,8 +101,10 @@ SCEoptim(FUN, par, ..., lower = -Inf, upper = Inf, control = list())
   \item{iterations}{ number of iterations of the CCE algorithm. }
   \item{time}{ number of seconds taken. }
   \item{POP.FIT.ALL}{
-    objective function values from each iteration in a two dimensional
-    array. 
+    objective function values from each iteration in a matrix.
+  }
+  \item{BESTMEM.ALL}{
+    best parameter set from each iteration in a matrix.
   }
   \item{POP.ALL}{
     if \code{(control$returnpop = TRUE)}, the parameter sets from each

@@ -166,7 +166,10 @@ SCEoptim <- function(FUN, par, ...,
         if (!is.null(names(par)))
             dimnames(POP.ALL)[[2]] <- names(par)
     }
-    POP.FIT.ALL <- array(as.numeric(NA), dim = c(nPOINTS, MAXIT))
+    POP.FIT.ALL <- matrix(as.numeric(NA), ncol = nPOINTS, nrow = MAXIT)
+    BESTMEM.ALL <- matrix(as.numeric(NA), ncol = NDIM, nrow = MAXIT)
+    if (!is.null(names(par)))
+        colnames(BESTMEM.ALL) <- names(par)
 
     ## the output object
     obj <- list()
@@ -197,7 +200,8 @@ SCEoptim <- function(FUN, par, ...,
     if (returnpop) {
         POP.ALL[,,1] <- POPULATION
     }
-    POP.FIT.ALL[,1] <- POP.FITNESS
+    POP.FIT.ALL[1,] <- POP.FITNESS
+    BESTMEM.ALL[1,] <- POPULATION[1,]
 
     ## store best solution from last two iterations
     prevBestVals <- rep(Inf, control$tolsteps)
@@ -327,7 +331,8 @@ SCEoptim <- function(FUN, par, ...,
         if (returnpop) {
             POP.ALL[,,i] <- POPULATION
         }
-        POP.FIT.ALL[,i] <- POP.FITNESS
+        POP.FIT.ALL[i,] <- POP.FITNESS
+        BESTMEM.ALL[i,] <- POPULATION[1,]
 
         curBest <- POP.FITNESS[1]
 
@@ -350,7 +355,7 @@ SCEoptim <- function(FUN, par, ...,
                 message(sprintf(' %5.0f     %5.0f             %12.6g              %12.6g',
                         i, funevals, min(POP.FITNESS), max(POP.FITNESS)))
                 if (trace >= 2)
-                    message("parameters: ", toString(POPULATION[1,]))
+                    message("parameters: ", toString(signif(POPULATION[1,], 3)))
             }
         }
 
@@ -395,7 +400,8 @@ SCEoptim <- function(FUN, par, ...,
         obj$POP.ALL <- POP.ALL[,,1:i]
         dimnames(obj$POP.ALL)[[3]] <- paste("iteration", 1:i)
     }
-    obj$POP.FIT.ALL <- POP.FIT.ALL[,1:i]
+    obj$POP.FIT.ALL <- POP.FIT.ALL[1:i,]
+    obj$BESTMEM.ALL <- BESTMEM.ALL[1:i,]
 
     obj
 }
