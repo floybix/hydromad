@@ -64,6 +64,7 @@ x <- Cotter[1:1000]
 modx <- hydromad(x, sma = "cwi", routing = "powuh")
 modx
 
+## a very short run! just to demonstrate methods
 foo <- fitByDream(modx, control = list(ndraw = 500))
 
 summary(foo)

@@ -21,7 +21,7 @@ optimtrace(object, ...)
       \item{\code{raw}}{
         if \code{TRUE}, then raw function values are returned, which may
         consist of multiple series in parallel, and may jump up and
-        down. Otherwise (the default), the the best value so far at each
+        down. Otherwise (the default), the best value so far at each
         time step is returned.
       }
       \item{\code{objective}}{
@@ -45,6 +45,6 @@ optimtrace(object, ...)
   \code{\link{fitByOptim}}
 }
 \examples{
-
+## see examples in fitByOptim, fitBySCE, fitByDE, fitByDream
 }
 \keyword{ optimization }

@@ -21,12 +21,13 @@ spec[["modelling framework"]] <-
 spec[["assessment"]] <-
     list(
          list("summary", helpname = "summary.hydromad"),
+         list("hydromad.stats"),
+         list("fitStat"),
          list("eventseq", do.example = TRUE),
          list("xyplot", helpname = "xyplot.hydromad", do.example = TRUE),
          list("xyplot.runlist", do.example = TRUE),
          list("errormasscurve", -1, helpname = "xyplot.hydromad", do.example = TRUE),
-         list("qqmath", -2, helpname = "xyplot.hydromad", do.example = TRUE),
-         list("fitStat")
+         list("qqmath", -2, helpname = "xyplot.hydromad", do.example = TRUE)
          )
 
 spec[["calibration"]] <-
@@ -36,7 +37,8 @@ spec[["calibration"]] <-
          list("fitByOptim"),
          list("fitBySCE"),
          list("fitByDE"),
-         list("fitByDream")
+         list("fitByDream"),
+         list("optimtrace", do.example = TRUE, examplename = "fitByOptim")
          )
 
 spec[["soil moisture accounting"]] <-
@@ -46,8 +48,8 @@ spec[["soil moisture accounting"]] <-
          list("cmd", helpname = "IHACRES.CMD.model", codefile = "cmd.R"),
          list("bucket"),
          list("awbm"),
-         list("sacramento", height = 700),
-         list("snow", height = 500),
+         list("sacramento"),
+         list("snow"),
          list("runoffratio"),
          list("dbm")
          )
@@ -81,16 +83,22 @@ spec[["utilities"]] <-
 
 spec[["datasets"]] <-
     list(
-         list("BinghamTrib", codefile = "../data/BinghamTrib.R", do.example = TRUE),
-         list("Canning", codefile = NA, do.example = TRUE),
-         list("Cotter", codefile = NA, do.example = TRUE),
+         list("BinghamTrib"),
+         list("Canning"),
+         list("Cotter"),
          #list("Molonglo"),
-         list("Murrindindi", codefile = NA, do.example = TRUE),
-         list("Queanbeyan", codefile = NA, do.example = TRUE),
-         list("SalmonBrook", codefile = NA, do.example = TRUE),
-         list("Wye", codefile = NA, do.example = TRUE),
-         list("HydroTestData", codefile = "../data/HydroTestData.R", do.example = TRUE)
+         list("Murrindindi"),
+         list("Queanbeyan"),
+         list("SalmonBrook"),
+         list("Wye"),
+         list("HydroTestData")
          )
+
+spec[["datasets"]] <- lapply(spec[["datasets"]], function(x) {
+    x$do.example <- TRUE
+    x$codefile <- paste("../data/", x[[1]], sep = "")
+    x
+})
 
 #spec[["wetlands"]] <-
 #    list(
@@ -98,15 +106,17 @@ spec[["datasets"]] <-
 #         list("poweroid")
 #         )
 
-#source("http://latticeextra.r-forge.r-project.org/generate.R")
-source("../../latticeextra/www/generate.R")
+source("http://latticeextra.r-forge.r-project.org/generate.R")
+#source("../../latticeextra/www/generate.R")
 
 ## stop on errors
 lattice.options(panel.error = NULL)
 
-generateWebsite("hydromad", spec = spec, 
+imageSrcBase <- ""
+
+generateWebsite("hydromad", spec = spec, do.example = FALSE,
                 man.src.dir = "../man/",
-                imageSrcBase = "",
-                codeSrcSpec = "http://github.com/floybix/hydromad/tree/master/R/%s",
-                themes = list(custom_theme_2 = custom.theme.2()),
-                do.examples = FALSE)
+                image.src.base = imageSrcBase,
+                topleveljs = paste('var imageSrcBase = "', imageSrcBase, '";', sep = ""),
+                code.url = "http://github.com/floybix/hydromad/tree/master/R/%s",
+                themes = list(custom_theme_2 = custom.theme.2()))

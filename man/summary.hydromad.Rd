@@ -12,9 +12,7 @@
         stats = hydromad.getOption("summary.stats"),
         with.hydrostats = TRUE, na.action = na.exclude, ...)
 
-\method{summary}{hydromad.runlist}(object, ...,
-        stats = hydromad.getOption("summary.stats"),
-        items = stats)
+\method{summary}{hydromad.runlist}(object, with.hydrostats = FALSE, ...)
 }
 \arguments{
   \item{object}{ an object of class \code{hydromad}. }
@@ -41,9 +39,6 @@
   }
   \item{\dots}{
     ignored.
-  }
-  \item{items}{
-    passed to \code{\link{summary.runlist}}.
   }
 }
 \details{

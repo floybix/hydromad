@@ -27,7 +27,7 @@ getObjSeq.default <- function(object, ..., raw = FALSE)
 getObjSeq.SCEoptim <- function(object, ..., raw = FALSE)
 {
     funevals <- object$counts
-    ppp <- t(object$POP.FIT.ALL)
+    ppp <- object$POP.FIT.ALL
     if (raw == FALSE) {
         ## best of the chains at each step
         ppp <- do.call("pmin", as.data.frame(ppp))
@@ -52,7 +52,7 @@ getObjSeq.dream <-
     if (is.null(objective)) {
         if (raw == FALSE) {
             ## best of the chains at each step
-            ppp <- do.call("pmin", as.data.frame(ppp))
+            ppp <- do.call("pmin", c(as.list(as.data.frame(ppp)), na.rm = TRUE))
             ## best result so far at each step
             ppp <- cummin(na.locf(ppp))
         }
@@ -62,14 +62,20 @@ getObjSeq.dream <-
         ## could do it in a straightforward way by evaluating model at
         ## each time step and for each chain, but would take a long time!
         ## so instead, only re-calculate objective when likelihood improves.
-        bestLik <- do.call("pmin", as.data.frame(ppp))
+        bestLik <- do.call("pmin", c(as.list(as.data.frame(ppp)), na.rm = TRUE))
         improved <- c(TRUE, diff(cummin(na.locf(bestLik))) != 0)
         ## calculate objective for time steps with improved likelihood
         improv.fval <- sapply(which(improved), function(i) {
             ichain <- which.min(ppp[i,])
+            ## TODO: temporary; don't need this for newly generated results
+            ## (there might be multiple minima and some are false, from dream < 0.3-2)
+            ichains <- which(ppp[i,] == min(ppp[i,]))
+            min(sapply(ichains, function(ichain)
+            {
             ipars <- object$Sequences[[ichain]][i,]
             objFunVal(update(model, newpars = ipars),
                       objective = objective)
+            }))
         })
         fval <- rep(NA_real_, NROW(ppp))
         fval[improved] <- improv.fval

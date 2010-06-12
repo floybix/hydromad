@@ -70,17 +70,19 @@ fitByOptim <-
 #        lower[is.na(lower)] <- -Inf
 #        upper[is.na(upper)] <- Inf
         pre.funevals <- 0
+        objseq <- numeric()
         preMODEL <- MODEL
         if (!is.null(initpars)) {
             ## initial parameter values were specified.
             initpars <- unlist(initpars)[names(parlist)]
-        } else if (samples > 1) {
+        } else if (samples >= 1) {
             ## do sampling to find a good starting point
             preMODEL <- fitBySampling(MODEL, objective = objective,
                                       samples = samples, sampletype = sampletype)
             if (!isValidModel(preMODEL))
                 return(preMODEL)
             pre.funevals <- preMODEL$funevals
+            objseq <- preMODEL$fit.result$objseq
             initpars <- coef(preMODEL)[names(parlist)]
         } else {
             initpars <- sapply(parlist, mean)
@@ -94,10 +96,6 @@ fitByOptim <-
             control$trace <- 0
         bestModel <- MODEL
         bestFunVal <- Inf
-        objseq <- numeric()
-        if (pre.funevals > 0) {
-            objseq <- preMODEL$fit.result$objseq
-        }
         i <- length(objseq)
         objseq <- c(objseq, rep(NA_real_, 100))
         do_optim <- function(pars) {

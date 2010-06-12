@@ -151,8 +151,8 @@ print.hydromad <-
         cat("Function evaluations: ", x$funevals, " in ",
             x$timing[3], " seconds", "\n")
         cat("Objective: ",
-            toString(deparse(x$objective, control = c(),
-                             width = 500),
+            toString(paste(deparse(x$objective, control = c(),
+                             width = 60), collapse = "\n"),
                      width = getOption("width")))
    }
     if (length(x$info.rfit) > 0) {

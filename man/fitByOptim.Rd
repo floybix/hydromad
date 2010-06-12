@@ -1,5 +1,6 @@
 \name{fitByOptim}
 \alias{fitByOptim}
+\alias{fitByOptim1}
 \title{
   Fit a hydromad model using a general-purpose optimiser.
 }
@@ -55,12 +56,16 @@ fitByOptim1(MODEL, objective = hydromad.getOption("objective"),
     poor estimate! It can be extract using \code{\link{vcov}}.
   }
   \item{tol}{
-    convergence tolerance, see \code{\link{nlminb}}. 
+    convergence tolerance, see \code{\link{optimize}}. 
   }
 }
 \details{
   See \code{\link{optim}} for a brief description of the available
   algorithms, including references to literature.
+
+  \code{\link{fitByOptim1}} handles a single free parameter using
+  \code{\link{optimize}}; it is called by \code{fitByOptim}, with a
+  warning, in that case.
 }
 \value{
   the best model from those sampled, according to the given
@@ -94,7 +99,8 @@ x <- Cotter[1:1000]
 modx <- hydromad(x, sma = "cwi", routing = "powuh")
 modx
 
-foo <- fitByOptim(modx, vcov = TRUE)
+set.seed(0)
+foo <- fitByOptim(modx, samples = 100, vcov = TRUE)
 
 summary(foo)
 
@@ -107,5 +113,15 @@ str(foo$fit.result)
 ## plot objective function value convergence over time
 xyplot(optimtrace(foo), type = "b",
   xlab = "function evaluations", ylab = "objective fn. value")
+
+## repeat optimisation with single random starting points
+fooreps <-
+  replicate(5, fitByOptim(modx, samples = 1, sampletype = "random"),
+            simplify = FALSE)
+names(fooreps) <- paste("rep", 1:length(fooreps))
+## extract and plot the optimisation traces
+traces <- lapply(c(list(original = foo), fooreps), optimtrace)
+xyplot(do.call("merge", traces), superpose = TRUE,
+    col = list(original = "red"))
 }
 \keyword{ optimization }

@@ -32,6 +32,7 @@ S3method(absorbScale, hydromad)
 S3method(simulate, hydromad)
 
 S3method(summary, hydromad)
+S3method(summary, hydromad.runlist)
 S3method(print, summary.hydromad)
 S3method(print, summaryWithBreaks.hydromad)
 

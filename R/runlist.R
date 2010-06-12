@@ -43,7 +43,7 @@ summary.runlist <-
     if (length(object) == 0)
         return(NULL)
     ## extract elements from summary which are single numbers
-    cc <- lapply(object, function(x) {
+    cc <- lapply(object, function(x, ...) {
         tmp <- FUN(x, ...)
         if (is.null(items)) {
             tmp <- tmp[unlist(lapply(tmp, function(z) {
@@ -54,7 +54,7 @@ summary.runlist <-
             tmp <- tmp[items]
         }
         unlist(tmp)
-    })
+    }, ...)
     ## pad out missing entries with NAs
     ## find the set of all names
     allnms <- unique(unlist(lapply(cc, names)))

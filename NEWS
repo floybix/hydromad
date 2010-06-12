@@ -1,4 +1,15 @@
 
+Changes in Version 0.8-7 (in development)
+
+  o the default log-likelihood function (hydromad.options("loglik")) changed.
+
+  o optimtrace() for Dream results now avoids a problem with objective values.
+    (not an issue with runs generated from dream >= 0.3-2).
+
+  o summary.runlist() now passes on further arguments to summary() (or FUN).
+
+  o the summary() method for hydromad.runlist now has with.hydrostats = FALSE.
+
 Changes in Version 0.8-6
 
   o new function optimtrace() to extract history of fitting process.

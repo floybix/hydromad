@@ -5,13 +5,10 @@
 
 
 summary.hydromad.runlist <-
-    function(object, ...,
-             stats = hydromad.getOption("summary.stats"),
-             items = stats)
+    function(object, with.hydrostats = FALSE, ...)
 {
     summary.runlist(object, ...,
-                    stats = stats,
-                    items = items)
+                    with.hydrostats = with.hydrostats)
 }
 
 summary.hydromad <-
@@ -140,8 +137,9 @@ print.summary.hydromad <-
             cat(nm, ": ", format(xi, digits = digits), "\n", sep = "")
         }
     }
-    cat("\n", "See hydromad.stats(", deparse(nms), ") for definitions.",
-        "\n", sep = "")
+    cat("\n", "For definitions see:\n",
+        "lapply(hydromad.stats(", paste(deparse(nms), collapse = "\n"), "), body)", "\n",
+        sep = "")
     invisible(x)
 }
 
