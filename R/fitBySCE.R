@@ -11,6 +11,7 @@ fitBySCE <-
              vcov = FALSE)
 {
     start_time <- proc.time()
+    objective <- buildCachedObjectiveFun(objective, MODEL)
     parlist <- as.list(coef(MODEL, warn = FALSE))
     ## remove any missing parameters
     isok <- sapply(parlist, function(x) !any(is.na(x)))

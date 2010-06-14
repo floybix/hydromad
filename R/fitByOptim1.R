@@ -10,6 +10,7 @@ fitByOptim1 <-
              tol = .Machine$double.eps^0.25)
 {
     start_time <- proc.time()
+    objective <- buildCachedObjectiveFun(objective, MODEL)
     parlist <- as.list(coef(MODEL, warn = FALSE))
     ## remove any missing parameters
     isok <- sapply(parlist, function(x) !any(is.na(x)))

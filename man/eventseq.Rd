@@ -2,7 +2,6 @@
 \alias{eventseq}
 \alias{eventapply}
 \alias{eventinfo}
-%\alias{levels.eventseq}
 \title{
   Identify discrete events from time series and apply functions to them.
 }
@@ -11,7 +10,7 @@
 }
 \usage{
 eventseq(x, thresh = 0, mingap = 1, mindur = 1, n = NA,
-         below = FALSE, all = FALSE, inter = NA)
+         below = FALSE, all = FALSE)
 
 eventapply(X, events, FUN = sum, ...,
            by.column = TRUE, simplify = TRUE,
@@ -33,10 +32,10 @@ eventinfo(X, events, FUN = mean, ...)
     threshold value: the data must be strictly above this level (or, if
     \code{below = TRUE}, below this level) to define an event. 
   }
-  \item{mingap, inter}{
+  \item{mingap}{
     the minimum number of time steps that can separate events. Any
     inter-event durations shorter than this will be subsumed into the
-    surrounding event. (\code{inter} is the old name, now deprecated).
+    surrounding event.
   }
   \item{mindur}{
     the minimum number of time steps required to define an event. Any

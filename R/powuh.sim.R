@@ -41,7 +41,7 @@ powuh.sim <-
 
 powuh.ranges <- function()
     list(a = c(0.01, 60),
-         b = c(0.5, 2),
+         b = c(0.5, 3),
          c = c(0.5, 2))
 
 ssg.powuh <- function(theta)

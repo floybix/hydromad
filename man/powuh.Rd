@@ -29,13 +29,14 @@ powuh.sim(U, delay = 0,
 
   }
   \item{c}{
-    
+    curvature at half-peak point.
   }
   \item{init}{
     
   }
   \item{uhsteps}{
-    
+    number of time steps to use in approximating the unit hydrograph
+    convolution filter.
   }
   \item{na.action}{
     function to remove missing values,
@@ -49,7 +50,8 @@ powuh.sim(U, delay = 0,
 
   TODO: define model
 
-  uh <- (1 / (1 + (t/a)^(b/c))) ^ c
+  \code{uh <- (1 / (1 + (t/a)^(b/c))) ^ c}
+  
 }
 \value{
   the model output as a \code{\link{ts}} object,

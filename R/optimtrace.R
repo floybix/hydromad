@@ -59,6 +59,7 @@ getObjSeq.dream <-
     } else {
         ## calculate corresponding objective function values over time.
         stopifnot(!is.null(model))
+        objective <- buildCachedObjectiveFun(objective, model)
         ## could do it in a straightforward way by evaluating model at
         ## each time step and for each chain, but would take a long time!
         ## so instead, only re-calculate objective when likelihood improves.

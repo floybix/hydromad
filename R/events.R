@@ -53,13 +53,8 @@ findThresh <-
 
 eventseq <-
     function(x, thresh = 0, mingap = 1, mindur = 1, n = NA,
-             below = FALSE, all = FALSE, inter = NA)
+             below = FALSE, all = FALSE)
 {
-    if (!is.na(inter)) {
-        .Deprecated(msg = "The 'inter' argument is deprecated. Use 'mingap'.")
-        if (missing(mingap))
-            mingap <- inter
-    }
     if (!is.na(n)) {
         if (!missing(thresh))
             warning("'thresh' argument ignored since 'n' given")

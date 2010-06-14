@@ -1,5 +1,33 @@
 
-Changes in Version 0.8-7 (in development)
+Changes in Version 0.9-0 (in development)
+
+  o NOTE: major changes that will break existing code (see below).
+
+  o new functions buildObjectiveFunction() and buildEventObjectiveFunction().
+
+  o objective functions can now include expressions which will be evaluated
+    once and cached for efficiency by calibration/simulation functions.
+    See ?hydromad.stats
+
+  o fitStat() now returns, typically, sum((Q-X)^2)/sum((Q-ref)^2)
+    whereas it used to return 1 - this. So "R squared" is now
+    calculated as ~ 1 - fitStat(Q,X).
+
+  o tsFitStat() has been removed as fitStat() now automatically merges
+    time series and its other functionality has been taken over by
+    buildObjectiveFunction().
+
+  o fitBias() has been removed in favour of hmadstat("rel.bias").
+
+  o the 'offset' argument to fitStat() has been removed; in particular log
+    transformations will not have an automatic offset added unless you use
+    hmadstat("r.sq.log").
+
+  o hydromad.options("stats") has been removed in favour of hydromad.stats().
+
+  o the 'inter' argument to eventseq(), which was deprecated, has been removed.
+
+Changes in Version 0.8-7
 
   o the default log-likelihood function (hydromad.options("loglik")) changed.
 

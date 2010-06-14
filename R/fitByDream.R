@@ -16,6 +16,7 @@ fitByDream <-
 {
     library(dream)
     start_time <- proc.time()
+    loglik <- buildCachedObjectiveFun(loglik, MODEL)
     parlist <- as.list(coef(MODEL, warn = FALSE))
     ## remove any missing parameters
     isok <- sapply(parlist, function(x) !any(is.na(x)))

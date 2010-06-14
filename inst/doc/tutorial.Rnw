@@ -446,7 +446,7 @@ The \code{fitStat} function implements a generalisation of the
 familiar $R^2$ (coefficient of determination) statistic:
 
 \begin{equation}
-  \mathrm{fitStat}(Q,X) = 1 - \frac{ \sum |Q_* - X_*|^2 }{ \sum |Q_* - R_*|^2 }
+  \mathrm{fitStat}(Q,X) = \frac{ \sum |Q_* - X_*|^2 }{ \sum |Q_* - R_*|^2 }
 \end{equation}
 
 where $Q$ and $X$ are the observed and modelled values; $R$ is the

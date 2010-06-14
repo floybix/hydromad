@@ -11,6 +11,7 @@ fitDbmToPeaks <-
              return_fit = FALSE)
 {
     stopifnot(identical(MODEL$sma, "dbm"))
+    objective <- buildCachedObjectiveFun(objective, MODEL)
     if (is.na(delay))
         delay <- estimateDelay(MODEL$data[,c("P","Q")])
     parlist <- as.list(coef(MODEL, which = "sma", warn = FALSE))

@@ -8,16 +8,25 @@
   Its usage is similar to \code{\link{hydromad.options}}.
 }
 \usage{
-hmadstat(name, negate = FALSE)
+hmadstat(name, DATA = NULL)
 hydromad.stats(...)
 }
 \arguments{
   \item{name}{ character giving the name of a statistic. }
-  \item{negate}{
-    if \code{TRUE}, the returned function is modified to negate the
-    result. This can be useful when defining an objective function to be
-    minimised.
+  \item{DATA}{
+    in normal usage this is not needed.
+    The time series data matrix used to construct the current model.
+    If given, any special \code{.()} expressions in the named objective
+    function will be evaluated with the given \code{DATA} and \code{Q}.
+    These chunks are cached so that repeated evaluation of the objective
+    function is faster; but it is then only valid for models using the
+    same dataset.
   }
+%  \item{negate}{
+%    if \code{TRUE}, the returned function is modified to negate the
+%    result. This can be useful when defining an objective function to be
+%    minimised.
+%  }
   \item{...}{
     new stats can be defined, or existing ones modified, using one or
     more arguments of the form 'name = value' or by passing a list of

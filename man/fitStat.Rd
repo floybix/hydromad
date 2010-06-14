@@ -1,21 +1,13 @@
 \name{fitStat}
 \alias{fitStat}
-\alias{tsFitStat}
-\alias{fitBias}
 \title{ Coefficient of Efficiency (R Squared) and other fit stats }
 \description{
   Coefficient of Efficiency (R Squared) and other fit stats.
 }
 \usage{
-tsFitStat(obs, mod, ref = NULL, ...,
-          na.action = na.pass,
-          aggr = NULL, events = NULL)
-
-fitStat(obs, mod, ref = NULL, p = 2,
-        trans = NULL, offset = identical(trans, log),
-        negatives.ok = FALSE)
-
-fitBias(obs, mod, relative.bias = TRUE)
+fitStat(obs, mod, ref = NULL, ..., p = 2,
+        trans = NULL, negatives.ok = FALSE,
+        na.action = na.pass)
 }
 \arguments{
   \item{obs}{
@@ -30,31 +22,14 @@ fitBias(obs, mod, relative.bias = TRUE)
     applying any transformation (\code{trans}).
   }
   \item{...}{
-    passed to \code{fitStat}.
+    ignored.
   }
-  \item{na.action}{
-    a function to apply to the time series, which is expected to fill in
-    or remove missing values (note, this is optional).
-  }
-  \item{aggr}{
-    to aggregate the time series before calculating fit statistics
-    (and before applying \code{trans} or \code{offset}). \code{aggr}
-    should be a list of arguments to the \code{aggregate} function,
-    which will typically dispatch to the \code{"ts"} method,
-    \code{\link{aggregate.ts}}, or the \code{"zoo"} method,
-    \code{\link{aggregate.zoo}}. The former accepts a \code{ndeltat}
-    argument to specify the size of blocks to aggregate, and the latter
-    accepts a \code{"by"} argument to specify the blocks. 
-    If \code{aggr} is a character string, this is used as a time step
-    specification for \code{\link[=cut.Date]{cut}}ting the time index:
-    see examples below.
-  }
-  \item{events}{
-    to aggregate the time series into discrete events before calculating
-    fit statistics (and before applying \code{trans} or
-    \code{offset}). \code{events} should be a list of argument to the
-    \code{eventseq} function. This can not be combined with \code{aggr}.
-  }
+%  \item{events}{
+%    to aggregate the time series into discrete events before calculating
+%    fit statistics (and before applying \code{trans} or
+%    \code{offset}). \code{events} should be a list of argument to the
+%    \code{eventseq} function. This can not be combined with \code{aggr}.
+%  }
   \item{p}{
     power to apply to absolute residuals (\code{abs(obs - mod)} and
     \code{abs(obs - ref)}.
@@ -63,35 +38,35 @@ fitBias(obs, mod, relative.bias = TRUE)
     a function to apply to each data series before calculating the fit
     statistic. 
   }
-  \item{offset}{
-    a constant offset to apply to all data before calculating the fit
-    statistic (and before applying \code{trans}). If equal to
-    \code{TRUE}, the offset is taken as the 10\% quantile (i.e. lowest
-    decile) of the non-zero values of \code{obs}.
-  }
   \item{negatives.ok}{
     if \code{FALSE}, the default case, all values in \code{obs},
     \code{mod} and \code{ref} are constrained to be non-negative;
     i.e. negative values are replaced with zero.
   }
-  \item{relative.bias}{
-    to calculate the relative bias, i.e. \code{mean(mod - obs) /
-      mean(obs)} (except that missing values are omitted).
+  \item{na.action}{
+    a function to apply to the time series, which is expected to fill in
+    or remove missing values (note, this is optional).
   }
 }
 \details{
-  The \code{tsFitStat} function will merge its arguments together, such
+  The result is, after transformation of variables,
+
+  \deqn{sum(abs(obs-mod)^p) / sum(abs(obs-ref)^p)}
+  
+  If the arguments \code{obs}, \code{mod} or \code{ref} are not plain
+  vectors, \code{fitStat} will attempt to merge them together, so
   that corresponding time steps are compared to each other even if the
-  time windows are not equal. In \code{fitStat}, it is assumed that the
-  series are already synchronised.
+  time windows are not equal.
 }
 \value{
   a single numeric value.
 }
 \author{ Felix Andrews \email{felix@nfrac.org} }
 \seealso{
-  \code{\link{summary.hydromad}},
-  \code{\link{objFunVal}}
+  \code{\link{hydromad.stats}},
+  \code{\link{buildObjectiveFunction}},
+  \code{\link{objFunVal}},
+  \code{\link{summary.hydromad}}
 }
 \examples{
 ## generate some data -- it is autocorrelated so the use of these
@@ -121,32 +96,36 @@ fitStat(Q, X, p = 1)
 
 fitStat(Q, X, trans = sqrt)
 
-fitStat(Q, X, trans = log)
-
-## monthly maximum values
-tsFitStat(Q, X, aggr = list(by = as.yearmon, FUN = max))
-
-## sums over 7 day blocks
-tsFitStat(Q, X, aggr = list(by = function(x) cut(x, "7 days"), FUN = sum))
-
-## ...which is the same as:
-tsFitStat(Q, X, aggr = "7 days")
+fitStat(Q, X, trans = function(x) log(x+1))
 
 ## use a different reference model (one-step-ahead forecast)
-tsFitStat(Q, X, ref = lag(Q,-1))
+fitStat(Q, X, ref = lag(Q,-1))
+
+## reference as seasonal averages rather than overall average
+fitStat(Q, X, ref = ave(Q, months(time(Q))))
 
 ## see how the reference model performs in terms of R Squared
-tsFitStat(Q, lag(Q,-1))
+fitStat(Q, ave(Q, months(time(Q))))
 
-## event-based stats (events identified from Q series only)
-tsFitStat(Q, X, events = list(thresh = 5, FUN = mean))
 
-## include periods between events
-tsFitStat(Q, X, events = list(thresh = 5, FUN = mean, all = TRUE))
-
-## display the identified events:
-xyplot(merge(Q, X), superpose = TRUE) +
-  layer_(panel.xblocks(eventseq(Q, thresh = 5), col = "lightgrey"))
+### monthly maximum values
+#tsFitStat(Q, X, aggr = list(by = as.yearmon, FUN = max))
+#
+### sums over 7 day blocks
+#tsFitStat(Q, X, aggr = list(by = function(x) cut(x, "7 days"), FUN = sum))
+#
+### ...which is the same as:
+#tsFitStat(Q, X, aggr = "7 days")
+#
+### event-based stats (events identified from Q series only)
+#tsFitStat(Q, X, events = list(thresh = 5, FUN = mean))
+#
+### include periods between events
+#tsFitStat(Q, X, events = list(thresh = 5, FUN = mean, all = TRUE))
+#
+### display the identified events:
+#xyplot(merge(Q, X), superpose = TRUE) +
+#  layer_(panel.xblocks(eventseq(Q, thresh = 5), col = "lightgrey"))
 }
 \keyword{ ts }
 

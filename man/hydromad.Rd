@@ -182,7 +182,7 @@ hydromad(DATA = zoo(), ...,
     \item{\code{\link{fitByDE}}}{
       fit using the Differential Evolution (DE) algorithm.
     }
-    \item{\code{\link{fitByDREAM}}}{
+    \item{\code{\link{fitByDream}}}{
       fit using the DiffeRential Evolution Adaptive Metropolis (DREAM)
       algorithm. This is a Markov Chain Monte Carlo algorithm which also
       gives estimates of the joint probability distribution of

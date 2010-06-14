@@ -144,21 +144,26 @@ export(fitByDream)
 
 ## TODO: fitByGenoud?
 
+## sce.R
+export(SCEoptim)
+
+## OBJECTIVE FUNCTIONS
+
 export(optimtrace)
 S3method(optimtrace, default)
 
-export(tsFitStat)
 export(fitStat)
-export(fitBias)
 
 export(objFunVal)
 S3method(objFunVal, default)
 S3method(objFunVal, hydromad)
 
-export(parameterSets)
+export(buildCachedObjectiveFun)
 
-## sce.R
-export(SCEoptim)
+export(buildObjectiveFun)
+export(buildEventObjectiveFun)
+
+export(parameterSets)
 
 
 ## RUNLIST

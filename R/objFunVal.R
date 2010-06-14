@@ -4,53 +4,6 @@
 ##
 
 
-## TODO: remove this eventually, it is deprecated
-statDefns <- function()
-{
-    list(
-         "bias" = ~ mean(X - Q, na.rm = TRUE),
-         "rel.bias" =
-         ~ { ok <- complete.cases(X,Q); mean((X-Q)[ok]) / mean(Q[ok]) },
-         "r.squared" = ~ fitStat(Q, X),
-         "r.sq.sqrt" = ~ fitStat(Q, X, trans = sqrt),
-         "r.sq.log" = ~ fitStat(Q, X, trans = log, offset = TRUE),
-         "r.sq.diff" = ~ fitStat(diff(Q), diff(X)),
-         "r.sq.rank" =
-         ~ fitStat(Q, X, trans = function(x)
-                   rank(round(log10(zapsmall(x, digits = 3)), digits = 2),
-                        na.last = "keep")),
-         "r.sq.monthly" =
-         ~ tsFitStat(Q, X, aggr = list(by = cut(time(Q), "months"), FUN = sum)),
-         "r.sq.smooth7" =
-         ~ tsFitStat(Q, X, trans = function(x) simpleSmoothTs(x, width = 7, c = 2)),
-         "r.sq.seasonal" =
-         ~ tsFitStat(Q, X, ref = ave(Q, months(time(Q)))),
-         "r.sq.vs.P" =
-         ~ fitStat(Q, X, ref = { rx <- filter(P, ar(Q, demean=FALSE)$ar, "r");
-                                 rx * mean(Q, na.rm = TRUE) /
-                                     mean(rx, na.rm = TRUE) }),
-         "persistence" = ~ tsFitStat(Q, X, ref = lag(Q, -1)),
-         "events.medsums" =
-         ~ tsFitStat(Q, X, events = list(thresh = median(coredata(Q), na.rm = TRUE),
-                           mingap = 5, mindur = 5, all = TRUE, FUN = sum)),
-         "events.90sums" =
-         ~ tsFitStat(Q, X, events = list(thresh = quantile(coredata(Q), 0.9, na.rm = TRUE),
-                           mingap = 5, all = TRUE, FUN = sum)),
-         "events.90max" =
-         ~ tsFitStat(Q, X, events = list(thresh = quantile(coredata(Q), 0.9, na.rm = TRUE),
-                           mingap = 5, FUN = max)),
-         "events.90min" =
-         ~ tsFitStat(Q, X, events = list(thresh = quantile(coredata(Q), 0.9, na.rm = TRUE),
-                           below = TRUE, mindur = 5, FUN = min)),
-         "abs.err" = ~ mean(abs(X - Q), na.rm = TRUE),
-         "RMSE" = ~ sqrt(mean((Q - X)^2, na.rm = TRUE)),
-         "ar1" = ~ cor(head(Q-X, -1), tail(Q-X, -1), use = "complete"),
-         "X0" = ~ cor(Q-X, X, use = "complete"),
-         "X1" = ~ cor(head(Q-X, -1), tail(X, -1), use = "complete"),
-         "U1" = ~ cor(head(Q-X, -1), tail(U, -1), use = "complete")
-         )
-}
-
 objFunVal <- function(x, objective, ...)
     UseMethod("objFunVal")
 
@@ -61,26 +14,29 @@ objFunVal.default <-
     stopifnot(is.numeric(x) || is.data.frame(x))
     stopifnot(length(colnames(x)) > 0)
     ## these can be referred to in `objective`
+    DATA <- x
     X <- x[,"X"]
     delayedAssign("Q", x[,"Q"])
     delayedAssign("U", x[,"U"])
-    delayedAssign("P", x[,"P"])
+    ## catch the .() function (used for cacheing, see hydromad.stats)
+    ## normally it would not get through to here; evaluated by fitBy*() etc
+    ## in fact I think this should never be needed.
+#    assign(".", base::force)
     objFunVal1 <- function(obj, ...)
     {
         if (inherits(obj, "formula")) {
-            #.Deprecated(msg = "'objective' as a formula is deprecated: use a function(Q,X,...)")
-            obj <- obj[[2]]
-            val <- eval(obj)
+            val <- eval(obj[[2]])
+        } else if (is.function(obj)) {
+#            assign(".", base::force, environment(obj))
+            val <- obj(Q, X, ..., U = U, DATA = DATA)
         } else {
-            if (!is.function(obj))
-                stop("'objective' should be a function, not a ",
+            stop("'objective' should be a function or formula, not a ",
                      toString(class(obj)))
-            val <- obj(Q, X, ..., U = U, P = P)
         }
         if (is.nan(val)) {
             if (identical(nan.ok, "warn"))
                 warning("objective function returned NaN")
-            else if (isTRUE(nan.ok))
+            else if (!isTRUE(nan.ok))
                 stop("objective function returned NaN")
         }
         stopifnot(is.numeric(val))
@@ -93,6 +49,8 @@ objFunVal.default <-
         objFunVal1(objective, ...)
 }
 
+## TODO: could this just merge the data and call the default method? slow?
+## 
 objFunVal.tf <-
 objFunVal.hydromad <-
     function(x, objective = hydromad.getOption("objective"),
@@ -105,24 +63,31 @@ objFunVal.hydromad <-
         stop("fitted() returned nothing")
     delayedAssign("Q", observed(x, all = all))
     delayedAssign("U", fitted(x, all = all, U = TRUE))
-    delayedAssign("P", observed(x, all = all, item = "P"))
+    delayedAssign("DATA", observed(x, all = all , item = TRUE))
+    ## catch the .() function (used for cacheing, see hydromad.stats)
+    ## normally it would not get through to here; evaluated by fitBy*() etc
+    ## in fact I think this should never be needed.
+#    assign(".", base::force)
     isValidModel <- isValidModel(x)
     objFunVal1 <- function(obj, ...)
     {
         if (!isValidModel)
             return(NA_real_)
         if (inherits(obj, "formula")) {
-            #.Deprecated(msg = "'objective' as a formula is deprecated: use a function(Q,X,...)")
-            obj <- obj[[2]]
-            val <- eval(obj)
+            val <- eval(obj[[2]])
+        } else if (is.function(obj)) {
+#            assign(".", base::force, environment(obj))
+            val <- obj(Q, X, ..., U = U, DATA = DATA, model = model)
         } else {
-            if (!is.function(obj))
-                stop("'objective' should be a function, not a ",
-                     toString(class(obj)))
-            val <- obj(Q, X, ..., U = U, P = P, model = model)
+            stop("'objective' should be a function or formula, not a ",
+                 toString(class(obj)))
         }
-        if (is.nan(val) && !nan.ok)
-            stop("objective function returned NaN")
+        if (is.nan(val)) {
+            if (identical(nan.ok, "warn"))
+                warning("objective function returned NaN")
+            else if (!isTRUE(nan.ok))
+                stop("objective function returned NaN")
+        }
         stopifnot(is.numeric(val))
         stopifnot(length(val) == 1)
         as.numeric(val)

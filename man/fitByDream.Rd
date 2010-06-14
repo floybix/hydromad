@@ -81,7 +81,7 @@ xyplot(window(optimtrace(foo, raw = TRUE), start = 50),
   xlab = "function evaluations", ylab = "neg. log likelihood")
 
 ## calculate corresponding objective function values over time.
-xyplot(optimtrace(foo, objective = ~ - fitStat(Q,X)),
+xyplot(optimtrace(foo, objective = ~ - hmadstat("r.squared")(Q,X)),
   xlab = "function evaluations", ylab = "negative R Squared")
 
 ## MCMC diagnostics and more are available:
