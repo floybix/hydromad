@@ -78,7 +78,7 @@ buildCachedObjectiveFun <-
              1 - fitStat(diff(Q), diff(X), ...)
          },
          "r.sq.monthly" = function(Q, X, ...) {
-             1 - .(buildObjectiveFun(Q, aggr.by = "months"))(Q, X, ...)
+             1 - .(buildObjectiveFun(Q, groups = cut(time(Q), "months")))(Q, X, ...)
          },
          "r.sq.smooth7" = function(Q, X, ...) {
              1 - fitStat(Q, X, ..., trans = function(x)
@@ -118,8 +118,8 @@ buildCachedObjectiveFun <-
          },
          "events.medsums" = function(Q, X, ...) {
              objfun <-
-                 .(buildEventObjectiveFun(Q, thresh = median(coredata(Q), na.rm = TRUE),
-                                          mingap = 5, mindur = 5, all = TRUE, FUN = sum))
+                 .(buildObjectiveFun(Q, groups = eventseq(Q, thresh = median(coredata(Q), na.rm = TRUE),
+                                        mingap = 5, mindur = 5, all = TRUE), FUN = sum))
              objfun(Q, X, ...)
          },
          "events.medsums.vs.tf.bc" = function(Q, X, ..., DATA) {
@@ -127,34 +127,35 @@ buildCachedObjectiveFun <-
                  ref <-
                      fitted(hydromad(DATA, sma = "scalar", routing = "armax",
                                      rfit = list("sriv", order = c(2,1))))
-                 buildEventObjectiveFun(Q, thresh = median(coredata(Q), na.rm = TRUE),
-                                        mingap = 5, mindur = 5, all = TRUE, FUN = sum,
-                                        boxcox = TRUE)
+                 ev <- eventseq(Q, thresh = median(coredata(Q), na.rm = TRUE),
+                                mingap = 5, mindur = 5, all = TRUE)
+                 buildObjectiveFun(Q, groups = ev, FUN = sum,
+                                   boxcox = TRUE)
              })
              objfun(Q, X, ...)
          },
          "events.90sums" = function(Q, X, ...) {
              objfun <-
-                 .(buildEventObjectiveFun(Q, thresh = quantile(coredata(Q), 0.9, na.rm = TRUE),
-                                          mingap = 5, all = TRUE, FUN = sum))
+                 .(buildObjectiveFun(Q, groups = eventseq(Q, thresh = quantile(coredata(Q), 0.9, na.rm = TRUE),
+                                        mingap = 5, all = TRUE), FUN = sum))
              objfun(Q, X, ...)
          },
          "events.90sums.bc" = function(Q, X, ...) {
              objfun <-
-                 .(buildEventObjectiveFun(Q, thresh = quantile(coredata(Q), 0.9, na.rm = TRUE),
-                                          mingap = 5, all = TRUE, FUN = sum, boxcox = TRUE))
+                 .(buildObjectiveFun(Q, groups = eventseq(Q, thresh = quantile(coredata(Q), 0.9, na.rm = TRUE),
+                                        mingap = 5, all = TRUE), FUN = sum, boxcox = TRUE))
              objfun(Q, X, ...)
          },
          "events.90max" = function(Q, X, ...) {
              objfun <-
-                 .(buildEventObjectiveFun(Q, thresh = quantile(coredata(Q), 0.9, na.rm = TRUE),
-                                          mingap = 5, all = TRUE, FUN = max))
+                 .(buildObjectiveFun(Q, groups = eventseq(Q, thresh = quantile(coredata(Q), 0.9, na.rm = TRUE),
+                                        mingap = 5, all = TRUE), FUN = max))
              objfun(Q, X, ...)
          },
          "events.90min" = function(Q, X, ...) {
              objfun <-
-                 .(buildEventObjectiveFun(Q, thresh = quantile(coredata(Q), 0.9, na.rm = TRUE),
-                                          mingap = 5, all = TRUE, FUN = min))
+                 .(buildObjectiveFun(Q, groups = eventseq(Q, thresh = quantile(coredata(Q), 0.9, na.rm = TRUE),
+                                        mingap = 5, all = TRUE), FUN = min))
              objfun(Q, X, ...)
          },
          "ar1" = function(Q, X, ...) {

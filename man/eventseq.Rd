@@ -18,8 +18,6 @@ eventapply(X, events, FUN = sum, ...,
            TIMING = c("start", "middle", "end"))
 
 eventinfo(X, events, FUN = mean, ...)
-
-%\method{levels}{eventseq}(x)
 }
 \arguments{
   \item{x, X}{
@@ -66,9 +64,11 @@ eventinfo(X, events, FUN = mean, ...)
   }
   \item{n}{
     number of events to be identified: if this is given, then a value of
-    \code{thresh} is automatically chosen such that about this many
+    \code{thresh} is estimated such that about this many
     events are returned. A warning is given if the actual number of
-    events is not within 5 percent of \code{n}. 
+    events is not within 5 percent of \code{n}. Note that there may
+    be multiple possible threshold levels giving the same number of
+    events! 
   }
   \item{events}{
     a \code{factor}-like object, perhaps \code{\link{ts}} or
@@ -135,23 +135,35 @@ eventinfo(X, events, FUN = mean, ...)
   \code{\link{cut.Date}},
   \code{\link{tapply}},
   \code{\link{rollapply}},
+  \code{\link{aggregate.zoo}},
   \code{\link{panel.xblocks}},
   \code{clusters} in the \pkg{evd} package.
 }
 \examples{
 data(SalmonBrook)
 x <- window(SalmonBrook, start = "1990-01-01", end = "1995-01-01")
-ev <- eventseq(x$Q, thresh = 1, mingap = 5)
+ev <- eventseq(x$Q, thresh = 2, stopthresh = 1)
+ev2 <- eventseq(x$Q, thresh = 2, mingap = 5)
+
+nlevels(ev) ## number of events
+nlevels(ev2)
 str(ev)
-## number of events:
-nlevels(ev)
-summary(ev)
+table(coredata(ev))
 eventapply(x$Q, ev, FUN = sum)
 eventapply(x, ev, FUN = mean)
 eventinfo(x$Q, ev)
 
-xyplot(x) + layer_(panel.xblocks(ev, col = "grey"))
+evplot <- xyplot(x) + 
+  layer_(panel.xblocks(ev, col = "grey")) +
+  layer(panel.xblocks(ev2, block.y = 0, vjust = 1, col = 1))
 
+evplot
+
+update(evplot, type = "s",
+    xlim = as.Date(c("1990-07-01", "1990-08-31"))) +
+  layer(panel.abline(h = 1:2, lty = 2), packets = 2)
+
+## example of requesting a threshold giving about 'n' events
 set.seed(0)
 ee <- eventseq(rnorm(100), n = 10, mingap = 2)
 nlevels(ee)

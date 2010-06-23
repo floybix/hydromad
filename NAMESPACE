@@ -161,7 +161,6 @@ S3method(objFunVal, hydromad)
 export(buildCachedObjectiveFun)
 
 export(buildObjectiveFun)
-export(buildEventObjectiveFun)
 
 export(parameterSets)
 

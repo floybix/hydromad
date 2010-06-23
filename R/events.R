@@ -65,7 +65,7 @@ eventseq <-
     }
     ## check for simple case:
     stopthreshGiven <-
-        missing(stopthresh) && missing(stopx)
+        !missing(stopthresh) || !missing(stopx)
     if (below) {
         x <- -x
         thresh <- -thresh
@@ -106,11 +106,12 @@ eventseq <-
             (rowSums(coredata(stopx) > stopthresh) > 0)
         else (coredata(stopx) > stopthresh)
         ends <- c(FALSE, diff(isover) == -1)
-        ## from each of ends, while stillover, set over = TRUE
+        ## from each of ends, while stillover, set isover = TRUE
         for (i in which(ends & stillover)) {
             j <- i
             while (j <= length(isover)) {
                 if (!stillover[j]) break
+                if (isover[j]) break ## ran into another event
                 isover[j] <- TRUE
                 j <- j + 1
             }
@@ -146,8 +147,11 @@ eventseq <-
     }
     ## expand back into time series
     ev <- inverse.rle(uruns)
+    ## set labels to the index() value of start of each event
+    starts <- !duplicated(ev)
+    starts[is.na(ev)] <- FALSE
     ## the following should be same as ev <- factor(ev, ordered = TRUE)
-    attr(ev, "levels") <- as.character(ids)
+    attr(ev, "levels") <- as.character(index(x)[starts])
     class(ev) <- c("ordered", "factor")
     ## return events as a zoo with "factor" coredata
     ans <- zoo(ev, index(x))

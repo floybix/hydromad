@@ -9,28 +9,17 @@
 ## * transformation
 
 buildObjectiveFun <-
-    function(Q, aggr.by = NULL, ..., FUN = sum,
+    function(Q, groups = NULL,
+             #aggr.by = NULL,
+             ..., FUN = sum,
              ref = NULL,
              boxcox = FALSE, start = NULL)
 {
     if (is.null(aggr.by)) {
         doaggr <- identity
-    } else if (identical(aggr.by, "events")) {
-        events <- eventseq(Q, ...)
-        doaggr <- function(x) eventapply(x, events, FUN = FUN)
     } else {
-        groups <- cut(time(Q), aggr.by)
-        ## convert to character
-        ## TODO - this should not be necessary - to be fixed in zoo?
-        #groups <- levels(groups)[groups]
-        groups <- unclass(groups)
-#        if (inherits(time(Q), "Date"))
-#            groups <- as.Date(levels(groups))[groups]
-#        else if (inherits(time(Q), "POSIXct"))
-#            groups <- as.POSIXct(levels(groups))[groups]
-#        else
-#            groups <- (time(Q)[!duplicated(groups)])[groups]
-        doaggr <- function(x) aggregate(x, groups, FUN = FUN)
+        doaggr <- function(x)
+            eventapply(x, groups, FUN = FUN)
     }
     aggrQ <- doaggr(Q)
     aggrRef <- NULL
@@ -51,14 +40,4 @@ buildObjectiveFun <-
             fitStat(aggrQ, doaggr(X), ref = aggrRef, ...)
         }
     }
-}
-
-buildEventObjectiveFun <-
-    function(Q, thresh = 0, ..., FUN = sum,
-             ref = NULL,
-             boxcox = FALSE, start = NULL)
-{
-    buildObjectiveFun(Q, aggr.by = "events",
-                      thresh = thresh, ..., FUN = FUN,
-                      ref = ref, boxcox = boxcox, start = start)
 }

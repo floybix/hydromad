@@ -3,7 +3,7 @@ Changes in Version 0.9-0 (in development)
 
   o NOTE: major changes that will break existing code (see below).
 
-  o new functions buildObjectiveFunction() and buildEventObjectiveFunction().
+  o new function buildObjectiveFunction().
 
   o objective functions can now include expressions which will be evaluated
     once and cached for efficiency by calibration/simulation functions.

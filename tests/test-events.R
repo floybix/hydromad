@@ -9,11 +9,16 @@ dat <- window(SalmonBrook, start = "1990-01-01", end = "1994-01-01")
 evp <- eventseq(dat$P, mingap = 7)
 evq <- eventseq(dat$Q, thresh = 3)
 evq.ts <- eventseq(as.ts(dat$Q), thresh = 3)
+evpq <- eventseq(dat$P, thresh = 5, mindur = 3,
+                 stopx = dat$Q, stopthresh = 0.5)
 
 test_that("eventseq seems to work", {
     expect_that(evp, is_a("zoo"))
+    expect_that(evq, is_a("zoo"))
     expect_that(evq.ts, is_a("zoo"))
+    expect_that(evpq, is_a("zoo"))
     expect_that(coredata(evp), is_a("factor"))
+    expect_that(coredata(evpq), is_a("factor"))
     expect_that(index(evp), equals(index(dat)))
     expect_that(index(evq.ts), equals(index(as.ts(dat))))
     expect_that(coredata(evq), equals(coredata(evq.ts)))
