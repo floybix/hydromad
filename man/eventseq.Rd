@@ -9,8 +9,9 @@
   Identify discrete events from time series and apply functions to them.
 }
 \usage{
-eventseq(x, thresh = 0, mingap = 1, mindur = 1, n = NA,
-         below = FALSE, all = FALSE)
+eventseq(x, thresh = 0, mingap = 1, mindur = 1,
+         stopthresh = thresh, stopx = x,
+         below = FALSE, all = FALSE, n = NA)
 
 eventapply(X, events, FUN = sum, ...,
            by.column = TRUE, simplify = TRUE,
@@ -38,18 +39,23 @@ eventinfo(X, events, FUN = mean, ...)
     surrounding event.
   }
   \item{mindur}{
-    the minimum number of time steps required to define an event. Any
-    events whose duration is shorter than this will be ignored (not
-    identified as an event).
+    the minimum number of time steps in each event window. Any
+    events whose duration is shorter than this will be extended.
   }
-  \item{n}{
-    number of events to be identified: if this is given, then a value of
-    \code{thresh} is automatically chosen such that about this many
-    events are returned. A warning is given if the actual number of
-    events is not within 5 percent of \code{n}. 
+  \item{stopthresh}{
+    \code{stopthresh} gives a second threshold value to define when
+    events stop: after an event is initiated by exceeding \code{thresh},
+    it must then drop below \code{stopthresh} to terminate the event.
+  }
+  \item{stopx}{
+    optionally, a different series may be given to determine event
+    termination with \code{stopthresh}. E.g. an input series may define
+    event starts and a response series may define when they end.
   }
   \item{below}{
-    to identify events where the data falls below \code{thresh}.
+    to identify events where the data falls below \code{thresh} (and/or
+    \code{stopthresh}). Setting this to \code{TRUE} is equivalent to
+    negating \code{x}, \code{thresh}, etc.
   }
   \item{all}{
     to include the periods between events as additional levels (i.e. as
@@ -57,6 +63,12 @@ eventinfo(X, events, FUN = mean, ...)
     levels, while the actual events will have positive levels. Otherwise
     -- in the default case -- these inter-event periods are left as
     \code{NA}. 
+  }
+  \item{n}{
+    number of events to be identified: if this is given, then a value of
+    \code{thresh} is automatically chosen such that about this many
+    events are returned. A warning is given if the actual number of
+    events is not within 5 percent of \code{n}. 
   }
   \item{events}{
     a \code{factor}-like object, perhaps \code{\link{ts}} or

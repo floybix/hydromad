@@ -5,7 +5,7 @@
 findThresh <-
     function(x, n, within = n %/% 20,
              mingap = 1, mindur = 1,
-             below = FALSE, all = FALSE,
+             below = FALSE, ...,
              trace = FALSE, optimize.tol = 0.1)
 {
     stopifnot(n > 0)
@@ -17,7 +17,7 @@ findThresh <-
     ## return (difference from 'n' of) number of events for 'thresh'
     nDiffForThresh <- function(thresh) {
         ev <- eventseq(x, thresh = thresh, mingap = mingap,
-                       mindur = mindur, all = all)
+                       mindur = mindur, ...)
         newn <- nlevels(ev)
         if (trace)
             message(sprintf("thresh = %.3f, n = %d", thresh, newn))
@@ -52,26 +52,71 @@ findThresh <-
 }
 
 eventseq <-
-    function(x, thresh = 0, mingap = 1, mindur = 1, n = NA,
-             below = FALSE, all = FALSE)
+    function(x, thresh = 0, mingap = 1, mindur = 1,
+             stopthresh = thresh, stopx = x,
+             below = FALSE, all = FALSE, n = NA)
 {
     if (!is.na(n)) {
         if (!missing(thresh))
             warning("'thresh' argument ignored since 'n' given")
-        thresh <- findThresh(x, n = n, mingap = mingap, mindur = mindur,
-                             below = below, all = all)
+        ccall <- match.call()
+        ccall[[1]] <- quote(findThresh)
+        thresh <- eval.parent(ccall)
     }
+    ## check for simple case:
+    stopthreshGiven <-
+        missing(stopthresh) && missing(stopx)
     if (below) {
         x <- -x
         thresh <- -thresh
+        stopthesh <- -stopthresh
+        stopx <- -stopx
     }
+    stopifnot(stopthresh <= thresh)
+    stopifnot(length(stopx) == length(x))
     ## assume NAs are below threshold
     x[is.na(x)] <- -Inf
+    stopx[is.na(stopx)] <- -Inf
     ## find runs above threshold
     ## (runs continue while any series/column is above thresh)
-    uruns <- if (length(dim(x)) == 2)
-        rle(rowSums(coredata(x) > thresh) > 0)
-    else rle(coredata(x) > thresh)
+    isover <- if (is.matrix(x))
+        (rowSums(coredata(x) > thresh) > 0)
+    else (coredata(x) > thresh)
+    ## find events whose length is too short
+    if (mindur > 1) {
+        uruns <- rle(isover)
+        tooshort <- with(uruns, values == TRUE & lengths < mindur)
+        ## ignore any event at end
+        tooshort[length(tooshort)] <- FALSE
+        if (any(tooshort)) {
+            ## how many extra steps needed to reach mindur:
+            pad <- mindur - uruns$lengths[tooshort]
+            ## figure out how many extra steps can be taken from gap:
+            tooshort.next <- which(tooshort)+1
+            gap <- uruns$lengths[tooshort.next]
+            okpad <- pmin(pad, gap)
+            uruns$lengths[tooshort] <- uruns$lengths[tooshort] + okpad
+            uruns$lengths[tooshort.next] <- uruns$lengths[tooshort.next] - okpad
+            isover <- inverse.rle(uruns)
+        }
+    }
+    ## ensure that runs extend until stopthresh is met (stopx <= stopthresh)
+    if (stopthreshGiven) {
+        stillover <- if (is.matrix(stopx))
+            (rowSums(coredata(stopx) > stopthresh) > 0)
+        else (coredata(stopx) > stopthresh)
+        ends <- c(FALSE, diff(isover) == -1)
+        ## from each of ends, while stillover, set over = TRUE
+        for (i in which(ends & stillover)) {
+            j <- i
+            while (j <= length(isover)) {
+                if (!stillover[j]) break
+                isover[j] <- TRUE
+                j <- j + 1
+            }
+        }
+    }
+    uruns <- rle(isover)
     ## find drops (between runs) whose length is too short
     if (mingap > 1) {
         nondrop <- with(uruns, values == FALSE & lengths < mingap)
@@ -83,17 +128,10 @@ eventseq <-
             uruns <- rle(inverse.rle(uruns)) ## could be faster?
         }
     }
-    ## find events whose length is too short
-    if (mindur > 1) {
-        nonev <- with(uruns, values == TRUE & lengths < mindur)
-        if (any(nonev)) {
-            ## (leave initial period alone)
-            nonev[1] <- FALSE
-            ## delete short events
-            uruns$values[nonev] <- FALSE
-            uruns <- rle(inverse.rle(uruns))
-        }
-    }
+    
+    ## TODO: could just return vector index(x) with first item in each group repeated, with NAs for gaps?
+    ## - but aggregate.zoo falls over if passed NAs in 'by'.
+
     ## assign unique numbers to events
     runvals <- uruns$values
     if (all) {
@@ -124,13 +162,14 @@ eventapply <-
     FUN <- match.fun(FUN)
     TIMING <- match.arg(TIMING)
     Xnames <- colnames(X)
-    if (!is.vector(events) && !is.factor(events)) {
+    if (inherits(events, "zoo") || inherits(events, "ts")) {
         ## merge series together (typically zoo or ts objects)
         cX <- cbind(X, events)
         events <- cX[,ncol(cX)]
         X <- cX[,-ncol(cX)]
         colnames(X) <- Xnames
     }
+    events <- coredata(events)
     ## need to handle functions returning vectors as well as scalars
     if (length(dim(X)) == 2) {
         ## multiple series
@@ -139,7 +178,7 @@ eventapply <-
             ans <-
                 lapply(as.data.frame(X), function(x) {
                     tmp <-
-                        sapply(split(x, coredata(events), drop = TRUE),
+                        sapply(split(x, events, drop = TRUE),
                                FUN, ..., simplify = simplify)
                     if (is.matrix(tmp)) t(tmp) else tmp
                 })
@@ -147,7 +186,7 @@ eventapply <-
         } else {
             ## pass sub-period of multivariate series to function
             ans <-
-                sapply(split(seq_len(NROW(X)), coredata(events), drop = TRUE),
+                sapply(split(seq_len(NROW(X)), events, drop = TRUE),
                        function(ii) FUN(X[ii,,drop=FALSE], ...),
                        simplify = simplify)
             if (is.matrix(ans))
@@ -156,7 +195,7 @@ eventapply <-
 
     } else {
         ## only one series
-        ans <- sapply(split(X, coredata(events), drop = TRUE),
+        ans <- sapply(split(X, events, drop = TRUE),
                       FUN, ..., simplify = simplify)
         if (is.matrix(ans))
             ans <- t(ans)
@@ -166,7 +205,7 @@ eventapply <-
                         start = function(x) x[1],
                         middle = function(x) x[ceiling(length(x)/2)],
                         end = function(x) x[length(x)])
-    ev.index <- unlist(lapply(split(seq_len(NROW(X)), coredata(events), drop = TRUE),
+    ev.index <- unlist(lapply(split(seq_len(NROW(X)), events, drop = TRUE),
                        timeIdxFn))
     ev.times <- time(X)[ev.index]
     if (simplify && !is.list(ans)) {

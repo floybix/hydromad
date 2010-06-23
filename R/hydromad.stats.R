@@ -139,6 +139,12 @@ buildCachedObjectiveFun <-
                                           mingap = 5, all = TRUE, FUN = sum))
              objfun(Q, X, ...)
          },
+         "events.90sums.bc" = function(Q, X, ...) {
+             objfun <-
+                 .(buildEventObjectiveFun(Q, thresh = quantile(coredata(Q), 0.9, na.rm = TRUE),
+                                          mingap = 5, all = TRUE, FUN = sum, boxcox = TRUE))
+             objfun(Q, X, ...)
+         },
          "events.90max" = function(Q, X, ...) {
              objfun <-
                  .(buildEventObjectiveFun(Q, thresh = quantile(coredata(Q), 0.9, na.rm = TRUE),
