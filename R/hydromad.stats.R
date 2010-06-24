@@ -20,6 +20,8 @@ buildCachedObjectiveFun <-
     ## both 'Q' and 'DATA' can be referred to in .() expressions
     ## evaluate and replace .() expressions in body of objective
     if (inherits(objective, "formula")) {
+        if (length(objective) > 2)
+            warning("left hand side of formula ignored")
         objective[[2]] <-
             eval(substitute(bquote(x), list(x = objective[[2]])))
     } else if (is.function(objective)) {
@@ -31,12 +33,6 @@ buildCachedObjectiveFun <-
     }
     objective
 }
-
-## TODO: associate 'objective' with model rather than optimisation.
-## then can build objective inside update.hydromad()...
-## still - need to recalc stats for summary()?
-## or could we store cached items in the model itself?
-## --- store scalar model (fitted()) inside every hydromad object?
 
 .defaultHydromadStats <- function()
     list("RMSE" = function(Q, X, ...) sqrt(mean((X - Q)^2, na.rm = TRUE)),
@@ -52,21 +48,12 @@ buildCachedObjectiveFun <-
          "r.sq.boxcox" = function(Q, X, ...) {
              1 - .(buildObjectiveFun(Q, boxcox = TRUE))(Q, X, ...)
          },
-         "r.sq.boxcox.old" = function(Q, X, ...) {
-             1 - fitStat(Q, X, ..., trans = function(x) {
-                 box.cox(x,
-                         p = .(box.cox.powers(coredata(na.omit(Q)) +
-                                              quantile(coredata(Q[Q>0]), 0.1, na.rm = TRUE)
-                                              )$lambda),
-                         start = .(quantile(coredata(Q[Q>0]), 0.1, na.rm = TRUE)))
-             })
-         },
          "r.sq.sqrt" = function(Q, X, ...) {
              1 - fitStat(Q, X, ..., trans = sqrt)
          },
          "r.sq.log" = function(Q, X, ...) {
              1 - fitStat(Q, X, ..., trans = function(x)
-                         log(x + .(quantile(coredata(Q[which(Q>0)]), 0.1, na.rm = TRUE, names = FALSE))))
+                         log(x + .(quantile(coredata(subset(Q, Q>0)), 0.1, na.rm = TRUE, names = FALSE))))
          },
          "r.sq.rank" = function(Q, X, ...) {
              1 - fitStat(Q, X, ..., trans = function(x) {
@@ -80,17 +67,14 @@ buildCachedObjectiveFun <-
          "r.sq.monthly" = function(Q, X, ...) {
              1 - .(buildObjectiveFun(Q, groups = cut(time(Q), "months")))(Q, X, ...)
          },
-         "r.sq.smooth7" = function(Q, X, ...) {
+         "r.sq.smooth5" = function(Q, X, ...) {
              1 - fitStat(Q, X, ..., trans = function(x)
-                         simpleSmoothTs(x, width = 7, c = 2))
+                         simpleSmoothTs(x, width = 5, c = 2))
          },
          "r.sq.seasonal" = function(Q, X, ...) {
-             1 - fitStat(Q, X, ref = .(ave(Q, months(time(Q)))), ...)
-         },
-         ## TODO: this is probably a bad idea
-         "r.sq.vs.scalar" = function(Q, X, ..., model) {
-             ref <- fitted(update(model, sma = "scalar"))
-             1 - fitStat(Q, X, ref = ref, ...)
+             1 - fitStat(Q, X,
+                         ref = .(ave(Q, months(time(Q)), FUN = function(x) mean(x, na.rm = TRUE))),
+                         ...)
          },
          "r.sq.vs.tf" = function(Q, X, ..., DATA) {
              ref <-
@@ -107,15 +91,59 @@ buildCachedObjectiveFun <-
              })
              1 - objfun(Q, X, ...)
          },
-#         "r.sq.vs.P" = function(Q, X, ..., P) {
-#             rx <- filter(P, ar(Q, demean=FALSE)$ar, "r")
-#             rx <- rx * (mean(Q, na.rm = TRUE) /
-#                         mean(rx, na.rm = TRUE))
-#             1 - fitStat(Q, X, ref = rx, ...)
-#         },
          "persistence" = function(Q, X, ...) {
              1 - fitStat(Q, X, ref = lag(Q, -1), ...)
          },
+         ## each could have versions all = TRUE or continue = TRUE
+         ## and sum / mean / max / min
+         ## and with raw / log / boxcox...
+         ## "e.rain5gap5continue",
+         ## "e.rain5gap5",
+         ## "e.rain5flowq70",
+         ## "e.flowq90gap10",
+         ## "e.flowq75gap10",
+         ## "e.flowq90q70",
+         ## "e.flowq97q70",
+         ## "e.flowq90q70max",
+         ## "e.flowq50q75min",
+
+         
+         "e.rain5gap5continue" = function(Q, X, ..., DATA) {
+             objfun <- .({
+                 ev <- eventseq(DATA$P, thresh = 5, inthresh = 1,
+                                mingap = 5, continue = TRUE)
+                 buildObjectiveFun(Q, groups = ev, FUN = sum)
+             })
+             objfun(Q, X, ...)
+         },
+         "e.rain5gap5" = function(Q, X, ..., DATA) {
+             objfun <- .({
+                 ev <- eventseq(DATA$P, thresh = 5, inthresh = 1,
+                                mingap = 5, all = TRUE)
+                 buildObjectiveFun(Q, groups = ev, FUN = sum)
+             })
+             objfun(Q, X, ...)
+         },
+         "e.rain5flowq70" = function(Q, X, ..., DATA) {
+             objfun <- .({
+                 q70 <- quantile(coredata(Q), 0.7, na.rm = TRUE, names = FALSE)
+                 ev <- eventseq(DATA$P, thresh = 5, mindur = 3,
+                                inx = Q, inthresh = q70, all = TRUE)
+                 buildObjectiveFun(Q, groups = ev, FUN = sum)
+             })
+             objfun(Q, X, ...)
+         },
+         "e.flowq90gap10" = function(Q, X, ...) {
+             objfun <- .({
+                 q90 <- quantile(coredata(Q), 0.9, na.rm = TRUE, names = FALSE)
+                 ev <- eventseq(Q, thresh = q90, mingap = 10, all = TRUE) ## TODO: need 'mindur' to avoid spurious small events ???
+                 buildObjectiveFun(Q, groups = ev, FUN = sum)
+             })
+             objfun(Q, X, ...)
+         },
+
+
+         
          "events.medsums" = function(Q, X, ...) {
              objfun <-
                  .(buildObjectiveFun(Q, groups = eventseq(Q, thresh = median(coredata(Q), na.rm = TRUE),

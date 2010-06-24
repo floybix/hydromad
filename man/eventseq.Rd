@@ -10,8 +10,9 @@
 }
 \usage{
 eventseq(x, thresh = 0, mingap = 1, mindur = 1,
-         stopthresh = thresh, stopx = x,
-         below = FALSE, all = FALSE, n = NA)
+         inthresh = thresh, inx = x,
+         below = FALSE, all = FALSE, continue = FALSE,
+         n = NA)
 
 eventapply(X, events, FUN = sum, ...,
            by.column = TRUE, simplify = TRUE,
@@ -40,20 +41,21 @@ eventinfo(X, events, FUN = mean, ...)
     the minimum number of time steps in each event window. Any
     events whose duration is shorter than this will be extended.
   }
-  \item{stopthresh}{
-    \code{stopthresh} gives a second threshold value to define when
+  \item{inthresh}{
+    \code{inthresh} gives a second threshold value to define when
     events stop: after an event is initiated by exceeding \code{thresh},
-    it must then drop below \code{stopthresh} to terminate the event.
+    it continues until the second (lower) threshold \code{inthresh} is
+    reached. 
   }
-  \item{stopx}{
+  \item{inx}{
     optionally, a different series may be given to determine event
-    termination with \code{stopthresh}. E.g. an input series may define
+    termination with \code{inthresh}. E.g. an input series may define
     event starts and a response series may define when they end.
   }
   \item{below}{
-    to identify events where the data falls below \code{thresh} (and/or
-    \code{stopthresh}). Setting this to \code{TRUE} is equivalent to
-    negating \code{x}, \code{thresh}, etc.
+    reverses the definition of events, to identify events where the data
+    falls below \code{thresh} (and/or \code{inthresh}). Setting this to
+    \code{TRUE} is equivalent to negating \code{x} and \code{thresh}, etc.
   }
   \item{all}{
     to include the periods between events as additional levels (i.e. as
@@ -61,6 +63,11 @@ eventinfo(X, events, FUN = mean, ...)
     levels, while the actual events will have positive levels. Otherwise
     -- in the default case -- these inter-event periods are left as
     \code{NA}. 
+  }
+  \item{continue}{
+    set \code{continue = TRUE} to extend each event until the following
+    event; otherwise there are gaps between events (the default
+    behaviour). This has no effect if \code{all = TRUE}.
   }
   \item{n}{
     number of events to be identified: if this is given, then a value of
@@ -142,7 +149,7 @@ eventinfo(X, events, FUN = mean, ...)
 \examples{
 data(SalmonBrook)
 x <- window(SalmonBrook, start = "1990-01-01", end = "1995-01-01")
-ev <- eventseq(x$Q, thresh = 2, stopthresh = 1)
+ev <- eventseq(x$Q, thresh = 2, inthresh = 1)
 ev2 <- eventseq(x$Q, thresh = 2, mingap = 5)
 
 nlevels(ev) ## number of events

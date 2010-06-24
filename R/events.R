@@ -53,8 +53,9 @@ findThresh <-
 
 eventseq <-
     function(x, thresh = 0, mingap = 1, mindur = 1,
-             stopthresh = thresh, stopx = x,
-             below = FALSE, all = FALSE, n = NA)
+             inthresh = thresh, inx = x,
+             below = FALSE, all = FALSE, continue = FALSE,
+             n = NA)
 {
     if (!is.na(n)) {
         if (!missing(thresh))
@@ -64,19 +65,19 @@ eventseq <-
         thresh <- eval.parent(ccall)
     }
     ## check for simple case:
-    stopthreshGiven <-
-        !missing(stopthresh) || !missing(stopx)
+    inthreshGiven <-
+        !missing(inthresh) || !missing(inx)
     if (below) {
         x <- -x
         thresh <- -thresh
-        stopthesh <- -stopthresh
-        stopx <- -stopx
+        inthesh <- -inthresh
+        inx <- -inx
     }
-    stopifnot(stopthresh <= thresh)
-    stopifnot(length(stopx) == length(x))
+    stopifnot(inthresh <= thresh)
+    stopifnot(length(inx) == length(x))
     ## assume NAs are below threshold
     x[is.na(x)] <- -Inf
-    stopx[is.na(stopx)] <- -Inf
+    inx[is.na(inx)] <- -Inf
     ## find runs above threshold
     ## (runs continue while any series/column is above thresh)
     isover <- if (is.matrix(x))
@@ -100,11 +101,11 @@ eventseq <-
             isover <- inverse.rle(uruns)
         }
     }
-    ## ensure that runs extend until stopthresh is met (stopx <= stopthresh)
-    if (stopthreshGiven) {
-        stillover <- if (is.matrix(stopx))
-            (rowSums(coredata(stopx) > stopthresh) > 0)
-        else (coredata(stopx) > stopthresh)
+    ## ensure that runs extend until inthresh is met (inx <= inthresh)
+    if (inthreshGiven) {
+        stillover <- if (is.matrix(inx))
+            (rowSums(coredata(inx) > inthresh) > 0)
+        else (coredata(inx) > inthresh)
         ends <- c(FALSE, diff(isover) == -1)
         ## from each of ends, while stillover, set isover = TRUE
         for (i in which(ends & stillover)) {
@@ -117,16 +118,17 @@ eventseq <-
             }
         }
     }
+    ## run length encoding
     uruns <- rle(isover)
     ## find drops (between runs) whose length is too short
     if (mingap > 1) {
-        nondrop <- with(uruns, values == FALSE & lengths < mingap)
-        if (any(nondrop)) {
-            ## (leave initial period alone)
-            nondrop[1] <- FALSE
-            ## set short drops to be part of the surrounding cluster
-            uruns$values[nondrop] <- TRUE
-            uruns <- rle(inverse.rle(uruns)) ## could be faster?
+        nongap <- with(uruns, values == FALSE & lengths < mingap)
+        ## ignore any gaps at start and end
+        nongap[c(1, length(nongap))] <- FALSE
+        if (any(nongap)) {
+            ## set short gaps to be part of the surrounding cluster
+            uruns$values[nongap] <- TRUE
+            uruns <- rle(inverse.rle(uruns))
         }
     }
     
@@ -150,11 +152,13 @@ eventseq <-
     ## set labels to the index() value of start of each event
     starts <- !duplicated(ev)
     starts[is.na(ev)] <- FALSE
-    ## the following should be same as ev <- factor(ev, ordered = TRUE)
+    ## convert to an ordered factor
     attr(ev, "levels") <- as.character(index(x)[starts])
     class(ev) <- c("ordered", "factor")
     ## return events as a zoo with "factor" coredata
     ans <- zoo(ev, index(x))
+    if (continue)
+        ans <- na.locf(ans, na.rm = FALSE)
     ans
 }
 
@@ -204,6 +208,9 @@ eventapply <-
         if (is.matrix(ans))
             ans <- t(ans)
     }
+    ## reduce to plain vector if only one dimension
+    if (NCOL(ans) == 1)
+        ans <- drop(ans)
     ## select time corresponding to each event
     timeIdxFn <- switch(TIMING,
                         start = function(x) x[1],
@@ -234,10 +241,9 @@ eventinfo <-
              FUN = mean, ...)
 {
     stopifnot(inherits(X, "zoo"))
-    ## TODO: allow FUN to return multiple values?
     xValues <- eventapply(X, events = events, FUN = FUN, ...)
-    xLengths <- eventapply(X, events = events, FUN = length,
-                           TIMING = "middle")
+    xLengths <- eventapply(X, events = events, FUN = NROW,
+                           TIMING = "middle", by.column = FALSE)
     midTimeComponents <- as.POSIXlt(time(xLengths))
     data.frame(Time = time(xValues),
                Month = midTimeComponents$mon + 1,

@@ -4,33 +4,37 @@
 ##
 
 ## aspects:
-## * aggregation (regular / events)
+## * aggregation groups (regular / events) & aggregation function
 ## * reference model
-## * transformation
+## * data transformation
 
 buildObjectiveFun <-
-    function(Q, groups = NULL,
-             #aggr.by = NULL,
-             ..., FUN = sum,
-             ref = NULL,
-             boxcox = FALSE, start = NULL)
+    function(Q, groups = NULL, FUN = sum, ...,
+             ref = NULL, boxcox = FALSE, start = NULL)
 {
-    if (is.null(aggr.by)) {
-        doaggr <- identity
-    } else {
+    doaggr <- identity
+    if (!is.null(groups)) {
+        argsForFUN <- list(...)
+        fullFUN <- function(...)
+            do.call(FUN, modifyList(list(...), argsForFUN))
         doaggr <- function(x)
-            eventapply(x, groups, FUN = FUN)
+            eventapply(x, groups, FUN = fullFUN)
     }
     aggrQ <- doaggr(Q)
     aggrRef <- NULL
     if (!is.null(ref))
         aggrRef <- doaggr(ref)
-    if (boxcox) {
+    if (!identical(boxcox, FALSE)) {
+        coreaggrQ <- coredata(na.omit(aggrQ))
         if (is.null(start))
             start <-
-                quantile(coredata(aggrQ[which(aggrQ > 0)]), 0.1,
-                         na.rm = TRUE, names = FALSE)
-        lambda <- box.cox.powers(coredata(na.omit(aggrQ)) + start)$lambda
+                quantile(coreaggrQ[coreaggrQ > 0], 0.1, names = FALSE)
+        if (isTRUE(boxcox)) {
+            lambda <- box.cox.powers(coreaggrQ + start)$lambda
+        } else {
+            stopifnot(is.numeric(boxcox))
+            lambda <- boxcox
+        }
         function(Q, X, ...) {
             fitStat(aggrQ, doaggr(X), ref = aggrRef, ...,
                     trans = function(x) box.cox(x, lambda, start = start))

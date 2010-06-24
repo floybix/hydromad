@@ -96,14 +96,14 @@ deviance.hydromad <- stats:::deviance.lm
 print.hydromad <-
     function(x, digits = max(3, getOption("digits") - 3), ...)
 {
-    cat(paste("\n",
-              'Hydromad model with "', format(x$sma), '" SMA',
-              ' and "', format(x$routing), '" routing:', "\n", sep = ''))
+    cat("\n",
+        'Hydromad model with "', format(x$sma), '" SMA',
+        ' and "', format(x$routing), '" routing:', "\n", sep = "")
     rx <- x$data
-    cat(paste("Start = ", index2char(index(rx)[1], frequency(rx)),
-              ", End = ", index2char(index(rx)[NROW(rx)], frequency(rx)),
-              "\n", sep = ""))
-    cat("Last updated: ", format(x$last.updated), "\n")
+    cat("Start = ", index2char(index(rx)[1], frequency(rx)),
+        ", End = ", index2char(index(rx)[NROW(rx)], frequency(rx)),
+        "\n", sep = "")
+    cat("Last updated:", format(x$last.updated), "\n")
     cat("\nCall:\n")
     print(x$call)
     cat("\n")
@@ -121,7 +121,7 @@ print.hydromad <-
                 if (which == "routing") {
                     tmp <- describeTF(coefx)
                     if (!is.null(tmp) && !is.na(tmp))
-                        cat("TF Structure: ", tmp, "\n")
+                        cat("TF Structure:", tmp, "\n")
                 }
             } else {
                 ## one or more parameters specified as ranges only
@@ -139,27 +139,23 @@ print.hydromad <-
         }
     }
     if (!is.null(x$rfit)) {
-        cat("Routing fit spec.: ",
+        cat("Routing fit spec.:",
             toString(deparse(x$rfit, control = c(), width = 500),
                      width = getOption("width")), "\n")
     }
-    if (!is.null(x$msg)) {
-        cat("\nMessage: ", toString(x$msg), "\n")
-    }
     if (!is.null(x$fit.call)) {
-        cat("\nFit: (see $fit.result)\n")
+        cat("\nFit: ($fit.result)\n")
         print(x$fit.call)
-        cat("Function evaluations: ", x$funevals, " in ",
-            x$timing[3], " seconds", "\n")
-        cat("Objective: ",
-            toString(paste(deparse(x$objective, control = c(),
-                             width = 60), collapse = "\n"),
-                     width = getOption("width")))
+        cat("    ", x$funevals, "function evaluations in",
+            x$timing[3], "seconds", "\n")
    }
     if (length(x$info.rfit) > 0) {
         cat("\nRouting fit info: ",
             toString(deparse(x$info.rfit, control = c(), width = 500),
                      width = getOption("width")), "\n")
+    }
+    if (!is.null(x$msg)) {
+        cat("\nMessage:", toString(x$msg), "\n")
     }
     invisible(x)
 }

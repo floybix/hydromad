@@ -25,10 +25,10 @@ Changes in Version 0.9-0 (in development)
 
   o hydromad.options("stats") has been removed in favour of hydromad.stats().
 
-  o eventseq() now takes arguments stopthresh and stopx for event termination.
+  o eventseq() now takes extra arguments 'inthresh', 'inx' and 'continue'.
 
   o the 'mindur' argument to eventseq() now has a different meaning:
-    rather than too-short events being omitted, they are extended to 'mindur'.
+    rather than too-short events being omitted, they are extended.
 
   o the 'inter' argument to eventseq(), which was deprecated, has been removed.
 

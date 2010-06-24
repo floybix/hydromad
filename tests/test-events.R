@@ -10,7 +10,7 @@ evp <- eventseq(dat$P, mingap = 7)
 evq <- eventseq(dat$Q, thresh = 3)
 evq.ts <- eventseq(as.ts(dat$Q), thresh = 3)
 evpq <- eventseq(dat$P, thresh = 5, mindur = 3,
-                 stopx = dat$Q, stopthresh = 0.5)
+                 inx = dat$Q, inthresh = 0.5)
 
 test_that("eventseq seems to work", {
     expect_that(evp, is_a("zoo"))

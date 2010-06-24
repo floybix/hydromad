@@ -550,7 +550,7 @@ describeTF <- function(theta, ...)
     }
     if (length(a > 1)) {
         poles <- arToPoles(a)
-        ans <- paste(ans, "\n", "    Poles: ", toString(signif(poles, 4)))
+        ans <- paste(ans, "\n", "    Poles:", toString(signif(poles, 4)), sep = "")
     }
     ans
 }
