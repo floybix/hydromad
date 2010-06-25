@@ -1,17 +1,17 @@
 Package: hydromad
 Version: 0.9-0
-Date: 2010-06-23
+Date: 2010-06-25
 Title: Hydrological Model Assessment and Development
 Author: Felix Andrews <felix@nfrac.org>
 Maintainer: Felix Andrews <felix@nfrac.org>
 Description: A modelling framework for environmental hydrology: water 
   balance accounting and flow routing in spatially aggregated catchments. 
   It supports simulation, estimation, assessment and visualisation of 
-  flow response to time series of rainfall and other drivers.
-  Includes models (such as IHACRES CWI, CMD), transfer function estimators
+  flow response to time series of rainfall and other drivers. Includes 
+  models (such as IHACRES CMD, Sacramento), transfer function estimators
   (including SRIV - Simplified Refined Instrumental Variable), etc.
 Depends: R (>= 2.11.0), zoo (>= 1.6-3), lattice (>= 0.18-4), latticeExtra (>= 0.6-8), car, polynom
 Imports: lattice, stats, utils
-Suggests: dream, DEoptim, chron, testthat
+Suggests: dream, DEoptim, chron, playwith, testthat
 License: GPL (>= 2)
 URL: http://hydromad.catchment.org/

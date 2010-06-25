@@ -9,7 +9,7 @@
   Identify discrete events from time series and apply functions to them.
 }
 \usage{
-eventseq(x, thresh = 0, mingap = 1, mindur = 1,
+eventseq(x, thresh = 0, mingap = 1, mindur = 1, extend = 0,
          inthresh = thresh, inx = x,
          below = FALSE, all = FALSE, continue = FALSE,
          n = NA)
@@ -24,13 +24,15 @@ eventinfo(X, events, FUN = mean, ...)
   \item{x, X}{
     a \code{\link{ts}} or \code{\link{zoo}} object.
     May be multivariate, i.e. have multiple columns.
-    In this case, events are defined jointly over the multiple
-    time series: events continue while any series exceeds the
-    threshold (or remains below the threshold if \code{below = TRUE}. 
   }
   \item{thresh}{
     threshold value: the data must be strictly above this level (or, if
-    \code{below = TRUE}, below this level) to define an event. 
+    \code{below = TRUE}, below this level) to define an event. If
+    \code{x} is a matrix (with multiple columns), \code{thresh} is
+    allowed to be a vector with one value per column. In this case,
+    events continue while any series exceeds the threshold. Finally,
+    \code{thresh} can be a full matrix or vector of the same dimension
+    as \code{x}. Any missing values are treated as below the threshold.
   }
   \item{mingap}{
     the minimum number of time steps that can separate events. Any
@@ -39,18 +41,27 @@ eventinfo(X, events, FUN = mean, ...)
   }
   \item{mindur}{
     the minimum number of time steps in each event window. Any
-    events whose duration is shorter than this will be extended.
+    events whose duration is shorter than this will be skipped.
+  }
+  \item{extend}{
+    a number of time steps to include on the end of each event window.
+    If this causes events to run into following events they will be 
+    merged.
   }
   \item{inthresh}{
     \code{inthresh} gives a second threshold value to define when
     events stop: after an event is initiated by exceeding \code{thresh},
     it continues until the second (lower) threshold \code{inthresh} is
-    reached. 
+    reached. If missing or \code{NULL}, it defaults to \code{thresh}.
+    As with \code{thresh}, \code{inthresh} is allowed to be a vector
+    with values corresponding to the columns of \code{inx}.
   }
   \item{inx}{
     optionally, a different series may be given to determine event
     termination with \code{inthresh}. E.g. an input series may define
     event starts and a response series may define when they end.
+    If missing or \code{NULL}, defaults to \code{x}.
+    As with \code{x}, this is allowed to be a matrix.
   }
   \item{below}{
     reverses the definition of events, to identify events where the data
@@ -70,8 +81,8 @@ eventinfo(X, events, FUN = mean, ...)
     behaviour). This has no effect if \code{all = TRUE}.
   }
   \item{n}{
-    number of events to be identified: if this is given, then a value of
-    \code{thresh} is estimated such that about this many
+    number of events to be identified: if this is given (and > 0),
+    then a value of \code{thresh} is estimated such that about this many
     events are returned. A warning is given if the actual number of
     events is not within 5 percent of \code{n}. Note that there may
     be multiple possible threshold levels giving the same number of
@@ -110,7 +121,8 @@ eventinfo(X, events, FUN = mean, ...)
   ordered \code{\link{factor}}, representing the identified events, and
   the same time index as \code{x}. Periods between events are left as
   \code{NA}, unless \code{all = TRUE} in which case they are treated as
-  separate events.
+  separate events. The returned object stores \code{thresh} as an
+  attribute. 
 
   \code{eventapply} returns a \code{zoo} object (an irregular time
   series in this case), with the value returned from \code{FUN}
@@ -174,6 +186,7 @@ update(evplot, type = "s",
 set.seed(0)
 ee <- eventseq(rnorm(100), n = 10, mingap = 2)
 nlevels(ee)
+attr(ee, "thresh")
 
 }
 \keyword{ ts }

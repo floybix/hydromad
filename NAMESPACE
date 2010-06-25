@@ -192,6 +192,8 @@ export(findThresh,
        eventapply,
        eventinfo)
 
+export(eventsExplorer)
+
 ## utilities.R
 export(tsCleanup,
        autocorrTime,

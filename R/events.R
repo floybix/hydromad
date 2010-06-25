@@ -3,12 +3,13 @@
 ##
 
 findThresh <-
-    function(x, n, within = n %/% 20,
-             mingap = 1, mindur = 1,
+    function(x, n, within = (n %/% 20) + 1,
+             mingap = 1, mindur = 1, 
              below = FALSE, ...,
              trace = FALSE, optimize.tol = 0.1)
 {
     stopifnot(n > 0)
+    n <- round(n)
     stopifnot(n * mindur + n * mingap <= NROW(x))
     x <- coredata(x)
     if (below) {
@@ -52,13 +53,13 @@ findThresh <-
 }
 
 eventseq <-
-    function(x, thresh = 0, mingap = 1, mindur = 1,
+    function(x, thresh = 0, mingap = 1, mindur = 1, extend = 0,
              inthresh = thresh, inx = x,
              below = FALSE, all = FALSE, continue = FALSE,
              n = NA)
 {
-    if (!is.na(n)) {
-        if (!missing(thresh))
+    if (!is.na(n) && (n > 0)) {
+        if (thresh > 0)
             warning("'thresh' argument ignored since 'n' given")
         ccall <- match.call()
         ccall[[1]] <- quote(findThresh)
@@ -66,46 +67,62 @@ eventseq <-
     }
     ## check for simple case:
     inthreshGiven <-
-        !missing(inthresh) || !missing(inx)
+        ((!missing(inthresh) || !missing(inx)) &&
+         (!is.null(inthresh) && !is.null(inx)))
+    if (is.null(inthresh)) inthresh <- thresh
+    if (is.null(inx)) inx <- x
     if (below) {
         x <- -x
         thresh <- -thresh
         inthesh <- -inthresh
         inx <- -inx
     }
-    stopifnot(inthresh <= thresh)
-    stopifnot(length(inx) == length(x))
+    stopifnot(NROW(inx) == NROW(x))
     ## assume NAs are below threshold
     x[is.na(x)] <- -Inf
     inx[is.na(inx)] <- -Inf
     ## find runs above threshold
-    ## (runs continue while any series/column is above thresh)
-    isover <- if (is.matrix(x))
-        (rowSums(coredata(x) > thresh) > 0)
-    else (coredata(x) > thresh)
-    ## find events whose length is too short
-    if (mindur > 1) {
-        uruns <- rle(isover)
-        tooshort <- with(uruns, values == TRUE & lengths < mindur)
-        ## ignore any event at end
-        tooshort[length(tooshort)] <- FALSE
-        if (any(tooshort)) {
-            ## how many extra steps needed to reach mindur:
-            pad <- mindur - uruns$lengths[tooshort]
-            ## figure out how many extra steps can be taken from gap:
-            tooshort.next <- which(tooshort)+1
-            gap <- uruns$lengths[tooshort.next]
-            okpad <- pmin(pad, gap)
-            uruns$lengths[tooshort] <- uruns$lengths[tooshort] + okpad
-            uruns$lengths[tooshort.next] <- uruns$lengths[tooshort.next] - okpad
-            isover <- inverse.rle(uruns)
+    if (is.matrix(x)) {
+        ## (runs continue while any series/column is above thresh)
+        ## threshold can be a vector, one for each column
+        threshmat <- thresh
+        if (length(thresh) > 1)
+            threshmat <- matrix(thresh, nrow = nrow(x), ncol = ncol(x), byrow = TRUE)
+        isover <- (rowSums(coredata(x) > threshmat) > 0)
+    } else {
+        isover <- (coredata(x) > thresh)
+    }
+    ## extend all events by 'extend' steps
+    if (extend > 0) {
+        ends <- c(FALSE, diff(isover) == -1)
+        topad <- ends
+        for (i in seq_len(extend - 1)) {
+            topad <- topad | c(rep(FALSE, i), head(ends, -i))
         }
+        isover[topad] <- TRUE
+#        uruns <- rle(isover)
+#        ii <- uruns$values == TRUE
+#        ## ignore any event at end
+#        ii[length(ii)] <- FALSE
+#        ## figure out how many extra steps can be taken from gap:
+#        ii.next <- which(ii)+1
+#        gap <- uruns$lengths[ii.next]
+#        okpad <- pmin(extend, gap)
+#        uruns$lengths[ii] <- uruns$lengths[ii] + okpad
+#        uruns$lengths[ii.next] <- uruns$lengths[ii.next] - okpad
+#        isover <- inverse.rle(uruns)
     }
     ## ensure that runs extend until inthresh is met (inx <= inthresh)
     if (inthreshGiven) {
-        stillover <- if (is.matrix(inx))
-            (rowSums(coredata(inx) > inthresh) > 0)
-        else (coredata(inx) > inthresh)
+        if (is.matrix(inx)) {
+            ## threshold can be a vector, one for each column
+            inthreshmat <- inthresh
+            if (length(inthresh) > 1)
+                inthreshmat <- matrix(inthresh, nrow = nrow(inx), ncol = ncol(inx), byrow = TRUE)
+            stillover <- (rowSums(coredata(inx) > inthreshmat) > 0)
+        } else {
+            stillover <- (coredata(inx) > inthresh)
+        }
         ends <- c(FALSE, diff(isover) == -1)
         ## from each of ends, while stillover, set isover = TRUE
         for (i in which(ends & stillover)) {
@@ -120,7 +137,7 @@ eventseq <-
     }
     ## run length encoding
     uruns <- rle(isover)
-    ## find drops (between runs) whose length is too short
+    ## find drops (between runs) whose length is less than 'mingap'
     if (mingap > 1) {
         nongap <- with(uruns, values == FALSE & lengths < mingap)
         ## ignore any gaps at start and end
@@ -128,6 +145,17 @@ eventseq <-
         if (any(nongap)) {
             ## set short gaps to be part of the surrounding cluster
             uruns$values[nongap] <- TRUE
+            uruns <- rle(inverse.rle(uruns))
+        }
+    }
+    ## find events whose length is less than 'mindur' and delete them
+    if (mindur > 1) {
+        nonev <- with(uruns, values == TRUE & lengths < mindur)
+        if (any(nonev)) {
+            ## (leave initial period alone)
+            nonev[1] <- FALSE
+            ## delete short events
+            uruns$values[nonev] <- FALSE
             uruns <- rle(inverse.rle(uruns))
         }
     }
@@ -159,6 +187,7 @@ eventseq <-
     ans <- zoo(ev, index(x))
     if (continue)
         ans <- na.locf(ans, na.rm = FALSE)
+    attr(ans, "thresh") <- thresh
     ans
 }
 
