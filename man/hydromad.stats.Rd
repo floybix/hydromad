@@ -9,6 +9,7 @@
 }
 \usage{
 hmadstat(name, DATA = NULL)
+
 hydromad.stats(...)
 }
 \arguments{
@@ -145,9 +146,10 @@ hydromad.stats(...)
   }
 }
 \seealso{
+  \code{\link{buildObjectiveFun}},
+  \code{\link{fitStat}},
   \code{\link{objFunVal}},
-  \code{\link{summary.hydromad}},
-  \code{\link{hydromad.options}}
+  \code{\link{summary.hydromad}}
 }
 \examples{
 ## see current set of stats

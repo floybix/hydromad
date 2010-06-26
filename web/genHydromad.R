@@ -10,7 +10,7 @@ spec <- list()
 
 spec[["modelling framework"]] <-
     list(
-         list("hydromad", do.example = TRUE),
+         list("hydromad"),
          list("methods...", helpname = "hydromad.object",
               codefile = "update.hydromad.R"),
          list("simulate", helpname = "simulate.hydromad", do.example = TRUE),
@@ -23,7 +23,6 @@ spec[["assessment"]] <-
          list("summary", helpname = "summary.hydromad"),
          list("hydromad.stats"),
          list("fitStat"),
-         list("eventseq", do.example = TRUE),
          list("xyplot", helpname = "xyplot.hydromad", do.example = TRUE),
          list("xyplot.runlist", do.example = TRUE),
          list("errormasscurve", -1, helpname = "xyplot.hydromad", do.example = TRUE),
@@ -32,13 +31,20 @@ spec[["assessment"]] <-
 
 spec[["calibration"]] <-
     list(
+         list("buildObjectiveFun"),
          list("objFunVal"),
          list("fitBySampling"),
          list("fitByOptim"),
          list("fitBySCE"),
          list("fitByDE"),
          list("fitByDream"),
-         list("optimtrace", do.example = TRUE, examplename = "fitByOptim")
+         list("optimtrace", -1, do.example = TRUE, examplename = "fitByOptim")
+         )
+
+spec[["discrete events"]] <-
+    list(
+         list("eventseq", do.example = TRUE),
+         list("eventsExplorer")
          )
 
 spec[["soil moisture accounting"]] <-

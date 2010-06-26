@@ -43,7 +43,8 @@ buildObjectiveFun(Q, groups = NULL, FUN = sum, ...,
     Box-Cox transformation (see \code{\link{box.cox}}). The power is
     estimated from the observed series \code{Q} (after any aggregation)
     by \code{\link{box.cox.powers}}. Alternatively the power can be
-    specified as the value of the \code{boxcox} argument. The offset is
+    specified as the value of the \code{boxcox} argument. 
+    Note that \code{boxcox = 0} is a log transform. The offset is
     specified as the \code{start} argument; if \code{NULL} it defaults
     to the 10 percentile (i.e. lowest decile) of the non-zero values of
     \code{Q}. 
@@ -72,6 +73,24 @@ buildObjectiveFun(Q, groups = NULL, FUN = sum, ...,
   \code{\link{hydromad.stats}}
 }
 \examples{
+data(Cotter)
+dat <- window(Cotter, start = "1990-01-01", end = "1993-01-01")
+
+## use Box-Cox transform with parameters estimated from Q
+objfun <- buildObjectiveFun(dat$Q, boxcox = TRUE)
+objfun(X = dat$Q + 10)
+## extract the estimated Box-Cox parameters
+lambda <- environment(objfun)$lambda
+start <- environment(objfun)$start
+qqmath(~ box.cox(dat$Q, lambda, start))
+## in this case the result is the same as:
+fitStat(box.cox(dat$Q,      lambda, start),
+        box.cox(dat$Q + 10, lambda, start))
+
+## use monthly aggregation and log transform (Box-Cox lambda = 0)
+objfun <- buildObjectiveFun(dat$Q, groups = cut(time(dat), "months"),
+                            FUN = sum, boxcox = 0)
+objfun(X = dat$Q + 10)
 
 }
 \keyword{ utilities }

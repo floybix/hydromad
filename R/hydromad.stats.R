@@ -35,6 +35,10 @@ buildCachedObjectiveFun <-
 }
 
 .defaultHydromadStats <- function()
+{
+    ## keep R CMD check happy:
+    . <- function(x) x
+    ## default set of stats
     list("RMSE" = function(Q, X, ...) sqrt(mean((X - Q)^2, na.rm = TRUE)),
          "abs.err" = function(Q, X, ...) mean(abs(X - Q), na.rm = TRUE),
          "bias" = function(Q, X, ...) mean(X - Q, na.rm = TRUE),
@@ -94,7 +98,8 @@ buildCachedObjectiveFun <-
          "persistence" = function(Q, X, ...) {
              1 - fitStat(Q, X, ref = lag(Q, -1), ...)
          },
-         ## each could have versions all = TRUE or continue = TRUE
+         ## each could have versions
+         ## all = FALSE / all = TRUE / continue = TRUE
          ## and sum / mean / max / min
          ## and with raw / log / boxcox...
          ## "e.rain5gap5continue",
@@ -193,18 +198,17 @@ buildCachedObjectiveFun <-
          "X1" = function(Q, X, ...) cor(head(Q-X, -1), tail(X, -1), use = "complete"),
          "U1" = function(Q, X, ..., U) cor(head(Q-X, -1), tail(U, -1), use = "complete")
          )
+}
 
-## code below copied from lattice
-
-hmadstat <- function(name, DATA = NULL)#, negate = FALSE)
+hmadstat <- function(name, DATA = NULL)
 {
     STATFUN <- .HydromadEnv$stats[[name]]
     if (!is.null(DATA))
         STATFUN <- buildCachedObjectiveFun(STATFUN, DATA = DATA)
-#    if (negate)
-#        return(function(...) - STATFUN(...))
     STATFUN
 }
+
+## this function based on lattice::lattice.options, but with some extra bits
 
 hydromad.stats <- function(...)
 {

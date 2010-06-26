@@ -64,7 +64,7 @@ fitStat(obs, mod, ref = NULL, ..., p = 2,
 \author{ Felix Andrews \email{felix@nfrac.org} }
 \seealso{
   \code{\link{hydromad.stats}},
-  \code{\link{buildObjectiveFunction}},
+  \code{\link{buildObjectiveFun}},
   \code{\link{objFunVal}},
   \code{\link{summary.hydromad}}
 }
