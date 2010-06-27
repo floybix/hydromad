@@ -112,6 +112,11 @@ buildCachedObjectiveFun <-
          ## "e.flowq90q70max",
          ## "e.flowq50q75min",
 
+
+         ## rain5low1 qlow85% gap5 ## problem: big events are longer / low flow periods have more events -- weight by length?
+
+         ## rain5low1 extend5 gap2 ## looks better on 74-75!
+
          
          "e.rain5gap5continue" = function(Q, X, ..., DATA) {
              objfun <- .({
