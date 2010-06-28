@@ -90,6 +90,11 @@ fitByOptim <-
         }
         ## now optimise
         control0 <- hydromad.getOption("optim.control")
+        ## choose parscale automatically (nlminb has 'scale' = 1/parscale)
+        parscale <- control0$parscale
+        if (is.null(parscale))
+            parscale <- ifelse(initpars == 0, 1, abs(initpars))
+        control0$parscale <- parscale
         if (method == "PORT")
             control0 <- hydromad.getOption("nlminb.control")
         control <- modifyList(control0, control)
@@ -137,7 +142,7 @@ fitByOptim <-
         if (method == "PORT") {
             ans <- try(nlminb(initpars, do_optim,
                               lower = lower, upper = upper,
-                              control = control))
+                              control = control, scale = 1/parscale))
         } else {
             ans <- try(optim(initpars, do_optim, method = method,
                              lower = lowerb, upper = upperb,

@@ -25,10 +25,12 @@ Changes in Version 0.9-0 (in development)
 
   o hydromad.options("stats") has been removed in favour of hydromad.stats().
 
-  o eventseq() now takes extra arguments 'inthresh', 'inx', 'extend' and 
+  o eventseq() now takes arguments 'inthresh', 'inx', 'indur', 'extend' and 
     'continue'. The 'inter' argument, which was deprecated, has been removed.
 
   o new function eventsExplorer(), a graphical user interface.
+
+  o fitByOptim() now sets control$parscale from the initial parameter values.
 
 Changes in Version 0.8-7
 

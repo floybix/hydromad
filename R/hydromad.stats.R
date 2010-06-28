@@ -12,6 +12,20 @@
 ## functions' environments which does nothing, therefore allowing them to be
 ## called directly even when the .() chunks have not been evaluated / cached.
 
+
+
+
+eventseq_q90 <-
+    function(Q, continue = !all, all = FALSE)
+{
+    q90 <- quantile(coredata(Q), 0.9, na.rm = TRUE)
+    ev <- eventseq(Q, thresh = q90, indur = 4,
+                   mindur = 5, mingap = 5, continue = continue, all = all)
+    ev
+}
+
+
+
 ## This is called once by fitting functions etc.
 buildCachedObjectiveFun <-
     function(objective, model,
@@ -39,13 +53,13 @@ buildCachedObjectiveFun <-
     ## keep R CMD check happy:
     . <- function(x) x
     ## default set of stats
-    list("RMSE" = function(Q, X, ...) sqrt(mean((X - Q)^2, na.rm = TRUE)),
-         "abs.err" = function(Q, X, ...) mean(abs(X - Q), na.rm = TRUE),
-         "bias" = function(Q, X, ...) mean(X - Q, na.rm = TRUE),
+    list("bias" = function(Q, X, ...) mean(X - Q, na.rm = TRUE),
          "rel.bias" = function(Q, X, ...) {
              ok <- complete.cases(X, Q)
              mean((X-Q)[ok]) / mean(Q[ok])
          },
+         "abs.err" = function(Q, X, ...) mean(abs(X - Q), na.rm = TRUE),
+         "RMSE" = function(Q, X, ...) sqrt(mean((X - Q)^2, na.rm = TRUE)),
          "r.squared" = function(Q, X, ...) {
              1 - fitStat(coredata(Q), coredata(X), ...)
          },
@@ -98,104 +112,117 @@ buildCachedObjectiveFun <-
          "persistence" = function(Q, X, ...) {
              1 - fitStat(Q, X, ref = lag(Q, -1), ...)
          },
-         ## each could have versions
-         ## all = FALSE / all = TRUE / continue = TRUE
-         ## and sum / mean / max / min
-         ## and with raw / log / boxcox...
-         ## "e.rain5gap5continue",
-         ## "e.rain5gap5",
-         ## "e.rain5flowq70",
-         ## "e.flowq90gap10",
-         ## "e.flowq75gap10",
-         ## "e.flowq90q70",
-         ## "e.flowq97q70",
-         ## "e.flowq90q70max",
-         ## "e.flowq50q75min",
-
-
-         ## rain5low1 qlow85% gap5 ## problem: big events are longer / low flow periods have more events -- weight by length?
-
-         ## rain5low1 extend5 gap2 ## looks better on 74-75!
-
+         "persistence.bc" = function(Q, X, ...) {
+             objfun <- .({
+                 ref <- lag(Q, -1)
+                 buildObjectiveFun(Q, ref = ref, boxcox = TRUE)
+             })
+             1 - objfun(Q, X, ...)
+         },
          
-         "e.rain5gap5continue" = function(Q, X, ..., DATA) {
+         "e.rain5" = function(Q, X, ..., DATA) {
              objfun <- .({
                  ev <- eventseq(DATA$P, thresh = 5, inthresh = 1,
-                                mingap = 5, continue = TRUE)
+                                indur = 4, continue = TRUE)
                  buildObjectiveFun(Q, groups = ev, FUN = sum)
              })
              objfun(Q, X, ...)
          },
-         "e.rain5gap5" = function(Q, X, ..., DATA) {
+         "e.rain5.log" = function(Q, X, ..., DATA) {
              objfun <- .({
                  ev <- eventseq(DATA$P, thresh = 5, inthresh = 1,
-                                mingap = 5, all = TRUE)
-                 buildObjectiveFun(Q, groups = ev, FUN = sum)
+                                indur = 4, continue = TRUE)
+                 buildObjectiveFun(Q, groups = ev, FUN = sum, boxcox = 0)
              })
              objfun(Q, X, ...)
          },
-         "e.rain5flowq70" = function(Q, X, ..., DATA) {
+         "e.rain5.bc" = function(Q, X, ..., DATA) {
              objfun <- .({
-                 q70 <- quantile(coredata(Q), 0.7, na.rm = TRUE, names = FALSE)
-                 ev <- eventseq(DATA$P, thresh = 5, mindur = 3,
-                                inx = Q, inthresh = q70, all = TRUE)
-                 buildObjectiveFun(Q, groups = ev, FUN = sum)
+                 ev <- eventseq(DATA$P, thresh = 5, inthresh = 1,
+                                indur = 4, continue = TRUE)
+                 buildObjectiveFun(Q, groups = ev, FUN = sum, boxcox = TRUE)
              })
              objfun(Q, X, ...)
          },
-         "e.flowq90gap10" = function(Q, X, ...) {
-             objfun <- .({
-                 q90 <- quantile(coredata(Q), 0.9, na.rm = TRUE, names = FALSE)
-                 ev <- eventseq(Q, thresh = q90, mingap = 10, all = TRUE) ## TODO: need 'mindur' to avoid spurious small events ???
-                 buildObjectiveFun(Q, groups = ev, FUN = sum)
-             })
-             objfun(Q, X, ...)
-         },
-
-
          
-         "events.medsums" = function(Q, X, ...) {
-             objfun <-
-                 .(buildObjectiveFun(Q, groups = eventseq(Q, thresh = median(coredata(Q), na.rm = TRUE),
-                                        mingap = 5, mindur = 5, all = TRUE), FUN = sum))
-             objfun(Q, X, ...)
-         },
-         "events.medsums.vs.tf.bc" = function(Q, X, ..., DATA) {
-             objfun <- .({
-                 ref <-
-                     fitted(hydromad(DATA, sma = "scalar", routing = "armax",
-                                     rfit = list("sriv", order = c(2,1))))
-                 ev <- eventseq(Q, thresh = median(coredata(Q), na.rm = TRUE),
-                                mingap = 5, mindur = 5, all = TRUE)
-                 buildObjectiveFun(Q, groups = ev, FUN = sum,
-                                   boxcox = TRUE)
+         #= flowq90_indur4_mindur5_mingap5
+
+         "e.q90" = function(Q, X, ...) {
+             objfun <-.({
+                 q90 <- quantile(coredata(Q), 0.9, na.rm = TRUE)
+                 ev <- eventseq(Q, thresh = q90, indur = 4,
+                                mindur = 5, mingap = 5, continue = TRUE)
+                 buildObjectiveFun(Q, groups = ev, FUN = sum)
              })
              objfun(Q, X, ...)
          },
-         "events.90sums" = function(Q, X, ...) {
-             objfun <-
-                 .(buildObjectiveFun(Q, groups = eventseq(Q, thresh = quantile(coredata(Q), 0.9, na.rm = TRUE),
-                                        mingap = 5, all = TRUE), FUN = sum))
+         "e.q90.log" = function(Q, X, ...) {
+             objfun <-.({
+                 q90 <- quantile(coredata(Q), 0.9, na.rm = TRUE)
+                 ev <- eventseq(Q, thresh = q90, indur = 4,
+                                mindur = 5, mingap = 5, continue = TRUE)
+                 buildObjectiveFun(Q, groups = ev, FUN = sum, boxcox = 0)
+             })
              objfun(Q, X, ...)
          },
-         "events.90sums.bc" = function(Q, X, ...) {
-             objfun <-
-                 .(buildObjectiveFun(Q, groups = eventseq(Q, thresh = quantile(coredata(Q), 0.9, na.rm = TRUE),
-                                        mingap = 5, all = TRUE), FUN = sum, boxcox = TRUE))
+         "e.q90.bc" = function(Q, X, ...) {
+             objfun <-.({
+                 q90 <- quantile(coredata(Q), 0.9, na.rm = TRUE)
+                 ev <- eventseq(Q, thresh = q90, indur = 4,
+                                mindur = 5, mingap = 5, continue = TRUE)
+                 buildObjectiveFun(Q, groups = ev, FUN = sum, boxcox = TRUE)
+             })
              objfun(Q, X, ...)
          },
-         "events.90max" = function(Q, X, ...) {
-             objfun <-
-                 .(buildObjectiveFun(Q, groups = eventseq(Q, thresh = quantile(coredata(Q), 0.9, na.rm = TRUE),
-                                        mingap = 5, all = TRUE), FUN = max))
+
+         "e.q90.all" = function(Q, X, ...) {
+             objfun <-.({
+                 q90 <- quantile(coredata(Q), 0.9, na.rm = TRUE)
+                 ev <- eventseq(Q, thresh = q90, indur = 4,
+                                mindur = 5, mingap = 5, all = TRUE)
+                 buildObjectiveFun(Q, groups = ev, FUN = sum)
+             })
              objfun(Q, X, ...)
          },
-         "events.90min" = function(Q, X, ...) {
-             objfun <-
-                 .(buildObjectiveFun(Q, groups = eventseq(Q, thresh = quantile(coredata(Q), 0.9, na.rm = TRUE),
-                                        mingap = 5, all = TRUE), FUN = min))
+         "e.q90.all.log" = function(Q, X, ...) {
+             objfun <-.({
+                 q90 <- quantile(coredata(Q), 0.9, na.rm = TRUE)
+                 ev <- eventseq(Q, thresh = q90, indur = 4,
+                                mindur = 5, mingap = 5, all = TRUE)
+                 buildObjectiveFun(Q, groups = ev, FUN = sum, boxcox = 0)
+             })
              objfun(Q, X, ...)
          },
+         "e.q90.all.bc" = function(Q, X, ...) {
+             objfun <-.({
+                 q90 <- quantile(coredata(Q), 0.9, na.rm = TRUE)
+                 ev <- eventseq(Q, thresh = q90, indur = 4,
+                                mindur = 5, mingap = 5, all = TRUE)
+                 buildObjectiveFun(Q, groups = ev, FUN = sum, boxcox = TRUE)
+             })
+             objfun(Q, X, ...)
+         },
+
+         "e.q90.min" = function(Q, X, ...) {
+             objfun <-.({
+                 q90 <- quantile(coredata(Q), 0.9, na.rm = TRUE)
+                 ev <- eventseq(Q, thresh = q90, indur = 4,
+                                mindur = 5, mingap = 5, continue = TRUE)
+                 buildObjectiveFun(Q, groups = ev, FUN = min, na.rm = TRUE)
+             })
+             objfun(Q, X, ...)
+         },
+         "e.q90.min.log" = function(Q, X, ...) {
+             objfun <-.({
+                 q90 <- quantile(coredata(Q), 0.9, na.rm = TRUE)
+                 ev <- eventseq(Q, thresh = q90, indur = 4,
+                                mindur = 5, mingap = 5, continue = TRUE)
+                 buildObjectiveFun(Q, groups = ev, FUN = min, na.rm = TRUE,
+                                   boxcox = 0)
+             })
+             objfun(Q, X, ...)
+         },
+         
          "ar1" = function(Q, X, ...) {
              cor(head(Q-X, -1), tail(Q-X, -1), use = "complete")
          },

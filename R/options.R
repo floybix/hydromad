@@ -41,7 +41,7 @@
          optim.control = list(reltol = 1e-6, maxit = 150,
                 trace = if (interactive()) 1 else 0, REPORT = 10),
          nlminb.control = list(eval.max = 200, iter.max = 150,
-                rel.tol = 1e-10, step.min = 2.2e-14),
+                trace = if (interactive()) 10 else 0, rel.tol = 1e-10),
          sim.epsilon = 1e-5,
          quiet = FALSE,
          trace = FALSE,

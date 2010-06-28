@@ -3,7 +3,8 @@
 ##
 
 findThresh <-
-    function(x, n, within = (n %/% 20) + 1,
+    function(x, thresh = NA, ## ignored
+             n, within = (n %/% 20) + 1,
              mingap = 1, mindur = 1, 
              below = FALSE, ...,
              trace = FALSE, optimize.tol = 0.1)
@@ -54,7 +55,7 @@ findThresh <-
 
 eventseq <-
     function(x, thresh = 0, mingap = 1, mindur = 1, extend = 0,
-             inthresh = thresh, inx = x,
+             inthresh = thresh, inx = x, indur = 1,
              below = FALSE, all = FALSE, continue = FALSE,
              n = NA)
 {
@@ -67,8 +68,9 @@ eventseq <-
     }
     ## check for simple case:
     inthreshGiven <-
-        ((!missing(inthresh) || !missing(inx)) &&
-         (!is.null(inthresh) && !is.null(inx)))
+        ( ((!missing(inthresh) || !missing(inx)) &&
+           (!is.null(inthresh) && !is.null(inx))) ||
+         (indur > 1))
     if (is.null(inthresh)) inthresh <- thresh
     if (is.null(inx)) inx <- x
     if (below) {
@@ -112,8 +114,13 @@ eventseq <-
 #        uruns$lengths[ii.next] <- uruns$lengths[ii.next] - okpad
 #        isover <- inverse.rle(uruns)
     }
-    ## ensure that runs extend until inthresh is met (inx <= inthresh)
+    ## ensure that runs extend until 'inthresh' is met (inx <= inthresh)
+    ## and remains below inthresh for at least 'indur' steps
     if (inthreshGiven) {
+        if (indur > 1) { ## set inx to rolling maximum of last 'indur' steps
+            inx <- rollmax(inx, indur, align = "right", na.pad = TRUE)
+            inx <- na.locf(inx, fromLast = TRUE)
+        }
         if (is.matrix(inx)) {
             ## threshold can be a vector, one for each column
             inthreshmat <- inthresh

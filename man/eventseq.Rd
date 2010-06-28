@@ -10,7 +10,7 @@
 }
 \usage{
 eventseq(x, thresh = 0, mingap = 1, mindur = 1, extend = 0,
-         inthresh = thresh, inx = x,
+         inthresh = thresh, inx = x, indur = 1,
          below = FALSE, all = FALSE, continue = FALSE,
          n = NA)
 
@@ -44,7 +44,8 @@ eventinfo(X, events, FUN = mean, ...)
     events whose duration is shorter than this will be skipped.
   }
   \item{extend}{
-    a number of time steps to include on the end of each event window.
+    a number of time steps to include on the end of each event window,
+    before accounting for \code{inthresh}.
     If this causes events to run into following events they will be 
     merged.
   }
@@ -52,7 +53,8 @@ eventinfo(X, events, FUN = mean, ...)
     \code{inthresh} gives a second threshold value to define when
     events stop: after an event is initiated by exceeding \code{thresh},
     it continues until the second (lower) threshold \code{inthresh} is
-    reached. If missing or \code{NULL}, it defaults to \code{thresh}.
+    reached (for at least \code{indur} steps).
+    If missing or \code{NULL}, it defaults to \code{thresh}. 
     As with \code{thresh}, \code{inthresh} is allowed to be a vector
     with values corresponding to the columns of \code{inx}.
   }
@@ -62,6 +64,10 @@ eventinfo(X, events, FUN = mean, ...)
     event starts and a response series may define when they end.
     If missing or \code{NULL}, defaults to \code{x}.
     As with \code{x}, this is allowed to be a matrix.
+  }
+  \item{indur}{
+    the series must remain below \code{inthresh} for this many time
+    steps in order to terminate an event.
   }
   \item{below}{
     reverses the definition of events, to identify events where the data

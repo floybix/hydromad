@@ -24,7 +24,7 @@ buildObjectiveFun <-
     aggrRef <- NULL
     if (!is.null(ref))
         aggrRef <- doaggr(ref)
-    if (!identical(boxcox, FALSE)) {
+    if (!identical(boxcox, FALSE) && (length(aggrQ) > 1)) {
         coreaggrQ <- coredata(na.omit(aggrQ))
         if (is.null(start))
             start <-

@@ -24,7 +24,7 @@ eventsExplorer <-
                  P.qtile = 0, Q.qtile = 0,
                  in.P.qtile = 0, in.Q.qtile = 0,
                  continue = FALSE, all = FALSE,
-                 mingap = 1, mindur = 1, extend = 0)
+                 mingap = 1, mindur = 1, indur = 1, extend = 0)
         {
             P.thresh <- 0
             Q.thresh <- 0
@@ -57,14 +57,14 @@ eventsExplorer <-
             if (use.P) {
                 ev <- eventseq(P, thresh = P.thresh, n = round(P.nperyear * nyears),
                                inthresh = inthresh, inx = inx,
-                               mingap = mingap, mindur = mindur, extend = extend,
-                               continue = continue, all = all)
+                               mingap = mingap, mindur = mindur, indur = indur,
+                               extend = extend, continue = continue, all = all)
                 P.thresh <- attr(ev, "thresh")
             } else {
                 ev <- eventseq(Q, thresh = Q.thresh, n = round(Q.nperyear * nyears),
                                inthresh = inthresh, inx = inx,
-                               mingap = mingap, mindur = mindur, extend = extend,
-                               continue = continue, all = all)
+                               mingap = mingap, mindur = mindur, indur = indur,
+                               extend = extend, continue = continue, all = all)
                 Q.thresh <- attr(ev, "thresh")
             }
             note <-
@@ -111,6 +111,7 @@ eventsExplorer <-
                                all = all,
                                mingap = mingap,
                                mindur = mindur,
+                               indur = indur,
                                extend = extend),
              time.mode = TRUE,
              title = title,
@@ -124,6 +125,7 @@ eventsExplorer <-
                  continue = FALSE,
                  all = FALSE,
                  mingap = 1:999,
+                 indur = 1:999,
                  mindur = 1:999,
                  extend = 0:999)
     )

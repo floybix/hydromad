@@ -21,7 +21,7 @@ test_that("eventseq seems to work", {
     expect_that(coredata(evpq), is_a("factor"))
     expect_that(index(evp), equals(index(dat)))
     expect_that(index(evq.ts), equals(index(as.ts(dat))))
-    expect_that(as.vector(evq), equals(as.vector(evq.ts)))
+    expect_that(c(unclass(evq)), equals(c(unclass(evq.ts))))
     expect_that(nlevels(evp), equals(39))
     expect_that(nlevels(evq), equals(14))
     expect_that(sum(is.na(coredata(evp))), equals(524))

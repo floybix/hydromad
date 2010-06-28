@@ -6,9 +6,9 @@ HydroTestData <- local({
     len <- length(timeseq)
     ## regular rainfall impulse
     P <- ts(rep(0, length = len))
-    P[seq(10, len-1, by = 24)] <- 5
+    P[seq(10, len-1, by = 24)] <- 6
     ## make one rain event much larger
-    P[quantile(which(P > 0), 0.67, type = 1)] <- 20
+    P[quantile(which(P > 0), 0.67, type = 1)] <- 24
     ## sine wave for temperature
     E <- ts(15 + 15 * sin(seq(0, 4*pi, length = len)))
     ## flow based on square of rainfall and inverse to temperature
