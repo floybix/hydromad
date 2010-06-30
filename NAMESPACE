@@ -113,6 +113,11 @@ useDynLib(hydromad, sma_cmd)
 export(bucket.sim)
 useDynLib(hydromad, sma_bucket)
 
+export(gr4j.sim)
+useDynLib(hydromad, sma_gr4j)
+export(gr4jrouting.sim)
+useDynLib(hydromad, routing_gr4j)
+
 export(awbm.sim)
 useDynLib(hydromad, sma_awbm)
 

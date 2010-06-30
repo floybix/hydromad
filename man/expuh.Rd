@@ -60,7 +60,7 @@ normalise.expuh(theta)
     e.g. \code{\link[=na.omit.ts]{na.omit}}.
   }
   \item{epsilon}{
-    values smaller than this will be set to zero.
+    values smaller than this in the output will be set to zero.
   }
   \item{theta}{
     the parameters as a named vector.

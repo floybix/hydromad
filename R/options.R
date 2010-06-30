@@ -12,6 +12,8 @@
          cmd = cmd.ranges(),
          sacramento = sacramento.ranges(),
          bucket = bucket.ranges(),
+         gr4j = gr4j.ranges(),
+         gr4jrouting = gr4jrouting.ranges(),
          awbm = awbm.ranges(),
          snow = snow.ranges(),
          runoffratio = runoffratio.ranges(),

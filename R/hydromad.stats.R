@@ -63,15 +63,15 @@ buildCachedObjectiveFun <-
          "r.squared" = function(Q, X, ...) {
              1 - fitStat(coredata(Q), coredata(X), ...)
          },
-         "r.sq.boxcox" = function(Q, X, ...) {
-             1 - .(buildObjectiveFun(Q, boxcox = TRUE))(Q, X, ...)
-         },
          "r.sq.sqrt" = function(Q, X, ...) {
              1 - fitStat(Q, X, ..., trans = sqrt)
          },
          "r.sq.log" = function(Q, X, ...) {
              1 - fitStat(Q, X, ..., trans = function(x)
                          log(x + .(quantile(coredata(subset(Q, Q>0)), 0.1, na.rm = TRUE, names = FALSE))))
+         },
+         "r.sq.boxcox" = function(Q, X, ...) {
+             1 - .(buildObjectiveFun(Q, boxcox = TRUE))(Q, X, ...)
          },
          "r.sq.rank" = function(Q, X, ...) {
              1 - fitStat(Q, X, ..., trans = function(x) {

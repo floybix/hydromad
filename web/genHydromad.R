@@ -53,6 +53,7 @@ spec[["soil moisture accounting"]] <-
          list("cwi", helpname = "IHACRES.CWI.model", codefile = "cwi.R"),
          list("cmd", helpname = "IHACRES.CMD.model", codefile = "cmd.R"),
          list("bucket"),
+         list("gr4j"),
          list("awbm"),
          list("sacramento"),
          list("snow"),
