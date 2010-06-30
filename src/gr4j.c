@@ -20,7 +20,7 @@ sma_gr4j(double *P, double *E, int *n,
 {
     int t;
     double Pn, En, Ps, St_x1, perc;
-    double S_prev = *S_0;
+    double S_prev = *S_0 * (*x1);
     for (t = 0; t < *n; t++) {
         Pn = max(P[t] - E[t], 0);
         En = max(E[t] - P[t], 0);
@@ -53,7 +53,7 @@ routing_gr4j(double *Q9, double *Q1, int *n,
 {
     int t;
     double Rt_x3, F;
-    double R_prev = *R_0;
+    double R_prev = *R_0 * (*x3);
     for (t = 0; t < *n; t++) {
         Rt_x3 = R_prev / *x3;
         // groundwater exchange term

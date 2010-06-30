@@ -12,6 +12,8 @@ gr4j.sim <-
     ## check values
     stopifnot(x1 >= 0)
     stopifnot(etmult >= 0)
+    stopifnot(S_0 >= 0)
+    stopifnot(S_0 <= 1)
 
     inAttr <- attributes(DATA[,1])
     DATA <- as.ts(DATA)
@@ -40,7 +42,7 @@ gr4j.sim <-
     } else {
         ## implementation in R for cross-checking (slow)
         U <- S <- ET <- P
-        S_prev <- S_0
+        S_prev <- S_0 * x1
         for (t in seq(1, length(P))) {
             Pn <- max(P[t] - E[t], 0)
             En <- max(E[t] - P[t], 0)
@@ -53,7 +55,7 @@ gr4j.sim <-
                 Ps <- ( x1 * (1 - St_x1^2) * tanh(Pn/x1) /
                        (1 + St_x1 * tanh(Pn/x1)) )
             } else {
-                ## actual evaporation
+                ## actual evapo-transpiration
                 ET[t] <- ( S[t] * (2 - St_x1) * tanh(En/x1) /
                           (1 + (1 - St_x1) * tanh(En/x1)) )
             }
@@ -90,6 +92,11 @@ gr4jrouting.sim <-
     stopifnot(is.numeric(x2))
     stopifnot(x3 >= 0)
     stopifnot(x4 >= 0.5)
+    stopifnot(R_0 >= 0)
+    stopifnot(R_0 <= 1)
+
+    inAttr <- attributes(U)
+    U <- as.ts(U)
 
     n <- ceiling(x4)
     m <- ceiling(x4 * 2)
@@ -97,7 +104,7 @@ gr4jrouting.sim <-
     ## S-curves: cumulative proportion of input with time
     SH1 <- (1:x4 / x4) ^ (5/2)
     SH2 <- c(0.5 * SH1,
-             1 - 0.5 * (2 - (floor(x4+1):(2*x4) / x4)) ^ (5/2)
+             1 - 0.5 * (2 - floor(x4+1):(2*x4) / x4) ^ (5/2)
              )
     ## unit hydrographs
     UH1 <- diff(SH1)
@@ -134,7 +141,7 @@ gr4jrouting.sim <-
     } else {
         ## implementation in R for cross-checking (slow)
         Qd <- Qr <- R <- U
-        R_prev <- R_0
+        R_prev <- R_0 * x3
         for (t in seq(1, length(U))) {
             Rt_x3 <- R_prev / x3
             ## groundwater exchange term
@@ -154,7 +161,7 @@ gr4jrouting.sim <-
     Qr[Qr < epsilon] <- 0
     Qd[Qd < epsilon] <- 0
     
-    attributes(Qr) <- attributes(Qr) <- attributes(R) <- attributes(U)
+    attributes(Qr) <- attributes(Qd) <- attributes(R) <- inAttr
     
     ## re-insert missing values
     Qr[bad] <- NA
