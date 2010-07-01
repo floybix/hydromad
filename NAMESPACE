@@ -157,7 +157,8 @@ export(SCEoptim)
 export(optimtrace)
 S3method(optimtrace, default)
 
-export(fitStat)
+export(nseStat)
+export(fitStat) ## deprecated
 
 export(objFunVal)
 S3method(objFunVal, default)

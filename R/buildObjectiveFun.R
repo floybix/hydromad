@@ -36,12 +36,12 @@ buildObjectiveFun <-
             lambda <- boxcox
         }
         function(Q, X, ...) {
-            fitStat(aggrQ, doaggr(X), ref = aggrRef, ...,
+            nseStat(aggrQ, doaggr(X), ref = aggrRef, ...,
                     trans = function(x) box.cox(x, lambda, start = start))
         }
     } else {
         function(Q, X, ...) {
-            fitStat(aggrQ, doaggr(X), ref = aggrRef, ...)
+            nseStat(aggrQ, doaggr(X), ref = aggrRef, ...)
         }
     }
 }

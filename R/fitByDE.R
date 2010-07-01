@@ -30,18 +30,19 @@ fitByDE <-
     lower <- sapply(parlist, min)
     upper <- sapply(parlist, max)
     bestModel <- MODEL
-    bestFunVal <- Inf
+    bestFunVal <- -Inf
     do_de <- function(pars) {
         names(pars) <- names(parlist)
         thisMod <- update(MODEL, newpars = pars)
         if (!isValidModel(thisMod))
             return(1e8)
         thisVal <- objFunVal(thisMod, objective = objective)
-        if (thisVal < bestFunVal) {
+        if (thisVal > bestFunVal) {
             bestModel <<- thisMod
             bestFunVal <<- thisVal
         }
-        thisVal
+        ## DEoptim does minimisation, so:
+        return(- thisVal)
     }
     ans <- DEoptim(do_de, lower = lower, upper = upper,
                     control = control)

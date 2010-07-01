@@ -22,7 +22,7 @@ spec[["assessment"]] <-
     list(
          list("summary", helpname = "summary.hydromad"),
          list("hydromad.stats"),
-         list("fitStat"),
+         list("nseStat"),
          list("xyplot", helpname = "xyplot.hydromad", do.example = TRUE),
          list("xyplot.runlist", do.example = TRUE),
          list("errormasscurve", -1, helpname = "xyplot.hydromad", do.example = TRUE),

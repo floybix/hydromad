@@ -25,7 +25,7 @@
          warmup = 100,
          normalise = TRUE,
          loglik = function(Q, X, ...) -0.5 * sum((Q-X)^2, na.rm = TRUE),
-         objective = function(Q, X, ...) - hmadstat("r.sq.sqrt")(Q, X) + (1/3) * abs(hmadstat("rel.bias")(Q, X)),
+         objective = ~ hmadstat("r.sq.sqrt")(Q, X) + (1/3) * .(hmadstat("r.sq.monthly", DATA = DATA))(Q, X),
          summary.stats = c("rel.bias", "r.squared", "r.sq.sqrt", "r.sq.log"),
          prefilter = list(0.9, 0.98, 0.5),
          sriv.iterations = 20,

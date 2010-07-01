@@ -9,7 +9,7 @@
 \usage{
 \method{simulate}{hydromad}(object, nsim, seed, ...,
          sampletype = c("latin.hypercube", "random", "all.combinations"),
-         FUN = NULL, bind = FALSE)
+         FUN = NULL, objective = NULL, bind = !is.null(objective))
 }
 \arguments{
   \item{object}{
@@ -33,6 +33,13 @@
     optional function to apply to each simulated model. Typical examples
     would be \code{\link{objFunVal}}, \code{\link[=summary.hydromad]{summary}} or
     \code{\link[=predict.hydromad]{predict}}.
+  }
+  \item{objective}{
+    an objective function (or statistic function); this is just an
+    argument to be passed on to \code{FUN}, which in this case defaults
+    to \code{\link{objFunVal}} to calculate the statistic value from
+    each model. It is treated as a special argument because it is cached
+    before the simulation run for efficiency.
   }
   \item{bind}{
     to bind the result from \code{FUN} as one or more columns onto the
@@ -62,7 +69,7 @@ simulate(mod0, nsim = 5, method = "latin")
 ## plot the objective function surface over two parameters
 mod1 <- update(mod0, routing = "armax", rfit = "ls")
 sim1 <- simulate(mod1, 300, FUN = objFunVal,
-          objective = ~ 1 - fitStat(Q, X, trans = sqrt), bind = TRUE)
+          objective = ~ nseStat(Q, X, trans = sqrt))
 levelplot(result ~ tw * f, sim1, cex = 2,
           panel = panel.levelplot.points,
           main = "R Squared (of sq.rt. data) over parameter space")

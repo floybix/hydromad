@@ -1,11 +1,13 @@
-\name{fitStat}
+\name{nseStat}
+\alias{nseStat}
 \alias{fitStat}
-\title{ Coefficient of Efficiency (R Squared) and other fit stats }
+\title{ Generalisation of Nash-Sutcliffe Efficiency (R Squared)}
 \description{
-  Coefficient of Efficiency (R Squared) and other fit stats.
+  Generalisation of Nash-Sutcliffe Efficiency (R Squared) as a fit
+  statistic for time series.
 }
 \usage{
-fitStat(obs, mod, ref = NULL, ..., p = 2,
+nseStat(obs, mod, ref = NULL, ..., p = 2,
         trans = NULL, negatives.ok = FALSE,
         na.action = na.pass)
 }
@@ -45,10 +47,14 @@ fitStat(obs, mod, ref = NULL, ..., p = 2,
 \details{
   The result is, after transformation of variables,
 
-  \deqn{sum(abs(obs-mod)^p) / sum(abs(obs-ref)^p)}
+  \deqn{1 - sum(abs(obs-mod)^p) / sum(abs(obs-ref)^p)}
+
+  A perfect fit gives a value of 1 and a fit equivalent to the reference
+  model gives a value of 0. Values less than 0 are worse than the
+  reference model.
   
   If the arguments \code{obs}, \code{mod} or \code{ref} are not plain
-  vectors, \code{fitStat} will attempt to merge them together, so
+  vectors, \code{nseStat} will attempt to merge them together, so
   that corresponding time steps are compared to each other even if the
   time windows are not equal.
 }
@@ -82,24 +88,23 @@ X <- zoo(X, time(Q))
 
 xyplot(merge(Q, X), superpose = TRUE)
 
-fitStat(Q, X)
+nseStat(Q, X)
+
+nseStat(Q, X, trans = sqrt)
+
+nseStat(Q, X, trans = function(x) log(x+1))
 
 ## use absolute residuals rather than squared residuals
-## (less weight on large residuals)
-fitStat(Q, X, p = 1)
-
-fitStat(Q, X, trans = sqrt)
-
-fitStat(Q, X, trans = function(x) log(x+1))
+nseStat(Q, X, p = 1)
 
 ## use a different reference model (one-step-ahead forecast)
-fitStat(Q, X, ref = lag(Q,-1))
+nseStat(Q, X, ref = lag(Q,-1))
 
 ## reference as seasonal averages rather than overall average
-fitStat(Q, X, ref = ave(Q, months(time(Q))))
+nseStat(Q, X, ref = ave(Q, months(time(Q))))
 
 ## see how the reference model performs in terms of R Squared
-fitStat(Q, ave(Q, months(time(Q))))
+nseStat(Q, ave(Q, months(time(Q))))
 }
 \keyword{ ts }
 

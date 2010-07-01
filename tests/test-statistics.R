@@ -32,15 +32,15 @@ test_that("all statistics can be evaluated", {
 test_that("custom objective functions work", {
     spec <- update(mod, v_s = c(0,1))
     set.seed(0)
-    fit1 <- fitByOptim1(spec, function(Q,X,...) fitStat(Q,X))
+    fit1 <- fitByOptim1(spec, function(Q,X,...) nseStat(Q,X))
     expect_that(fit1, is_a("hydromad")) 
     set.seed(0)
-    fit2 <- fitByOptim1(spec, ~ 1 - hmadstat("r.squared")(Q,X))
+    fit2 <- fitByOptim1(spec, ~ hmadstat("r.squared")(Q,X) - 1)
     expect_that(fit2, is_a("hydromad"))
     expect_that(objFunVal(fit1), equals(objFunVal(fit2)))
     set.seed(0)
     fit3 <- fitByOptim1(spec, function(Q,X,...) {
-        - hmadstat("r.sq.log")(Q,X) + 0.5 * hmadstat("rel.bias")(Q,X)
+        hmadstat("r.sq.log")(Q,X) - 0.5 * hmadstat("rel.bias")(Q,X)
     })
     expect_that(fit3, is_a("hydromad"))
     expect_that(coef(fit1)[["v_s"]] != coef(fit3)[["v_s"]], is_true())

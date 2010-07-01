@@ -25,7 +25,7 @@ fitByOptim1(MODEL, objective = hydromad.getOption("objective"),
     by \emph{ranges} of values rather than exact values.
   }
   \item{objective}{
-    objective function to minimise, given as a \code{function(Q, X, ...)}.
+    objective function to maximise, given as a \code{function(Q, X, ...)}.
     See \code{\link{objFunVal}}.
   }
   \item{method, control}{

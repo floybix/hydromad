@@ -7,7 +7,7 @@
 simulate.hydromad <-
     function(object, nsim, seed, ...,
              sampletype = c("latin.hypercube", "random", "all.combinations"),
-             FUN = NULL, bind = FALSE)
+             FUN = NULL, objective = NULL, bind = !is.null(objective))
 {
     sampletype <- match.arg(sampletype)
     MODEL <- object
@@ -16,6 +16,13 @@ simulate.hydromad <-
         set.seed(seed)
     if (is.character(FUN))
         FUN <- get(FUN, mode = "function")
+    if (!is.null(objective)) {
+        ## catch the 'objective' argument, cache it, and pass on to FUN
+        objective <- buildCachedObjectiveFun(objective, MODEL)
+        if (is.null(FUN)) FUN <- objFunVal
+        origFUN <- FUN
+        FUN <- function(...) origFUN(..., objective = objective)
+    }
     ## this is mostly a copy of fitBySampling
     parlist <- as.list(coef(MODEL, warn = FALSE))
     ## remove any missing parameters

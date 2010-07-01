@@ -1,6 +1,10 @@
 
 Changes in Version 0.9-1 (in development)
 
+  o all the fitBy...() methods now maximise rather than minimise!
+
+  o nseStat() is the new name for fitStat(); the old name is now deprecated.
+
   o new model GR4J: functions gr4j.sim() and gr4jrouting.sim().
 
 Changes in Version 0.9-0

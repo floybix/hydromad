@@ -32,7 +32,7 @@ test_that("findThresh seems to work", {
     x <- rnorm(100)
     t1 <- findThresh(x, n = 20)
     t2 <- findThresh(x, n = 5, mingap = 2)
-    expect_that(nlevels(eventseq(x, t1)) - 20, equals(0, tol = 1))
+    expect_that(abs(nlevels(eventseq(x, t1)) - 20) <= 2, is_true())
     expect_that(nlevels(eventseq(x, t2, mingap = 2)) - 5, equals(0))
 })
 
@@ -46,7 +46,8 @@ test_that("eventapply seems to work with single series", {
     expect_that(NROW(psums), equals(nlevels(evp)))
     ## factor events are not sync'd (cbinded) with the data series
     ## but here we know that they are already synchronised.
-    expect_that(psums, is_identical_to(eventapply(dat$P, factor(evp))))
+    expect_that(as.vector(psums),
+                is_identical_to(as.vector(eventapply(dat$P, coredata(evp)))))
     ## (2) vector (>1) result:
     p2num <- eventapply(dat$P, evp,
                         FUN = function(x) c(mean = mean(x), sd = sd(x)))

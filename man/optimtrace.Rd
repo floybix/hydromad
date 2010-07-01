@@ -3,8 +3,7 @@
 \alias{optimtrace.default}
 \title{ Extract objective function value series from optimisation results }
 \description{
-  Extract objective function value series from optimisation results. It
-  is assumed that the results are from a minimisation problem.
+  Extract objective function value series from optimisation results. 
 }
 \usage{
 optimtrace(object, ...)

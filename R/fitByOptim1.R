@@ -28,7 +28,7 @@ fitByOptim1 <-
     lower <- sapply(parlist, min)
     upper <- sapply(parlist, max)
     bestModel <- MODEL
-    bestFunVal <- Inf
+    bestFunVal <- -Inf
     objseq <- rep(NA_real_, 100)
     i <- 0
     do_optim1 <- function(pars) {
@@ -39,11 +39,12 @@ fitByOptim1 <-
             return(NA)
         thisVal <- objFunVal(thisMod, objective = objective)
         objseq[i] <<- thisVal
-        if (thisVal < bestFunVal) {
+        if (thisVal > bestFunVal) {
             bestModel <<- thisMod
             bestFunVal <<- thisVal
         }
-        thisVal
+        ## optimize does minimisation, so:
+        return(- thisVal)
     }
     ans <- optimize(do_optim1, lower = lower, upper = upper,
                     tol = tol)

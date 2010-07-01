@@ -14,14 +14,19 @@
 
 
 
-
 eventseq_q90 <-
     function(Q, continue = !all, all = FALSE)
 {
     q90 <- quantile(coredata(Q), 0.9, na.rm = TRUE)
-    ev <- eventseq(Q, thresh = q90, indur = 4,
+    ev <- eventseq(Q, thresh = 5, indur = 4,
                    mindur = 5, mingap = 5, continue = continue, all = all)
     ev
+}
+
+
+eventseq_rain5 <- function(P)
+{
+    eventseq(P, thresh = q90, inthresh = 1, indur = 4, continue = TRUE)
 }
 
 
@@ -61,44 +66,44 @@ buildCachedObjectiveFun <-
          "abs.err" = function(Q, X, ...) mean(abs(X - Q), na.rm = TRUE),
          "RMSE" = function(Q, X, ...) sqrt(mean((X - Q)^2, na.rm = TRUE)),
          "r.squared" = function(Q, X, ...) {
-             1 - fitStat(coredata(Q), coredata(X), ...)
+             nseStat(coredata(Q), coredata(X), ...)
          },
          "r.sq.sqrt" = function(Q, X, ...) {
-             1 - fitStat(Q, X, ..., trans = sqrt)
+             nseStat(Q, X, ..., trans = sqrt)
          },
          "r.sq.log" = function(Q, X, ...) {
-             1 - fitStat(Q, X, ..., trans = function(x)
-                         log(x + .(quantile(coredata(subset(Q, Q>0)), 0.1, na.rm = TRUE, names = FALSE))))
+             nseStat(Q, X, ..., trans = function(x)
+                     log(x + .(quantile(coredata(subset(Q, Q>0)), 0.1, na.rm = TRUE, names = FALSE))))
          },
          "r.sq.boxcox" = function(Q, X, ...) {
-             1 - .(buildObjectiveFun(Q, boxcox = TRUE))(Q, X, ...)
+             .(buildObjectiveFun(Q, boxcox = TRUE))(Q, X, ...)
          },
          "r.sq.rank" = function(Q, X, ...) {
-             1 - fitStat(Q, X, ..., trans = function(x) {
+             nseStat(Q, X, ..., trans = function(x) {
                  rank(round(log10(zapsmall(x, digits = 3)), digits = 2),
                       na.last = "keep")
              })
          },
          "r.sq.diff" = function(Q, X, ...) {
-             1 - fitStat(diff(Q), diff(X), ...)
+             nseStat(diff(Q), diff(X), ...)
          },
          "r.sq.monthly" = function(Q, X, ...) {
-             1 - .(buildObjectiveFun(Q, groups = cut(time(Q), "months")))(Q, X, ...)
+             .(buildObjectiveFun(Q, groups = cut(time(Q), "months")))(Q, X, ...)
          },
          "r.sq.smooth5" = function(Q, X, ...) {
-             1 - fitStat(Q, X, ..., trans = function(x)
+             nseStat(Q, X, ..., trans = function(x)
                          simpleSmoothTs(x, width = 5, c = 2))
          },
          "r.sq.seasonal" = function(Q, X, ...) {
-             1 - fitStat(Q, X,
-                         ref = .(ave(Q, months(time(Q)), FUN = function(x) mean(x, na.rm = TRUE))),
-                         ...)
+             nseStat(Q, X,
+                     ref = .(ave(Q, months(time(Q)), FUN = function(x) mean(x, na.rm = TRUE))),
+                     ...)
          },
          "r.sq.vs.tf" = function(Q, X, ..., DATA) {
              ref <-
                  .(fitted(hydromad(DATA, sma = "scalar", routing = "armax",
                                    rfit = list("sriv", order = c(2,1)))))
-             1 - fitStat(Q, X, ref = ref, ...)
+             nseStat(Q, X, ref = ref, ...)
          },
          "r.sq.vs.tf.bc" = function(Q, X, ..., DATA) {
              objfun <- .({
@@ -107,17 +112,17 @@ buildCachedObjectiveFun <-
                                      rfit = list("sriv", order = c(2,1))))
                  buildObjectiveFun(Q, ref = ref, boxcox = TRUE)
              })
-             1 - objfun(Q, X, ...)
+             objfun(Q, X, ...)
          },
          "persistence" = function(Q, X, ...) {
-             1 - fitStat(Q, X, ref = lag(Q, -1), ...)
+             nseStat(Q, X, ref = lag(Q, -1), ...)
          },
          "persistence.bc" = function(Q, X, ...) {
              objfun <- .({
                  ref <- lag(Q, -1)
                  buildObjectiveFun(Q, ref = ref, boxcox = TRUE)
              })
-             1 - objfun(Q, X, ...)
+             objfun(Q, X, ...)
          },
          
          "e.rain5" = function(Q, X, ..., DATA) {

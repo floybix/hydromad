@@ -37,7 +37,7 @@ fitByOptim <-
         ## generate parameter sets
         psets <- parameterSets(parlist, samples = samples, method = sampletype)
         bestModel <- MODEL
-        bestFunVal <- Inf
+        bestFunVal <- -Inf
         objseq <- numeric()
         funevals <- 0
         for (i in seq(NROW(psets))) {
@@ -53,7 +53,7 @@ fitByOptim <-
             funevals <- funevals + thisMod$funevals
             objseq <- c(objseq, thisMod$fit.result$objseq)
             thisVal <- objFunVal(thisMod, objective = objective)
-            if (thisVal < bestFunVal) {
+            if (thisVal > bestFunVal) {
                 bestModel <- thisMod
                 bestFunVal <- thisVal
             }
@@ -101,7 +101,7 @@ fitByOptim <-
         if (isTRUE(hydromad.getOption("quiet")))
             control$trace <- 0
         bestModel <- MODEL
-        bestFunVal <- Inf
+        bestFunVal <- -Inf
         i <- length(objseq)
         objseq <- c(objseq, rep(NA_real_, 100))
         do_optim <- function(pars) {
@@ -125,17 +125,18 @@ fitByOptim <-
                 return(NA)
             thisVal <- objFunVal(thisMod, objective = objective)
             objseq[i] <<- thisVal
-            if (thisVal < bestFunVal) {
+            if (thisVal > bestFunVal) {
                 bestModel <<- thisMod
                 bestFunVal <<- thisVal
             }
-            thisVal
+            ## optim does minimisation, so:
+            return(- thisVal)
         }
         if (!isTRUE(hydromad.getOption("catch.errors.optim")))
             try <- force ## i.e. skip the try()
         lowerb <- -Inf
         upperb <- Inf
-        if (method %in% c("L-BFGS-B", "PORT")) {
+        if (method == "L-BFGS-B") {
             lowerb <- lower
             upperb <- upper
         }

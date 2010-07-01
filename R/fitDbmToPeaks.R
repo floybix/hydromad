@@ -28,7 +28,7 @@ fitDbmToPeaks <-
     peakMod <- update(MODEL, newdata = dat,
                       routing = "armax", delay = delay, rfit = NULL)
     bestMod <- MODEL
-    bestObjVal <- Inf
+    bestObjVal <- -Inf
     lapply(qlags, function(qlagi) {
         ## fit 'power' parameter -- only one free parameter here
         modi <- fitByOptim1(update(peakMod, qlag = qlagi), objective = objective)
@@ -37,7 +37,7 @@ fitDbmToPeaks <-
             message("qlag = ", qlagi,
                     "; power = ", signif(coef(modi)[["power"]], 3),
                     "; obj.val = ", signif(obji, 3))
-        if (obji < bestObjVal) {
+        if (obji > bestObjVal) {
             if (return_fit) {
                 bestMod <<- modi
             } else {

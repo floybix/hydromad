@@ -15,7 +15,7 @@ summary(murrRef)
 murrMod <- hydromad(murrCal, sma = "cwi", routing = "armax",
                     rfit = list("sriv", order = c(2,1)), warmup = 200)
 murrMod <- fitBySampling(murrMod, sampletype = "all",
-                         objective = hmadstat("r.squared", negate = TRUE))
+                         objective = hmadstat("r.squared"))
 summary(murrMod)
 ## breakdown of performance in simulation over whole dataset
 summary(update(murrMod, newdata = Murrindindi), breaks = "years")

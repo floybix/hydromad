@@ -25,7 +25,7 @@ fitBySampling <-
     ## generate parameter sets
     psets <- parameterSets(parlist, samples = samples, method = sampletype)
     bestModel <- MODEL
-    bestFunVal <- Inf
+    bestFunVal <- -Inf
     objseq <- rep(NA_real_, NROW(psets))
     for (i in seq(NROW(psets))) {
         thisPars <- as.list(psets[i,,drop=FALSE])
@@ -42,7 +42,7 @@ fitBySampling <-
         objseq[i] <- thisVal
         if (is.na(thisVal))
             next
-        if (thisVal < bestFunVal) {
+        if (thisVal > bestFunVal) {
             bestModel <- thisMod
             bestFunVal <- thisVal
         }

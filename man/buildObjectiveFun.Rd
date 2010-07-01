@@ -35,7 +35,7 @@ buildObjectiveFun(Q, groups = NULL, FUN = sum, ...,
   \item{ref}{
     output from a reference model correponding to \code{Q}. This is
     passed, after any aggregation and/or transformation, to
-    \code{\link{fitStat}}. If left as \code{NULL}, the mean (of
+    \code{\link{nseStat}}. If left as \code{NULL}, the mean (of
     aggregated/transformed data) is used.
   }
   \item{boxcox, start}{
@@ -57,7 +57,8 @@ buildObjectiveFun(Q, groups = NULL, FUN = sum, ...,
   already specified directly to \code{buildObjectiveFunction}: i.e. the
   returned function is only valid on the same dataset \code{Q} with
   corresponding fitted values \code{X}. Further arguments to the
-  returned function will be passed on to \code{\link{fitStat}}.
+  returned function will be passed on to \code{\link{nseStat}}
+  (therefore the objective function is to be maximised, not minimised).
   If \code{boxcox = TRUE} was specified, the estimated Box-Cox power can
   be extracted from the returned function \code{f} by
   \code{environment(f)$lambda} and similarly for the offset value
@@ -67,7 +68,7 @@ buildObjectiveFun(Q, groups = NULL, FUN = sum, ...,
   Felix Andrews \email{felix@nfrac.org}
 }
 \seealso{
-  \code{\link{fitStat}},
+  \code{\link{nseStat}},
   \code{\link{eventseq}},
   \code{\link{cut.Date}},
   \code{\link{hydromad.stats}}
@@ -84,7 +85,7 @@ lambda <- environment(objfun)$lambda
 start <- environment(objfun)$start
 qqmath(~ box.cox(dat$Q, lambda, start))
 ## in this case the result is the same as:
-fitStat(box.cox(dat$Q,      lambda, start),
+nseStat(box.cox(dat$Q,      lambda, start),
         box.cox(dat$Q + 10, lambda, start))
 
 ## use monthly aggregation and log transform (Box-Cox lambda = 0)

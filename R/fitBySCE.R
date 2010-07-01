@@ -30,17 +30,18 @@ fitBySCE <-
     upper <- sapply(parlist, max)
     initpars <- sapply(parlist, mean) ## TODO: allow sampling?
     bestModel <- MODEL
-    bestFunVal <- Inf
+    bestFunVal <- -Inf
     do_sce <- function(pars) {
         thisMod <- update(MODEL, newpars = pars)
         if (!isValidModel(thisMod))
             return(NA)
         thisVal <- objFunVal(thisMod, objective = objective)
-        if (thisVal < bestFunVal) {
+        if (thisVal > bestFunVal) {
             bestModel <<- thisMod
             bestFunVal <<- thisVal
         }
-        thisVal
+        ## SCEoptim does minimisation, so:
+        return(- thisVal)
     }
     ans <- SCEoptim(do_sce, initpars, lower = lower, upper = upper,
                     control = control)

@@ -306,7 +306,7 @@ schemes (\code{fitBySampling}), general optimisation methods with
 multistart or presampling (\code{fitByOptim}) and the more
 sophisticated Shuffled Complex Evolution (\code{fitBySCE}) and
 Differential Evolution (\code{fitByDE}) methods. All attempt to
-minimise a given objective function.
+maximise a given objective function.
 
 The objective function can be specified as the \code{objective}
 argument to these functions, or by setting
@@ -316,17 +316,11 @@ observed and modelled flow, respectively. For more advanced use it may
 also refer to \code{U} (modelled effective rainfall), or the full
 input \code{DATA} matrix. 
 
-Here we use the default, which is a weighted sum of the $R^2$ of
-square-root transformed data, and the relative bias:
-<<obj-fun>>=
-body(hydromad.getOption("objective"))
-@
-
-The \code{fitStat} function implements a generalisation of the
-familiar $R^2$ (coefficient of efficiency) statistic:
+The \code{nseStat} function implements a generalisation of the
+familiar $R^2$ coefficient of efficiency (Nash and Sutcliffe, 1970):
 
 \begin{equation}
-  \mathrm{fitStat}(Q,X) = \frac{ \sum |Q_* - X_*|^2 }{ \sum |Q_* - Z_*|^2 }
+  \mathrm{nseStat}(Q,X) = \frac{ \sum |Q_* - X_*|^2 }{ \sum |Q_* - Z_*|^2 }
 \end{equation}
 
 where $Q$ and $X$ are the observed and modelled values; $Z$ is the
@@ -334,8 +328,11 @@ result from a reference model, which is the baseline for
 comparison. $Z$ defaults to the mean of observed data
 $\mathrm{E}(Q_*)$, corresponding to the typical $R^2$ statistic.
 Subscript $*$ denotes transformed data, and the transform can be
-specified. Here we use the square root. See \code{?hydromad.stats}
-for more examples.
+specified. See \code{?nseStat} and \code{?hydromad.stats} for examples.
+
+Here we use the default, which is a weighted sum of the $R^2$ of
+square-root transformed data, and (with one third the weight) the
+$R^2$ of monthly-aggregated data.
 
 For this simple example, the model will be calibrated using the
 \code{fitByOptim} function, which performs parameter sampling over the

@@ -3,7 +3,13 @@
 ## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
-fitStat <-
+fitStat <- function(...)
+{
+    .Deprecated("nseStat")
+    nseStat(...)
+}
+
+nseStat <-
     function(obs, mod, ref = NULL, ..., p = 2,
              trans = NULL, negatives.ok = FALSE,
              na.action = na.pass)
@@ -85,5 +91,5 @@ fitStat <-
     ## and apply power p
     err <- abs(obs - mod) ^ p
     referr <- abs(obs - ref) ^ p
-    sum(err) / sum(referr)
+    1 - sum(err) / sum(referr)
 }

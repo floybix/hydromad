@@ -19,7 +19,7 @@ getObjSeq.default <- function(object, ..., raw = FALSE)
 {
     ppp <- object$objseq
     ans <- zoo(ppp, 1:NROW(ppp))
-    if (raw == FALSE) ans <- cummin(na.locf(ans))
+    if (raw == FALSE) ans <- cummax(na.locf(ans))
     ans
 }
 
@@ -32,6 +32,8 @@ getObjSeq.SCEoptim <- function(object, ..., raw = FALSE)
         ## best of the chains at each step
         ppp <- do.call("pmin", as.data.frame(ppp))
     }
+    ## reverse it to get the maximised objective value
+    ppp <- - ppp
     #ts(ppp, end = funevals, deltat = funevals / nrow(ppp))
     zoo(ppp, seq(0, funevals, length = NROW(ppp)+1)[-1])
 }

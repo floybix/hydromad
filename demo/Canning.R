@@ -25,7 +25,7 @@ cannMod <-
              l = seq(0, 400, by = 50),
              t_ref = 0)
 cannMod <- fitBySampling(cannMod, sampletype = "all",
-                         objective = hmadstat("r.squared", negate = TRUE))
+                         objective = hmadstat("r.squared"))
 summary(cannMod)
 ## breakdown of performance in simulation over whole dataset
 summary(update(cannMod, newdata = Canning), breaks = "2 years")
@@ -34,5 +34,5 @@ summary(update(cannMod, newdata = Canning), breaks = "2 years")
 cannMod2 <- hydromad(cannCal, sma = "cmd", routing = "armax",
                      rfit = list("sriv", order = c(1,1)), warmup = 200)
 cannMod2 <- fitBySampling(cannMod, sampletype = "all",
-                          objective = hmadstat("r.squared", negate = TRUE))
+                          objective = hmadstat("r.squared"))
 summary(cannMod2)
