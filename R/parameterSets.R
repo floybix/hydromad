@@ -11,18 +11,17 @@ parameterSets <-
     stopifnot(is.list(par.ranges))
     stopifnot(all(sapply(par.ranges, length) > 0))
     stopifnot(is.numeric(samples))
-    ## extend single constant parameters to length 2
-    par.ranges <- lapply(par.ranges, function(x)
-                         if (length(x) == 1) range(x) else x)
     ## find parameters that have a null (zero) range, i.e. fixed
-    fixed <- (sapply(par.ranges, function(x) diff(range(x))) == 0)
+    fixed <- sapply(par.ranges, function(x) diff(range(x)) == 0)
     ## find parameters with two-element range, interpreted as a free range
-    free <- sapply(par.ranges, function(x) !inherits(x, "AsIs") && length(x) == 2)
-    ## the rest have length > 2, interpreted as a specified set of values
+    free <- sapply(par.ranges, function(x) {
+        !inherits(x, "AsIs") && length(x) == 2 && (diff(range(x)) > 0)
+    })
+    ## the rest have length > 2 or AsIs, interpreted as a specified set of values
     spec <- !free & !fixed
 
     if (method == "all.combinations") {
-        ## work out number of samples for free params to keep <= samples
+        ## work out number of samples for free params in order to keep under total 'samples'
         freesamp <- NA
         if (any(free)) {
             specsamp <- prod(unlist(lapply(par.ranges[spec], length)))

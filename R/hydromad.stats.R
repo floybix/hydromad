@@ -13,21 +13,7 @@
 ## called directly even when the .() chunks have not been evaluated / cached.
 
 
-
-eventseq_q90 <-
-    function(Q, continue = !all, all = FALSE)
-{
-    q90 <- quantile(coredata(Q), 0.9, na.rm = TRUE)
-    ev <- eventseq(Q, thresh = 5, indur = 4,
-                   mindur = 5, mingap = 5, continue = continue, all = all)
-    ev
-}
-
-
-eventseq_rain5 <- function(P)
-{
-    eventseq(P, thresh = q90, inthresh = 1, indur = 4, continue = TRUE)
-}
+## TODO delete these
 
 
 
@@ -36,20 +22,23 @@ buildCachedObjectiveFun <-
     function(objective, model,
              DATA = observed(model, item = TRUE), Q = DATA[,"Q"])
 {
+    ## should not call bquote() on an object twice, or it breaks...
+    if (isTRUE(attr(objective, "cached"))) return(objective)
     ## both 'Q' and 'DATA' can be referred to in .() expressions
     ## evaluate and replace .() expressions in body of objective
     if (inherits(objective, "formula")) {
         if (length(objective) > 2)
             warning("left hand side of formula ignored")
-        objective[[2]] <-
-            eval(substitute(bquote(x), list(x = objective[[2]])))
+        try( objective[[2]] <-
+             eval(substitute(bquote(x), list(x = objective[[2]]))) )
     } else if (is.function(objective)) {
-        body(objective) <- 
-            eval(substitute(bquote(x), list(x = body(objective))))
+        try( body(objective) <- 
+             eval(substitute(bquote(x), list(x = body(objective)))) )
     } else {
         stop("'objective' should be a function or formula, not a ",
              toString(class(objective)))
     }
+    attr(objective, "cached") <- TRUE
     objective
 }
 
@@ -57,6 +46,17 @@ buildCachedObjectiveFun <-
 {
     ## keep R CMD check happy:
     . <- function(x) x
+    
+    ## some canned event definitions used in stats
+    eventseq_q90 <- function(Q, continue = !all, all = FALSE) {
+        q90 <- quantile(coredata(Q), 0.9, na.rm = TRUE)
+        eventseq(Q, thresh = q90, indur = 4,
+                 mindur = 5, mingap = 5, continue = continue, all = all)
+    }
+    eventseq_rain5 <- function(P) {
+        eventseq(P, thresh = 5, inthresh = 1, indur = 4, continue = TRUE)
+    }
+
     ## default set of stats
     list("bias" = function(Q, X, ...) mean(X - Q, na.rm = TRUE),
          "rel.bias" = function(Q, X, ...) {
@@ -89,6 +89,15 @@ buildCachedObjectiveFun <-
          },
          "r.sq.monthly" = function(Q, X, ...) {
              .(buildObjectiveFun(Q, groups = cut(time(Q), "months")))(Q, X, ...)
+         },
+         "r.sq.365" = function(Q, X, ...) {
+             objfun <- .({
+                 Q365 <- rollmean(Q, 365, na.pad = TRUE)
+                 function(Q, X, ...) {
+                     nseStat(Q365, rollmean(X, 365, na.pad = TRUE), ...)
+                 }
+             })
+             objfun(Q, X, ...)
          },
          "r.sq.smooth5" = function(Q, X, ...) {
              nseStat(Q, X, ..., trans = function(x)

@@ -1,17 +1,22 @@
 
 Changes in Version 0.9-1 (in development)
 
-  o all the fitBy...() methods now maximise rather than minimise!
+  o all the fitBy...() methods now maximise rather than minimise.
 
   o nseStat() is the new name for fitStat(); the old name is now deprecated.
 
+  o the default objective function changed (~ r.sq.sqrt + r.sq.monthly...)
+
   o new model GR4J: functions gr4j.sim() and gr4jrouting.sim().
+
+  o simulate() and other functions using parameterSets() were doing too
+    few samples in the method "all.combinations".
 
 Changes in Version 0.9-0
 
   o NOTE: major changes that will break existing code (see below).
 
-  o new function buildObjectiveFunction().
+  o new function buildObjectiveFun().
 
   o objective functions can now include expressions which will be evaluated
     once and cached for efficiency by calibration/simulation functions.
@@ -23,7 +28,7 @@ Changes in Version 0.9-0
 
   o tsFitStat() has been removed as fitStat() now automatically merges
     time series and its other functionality has been taken over by
-    buildObjectiveFunction().
+    buildObjectiveFun().
 
   o fitBias() has been removed in favour of hmadstat("rel.bias").
 

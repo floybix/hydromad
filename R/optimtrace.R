@@ -34,7 +34,6 @@ getObjSeq.SCEoptim <- function(object, ..., raw = FALSE)
     }
     ## reverse it to get the maximised objective value
     ppp <- - ppp
-    #ts(ppp, end = funevals, deltat = funevals / nrow(ppp))
     zoo(ppp, seq(0, funevals, length = NROW(ppp)+1)[-1])
 }
 
@@ -43,6 +42,8 @@ getObjSeq.DEoptim <- function(object, ...)
 {
     funevals <- object$optim$nfeval
     ppp <- object$member$bestvalit
+    ## reverse it to get the maximised objective value
+    ppp <- - ppp
     zoo(ppp, seq(0, funevals, length = NROW(ppp)+1)[-1])
 }
 

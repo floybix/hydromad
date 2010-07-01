@@ -64,14 +64,15 @@
 \examples{
 data(Canning)
 mod0 <- hydromad(Canning[1:500,], sma = "cwi")
-simulate(mod0, nsim = 5, method = "latin")
+simulate(mod0, nsim = 5, sampletype = "latin")
 
 ## plot the objective function surface over two parameters
-mod1 <- update(mod0, routing = "armax", rfit = "ls")
-sim1 <- simulate(mod1, 300, FUN = objFunVal,
+mod1 <- update(mod0, routing = "armax", rfit = list("ls", order = c(2,1)))
+sim1 <- simulate(mod1, 144, sampletype = "all", FUN = objFunVal,
           objective = ~ nseStat(Q, X, trans = sqrt))
 levelplot(result ~ tw * f, sim1, cex = 2,
           panel = panel.levelplot.points,
-          main = "R Squared (of sq.rt. data) over parameter space")
+          main = "R Squared (of sq.rt. data) over parameter space") +
+layer_(panel.2dsmoother(...))
 }
 \keyword{ iteration }

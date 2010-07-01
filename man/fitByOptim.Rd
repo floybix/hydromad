@@ -116,8 +116,9 @@ xyplot(optimtrace(foo), type = "b",
 
 ## repeat optimisation with single random starting points
 fooreps <-
-  replicate(5,
+  replicate(4,
       fitByOptim(modx, samples = 1, sampletype = "random",
+                 objective = hmadstat("r.squared"),
                  method = "Nelder-Mead"),
       simplify = FALSE)
 names(fooreps) <- paste("rep.", seq_along(fooreps))
@@ -127,8 +128,9 @@ tracesraw <- lapply(fooreps, optimtrace, raw = TRUE)
 xyplot(do.call("merge", traces), superpose = TRUE,
     sub = 'method = "Nelder-Mead"',
     xlab = "Fn. evaluations", ylab = "Objective value",
-    auto.key = list(corner = c(1,1))) +
-xyplot(do.call("merge", tracesraw), superpose = TRUE, type = "p", cex = 0.5)
+    auto.key = list(corner = c(1,0))) +
+xyplot(do.call("merge", tracesraw), superpose = TRUE,
+    type = "p", cex = 0.5)
 
 ## if you try it again with method = "PORT" you will find that all
 ## replicates converge to the optimum regardless of starting point.

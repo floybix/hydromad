@@ -62,7 +62,8 @@ x <- Cotter[1:1000]
 modx <- hydromad(x, sma = "cwi", routing = "powuh")
 modx
 
-foo <- fitBySCE(modx, control = list(maxit = 3))
+## run with cut-down settings (for a speedy example only!)
+foo <- fitBySCE(modx, control = list(maxit = 5, ncomplex = 2))
 
 summary(foo)
 
@@ -71,8 +72,8 @@ str(foo$fit.result)
 
 ## plot objective function value convergence over time
 xyplot(optimtrace(foo, raw = TRUE), screens = 1, type = "p",
-  jitter.x = TRUE, ylim = c(NA, -1.3),
+  jitter.x = TRUE, ylim = c(0.7, NA), xlim = c(0, NA),
   xlab = "function evaluations", ylab = "objective fn. value") +
-layer(panel.average(..., horiz = FALSE, fun = min, lwd = 2))
+layer(panel.average(..., horiz = FALSE, fun = max, lwd = 2))
 }
 \keyword{ optimization }

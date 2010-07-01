@@ -17,6 +17,7 @@ gr4jrouting.sim(U, x2, x3, x4, R_0 = 0,
 \arguments{
   \item{DATA}{time-series-like object with columns P (precipitation,
     mm) and E (potential evapo-transpiration, mm).}
+  \item{U}{effective rainfall series.}
   \item{x1}{ maximum capacity of the production store (mm). }
   \item{x2}{ groundwater exchange coefficient (mm). }
   \item{x3}{ one day ahead maximum capacity of the routing store (mm). }
