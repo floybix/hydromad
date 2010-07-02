@@ -42,7 +42,7 @@ summary.hydromad <-
         stop("no definition found in hydromad.stats() for: ",
              toString(stats[bad]))
     
-    DATA <- cbind(P = observed(object, item = "P", all = TRUE),
+    DATA <- cbind(P = observed(object, select = "P", all = TRUE),
                   Q = observed(object, all = TRUE),
                   X = fitted(object, all = TRUE),
                   U = fitted(object, U = TRUE, all = TRUE))

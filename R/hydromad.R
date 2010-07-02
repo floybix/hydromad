@@ -48,13 +48,13 @@ residuals.hydromad <- function(object, ..., all = FALSE)
     if (all) tmp else stripWarmup(tmp, object$warmup)
 }
 
-observed.hydromad <- function(object, ..., item = "Q", all = FALSE)
+observed.hydromad <- function(object, ..., select = "Q", all = FALSE)
 {
     ## observed.default will work (for Q), but this may be slightly faster
-    if (is.character(item))
-        if (!all(item %in% colnames(object$data)))
+    if (is.character(select))
+        if (!all(select %in% colnames(object$data)))
             return(NULL)
-    tmp <- object$data[,item]
+    tmp <- object$data[,select]
     if (all) tmp else stripWarmup(tmp, object$warmup)
 }
 

@@ -1,9 +1,16 @@
 
-Changes in Version 0.9-1 (in development)
+Changes in Version 0.9-2 (in development)
+
+  o one can now pass 'Q' to hmadstat() to pre-evaluate (cache) statistics.
+
+  o the 'item' argument to observed() has been re-named to 'select'.
+
+Changes in Version 0.9-1
 
   o all the fitBy...() methods now maximise rather than minimise.
 
   o nseStat() is the new name for fitStat(); the old name is now deprecated.
+    nseStat() returns "R squared": 1 - sum((Q-X)^2)/sum((Q-ref)^2)
 
   o the default objective function changed (~ r.sq.sqrt + r.sq.monthly...)
 

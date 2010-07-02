@@ -13,14 +13,10 @@
 ## called directly even when the .() chunks have not been evaluated / cached.
 
 
-## TODO delete these
-
-
-
 ## This is called once by fitting functions etc.
 buildCachedObjectiveFun <-
     function(objective, model,
-             DATA = observed(model, item = TRUE), Q = DATA[,"Q"])
+             DATA = observed(model, select = TRUE), Q = DATA[,"Q"])
 {
     ## should not call bquote() on an object twice, or it breaks...
     if (isTRUE(attr(objective, "cached"))) return(objective)
@@ -47,16 +43,6 @@ buildCachedObjectiveFun <-
     ## keep R CMD check happy:
     . <- function(x) x
     
-    ## some canned event definitions used in stats
-    eventseq_q90 <- function(Q, continue = !all, all = FALSE) {
-        q90 <- quantile(coredata(Q), 0.9, na.rm = TRUE)
-        eventseq(Q, thresh = q90, indur = 4,
-                 mindur = 5, mingap = 5, continue = continue, all = all)
-    }
-    eventseq_rain5 <- function(P) {
-        eventseq(P, thresh = 5, inthresh = 1, indur = 4, continue = TRUE)
-    }
-
     ## default set of stats
     list("bias" = function(Q, X, ...) mean(X - Q, na.rm = TRUE),
          "rel.bias" = function(Q, X, ...) {
@@ -246,11 +232,11 @@ buildCachedObjectiveFun <-
          )
 }
 
-hmadstat <- function(name, DATA = NULL)
+hmadstat <- function(name, DATA = NULL, Q = DATA[,"Q"])
 {
     STATFUN <- .HydromadEnv$stats[[name]]
-    if (!is.null(DATA))
-        STATFUN <- buildCachedObjectiveFun(STATFUN, DATA = DATA)
+    if (!is.null(DATA) || !is.null(Q))
+        STATFUN <- buildCachedObjectiveFun(STATFUN, DATA = DATA, Q = Q)
     STATFUN
 }
 

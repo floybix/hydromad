@@ -8,27 +8,27 @@
   Its usage is similar to \code{\link{hydromad.options}}.
 }
 \usage{
-hmadstat(name, DATA = NULL)
+hmadstat(name, DATA = NULL, Q = DATA[,"Q"])
 
 hydromad.stats(...)
 }
 \arguments{
   \item{name}{ character giving the name of a statistic. }
-  \item{DATA}{
-    If given, the returned statistic function will be pre-evaluated with
-    the given data matrix (which must have a column \code{Q} of observed
-    data). Technically, any special \code{.()} expressions in the named objective
-    function will be evaluated with the given \code{DATA} and \code{Q}.
+  \item{DATA, Q}{
+    If either \code{DATA} or \code{Q} is given, the returned statistic
+    function will be pre-evaluated with the given data. Technically, any
+    special \code{.()} expressions in the named objective 
+    function will be evaluated and may refer to variables \code{DATA}
+    and/or \code{Q}.
     These chunks are cached so that repeated evaluation of the objective
     function is faster; but it is then only valid for models using the
-    same dataset.
-    In normal usage this is not needed.
+    same dataset. Remember that objective functions are normally
+    evaluated on time series with the warmup period removed, not the
+    whole time series passed to \code{hydromad}. The observed data
+    excluding warmup can be extracted from a model object as
+    \code{Q = observed(model)} or \code{DATA = observed(model, select =
+      TRUE)}. 
   }
-%  \item{negate}{
-%    if \code{TRUE}, the returned function is modified to negate the
-%    result. This can be useful when defining an objective function to be
-%    minimised.
-%  }
   \item{...}{
     new stats can be defined, or existing ones modified, using one or
     more arguments of the form 'name = value' or by passing a list of
@@ -57,6 +57,7 @@ hydromad.stats(...)
     \item{rel.bias}{
       bias as a fraction of the total observed flow,
       \eqn{\sum ( X - Q ) / \sum Q}
+      (excluding any time steps with missing values).
     }
     \item{r.squared}{
       R Squared (Nash-Sutcliffe Efficiency),
@@ -69,7 +70,7 @@ hydromad.stats(...)
     }
     \item{r.sq.log}{
       R Squared using log
-      transformed data (roughly equal weight to all flow levels),
+      transformed data,
       \eqn{1 - \frac{\sum |\log{(Q+\epsilon)} - \log{(X+\epsilon)}|^2 }
 	            {\sum |\log{(Q+\epsilon)} - \bar{\log{(Q+\epsilon)}}|^2 }}.
       Here \eqn{\epsilon} is the 10 percentile (i.e. lowest

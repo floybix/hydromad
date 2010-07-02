@@ -63,7 +63,7 @@ objFunVal.hydromad <-
         stop("fitted() returned nothing")
     delayedAssign("Q", observed(x, all = all))
     delayedAssign("U", fitted(x, all = all, U = TRUE))
-    delayedAssign("DATA", observed(x, all = all , item = TRUE))
+    delayedAssign("DATA", observed(x, all = all, select = TRUE))
     ## catch the .() function (used for cacheing, see hydromad.stats)
     ## normally it would not get through to here; evaluated by fitBy*() etc
     ## But this may be needed if objFunVal() is called directly.

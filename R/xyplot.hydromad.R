@@ -28,7 +28,7 @@ xyplot.hydromad <-
         ## never want rainfall to be on a log scale:
         scales$y$log <- FALSE
         rainPlot <-
-            xyplot(observed(x, item = "P", all = all), ...,
+            xyplot(observed(x, select = "P", all = all), ...,
                    scales = scales, superpose = superpose,
                    type = type.P)
         foo <- c(streamflow = foo, rainfall = rainPlot,
@@ -63,7 +63,7 @@ xyplot.hydromad.runlist <-
         ## never want rainfall to be on a log scale:
         scales$y$log <- FALSE
         rainPlot <-
-            xyplot(observed(x[[1]], item = "P", all = all), ...,
+            xyplot(observed(x[[1]], select = "P", all = all), ...,
                    scales = scales, superpose = superpose,
                    type = type.P)
         foo <- c(foo, rainfall = rainPlot,

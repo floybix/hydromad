@@ -26,7 +26,7 @@
 
 \method{fitted}{hydromad}(object, ..., U = FALSE, all = FALSE)
 
-\method{observed}{hydromad}(object, ..., item = "Q", all = FALSE)
+\method{observed}{hydromad}(object, ..., select = "Q", all = FALSE)
 
 \method{residuals}{hydromad}(object, ..., all = FALSE)
 
@@ -89,8 +89,9 @@ isValidModel(object, ...)
     to return modelled effective rainfall (the output from SMA) rather
     than streamflow.
   }
-  \item{item}{
-    data series to extract (from the original \code{DATA} argument).
+  \item{select}{
+    data series to extract (from the original \code{DATA} argument). Use
+    \code{TRUE} to extract all columns.
   }
   \item{warn}{
     by default, \code{coef} gives a warning if the model parameters are

@@ -19,7 +19,7 @@ fitDbmToPeaks <-
     if (length(parlist$power) == 1)
         stop("'power' should be a free parameter")
     ## mask all values except where rainfall is above threshold
-    P <- observed(MODEL, item = "P", all = TRUE)
+    P <- observed(MODEL, select = "P", all = TRUE)
     if (is.null(P.thresh))
         P.thresh <- quantile(coredata(P), 0.9, na.rm = TRUE)
     dat <- MODEL$data
