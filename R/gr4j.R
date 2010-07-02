@@ -56,7 +56,7 @@ gr4j.sim <-
                        (1 + St_x1 * tanh(Pn/x1)) )
             } else {
                 ## actual evapo-transpiration
-                ET[t] <- ( S[t] * (2 - St_x1) * tanh(En/x1) /
+                ET[t] <- ( S_prev * (2 - St_x1) * tanh(En/x1) /
                           (1 + (1 - St_x1) * tanh(En/x1)) )
             }
             S[t] <- S_prev - ET[t] + Ps

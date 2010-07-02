@@ -35,7 +35,7 @@ sma_gr4j(double *P, double *E, int *n,
         }
         if (En > 0) {
             // actual evaporation
-            ET[t] = ( S[t] * (2.0 - St_x1) * tanh(En / (*x1)) /
+            ET[t] = ( S_prev * (2.0 - St_x1) * tanh(En / (*x1)) /
                       (1.0 + (1.0 - St_x1) * tanh(En / (*x1))) );
         }
         S[t] = S_prev - ET[t] + Ps;
