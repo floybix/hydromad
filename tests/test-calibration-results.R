@@ -1,5 +1,4 @@
 library(testthat)
-#library_if_available(hydromad)
 library(hydromad)
 
 
@@ -32,7 +31,7 @@ test_that("cwi+armax optim/SRIV gives reasonable result", {
     s <- summary(fitx)
     expect_that(s$r.squared > 0.75, is_true())
     expect_that(s$r.sq.log > 0.85, is_true())
-    expect_that(abs(s$rel.bias) < 0.06, is_true())
+    expect_that(abs(s$rel.bias) < 0.07, is_true())
 })
 
 
@@ -46,6 +45,6 @@ test_that("cmd+powuh SCE gives reasonable result", {
     s <- summary(fitx)
     expect_that(s$r.squared > 0.5, is_true())
     expect_that(s$r.sq.log > 0.6, is_true())
-    expect_that(abs(s$rel.bias) < 0.05, is_true())
+    expect_that(abs(s$rel.bias) < 0.06, is_true())
 })
 

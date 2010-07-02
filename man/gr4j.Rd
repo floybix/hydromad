@@ -8,7 +8,7 @@
   GR4J model (mode`le du Ge´nie Rural a` 4 parame`tres Journalier).
 }
 \usage{
-gr4j.sim(DATA, x1, etmult = 1, S_0 = 0, return_state = FALSE)
+gr4j.sim(DATA, x1, etmult = 1, S_0 = 0.5, return_state = FALSE)
 
 gr4jrouting.sim(U, x2, x3, x4, R_0 = 0,
                 return_components = FALSE,
@@ -71,7 +71,7 @@ dat <-
   cbind(P = c(0,0,0,0,0,0.04,0.59,0.03,0.01,0.16,0.37,8.76,2.65,0.05,0.02,0.02,0.38,0.00,0.02,0.46,4.46,7.71,5.71,0.79,1.33),
         E = c(0,0,0,0,0,0.24,0.24,0.24,0.24,0.24,0.25,0.25,0.26,0.27,0.28,0.32,0.33,0.34,0.35,0.36,0.36,0.37,0.37,0.38,0.38))
 datz <- zoo(dat, as.Date("2000-01-01") + 1:nrow(dat))
-modz <- update(mod0, newdata = datz,
+modz <- hydromad(datz, sma = "gr4j", routing = "gr4jrouting",
     x1 = 665, x2 = 1.18, x3 = 90, x4 = 3.8, S_0 = 0.6, R_0 = 0.7)
 xyplot(predict(modz, return_state = TRUE, return_components = TRUE),
        strip = FALSE, strip.left = TRUE)

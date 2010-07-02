@@ -66,12 +66,13 @@ test_that("bucket simulation is the same in R and C", {
 
 test_that("gr4j simulation is the same in R and C", {
     set.seed(0)
-    mod0 <- hydromad(DATA, sma = "gr4j", routing = "gr4jrouting") 
+    mod0 <- hydromad(DATA, sma = "gr4j", routing = "gr4jrouting",
+                     etmult = 0.1, S_0 = 0.5, R_0 = 0)
     for (mod in simulate(mod0, 5)) {
-        Csim <- predict(mod)
+        Csim <- na.trim(predict(mod))
         expect_that(all(Csim >= 0), is_true())
         hydromad.options(pure.R.code = TRUE)
-        pureRsim <- predict(mod)
+        pureRsim <- na.trim(predict(mod))
         hydromad.options(pure.R.code = FALSE)
         expect_that(Csim, equals(pureRsim))
     }

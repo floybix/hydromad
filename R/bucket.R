@@ -9,7 +9,7 @@
 bucket.sim <-
     function(DATA,
              Sb, fc = 1, a.ei = 0, M = 0, a.ss = 0,
-             etmult = 1, S_0 = 0,
+             etmult = 1, S_0 = 0.5,
              return_state = FALSE)
 {
     stopifnot(c("P","E") %in% colnames(DATA))
@@ -23,6 +23,8 @@ bucket.sim <-
 
     ## fc is expressed as a proportion of Sb
     Sfc <- fc * Sb
+    ## as is S_0
+    S_0 <- S_0 * Sb
 
     inAttr <- attributes(DATA[,1])
     DATA <- as.ts(DATA)

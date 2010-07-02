@@ -8,7 +8,7 @@
 }
 \usage{
 bucket.sim(DATA, Sb, fc = 1, a.ei = 0, M = 0, a.ss = 0,
-           etmult = 1, S_0 = 0, return_state = FALSE)
+           etmult = 1, S_0 = 0.5, return_state = FALSE)
 }
 \arguments{
   \item{DATA}{time-series-like object with columns P (precipitation,
@@ -20,7 +20,7 @@ bucket.sim(DATA, Sb, fc = 1, a.ei = 0, M = 0, a.ss = 0,
   \item{a.ss}{Recession coefficients for subsurface flow from
     saturated zone (\eqn{\alpha_{ss}}).}
   \item{etmult}{Multiplier for the \code{E} input data.}
-  \item{S_0}{Initial soil moisture level (mm).}
+  \item{S_0}{Initial soil moisture level as a fraction of \code{Sb}.}
   \item{return_state}{to return the series U, S and ET (evapotranspiration).}
 }
 \details{

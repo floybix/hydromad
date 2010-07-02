@@ -19,15 +19,15 @@ objFunVal.default <-
     delayedAssign("Q", x[,"Q"])
     delayedAssign("U", x[,"U"])
     ## catch the .() function (used for cacheing, see hydromad.stats)
-    ## normally it would not get through to here; evaluated by fitBy*() etc
-    ## in fact I think this should never be needed.
-#    assign(".", base::force)
+    ## normally it would not get through to here; evaluated by fitBy*() etc.
+    ## But this may be needed if objFunVal() is called directly.
+    assign(".", function(x) x)
     objFunVal1 <- function(obj, ...)
     {
         if (inherits(obj, "formula")) {
             val <- eval(obj[[2]])
         } else if (is.function(obj)) {
-#            assign(".", base::force, environment(obj))
+            assign(".", function(x) x, environment(obj))
             val <- obj(Q, X, ..., U = U, DATA = DATA)
         } else {
             stop("'objective' should be a function or formula, not a ",
@@ -66,8 +66,8 @@ objFunVal.hydromad <-
     delayedAssign("DATA", observed(x, all = all , item = TRUE))
     ## catch the .() function (used for cacheing, see hydromad.stats)
     ## normally it would not get through to here; evaluated by fitBy*() etc
-    ## in fact I think this should never be needed.
-#    assign(".", base::force)
+    ## But this may be needed if objFunVal() is called directly.
+    assign(".", function(x) x)
     isValidModel <- isValidModel(x)
     objFunVal1 <- function(obj, ...)
     {
@@ -76,7 +76,7 @@ objFunVal.hydromad <-
         if (inherits(obj, "formula")) {
             val <- eval(obj[[2]])
         } else if (is.function(obj)) {
-#            assign(".", base::force, environment(obj))
+            assign(".", function(x) x, environment(obj))
             val <- obj(Q, X, ..., U = U, DATA = DATA, model = model)
         } else {
             stop("'objective' should be a function or formula, not a ",

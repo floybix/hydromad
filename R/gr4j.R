@@ -5,7 +5,7 @@
 
 gr4j.sim <-
     function(DATA,
-             x1, etmult = 1, S_0 = 0, 
+             x1, etmult = 1, S_0 = 0.5, 
              return_state = FALSE)
 {
     stopifnot(c("P","E") %in% colnames(DATA))
