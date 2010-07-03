@@ -1,6 +1,10 @@
 
 Changes in Version 0.9-2 (in development)
 
+  o some fitBy...() functions were failing if the objective returned NA.
+
+  o the default hydromad.options("optim.method") is now "PORT" (fitByOptim).
+
   o one can now pass 'Q' to hmadstat() to pre-evaluate (cache) statistics.
 
   o the 'item' argument to observed() has been re-named to 'select'.

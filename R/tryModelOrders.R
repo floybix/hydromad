@@ -41,12 +41,12 @@ tryModelOrders <-
             } else if (!isValidModel(mod)) {
                 message(toString(mod, width = 60))
             } else {
-                modsumm <- summary(mod, stats = c("YIC", "r.squared"),
+                modsumm <- summary(mod, stats = c("ARPE", "r.squared"),
                                    with.hydrostats = FALSE)
-                YIC <- modsumm$YIC
+                ARPE <- modsumm$ARPE
                 R2 <- modsumm$r.squared
-                message(" YIC = ", signif(YIC, 4),
-                        ", R^2 = ", signif(R2, 4))
+                message(" ARPE = ", round(ARPE, 3),
+                        ", R^2 = ", round(R2, 3))
             }
         }
     }

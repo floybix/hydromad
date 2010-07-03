@@ -115,13 +115,13 @@ print.summary.hydromad <-
     print(x$call)
     cat("\n")
     if (!is.null(x$timesteps) && !is.null(x$missing)) {
-        cat("Time steps: ", x$timesteps, " (", x$missing, " missing).\n")
+        cat("Time steps: ", x$timesteps, " (", x$missing, " missing).\n", sep = "")
     }
     if (!is.null(x$mean.P) && !is.null(x$mean.Q))
         cat("Runoff ratio (Q/P): (",
             format(x$mean.Q, digits=digits), " / ",
             format(x$mean.P, digits=digits), ") = ",
-            format(x$mean.Q / x$mean.P, digits=digits), "\n")
+            format(x$mean.Q / x$mean.P, digits=digits), "\n", sep = "")
     if (!is.null(x$YIC))
         cat("YIC:", format(x$YIC, digits=digits), "\n")
     if (!is.null(x$ARPE))

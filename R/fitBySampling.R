@@ -40,9 +40,7 @@ fitBySampling <-
         thisVal <- objFunVal(thisMod, objective = objective,
                              nan.ok = hydromad.getOption("catch.errors"))
         objseq[i] <- thisVal
-        if (is.na(thisVal))
-            next
-        if (thisVal > bestFunVal) {
+        if (isTRUE(thisVal > bestFunVal)) {
             bestModel <- thisMod
             bestFunVal <- thisVal
         }

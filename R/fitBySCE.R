@@ -36,7 +36,7 @@ fitBySCE <-
         if (!isValidModel(thisMod))
             return(NA)
         thisVal <- objFunVal(thisMod, objective = objective)
-        if (thisVal > bestFunVal) {
+        if (isTRUE(thisVal > bestFunVal)) {
             bestModel <<- thisMod
             bestFunVal <<- thisVal
         }

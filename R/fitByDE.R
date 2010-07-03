@@ -37,7 +37,7 @@ fitByDE <-
         if (!isValidModel(thisMod))
             return(1e8)
         thisVal <- objFunVal(thisMod, objective = objective)
-        if (thisVal > bestFunVal) {
+        if (isTRUE(thisVal > bestFunVal)) {
             bestModel <<- thisMod
             bestFunVal <<- thisVal
         }

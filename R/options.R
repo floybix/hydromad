@@ -39,7 +39,7 @@
          de.control = list(itermax = 1000/50),
          dream.control = list(),
          fit.samples = 100,
-         optim.method = "Nelder-Mead",
+         optim.method = "PORT",
          optim.control = list(reltol = 1e-6, maxit = 150,
                 trace = if (interactive()) 1 else 0, REPORT = 10),
          nlminb.control = list(eval.max = 200, iter.max = 150,

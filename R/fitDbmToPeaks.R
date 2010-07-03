@@ -5,7 +5,7 @@
 
 fitDbmToPeaks <-
     function(MODEL,
-             objective = hydromad.getOption("objective"),
+             objective = hmadstat("r.sq.sqrt"),
              P.thresh = NULL,
              delay = hydromad.getOption("delay"),
              return_fit = FALSE)
@@ -37,7 +37,7 @@ fitDbmToPeaks <-
             message("qlag = ", qlagi,
                     "; power = ", signif(coef(modi)[["power"]], 3),
                     "; obj.val = ", signif(obji, 3))
-        if (obji > bestObjVal) {
+        if (isTRUE(obji > bestObjVal)) {
             if (return_fit) {
                 bestMod <<- modi
             } else {

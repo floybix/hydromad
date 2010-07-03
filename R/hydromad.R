@@ -97,8 +97,8 @@ print.hydromad <-
     function(x, digits = max(3, getOption("digits") - 3), ...)
 {
     cat("\n",
-        'Hydromad model with "', format(x$sma), '" SMA',
-        ' and "', format(x$routing), '" routing:', "\n", sep = "")
+        'Hydromad model with ', toString(deparse(x$sma)), ' SMA',
+        ' and ', toString(deparse(x$routing)), ' routing:', "\n", sep = "")
     rx <- x$data
     cat("Start = ", index2char(index(rx)[1], frequency(rx)),
         ", End = ", index2char(index(rx)[NROW(rx)], frequency(rx)),
@@ -118,7 +118,9 @@ print.hydromad <-
                 ## all unique parameter values
                 coefx <- coef(x, which = which)
                 print(coefx, digits = digits, quote = FALSE, print.gap = 2)
-                if (which == "routing") {
+                if ((which == "routing") &&
+                    isTRUE(x$routing %in% c("armax", "expuh")))
+                {
                     tmp <- describeTF(coefx)
                     if (!is.null(tmp) && !is.na(tmp))
                         cat("TF Structure:", tmp, "\n")

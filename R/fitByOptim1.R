@@ -39,7 +39,7 @@ fitByOptim1 <-
             return(NA)
         thisVal <- objFunVal(thisMod, objective = objective)
         objseq[i] <<- thisVal
-        if (thisVal > bestFunVal) {
+        if (isTRUE(thisVal > bestFunVal)) {
             bestModel <<- thisMod
             bestFunVal <<- thisVal
         }
