@@ -18,24 +18,30 @@ buildCachedObjectiveFun <-
     function(objective, model,
              DATA = observed(model, select = TRUE), Q = DATA[,"Q"])
 {
-    ## should not call bquote() on an object twice, or it breaks...
-    if (isTRUE(attr(objective, "cached"))) return(objective)
-    ## both 'Q' and 'DATA' can be referred to in .() expressions
-    ## evaluate and replace .() expressions in body of objective
-    if (inherits(objective, "formula")) {
-        if (length(objective) > 2)
-            warning("left hand side of formula ignored")
-        try( objective[[2]] <-
-             eval(substitute(bquote(x), list(x = objective[[2]]))) )
-    } else if (is.function(objective)) {
-        try( body(objective) <- 
-             eval(substitute(bquote(x), list(x = body(objective)))) )
-    } else {
-        stop("'objective' should be a function or formula, not a ",
-             toString(class(objective)))
+    buildCachedObjectiveFun1 <- function(objective) {
+        ## should not call bquote() on an object twice, or it breaks...
+        if (isTRUE(attr(objective, "cached"))) return(objective)
+        ## both 'Q' and 'DATA' can be referred to in .() expressions
+        ## evaluate and replace .() expressions in body of objective
+        if (inherits(objective, "formula")) {
+            if (length(objective) > 2)
+                warning("left hand side of formula ignored")
+            try( objective[[2]] <-
+                eval(substitute(bquote(x), list(x = objective[[2]]))) )
+        } else if (is.function(objective)) {
+            try( body(objective) <- 
+                eval(substitute(bquote(x), list(x = body(objective)))) )
+        } else {
+            stop("'objective' should be a function or formula, not a ",
+                 toString(class(objective)))
+        }
+        attr(objective, "cached") <- TRUE
+        objective
     }
-    attr(objective, "cached") <- TRUE
-    objective
+    if (is.list(objective))
+        lapply(objective, buildCachedObjectiveFun1)
+    else
+        buildCachedObjectiveFun1(objective)
 }
 
 .defaultHydromadStats <- function()
