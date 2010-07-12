@@ -30,6 +30,7 @@ armax.ls.fit <-
     m <- order[["m"]]
     warmup0 <- warmup
     warmup <- max(n, m+delay, warmup) ## used in fitting only
+    stopifnot(all(is.finite(fixed.ar)))
 
     DATAf <- DATA
     if (!is.null(weights)) {
@@ -64,7 +65,7 @@ armax.ls.fit <-
     z <- as.matrix(z)
 
     ## remove any remaining NAs from data matrix
-    z[is.infinite(z)] <- NA
+    z[!is.finite(z)] <- NA
     z <- z[complete.cases(z),]
 
     ## HEURISTIC METHOD FOR PREFILTER:
@@ -97,9 +98,9 @@ armax.ls.fit <-
             ## substract fixed predictors
             z2[,1] <- z2[,1] - z2[,1+(1:n)] %*% fixed.ar
             ## and remove them from model matrix
-            z2 <- z2[,-(1+(1:n))]
+            z2 <- z2[,-(1+(1:n)), drop=FALSE]
         }
-        z2 <- z2[-(1:warmup), ]
+        z2 <- z2[-(1:warmup),, drop=FALSE]
         ## fit the model
         if (!is.null(weights)) {
             w2 <- filter(w, filter = pf, method = "recursive")

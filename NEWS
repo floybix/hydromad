@@ -9,6 +9,9 @@ Changes in Version 0.9-2 (in development)
 
   o the 'item' argument to observed() has been re-named to 'select'.
 
+  o expuh.ls.fit() and expuh.sriv.fit() should now refit non-physical 
+    solutions properly.
+
 Changes in Version 0.9-1
 
   o all the fitBy...() methods now maximise rather than minimise.

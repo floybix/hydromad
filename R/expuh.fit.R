@@ -7,10 +7,7 @@ expuh.ls.fit <-
     function(DATA,
              order = hydromad.getOption("order"),
              delay = hydromad.getOption("delay"),
-             ...,
-             method = hydromad.getOption("optim.method"),
-             control = hydromad.getOption("optim.control"),
-             hessian = TRUE)
+             ...)
 {
     model <- armax.ls.fit(DATA, order = order, delay = delay, ...)
     if (!inherits(model, "tf"))
@@ -24,8 +21,7 @@ expuh.ls.fit <-
             message("armax fitted poles are non-physical; re-fitting with constraints")
         model <-
             fitWithPoleConstraints(DATA, fitfun = armax.ls.fit, poles = poles,
-                                   order = order, delay = delay, ...,
-                                   method = method, control = control, hessian = hessian)
+                                   order = order, delay = delay, ...)
     }
     if (!inherits(model, "tf"))
         return(model)
@@ -38,10 +34,7 @@ expuh.sriv.fit <-
     function(DATA,
              order = hydromad.getOption("order"),
              delay = hydromad.getOption("delay"),
-             ...,
-             method = hydromad.getOption("optim.method"),
-             control = hydromad.getOption("optim.control"),
-             hessian = TRUE)
+             ...)
 {
     model <- armax.sriv.fit(DATA, order = order, delay = delay, ...)
     if (!inherits(model, "tf"))
@@ -55,8 +48,7 @@ expuh.sriv.fit <-
             message("armax fitted poles are non-physical; re-fitting with constraints")
         model <-
             fitWithPoleConstraints(DATA, fitfun = armax.sriv.fit, poles = poles,
-                                   order = order, delay = delay, ...,
-                                   method = method, control = control, hessian = hessian)
+                                   order = order, delay = delay, ...)
     }
     if (!inherits(model, "tf"))
         return(model)
@@ -80,8 +72,9 @@ expuh.inverse.fit <-
     model
 }
 
-fitWithPoleConstraints <- function(DATA, fitfun, poles, ...,
-                                   method, control, hessian)
+fitWithPoleConstraints <-
+    function(DATA, fitfun, poles, ...,
+             control = as.list(hydromad.getOption("optim.control.expuh")))
 {
     ## non-physical roots; constrain them and fit again
     poles <- abs(Re(poles))
@@ -90,7 +83,7 @@ fitWithPoleConstraints <- function(DATA, fitfun, poles, ...,
     model <- structure("failed to fit expuh routing with constrained roots",
                        class = "try-error")
     bestVal <- Inf
-    optFun <- function(logpol) {
+    optFun <- function(logpol, ...) {
         pol <- exp(logpol)
         if (isTRUE(hydromad.getOption("catch.errors"))) {
             thisMod <- try(fitfun(DATA, ..., fixed.ar = polesToAr(pol)))
@@ -99,29 +92,24 @@ fitWithPoleConstraints <- function(DATA, fitfun, poles, ...,
         }
         if (!isValidModel(thisMod))
             return(NA)
-        val <- objFunVal(thisMod)
+        val <- sum(abs(residuals(thisMod)), na.rm = TRUE)
         if (val < bestVal)
             model <<- thisMod
         val
     }
     if (!isTRUE(hydromad.getOption("catch.errors.optim")))
         try <- force ## i.e. skip the try()
-    ans <- try(optim(logpol0, optFun, method = method,
-                     control = control, hessian = hessian))
+    #ans <- try(nlminb(logpol0, optFun, control = control, ...))
+    ans <- try(optim(logpol0, optFun, control = control, ...))
     if (inherits(ans, "try-error")) {
         return(ans)
     }
-    if (hessian) {} ## TODO
     if (ans$convergence != 0) {
-        msg <- if (ans$convergence == 1) {
-            "optim() reached maximum iterations"
-        } else {
-            paste("optim() returned convergence code",
-                  ans$convergence)
-        }
+        msg <- paste("While re-fitting non-physical poles:", toString(ans$msg))
         if (!isTRUE(hydromad.getOption("quiet"))) {
             warning(msg)
         }
+        model$msg <- msg
     }
     model
 }

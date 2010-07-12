@@ -33,6 +33,7 @@ armax.sriv.fit <-
         return(init.model)
 
     obj <- do_srivfit(DATA, init.model = init.model,
+                      order = order,
                       noise.order = noise.order,
                       fixed.ar = fixed.ar,
                       ...,
@@ -48,6 +49,7 @@ do_srivfit <-
     function(DATA,
              init.model,
              prefilter = hydromad.getOption("prefilter"),
+             order = hydromad.getOption("order"),
              noise.order = hydromad.getOption("riv.noise.order"),
              fixed.ar = NULL,
              warmup = hydromad.getOption("warmup"),
@@ -63,7 +65,8 @@ do_srivfit <-
     ## check values
     stopifnot(inherits(init.model, "tf"))
     delay <- init.model$delay
-    order <- init.model$order
+    stopifnot(length(order) == 2)
+    if (is.null(names(order))) names(order) <- c("n", "m")
     n <- order[["n"]]
     m <- order[["m"]]
     #if (n == 0) {
@@ -75,7 +78,19 @@ do_srivfit <-
     warmup <- max(n, m+delay, warmup) ## used in fitting only
     ## observed variance (excludes warmup period)
     if (trace) obs.var <- var(DATA[-(1:warmup),"Q"], na.rm=TRUE)
-    theta <- theta.prev <- coef(init.model)
+    theta <- coef(init.model)
+    initorder <- init.model$order
+    if (any(init.model$order < order)) {
+        ## this can happen if e.g. one AR term is (near)zero:
+        ## the returned model from armax.ls.fit has reduced order.
+        ## pad out parameter vector with zeros.
+        initn <- init.model$order[["n"]]
+        initm <- init.model$order[["m"]]
+        theta <- rep(0, n+m+1)
+        theta[seq_len(initn)] <- coef(init.model)[seq_len(initn)]
+        theta[n+seq_len(initm)] <- coef(init.model)[initn+seq_len(initm)]
+    }
+    theta.prev <- theta
     a.hat <- theta[1:n]
     if (n == 0)
         a.hat <- 0
@@ -180,7 +195,7 @@ do_srivfit <-
             ## substract fixed predictors
             xQ <- drop(xQ - xz[,(1:n)] %*% fixed.ar)
             ## and remove them from model matrix
-            xz <- xz[,-(1:n)]
+            xz <- xz[,-(1:n), drop=FALSE]
             theta <- try(qr.solve(xz, xQ),
                          silent = !hydromad.getOption("trace"))
         } else {
