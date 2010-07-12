@@ -17,7 +17,7 @@ filter_loss <-
     init <- rep(init, length = length(a))
     xAttrs <- attributes(x)
     ## skip over missing values (maintaining the state y[i-1])
-    bad <- is.na(x)
+    bad <- !is.finite(x)
     x[bad] <- 0
     ## define function for a single (univariate) time series
     filter_loss_onecol <- function(x)

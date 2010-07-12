@@ -30,8 +30,8 @@ fitBySampling <-
     for (i in seq(NROW(psets))) {
         thisPars <- as.list(psets[i,,drop=FALSE])
         if (isTRUE(hydromad.getOption("trace"))) {
-            run_name <- paste(names(thisPars), format(unlist(thisPars), digits=3),
-                              sep = "=", collapse = ",")
+            run_name <- paste(names(thisPars), signif(unlist(thisPars), 3),
+                              sep = "=", collapse = ", ")
             message(run_name)
         }
         thisMod <- update(MODEL, newpars = thisPars)

@@ -87,7 +87,7 @@ SCEoptim(FUN, par, ..., lower = -Inf, upper = Inf, control = list())
       an integer specifying the level of user feedback. Defaults to \code{0}.
     }
     \item{\code{REPORT}}{
-      number of iterations between reports when trace >= 1. Defaults to \code{10}.
+      number of iterations between reports when trace >= 1. Defaults to \code{1}.
     }
   }
 }

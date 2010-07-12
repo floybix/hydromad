@@ -13,7 +13,7 @@ filter_tv <-
     stopifnot(is.numeric(init))
     stopifnot(length(x) == length(a))
     ## skip over missing values (maintaining the state y[i-1])
-    bad <- is.na(x) | is.na(a)
+    bad <- !is.finite(x) | !is.finite(a)
     x[bad] <- 0
     a[bad] <- 1
     if (hydromad.getOption("pure.R.code")) {

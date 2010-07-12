@@ -43,7 +43,7 @@ sceDefaults <- function()
          maxtime = Inf,          ## maximum duration of optimization in seconds
          returnpop = FALSE,      ## whether to return populations from all iterations
          trace = 0,              ## level of user feedback
-         REPORT = 10)            ## number of iterations between reports when trace >= 1
+         REPORT = 1)             ## number of iterations between reports when trace >= 1
 
 
 SCEoptim <- function(FUN, par, ...,
@@ -350,7 +350,7 @@ SCEoptim <- function(FUN, par, ...,
             if (i == 1) {
                 message(' Nr Iter  Nr Fun Eval    Current best function    Current worst function')
             }
-            if ((i %% control$REPORT == 1) || (!is.na(EXITFLAG)))
+            if ((i %% control$REPORT == 0) || (!is.na(EXITFLAG)))
             {
                 message(sprintf(' %5.0f     %5.0f             %12.6g              %12.6g',
                         i, funevals, min(POP.FITNESS), max(POP.FITNESS)))

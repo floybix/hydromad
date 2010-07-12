@@ -39,8 +39,10 @@ objFunVal.default <-
             else if (!isTRUE(nan.ok))
                 stop("objective function returned NaN")
         }
-        stopifnot(is.numeric(val))
-        stopifnot(length(val) == 1)
+        if (!is.numeric(val))
+            stop("objective should be numeric, not ", toString(class(val)))
+        if (length(val) != 1)
+            stop("objective value should be length 1, not ", length(val))
         as.numeric(val)
     }
     if (is.list(objective))
@@ -88,8 +90,10 @@ objFunVal.hydromad <-
             else if (!isTRUE(nan.ok))
                 stop("objective function returned NaN")
         }
-        stopifnot(is.numeric(val))
-        stopifnot(length(val) == 1)
+        if (!is.numeric(val))
+            stop("objective should be numeric, not ", toString(class(val)))
+        if (length(val) != 1)
+            stop("objective value should be length 1, not ", length(val))
         as.numeric(val)
     }
     if (is.list(objective))
