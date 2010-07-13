@@ -42,8 +42,8 @@ normalise.expuh(theta)
     parallel and/or series (for second or third order models). See Details.
   }
   \item{loss}{
-    a constant loss (or gain) term subtracted from the \emph{slow}
-    (\code{s}) component.
+    a constant loss (or gain, if negative) term subtracted from the
+    \emph{slow} (\code{s}) component.
   }
   \item{Xs_0, Xq_0, X3_0}{
     initial values of the exponential components.
@@ -158,6 +158,12 @@ xyplot(cbind(`Slow component` = flowcomps[,"Xs"],
              `Total flow` = flowcomps[,1] + flowcomps[,2]),
        superpose = TRUE) +
   layer(panel.refline(h = 0))
+
+U  <- ts(c(1, rep(0, 30)))
+xyplot(cbind("tau_s = 10" = expuh.sim(U, tau_s = 10),
+             "& tau_q = 1" = expuh.sim(U, tau_s = 10, tau_q = 1, v_s = 0.5),
+             "&& v_s = 0.9" = expuh.sim(U, tau_s = 10, tau_q = 1, v_s = 0.9)),
+       superpose = TRUE)
 }
 \keyword{ ts }
 

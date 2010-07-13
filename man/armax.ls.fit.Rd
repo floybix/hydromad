@@ -1,7 +1,6 @@
 \name{armax.ls.fit}
 \alias{armax.ls.fit}
 \alias{expuh.ls.fit}
-\alias{tf.ls.fit}
 \title{ Estimate transfer function models by Least Squares. }
 \description{
   Calibrate unit hydrograph transfer function models (\code{\link{armax}}
@@ -23,10 +22,8 @@ armax.ls.fit(DATA,
 expuh.ls.fit(DATA,
              order = hydromad.getOption("order"),
              delay = hydromad.getOption("delay"),
-             ...,
-             method = hydromad.getOption("optim.method"),
-             control = hydromad.getOption("optim.control"),
-             hessian = TRUE)
+             quiet = FALSE,
+             ...)
 }
 \arguments{
   \item{DATA}{
@@ -62,12 +59,9 @@ expuh.ls.fit(DATA,
   \item{\dots}{
     passed on to \code{armax.ls.fit}.
   }
-  \item{method, control}{
-    optimisation method and settings for fitting poles constrained to
-    have real, positive roots. See \code{\link{optim}}.
-  }
-  \item{hessian}{
-    
+  \item{quiet}{
+    to suppress the message when re-fitting if
+    non-physical poles (i.e. negative or imaginary poles) are detected.
   }
 }
 \details{
@@ -78,7 +72,7 @@ expuh.ls.fit(DATA,
   
   \code{hydromad(..., routing = "expuh", rfit = "ls")}
 
-  or
+  which uses the default order, \code{hydromad.getOption("order")}, or
   
   \code{hydromad(..., routing = "expuh", rfit = list("ls", order = c(2,1)))}.
 }

@@ -23,13 +23,13 @@ powuh.sim <-
     ## normalise:
     uh <- uh / sum(uh)
     ## initialisation
-    #init <- matrix(init, nrow = uhsteps, ncol = NCOL(U))
-    #Upad <- rbind(init, as.matrix(U))
-    #Xpad <- filter(Upad, uh, sides = 1)
-    X <- U
-    coredata(X) <- coredata(filter(coredata(U), uh, sides = 1))
+    init <- matrix(init, nrow = uhsteps, ncol = NCOL(U))
+    Upad <- rbind(init, as.matrix(U))
+    Xpad <- filter(Upad, uh, sides = 1)
     #X <- U
-    #X[] <- Xpad[-(1:uhsteps),]
+    #coredata(X) <- coredata(filter(coredata(U), uh, sides = 1))
+    X <- U
+    X[] <- tail(Xpad, -uhsteps)
     
     ## align results to original input
     X <- shiftWindow(X, delay)

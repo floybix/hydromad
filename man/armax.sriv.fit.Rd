@@ -1,8 +1,6 @@
 \name{armax.sriv.fit}
 \alias{armax.sriv.fit}
 \alias{expuh.sriv.fit}
-\alias{tf.sriv.fit}
-\alias{tf.riv.fit}
 \title{ Estimate transfer function models by Simple Refined Instrumental
   Variables method. }
 \description{
@@ -25,10 +23,8 @@ armax.sriv.fit(DATA,
 expuh.sriv.fit(DATA,
               order = hydromad.getOption("order"),
               delay = hydromad.getOption("delay"),
-              ...,
-              method = hydromad.getOption("optim.method"),
-              control = hydromad.getOption("optim.control"),
-              hessian = TRUE)
+              quiet = FALSE,
+              ...)
 }
 \arguments{
   \item{DATA}{
@@ -59,23 +55,20 @@ expuh.sriv.fit(DATA,
   \item{na.action}{ }
   \item{epsilon}{ }
   \item{max.iterations}{ }
-  \item{method, control}{
-    optimisation method and settings for fitting poles constrained to
-    have real, positive roots. See \code{\link{optim}}.
-  }
-  \item{hessian}{
-    
+  \item{quiet}{
+    to suppress the message when re-fitting if
+    non-physical poles (i.e. negative or imaginary poles) are detected.
   }
 }
 \details{
   In normal usage, one would not call these functions directly, but
   rather specify the routing fitting method for a \code{\link{hydromad}} model
   using that function's \code{rfit} argument. E.g. to specify fitting an
-  \code{expuh} routing model by least squares one could write
+  \code{expuh} routing model by SRIV one could write
   
   \code{hydromad(..., routing = "expuh", rfit = "sriv")}
 
-  or
+  which uses the default order, \code{hydromad.getOption("order")}, or
   
   \code{hydromad(..., routing = "expuh", rfit = list("sriv", order = c(2,1)))}.
 }

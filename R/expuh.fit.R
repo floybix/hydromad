@@ -7,6 +7,7 @@ expuh.ls.fit <-
     function(DATA,
              order = hydromad.getOption("order"),
              delay = hydromad.getOption("delay"),
+             quiet = FALSE,
              ...)
 {
     model <- armax.ls.fit(DATA, order = order, delay = delay, ...)
@@ -17,7 +18,7 @@ expuh.ls.fit <-
     eps <- sqrt(.Machine$double.eps)
     badpoles <- (Re(poles) < -eps) | (abs(Im(poles)) > eps)
     if (any(badpoles)) {
-        if (hydromad.getOption("trace"))
+        if (!quiet)
             message("armax fitted poles are non-physical; re-fitting with constraints")
         model <-
             fitWithPoleConstraints(DATA, fitfun = armax.ls.fit, poles = poles,
@@ -34,6 +35,7 @@ expuh.sriv.fit <-
     function(DATA,
              order = hydromad.getOption("order"),
              delay = hydromad.getOption("delay"),
+             quiet = FALSE,
              ...)
 {
     model <- armax.sriv.fit(DATA, order = order, delay = delay, ...)
@@ -44,7 +46,7 @@ expuh.sriv.fit <-
     eps <- sqrt(.Machine$double.eps)
     badpoles <- (Re(poles) < -eps) | (abs(Im(poles)) > eps)
     if (any(badpoles)) {
-        if (hydromad.getOption("trace"))
+        if (!quiet)
             message("armax fitted poles are non-physical; re-fitting with constraints")
         model <-
             fitWithPoleConstraints(DATA, fitfun = armax.sriv.fit, poles = poles,
