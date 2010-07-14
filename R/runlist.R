@@ -29,6 +29,9 @@ as.runlist <- function(x, ...)
 "[.runlist" <- function (x, i, ...)
     structure(NextMethod("["), class = class(x))
 
+c.runlist <- function(..., recursive = FALSE)
+    as.runlist(c(...))
+
 coef.runlist <-
     function(object, ..., items = NULL)
 {

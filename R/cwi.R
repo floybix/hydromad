@@ -25,7 +25,7 @@ cwi.sim <-
     stopifnot(p > 0)
     stopifnot(length(t_ref) == 1)
 
-    inAttr <- attributes(DATA[,1])
+    inAttr <- attributes(if (NCOL(DATA) > 1) DATA[,1] else DATA)
     DATA <- as.ts(DATA)
     P <- if (NCOL(DATA) > 1) DATA[,"P"] else DATA
     

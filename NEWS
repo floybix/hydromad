@@ -12,6 +12,10 @@ Changes in Version 0.9-2 (in development)
   o expuh.ls.fit() and expuh.sriv.fit() should now refit non-physical 
     solutions properly.
 
+  o new SMA "intensity".
+
+  o the residuals() method can now transform the data before taking residuals.
+
 Changes in Version 0.9-1
 
   o all the fitBy...() methods now maximise rather than minimise.

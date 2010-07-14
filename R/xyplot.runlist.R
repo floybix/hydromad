@@ -40,7 +40,7 @@ qqmath.runlist <-
                            fitted(x, all = all))
         }
         dat <- do.call("make.groups", as.data.frame(tsdat))
-        foo <- qqmath(~ data, groups = which, data = dat,
+        foo <- qqmath(~ data, groups = which, data = dat, ...,
                       f.value = f.value, tails.n = tails.n,
                       type = type, auto.key = auto.key)
     } else {

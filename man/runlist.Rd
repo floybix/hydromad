@@ -2,6 +2,7 @@
 \alias{runlist}
 \alias{as.runlist}
 \alias{[.runlist}
+\alias{c.runlist}
 \alias{coef.runlist}
 \alias{summary.runlist}
 \alias{print.summary.runlist}

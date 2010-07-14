@@ -7,7 +7,8 @@
 predict.hydromad <-
     function(object, newdata = NULL,
              which = c("both", "sma", "routing"),
-             ..., return_state = FALSE,
+             ..., all = TRUE,
+             return_state = FALSE,
              return_components = FALSE)
 {
     which <- match.arg(which)
@@ -43,8 +44,6 @@ predict.hydromad <-
         ## calculate U
         U <- eval(ucall)
         if (return_state) {
-            if (is.null(routing))
-                return(U)
             S <- U
             if (NCOL(S) > 1) {
                 stopifnot("U" %in% colnames(S))
@@ -79,11 +78,15 @@ predict.hydromad <-
         Q <- U
     }
     if (return_state) {
-        ans <- cbind(S, Q)
-        if (length(colnames(S)) > 0)
-            colnames(ans)[1:NCOL(S)] <- colnames(S)
-        return(ans)
+        if (is.null(routing)) {
+            ans <- S
+        } else {
+            ans <- cbind(S, Q)
+            if (length(colnames(S)) > 0)
+                colnames(ans)[1:NCOL(S)] <- colnames(S)
+        }
     } else {
-        return(Q)
+        ans <- Q
     }
+    if (all) ans else stripWarmup(ans, object$warmup)
 }

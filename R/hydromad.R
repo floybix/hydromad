@@ -40,11 +40,28 @@ fitted.hydromad <- function(object, ..., U = FALSE, all = FALSE)
     if (all) tmp else stripWarmup(tmp, object$warmup)
 }
 
-residuals.hydromad <- function(object, ..., all = FALSE)
+residuals.hydromad <-
+    function(object, ..., all = FALSE, boxcox = FALSE, start = NULL)
 {
-    f <- fitted(object, all = TRUE)
-    if (length(f) == 0) return(f)
-    tmp <- (object$data[,"Q"] - f)
+    fit <- fitted(object, all = TRUE)
+    if (length(fit) == 0) return(fit)
+    obs <- object$data[,"Q"]
+    if (!identical(boxcox, FALSE)) {
+        coreQ <- coredata(na.omit(obs))
+        if (is.null(start))
+            start <-
+                quantile(coreQ[coreQ > 0], 0.1, names = FALSE)
+        if (isTRUE(boxcox)) {
+            lambda <- box.cox.powers(coreQ + start)$lambda
+        } else if (is.numeric(boxcox)) {
+            lambda <- boxcox
+        } else {
+            stop("'boxcox' should be logical or numeric")
+        }
+        obs <- box.cox(coredata(obs), lambda, start = start)
+        fit <- box.cox(coredata(fit), lambda, start = start)
+    }
+    tmp <- (obs - fit)
     if (all) tmp else stripWarmup(tmp, object$warmup)
 }
 

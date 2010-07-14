@@ -21,14 +21,15 @@
        sma, routing, rfit, warmup, weights, and.rescale)
 
 \method{predict}{hydromad}(object, newdata = NULL,
-	which = c("both", "sma", "routing"), ...,
+	which = c("both", "sma", "routing"), ..., all = TRUE,
         return_state = FALSE, return_components = FALSE)
 
 \method{fitted}{hydromad}(object, ..., U = FALSE, all = FALSE)
 
 \method{observed}{hydromad}(object, ..., select = "Q", all = FALSE)
 
-\method{residuals}{hydromad}(object, ..., all = FALSE)
+\method{residuals}{hydromad}(object, ..., all = FALSE,
+          boxcox = FALSE, start = NULL)
 
 \method{coef}{hydromad}(object, which = c("both", "sma", "routing"),
      ..., warn = TRUE, etc = FALSE)
@@ -82,8 +83,8 @@ isValidModel(object, ...)
   }
   \item{all}{
     if \code{TRUE}, return the entire time series for which data
-    exists. Otherwise, the warmup period (specified in the original call
-    to \code{\link{hydromad}} is stripped off.
+    exists. Otherwise, the warmup period (specified as an argument to
+    \code{\link{hydromad}} or \code{update}) is stripped off.
   }
   \item{U}{
     to return modelled effective rainfall (the output from SMA) rather
