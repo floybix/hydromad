@@ -205,6 +205,11 @@ export(findThresh,
 
 export(eventsExplorer)
 
+export(event.xyplot)
+S3method(event.xyplot, formula)
+S3method(event.xyplot, hydromad)
+S3method(event.xyplot, hydromad.runlist)
+
 ## utilities.R
 export(tsCleanup,
        autocorrTime,
