@@ -58,8 +58,8 @@ residuals.hydromad <-
         } else {
             stop("'boxcox' should be logical or numeric")
         }
-        obs <- box.cox(coredata(obs), lambda, start = start)
-        fit <- box.cox(coredata(fit), lambda, start = start)
+        coredata(obs) <- box.cox(coredata(obs), lambda, start = start)
+        coredata(fit) <- box.cox(coredata(fit), lambda, start = start)
     }
     tmp <- (obs - fit)
     if (all) tmp else stripWarmup(tmp, object$warmup)

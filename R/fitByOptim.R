@@ -32,6 +32,10 @@ fitByOptim <-
         warning("only one parameter; switching to fitByOptim1")
         return(fitByOptim1(MODEL, objective = objective))
     }
+    if (vcov && (method == "PORT")) {
+        warning("vcov does not work with method = 'PORT'")
+        vcov <- FALSE
+    }
     if (multistart) {
         ## multiple optimisation runs with different starting points.
         ## generate parameter sets

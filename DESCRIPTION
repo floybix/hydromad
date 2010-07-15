@@ -1,6 +1,6 @@
 Package: hydromad
 Version: 0.9-2
-Date: 2010-07-12
+Date: 2010-07-15
 Title: Hydrological Model Assessment and Development
 Author: Felix Andrews <felix@nfrac.org>
 Maintainer: Felix Andrews <felix@nfrac.org>
@@ -12,6 +12,6 @@ Description: A modelling framework for environmental hydrology: water
   (including SRIV - Simplified Refined Instrumental Variable), etc.
 Depends: R (>= 2.11.0), zoo (>= 1.6-3), lattice (>= 0.18-4), latticeExtra (>= 0.6-8), car, polynom
 Imports: lattice, stats, utils
-Suggests: dream, DEoptim, chron, playwith, testthat
+Suggests: dream, DEoptim, mgcv, chron, playwith, testthat
 License: GPL (>= 2)
 URL: http://hydromad.catchment.org/

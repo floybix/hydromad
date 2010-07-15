@@ -3,9 +3,9 @@
 \alias{gr4j.sim}
 \alias{gr4jrouting}
 \alias{gr4jrouting.sim}
-\title{ GR4J model }
+\title{ GR4J rainfall runoff model }
 \description{
-  GR4J model (mode`le du Ge´nie Rural a` 4 parame`tres Journalier).
+  GR4J model (mode`le du GeÂ´nie Rural a` 4 parame`tres Journalier).
 }
 \usage{
 gr4j.sim(DATA, x1, etmult = 1, S_0 = 0.5, return_state = FALSE)

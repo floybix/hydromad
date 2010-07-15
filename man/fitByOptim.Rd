@@ -54,6 +54,7 @@ fitByOptim1(MODEL, objective = hydromad.getOption("objective"),
     will be estimated as the inverse of
     the hessian matrix returned by \code{optim()}. This may be a very
     poor estimate! It can be extract using \code{\link{vcov}}.
+    Does not work with \code{method = "PORT"}.
   }
   \item{tol}{
     convergence tolerance, see \code{\link{optimize}}. 
@@ -100,12 +101,9 @@ modx <- hydromad(x, sma = "cwi", routing = "powuh")
 modx
 
 set.seed(0)
-foo <- fitByOptim(modx, samples = 100, vcov = TRUE)
+foo <- fitByOptim(modx, samples = 100)
 
 summary(foo)
-
-## parameter correlation matrix (dodgy!) with symbols
-symnum(cov2cor(vcov(foo)))
 
 ## return value from optim (with 'objseq' added):
 str(foo$fit.result)
