@@ -1,6 +1,10 @@
 
 Changes in Version 0.9-2 (in development)
 
+  o buildObjectiveFun() renamed to buildTsObjective().
+
+  o new function buildTsLikelihood().
+
   o new function event.xyplot() with methods for formula, hydromad and runlist.
 
   o new SMA "intensity".

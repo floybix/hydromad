@@ -1,4 +1,5 @@
-\name{buildObjectiveFun}
+\name{buildTsObjective}
+\alias{buildTsObjective}
 \alias{buildObjectiveFun}
 \title{
   Generate objective functions with aggregation, transformation and
@@ -9,7 +10,7 @@
   transformation and an optional reference model.
 }
 \usage{
-buildObjectiveFun(Q, groups = NULL, FUN = sum, ...,
+buildTsObjective(Q, groups = NULL, FUN = sum, ...,
                   ref = NULL, boxcox = FALSE, start = NULL)
 }
 \arguments{
@@ -51,10 +52,10 @@ buildObjectiveFun(Q, groups = NULL, FUN = sum, ...,
   }
 }
 \value{
-  \code{buildObjectiveFun} returns a \code{function}, which can be
+  \code{buildTsObjective} returns a \code{function}, which can be
   passed arguments \code{Q, X, ...} (the standard signature for hydromad
   objective functions). The \code{Q} argument is ignored since it was
-  already specified directly to \code{buildObjectiveFunction}: i.e. the
+  already specified directly to \code{buildTsObjective}: i.e. the
   returned function is only valid on the same dataset \code{Q} with
   corresponding fitted values \code{X}. Further arguments to the
   returned function will be passed on to \code{\link{nseStat}}
@@ -78,7 +79,7 @@ data(Cotter)
 dat <- window(Cotter, start = "1990-01-01", end = "1993-01-01")
 
 ## use Box-Cox transform with parameters estimated from Q
-objfun <- buildObjectiveFun(dat$Q, boxcox = TRUE)
+objfun <- buildTsObjective(dat$Q, boxcox = TRUE)
 objfun(X = dat$Q + 10)
 ## extract the estimated Box-Cox parameters
 lambda <- environment(objfun)$lambda
@@ -89,8 +90,8 @@ nseStat(box.cox(dat$Q,      lambda, start),
         box.cox(dat$Q + 10, lambda, start))
 
 ## use monthly aggregation and log transform (Box-Cox lambda = 0)
-objfun <- buildObjectiveFun(dat$Q, groups = cut(time(dat), "months"),
-                            FUN = sum, boxcox = 0)
+objfun <- buildTsObjective(dat$Q, groups = cut(time(dat), "months"),
+                           FUN = sum, boxcox = 0)
 objfun(X = dat$Q + 10)
 
 }

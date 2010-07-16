@@ -9,21 +9,20 @@
 ## S3 method for class 'hydromad.runlist':
 \method{event.xyplot}{hydromad}(x, events,
              formula =
-             ~ e(time(Q),first) + e(julian\%\%365,first) +
-               sqrt(e(P)) + sqrt(e(U)) +
-               sqrt(e(P,max)) + sqrt(e(U,max)) +
-               log10(e(Q)+1) + log10(e(lag(Q,-2),first)+1),
+             ~ log2(e(Q,mean)+.01) +
+               log2(e(lag(Q,-2),first)+.01) +
+               log2(e(U,max)+.01) +
+               e(E,mean),
              extract = residuals,
              with.U = TRUE,
              ...,
-             panel = function(x, y, ..., se) {
-                 panel.rug(x = x, alpha = 0.5)
-                 panel.abline(h = 0)
-                 library(mgcv)
-                 panel.smoother(x, y, y ~ s(x), method = "gam", se = se)
+             panel = panel.superpose,
+             panel.groups = function(x, y, ...) {
                  panel.xyplot(x, y, ...)
+                 library(mgcv)
+                 panel.smoother(x, y, y ~ s(x), method = "gam", ...)
              },
-             pch = ".", se = TRUE,
+             abline = list(h = 0), pch = ".", 
              ylab = "residual flow sums in event windows (mm)",
              data = NULL)
 }
@@ -53,10 +52,10 @@
   }
   \item{\dots}{
     further arguments passed to \code{\link{event.xyplot}} and on to
-    \code{\link{xyplot}}.
+    \code{\link{xyplot}} and the panel function.
   }
-  \item{panel, pch, se, ylab}{
-    passed to \code{\link{xyplot}} and on to panel functions.
+  \item{panel, panel.groups, abline, pch, ylab}{
+    passed to \code{\link{xyplot}}.
   }
   \item{data}{
     ignored.
@@ -75,10 +74,18 @@
 }
 \examples{
 data(Cotter)
-mod <- hydromad(Cotter[1:1000,], sma = "scalar",
+x <- Cotter[1:1000,]
+mod <- hydromad(x, sma = "scalar",
          routing = "armax", rfit = list("sriv", order = c(2,1)))
-event.xyplot(mod)
-event.xyplot(mod, extract = function(x) residuals(x, boxcox = TRUE))
+ev <- eventseq(x$P, thresh = 3, inthresh = 1, indur = 5)
+event.xyplot(mod, events = ev)
+event.xyplot(mod, events = ev,
+    extract = function(x) residuals(x, boxcox = TRUE))
+
+foo <- event.xyplot(mod, events = ev,
+    ~ sqrt(e(P,max)) + sqrt(e(simpleSmoothTs(lag(P,-1),width=20),first)))
+dimnames(foo)[[1]] <- c("sqrt. peak rain (mm/day)", "mean 20-day ante. rain")
+foo
 }
 \keyword{ hplot }
 \keyword{ ts }

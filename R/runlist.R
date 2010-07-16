@@ -30,7 +30,7 @@ as.runlist <- function(x, ...)
     structure(NextMethod("["), class = class(x))
 
 c.runlist <- function(..., recursive = FALSE)
-    as.runlist(c(...))
+    as.runlist(NextMethod("c"))
 
 coef.runlist <-
     function(object, ..., items = NULL)

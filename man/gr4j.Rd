@@ -1,4 +1,5 @@
 \name{gr4j}
+\encoding{UTF-8}
 \alias{gr4j}
 \alias{gr4j.sim}
 \alias{gr4jrouting}

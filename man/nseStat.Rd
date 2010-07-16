@@ -28,7 +28,10 @@ nseStat(obs, mod, ref = NULL, ..., p = 2,
   }
   \item{p}{
     power to apply to absolute residuals (\code{abs(obs - mod)} and
-    \code{abs(obs - ref)}.
+    \code{abs(obs - ref)}. The default, \code{p = 2} corresponds to the
+    Nash-Sutcliffe Efficiency (NSE). Setting \code{p = 1} does not square the
+    residuals and is sometimes called Normalised sum of Absolute Errors
+    (NAE). 
   }
   \item{trans}{
     a function to apply to each data series before calculating the fit
@@ -64,7 +67,7 @@ nseStat(obs, mod, ref = NULL, ..., p = 2,
 \author{ Felix Andrews \email{felix@nfrac.org} }
 \seealso{
   \code{\link{hydromad.stats}},
-  \code{\link{buildObjectiveFun}},
+  \code{\link{buildTsObjective}},
   \code{\link{objFunVal}},
   \code{\link{summary.hydromad}}
 }

@@ -1,6 +1,6 @@
 
 
-glueDream <-
+glue.hydromad <-
     function(model, ...,
              target.coverage = 0.9, eps = 0.01,
              max.n = 250, thin = NA)

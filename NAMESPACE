@@ -14,6 +14,7 @@ S3method(fitted, hydromad)
 S3method(residuals, hydromad)
 S3method(observed, hydromad)
 S3method(vcov, hydromad)
+S3method(logLik, hydromad)
 S3method(deviance, hydromad)
 S3method(str, hydromad.runlist)
 export(isValidModel)
@@ -30,6 +31,8 @@ export(absorbScale)
 S3method(absorbScale, hydromad)
 
 S3method(simulate, hydromad)
+
+export(parameterSets)
 
 S3method(summary, hydromad)
 S3method(summary, hydromad.runlist)
@@ -170,9 +173,10 @@ S3method(objFunVal, hydromad)
 
 export(buildCachedObjectiveFun)
 
-export(buildObjectiveFun)
+export(buildTsObjective)
+export(buildTsLikelihood)
 
-export(parameterSets)
+export(glue.hydromad)
 
 
 ## RUNLIST

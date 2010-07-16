@@ -1,4 +1,5 @@
 \name{armax.sriv.fit}
+\encoding{UTF-8}
 \alias{armax.sriv.fit}
 \alias{expuh.sriv.fit}
 \title{ Estimate transfer function models by Simple Refined Instrumental
@@ -81,7 +82,7 @@ expuh.sriv.fit(DATA,
 }
 \references{
   Young, P. C. (2008). The refined instrumental variable method. Journal
-  Européen des Systèmes Automatisés 42 (2-3), 149-179. 
+  EuropÃ©en des SystÃ¨mes AutomatisÃ©s 42 (2-3), 149-179. 
   \url{http://dx.doi.org/10.3166/jesa.42.149-179}
 
   Jakeman, A. J., G. A. Thomas and C. R. Dietrich (1991). System

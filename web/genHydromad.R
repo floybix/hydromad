@@ -31,19 +31,22 @@ spec[["assessment"]] <-
 
 spec[["calibration"]] <-
     list(
-         list("buildObjectiveFun"),
+         list("buildTsObjective"),
          list("objFunVal"),
          list("fitBySampling"),
          list("fitByOptim"),
          list("fitBySCE"),
          list("fitByDE"),
          list("fitByDream"),
-         list("optimtrace", -1, do.example = TRUE, examplename = "fitByOptim")
+         list("optimtrace", -1, do.example = TRUE, examplename = "fitByOptim"),
+         list("glue", helpname = "glue.hydromad")
          )
 
 spec[["discrete events"]] <-
     list(
          list("eventseq", do.example = TRUE),
+         list("event.xyplot", do.example = TRUE),
+         list("event.xyplot.hydromad", do.example = TRUE),
          list("eventsExplorer")
          )
 
@@ -57,6 +60,7 @@ spec[["soil moisture accounting"]] <-
          list("awbm"),
          list("sacramento"),
          list("snow"),
+         list("intensity"),
          list("runoffratio"),
          list("dbm")
          )

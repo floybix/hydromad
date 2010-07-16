@@ -117,7 +117,7 @@ hydromad.stats(...)
   }
 }
 \seealso{
-  \code{\link{buildObjectiveFun}},
+  \code{\link{buildTsObjective}},
   \code{\link{nseStat}},
   \code{\link{objFunVal}},
   \code{\link{summary.hydromad}}

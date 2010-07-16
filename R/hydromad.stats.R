@@ -68,7 +68,7 @@ buildCachedObjectiveFun <-
                      log(x + .(quantile(coredata(subset(Q, Q>0)), 0.1, na.rm = TRUE, names = FALSE))))
          },
          "r.sq.boxcox" = function(Q, X, ...) {
-             .(buildObjectiveFun(Q, boxcox = TRUE))(Q, X, ...)
+             .(buildTsObjective(Q, boxcox = TRUE))(Q, X, ...)
          },
          "r.sq.rank" = function(Q, X, ...) {
              nseStat(Q, X, ..., trans = function(x) {
@@ -80,7 +80,7 @@ buildCachedObjectiveFun <-
              nseStat(diff(Q), diff(X), ...)
          },
          "r.sq.monthly" = function(Q, X, ...) {
-             .(buildObjectiveFun(Q, groups = cut(time(Q), "months")))(Q, X, ...)
+             .(buildTsObjective(Q, groups = cut(time(Q), "months")))(Q, X, ...)
          },
          "r.sq.365" = function(Q, X, ...) {
              objfun <- .({
@@ -111,7 +111,7 @@ buildCachedObjectiveFun <-
                  ref <-
                      fitted(hydromad(DATA, sma = "scalar", routing = "armax",
                                      rfit = list("sriv", order = c(2,1))))
-                 buildObjectiveFun(Q, ref = ref, boxcox = TRUE)
+                 buildTsObjective(Q, ref = ref, boxcox = TRUE)
              })
              objfun(Q, X, ...)
          },
@@ -121,7 +121,7 @@ buildCachedObjectiveFun <-
          "persistence.bc" = function(Q, X, ...) {
              objfun <- .({
                  ref <- lag(Q, -1)
-                 buildObjectiveFun(Q, ref = ref, boxcox = TRUE)
+                 buildTsObjective(Q, ref = ref, boxcox = TRUE)
              })
              objfun(Q, X, ...)
          },
@@ -130,7 +130,7 @@ buildCachedObjectiveFun <-
              objfun <- .({
                  ev <- eventseq(DATA$P, thresh = 5, inthresh = 1,
                                 indur = 4, continue = TRUE)
-                 buildObjectiveFun(Q, groups = ev, FUN = sum)
+                 buildTsObjective(Q, groups = ev, FUN = sum)
              })
              objfun(Q, X, ...)
          },
@@ -138,7 +138,7 @@ buildCachedObjectiveFun <-
              objfun <- .({
                  ev <- eventseq(DATA$P, thresh = 5, inthresh = 1,
                                 indur = 4, continue = TRUE)
-                 buildObjectiveFun(Q, groups = ev, FUN = sum, boxcox = 0)
+                 buildTsObjective(Q, groups = ev, FUN = sum, boxcox = 0)
              })
              objfun(Q, X, ...)
          },
@@ -146,7 +146,7 @@ buildCachedObjectiveFun <-
              objfun <- .({
                  ev <- eventseq(DATA$P, thresh = 5, inthresh = 1,
                                 indur = 4, continue = TRUE)
-                 buildObjectiveFun(Q, groups = ev, FUN = sum, boxcox = TRUE)
+                 buildTsObjective(Q, groups = ev, FUN = sum, boxcox = TRUE)
              })
              objfun(Q, X, ...)
          },
@@ -158,7 +158,7 @@ buildCachedObjectiveFun <-
                  q90 <- quantile(coredata(Q), 0.9, na.rm = TRUE)
                  ev <- eventseq(Q, thresh = q90, indur = 4,
                                 mindur = 5, mingap = 5, continue = TRUE)
-                 buildObjectiveFun(Q, groups = ev, FUN = sum)
+                 buildTsObjective(Q, groups = ev, FUN = sum)
              })
              objfun(Q, X, ...)
          },
@@ -167,7 +167,7 @@ buildCachedObjectiveFun <-
                  q90 <- quantile(coredata(Q), 0.9, na.rm = TRUE)
                  ev <- eventseq(Q, thresh = q90, indur = 4,
                                 mindur = 5, mingap = 5, continue = TRUE)
-                 buildObjectiveFun(Q, groups = ev, FUN = sum, boxcox = 0)
+                 buildTsObjective(Q, groups = ev, FUN = sum, boxcox = 0)
              })
              objfun(Q, X, ...)
          },
@@ -176,7 +176,7 @@ buildCachedObjectiveFun <-
                  q90 <- quantile(coredata(Q), 0.9, na.rm = TRUE)
                  ev <- eventseq(Q, thresh = q90, indur = 4,
                                 mindur = 5, mingap = 5, continue = TRUE)
-                 buildObjectiveFun(Q, groups = ev, FUN = sum, boxcox = TRUE)
+                 buildTsObjective(Q, groups = ev, FUN = sum, boxcox = TRUE)
              })
              objfun(Q, X, ...)
          },
@@ -186,7 +186,7 @@ buildCachedObjectiveFun <-
                  q90 <- quantile(coredata(Q), 0.9, na.rm = TRUE)
                  ev <- eventseq(Q, thresh = q90, indur = 4,
                                 mindur = 5, mingap = 5, all = TRUE)
-                 buildObjectiveFun(Q, groups = ev, FUN = sum)
+                 buildTsObjective(Q, groups = ev, FUN = sum)
              })
              objfun(Q, X, ...)
          },
@@ -195,7 +195,7 @@ buildCachedObjectiveFun <-
                  q90 <- quantile(coredata(Q), 0.9, na.rm = TRUE)
                  ev <- eventseq(Q, thresh = q90, indur = 4,
                                 mindur = 5, mingap = 5, all = TRUE)
-                 buildObjectiveFun(Q, groups = ev, FUN = sum, boxcox = 0)
+                 buildTsObjective(Q, groups = ev, FUN = sum, boxcox = 0)
              })
              objfun(Q, X, ...)
          },
@@ -204,7 +204,7 @@ buildCachedObjectiveFun <-
                  q90 <- quantile(coredata(Q), 0.9, na.rm = TRUE)
                  ev <- eventseq(Q, thresh = q90, indur = 4,
                                 mindur = 5, mingap = 5, all = TRUE)
-                 buildObjectiveFun(Q, groups = ev, FUN = sum, boxcox = TRUE)
+                 buildTsObjective(Q, groups = ev, FUN = sum, boxcox = TRUE)
              })
              objfun(Q, X, ...)
          },
@@ -214,7 +214,7 @@ buildCachedObjectiveFun <-
                  q90 <- quantile(coredata(Q), 0.9, na.rm = TRUE)
                  ev <- eventseq(Q, thresh = q90, indur = 4,
                                 mindur = 5, mingap = 5, continue = TRUE)
-                 buildObjectiveFun(Q, groups = ev, FUN = min, na.rm = TRUE)
+                 buildTsObjective(Q, groups = ev, FUN = min, na.rm = TRUE)
              })
              objfun(Q, X, ...)
          },
@@ -223,8 +223,8 @@ buildCachedObjectiveFun <-
                  q90 <- quantile(coredata(Q), 0.9, na.rm = TRUE)
                  ev <- eventseq(Q, thresh = q90, indur = 4,
                                 mindur = 5, mingap = 5, continue = TRUE)
-                 buildObjectiveFun(Q, groups = ev, FUN = min, na.rm = TRUE,
-                                   boxcox = 0)
+                 buildTsObjective(Q, groups = ev, FUN = min, na.rm = TRUE,
+                                  boxcox = 0)
              })
              objfun(Q, X, ...)
          },
