@@ -83,7 +83,7 @@ event.xyplot(mod, events = ev,
     extract = function(x) residuals(x, boxcox = TRUE))
 
 foo <- event.xyplot(mod, events = ev,
-    ~ sqrt(e(P,max)) + sqrt(e(simpleSmoothTs(lag(P,-1),width=20),first)))
+    ~ sqrt(e(P,max)) + sqrt(e(rollmean(lag(P,-1),20,align="left"),first)))
 dimnames(foo)[[1]] <- c("sqrt. peak rain (mm/day)", "mean 20-day ante. rain")
 foo
 }

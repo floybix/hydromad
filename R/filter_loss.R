@@ -50,6 +50,7 @@ filter_loss <-
     if (NCOL(x) == 1)
         y <- filter_loss_onecol(x)
     if (NCOL(x) > 1) {
+        y <- x
         for (k in 1:NCOL(x))
             y[,k] <- filter_loss_onecol(x[,k])
     }
