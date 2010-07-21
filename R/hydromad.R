@@ -16,11 +16,9 @@ hydromad <-
     obj <- list(call = match.call())
     class(obj) <- "hydromad"
     ## dots `...` may contain arguments for sma and/or routing.
-    ## parlist stores these -- and they may be ranges.
     ## update() takes default parameter ranges/values from hydromad.options().
-    parlist <- list(...)
-    obj$parlist <- parlist
-    obj <- update(obj, newdata = DATA, sma = sma,
+    obj$parlist <- list()
+    obj <- update(obj, ..., newdata = DATA, sma = sma,
                   routing = routing, rfit = rfit,
                   warmup = warmup, weights = weights)
     obj$call <- match.call() ## reset call after update()
@@ -156,6 +154,10 @@ print.hydromad <-
             }
             #cat("\n")
         }
+    }
+    if (!is.null(x$feasible.set)) {
+        cat("Feasible parameter set:\n")
+        print(apply(x$feasible.set, 2, range))
     }
     if (!is.null(x$rfit)) {
         cat("Routing fit spec.:",

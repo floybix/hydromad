@@ -49,6 +49,6 @@ fitBySampling <-
     bestModel$timing <- signif(proc.time() - start_time, 4)[1:3]
     bestModel$objective <- objective
     bestModel$fit.call <- match.call()
-    bestModel$fit.result <- list(objseq = objseq)
+    bestModel$fit.result <- list(objseq = objseq, psets = psets)
     bestModel
 }

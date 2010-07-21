@@ -6,7 +6,7 @@
 update.hydromad <-
     function(object, ..., newdata = NULL, newpars = NULL,
              sma, routing, rfit, warmup, weights,
-             and.rescale = TRUE)
+             feasible.set, and.rescale = TRUE)
 {
     if (length(newpars) > 0) {
         ## re-call this function with elements of newpars
@@ -111,6 +111,14 @@ update.hydromad <-
     object$fitted.values <- NULL
     object$residuals <- NULL
     object$msg <- NULL
+    ## feasible parameter set (matrix)
+    if (!missing(feasible.set)) {
+        if (!is.null(feasible.set)) {
+            stopifnot(is.matrix(feasible.set))
+            stopifnot(length(colnames(feasible.set)) > 0)
+        }
+        object$feasible.set <- feasible.set
+    }
     ## allow a fixed routing model to be fit once
     object <- doRoutingFit(object, inverseFitOnly = TRUE)
     ## update parameters.

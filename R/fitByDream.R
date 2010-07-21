@@ -5,12 +5,7 @@
 
 fitByDream <-
     function(MODEL,
-             #func.type = "calc.rmse",
-             #measurement = list(data = observed(MODEL)),
              loglik = hydromad.getOption("loglik"),
-             #loglik = ~ sum(dnorm(Q-X, sd = 1.2345, log = TRUE), na.rm = TRUE),
-             #loglik = ~ sum(dnorm(log(Q+1)-log(X+1), sd = 0.1, log = TRUE), na.rm = TRUE),
-             #loglik = ~ -0.5 * sum((Q-X)^2),
              control = hydromad.getOption("dream.control"),
              vcov = TRUE)
 {
@@ -32,11 +27,10 @@ fitByDream <-
     if (!isTRUE(hydromad.getOption("trace")))
             control$REPORT <- 0
     do_dream <- function(pars) {
-        names(pars) <- names(parlist)
+        #names(pars) <- names(parlist)
         thisMod <- update(MODEL, newpars = pars)
         if (!isValidModel(thisMod))
             return(-1e8)
-        #as.numeric(fitted(thisMod))
         objFunVal(thisMod, objective = loglik)
     }
     ans <- dream(do_dream, pars = parlist,

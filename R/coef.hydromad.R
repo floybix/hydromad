@@ -5,8 +5,11 @@
 
 coef.hydromad <-
     function(object, which = c("both", "sma", "routing"), ...,
-             warn = TRUE, etc = FALSE)
+             feasible.set = FALSE, etc = FALSE, warn = TRUE)
 {
+    if (feasible.set) {
+        return(object$feasible.set)
+    }
     which <- match.arg(which)
     parlist <- object$parlist
     if (etc == FALSE) {
