@@ -27,7 +27,7 @@ fitByDream <-
     if (!isTRUE(hydromad.getOption("trace")))
             control$REPORT <- 0
     do_dream <- function(pars) {
-        #names(pars) <- names(parlist)
+        names(pars) <- names(parlist) ## TODO: dream should retain names
         thisMod <- update(MODEL, newpars = pars)
         if (!isValidModel(thisMod))
             return(-1e8)

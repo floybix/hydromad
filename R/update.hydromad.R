@@ -5,7 +5,7 @@
 
 update.hydromad <-
     function(object, ..., newdata = NULL, newpars = NULL,
-             sma, routing, rfit, warmup, weights,
+             sma, routing, rfit, warmup, 
              feasible.set, and.rescale = TRUE)
 {
     if (length(newpars) > 0) {
@@ -52,6 +52,7 @@ update.hydromad <-
         if (!is.null(object$sma)) {
             ## remove old SMA-specific parameters
             object$parlist <- as.list(coef(object, "routing", etc = TRUE))
+            object$feasible.set <- NULL
         }
         class(object) <- "hydromad"
         if (!is.null(sma)) {
@@ -83,6 +84,7 @@ update.hydromad <-
         if (!is.null(object$routing)) {
             ## remove old routing-specific parameters
             object$parlist <- as.list(coef(object, "sma", etc = TRUE))
+            object$feasible.set <- NULL
         }
         if (!is.null(routing)) {
             stopifnot(is.character(routing))
@@ -99,28 +101,30 @@ update.hydromad <-
         stopifnot(is.numeric(warmup))
         object$warmup <- warmup
     }
-    if (!missing(weights)) {
-        ## weights may be either a vector correpsonding to observed data,
-        ## or a function to apply to observed data to calculate weights
-        ## TODO: maybe better to allow a column "weights" in DATA?
-        if (!is.null(weights) && !is.function(weights))
-            stopifnot(NROW(weights) == NROW(object$data))
-        object$weights <- weights
-    }
     ## delete any previous stored results -- we will run again
     object$fitted.values <- NULL
     object$residuals <- NULL
     object$msg <- NULL
+    ## allow a fixed routing model to be fit once
+    object <- doRoutingFit(object, inverseFitOnly = TRUE)
     ## feasible parameter set (matrix)
+    RUNFEASIBLE <- RUNSMA
     if (!missing(feasible.set)) {
         if (!is.null(feasible.set)) {
             stopifnot(is.matrix(feasible.set))
             stopifnot(length(colnames(feasible.set)) > 0)
+            RUNFEASIBLE <- TRUE
         }
         object$feasible.set <- feasible.set
     }
-    ## allow a fixed routing model to be fit once
-    object <- doRoutingFit(object, inverseFitOnly = TRUE)
+    if (RUNFEASIBLE && !is.null(object$feasible.set)) {
+        feasible.fitted <-
+            as.data.frame(predict(object, feasible.set = TRUE))
+        object$feasible.fitted <-
+            cbind(lower = do.call("pmin", feasible.fitted),
+                  upper = do.call("pmax", feasible.fitted))
+        ## TODO: calculate coverage?
+    }
     ## update parameters.
     ## the arguments in `...` may be intended for sma and/or routing
     dots <- list(...)

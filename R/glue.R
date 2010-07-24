@@ -48,12 +48,12 @@ glue.hydromad.default <-
     ## extract observed data to check coverage of uncertainty bounds
     obs <- observed(model)
     ## best model as starting point
-    sim.lower <- sim.upper <- fitted(model)
+    sim.lower <- sim.upper <- fitted(model, all = TRUE)
     cover <- 0
     for (i in 2:length(objseq)) {
         ## check coverage interval
-        cover <- mean((sim.lower - eps < obs) & (obs < sim.upper + eps),
-                      na.rm = TRUE)
+        isinside <- (sim.lower - eps < obs) & (obs < sim.upper + eps)
+        cover <- mean(isinside[-(1:model$warmup)], na.rm = TRUE)
         if (!is.null(target.coverage) && (cover >= target.coverage))
             break
         thisPars <- as.list(psets[i,,drop=FALSE])
@@ -63,7 +63,7 @@ glue.hydromad.default <-
         ## don't expand feasible set beyond the threshold (if given)
         if (!is.null(threshold) && (thisVal < threshold))
             break
-        xsim <- fitted(update(model, newpars = thisPars))
+        xsim <- fitted(update(model, newpars = thisPars), all = TRUE)
         sim.lower <- pmin(sim.lower, xsim)
         sim.upper <- pmax(sim.upper, xsim)
     }

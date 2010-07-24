@@ -9,7 +9,6 @@ hydromad <-
              sma = hydromad.getOption("sma"),
              routing = hydromad.getOption("routing"),
              rfit = NULL,
-             weights = NULL,
              warmup = hydromad.getOption("warmup"))
 {
     ## create the model object
@@ -20,7 +19,7 @@ hydromad <-
     obj$parlist <- list()
     obj <- update(obj, ..., newdata = DATA, sma = sma,
                   routing = routing, rfit = rfit,
-                  warmup = warmup, weights = weights)
+                  warmup = warmup)
     obj$call <- match.call() ## reset call after update()
     return(obj)
 }
@@ -28,11 +27,19 @@ hydromad <-
 isFullySpecified <- function(object, ...)
     !is.list(coef(object, ..., warn = FALSE))
 
-fitted.hydromad <- function(object, ..., U = FALSE, all = FALSE)
+fitted.hydromad <-
+    function(object, ..., U = FALSE, all = FALSE,
+             feasible.bounds = FALSE)
 {
     if (is.null(object$routing))
         U <- TRUE
     tmp <- if (U) object$U else object$fitted.values
+    if (feasible.bounds) {
+        if (is.null(object$feasible.fitted)) {
+            stop("there is no estimate of the feasible bounds; try glue.hydromad")
+        }
+        tmp <- object$feasible.fitted
+    }
     if (length(tmp) == 0)
         return(tmp)
     if (all) tmp else stripWarmup(tmp, object$warmup)
@@ -156,7 +163,8 @@ print.hydromad <-
         }
     }
     if (!is.null(x$feasible.set)) {
-        cat("Feasible parameter set:\n")
+        cat("Feasible parameter set: (>", signif(tail(x$feasible.scores,1),4),
+            ", coverage ", round(x$feasible.coverage * 100, 2), "%)\n")
         print(apply(x$feasible.set, 2, range))
     }
     if (!is.null(x$rfit)) {

@@ -8,6 +8,7 @@ predict.hydromad <-
     function(object, newdata = NULL,
              which = c("both", "sma", "routing"),
              ..., all = TRUE,
+             feasible.set = FALSE,
              return_state = FALSE,
              return_components = FALSE)
 {
@@ -22,61 +23,93 @@ predict.hydromad <-
         newdata <- as.zooreg(newdata)
     }
     DATA <- newdata
-    ## check that parameters are fully specified
-    if (!isFullySpecified(object, which = which))
-        stop("model parameters are not fully specified")
-    
-    ## construct calls to simulation functions
     sma <- object$sma
     routing <- object$routing
     if (which == "routing") sma <- NULL
     if (which == "sma") routing <- NULL
-    
+    sma.args <- as.list(coef(object, which = "sma", etc = TRUE))
+    r.args <- as.list(coef(object, which = "routing", etc = TRUE))    
     if (is.character(sma)) {
         ## construct call to SMA simulation function
         sma.fun <- paste(sma, ".sim", sep = "")
-        sma.args <- coef(object, which = "sma", etc = TRUE)
-        ucall <- as.call(c(list(as.symbol(sma.fun),
-                                quote(DATA)),
-                           sma.args))
-        if (return_state)
-            ucall$return_state <- TRUE
-        ## calculate U
-        U <- eval(ucall)
-        if (return_state) {
-            S <- U
-            if (NCOL(S) > 1) {
-                stopifnot("U" %in% colnames(S))
-                U <- S[,"U"]
-            }
+        doSMA <- function(args) {
+            ucall <- as.call(c(list(as.symbol(sma.fun),
+                                    quote(DATA)),
+                               args))
+            if (return_state)
+                ucall$return_state <- TRUE
+            ## calculate U
+            U <- eval(ucall)
         }
     } else {
-        ## take observed rainfall P as effective rainfall U
-        if (NCOL(DATA) > 1) {
-            stopifnot("P" %in% colnames(DATA))
-            U <- DATA[,"P"]
-        } else {
-            U <- DATA
+        ## default (NULL) SMA action is to return rainfall
+        doSMA <- function(args) {
+            if (NCOL(DATA) > 1) {
+                stopifnot("P" %in% colnames(DATA))
+                DATA[,"P"]
+            } else {
+                DATA
+            }
         }
-        if (return_state)
-            S <- U
     }
-    ## handle routing
     if (is.character(routing)) {
         ## construct call to routing simulation function
         r.fun <- paste(routing, ".sim", sep = "")
-        r.args <- coef(object, which = "routing", etc = TRUE)
-        ## TODO: take starting value of filter from data?
-        rcall <- as.call(c(list(as.symbol(r.fun),
-                            quote(U)),
-                           r.args))
-        if (return_components)
-            rcall$return_components <- TRUE
-        Q <- eval(rcall)
+        doRouting <- function(U, args) {
+            rcall <- as.call(c(list(as.symbol(r.fun),
+                                    quote(U)),
+                               args))
+            if (return_components)
+                rcall$return_components <- TRUE
+            Q <- eval(rcall)
+        }
     } else {
-        ## no routing
-        Q <- U
+        ## default (NULL) routing action is to return U (from SMA)
+        doRouting <- function(U, args) {
+            U
+        }
     }
+    ## handle full feasible set of parameters -- simple case only
+    if (feasible.set) {
+        if (is.null(object$feasible.set)) {
+            stop("there is no estimate of the feasible set; try glue.hydromad")
+        }
+        psets <- object$feasible.set
+        ## take default arguments from normal fitted coef(); update with psets
+        sma.fs.names <- intersect(names(sma.args), colnames(psets))
+        r.fs.names <- intersect(names(r.args), colnames(psets))
+        time <- NULL
+        ## TODO: option to show progress bar?
+        result <- lapply(1:NROW(psets), function(i) {
+            pset.i <- as.list(psets[i,])
+            ## run SMA
+            sma.args.i <- sma.args
+            sma.args.i[sma.fs.names] <- pset.i[sma.fs.names]
+            U <- doSMA(sma.args.i)
+            ## run routing
+            r.args.i <- r.args
+            r.args.i[r.fs.names] <- pset.i[r.fs.names]
+            Q <- doRouting(U, r.args.i)
+            if (i == 1)
+                time <<- index(Q)
+            coredata(Q)
+        })
+        return(zooreg(do.call(cbind, result), time))
+    }
+    ## check that parameters are fully specified
+    if (!isFullySpecified(object, which = which))
+        stop("model parameters are not fully specified")
+    ## run SMA
+    U <- doSMA(sma.args)
+    if (return_state) {
+        S <- U
+        if (NCOL(S) > 1) {
+            stopifnot("U" %in% colnames(S))
+            U <- S[,"U"]
+        }
+    }
+    ## run routing
+    Q <- doRouting(U, r.args)
     if (return_state) {
         if (is.null(routing)) {
             ans <- S

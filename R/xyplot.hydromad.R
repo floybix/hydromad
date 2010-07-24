@@ -13,17 +13,30 @@ plot.hydromad <-
 
 xyplot.hydromad <-
     function(x, data = NULL, ..., scales = list(),
+             feasible.bounds = FALSE,
+             col.bounds = "grey20", alpha.bounds = 1, border = NA,
              all = FALSE, superpose = TRUE,
              with.P = FALSE, type = "l",
              type.P = c("h", if ("g" %in% type) "g"),
              layout = c(1, NA))
 {
     stopifnot(is.null(data))
+    
     tsdat <- cbind(observed = observed(x, all = all),
                    modelled = fitted(x, all = all))
     foo <- xyplot(tsdat, ...,
                   scales = scales, superpose = superpose,
                   type = type)
+    if (feasible.bounds) {
+        bounds <- fitted(x, all = all, feasible.bounds = TRUE)
+        foo <- foo +
+            layer_(panel.polygon(x = c(time, rev(time)),
+                                 y = c(bounds[,1], rev(bounds[,2])),
+                                 ..., col = col, alpha = alpha, border = border),
+                   data = list(time = index(bounds), bounds = coredata(bounds)),
+                   col = col.bounds, alpha = alpha.bounds, border = border)
+    }
+        
     if (with.P) {
         ## never want rainfall to be on a log scale:
         scales$y$log <- FALSE
