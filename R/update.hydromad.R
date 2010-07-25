@@ -123,6 +123,7 @@ update.hydromad <-
         object$feasible.fitted <-
             cbind(lower = do.call("pmin", feasible.fitted),
                   upper = do.call("pmax", feasible.fitted))
+        rm(feasible.fitted)
         ## TODO: calculate coverage?
     }
     ## update parameters.

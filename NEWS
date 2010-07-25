@@ -1,5 +1,10 @@
 
-Changes in Version 0.9-2 (in development)
+Changes in Version 0.9-3 (in development)
+
+  o support for feasible parameter sets: use glue.hydromad() on results
+    from fitBySampling() or fitByDream(); then xyplot/fitted/predict/etc.
+
+Changes in Version 0.9-2
 
   o buildObjectiveFun() renamed to buildTsObjective().
 

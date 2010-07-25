@@ -18,13 +18,15 @@
 }
 \usage{
 \method{update}{hydromad}(object, ..., newdata, newpars,
-       sma, routing, rfit, warmup, weights, and.rescale)
+       sma, routing, rfit, warmup, feasible.set, and.rescale)
 
 \method{predict}{hydromad}(object, newdata = NULL,
-	which = c("both", "sma", "routing"), ..., all = TRUE,
+	which = c("both", "sma", "routing"), ...,
+        all = TRUE, feasible.set = FALSE,
         return_state = FALSE, return_components = FALSE)
 
-\method{fitted}{hydromad}(object, ..., U = FALSE, all = FALSE)
+\method{fitted}{hydromad}(object, ..., U = FALSE,
+       all = FALSE, feasible.bounds = FALSE)
 
 \method{observed}{hydromad}(object, ..., select = "Q", all = FALSE)
 
@@ -32,7 +34,7 @@
           boxcox = FALSE, start = NULL)
 
 \method{coef}{hydromad}(object, which = c("both", "sma", "routing"),
-     ..., warn = TRUE, etc = FALSE)
+     ..., feasible.set = FALSE, etc = FALSE, warn = TRUE)
 
 \method{vcov}{hydromad}(object, ...)
 %% deviance?

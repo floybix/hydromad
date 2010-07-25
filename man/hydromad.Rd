@@ -16,8 +16,7 @@
 hydromad(DATA = zoo(), ...,
         sma = hydromad.getOption("sma"),
         routing = hydromad.getOption("routing"),
-        rfit = NULL, weights = NULL,
-        warmup = hydromad.getOption("warmup"))
+        rfit = NULL, warmup = hydromad.getOption("warmup"))
 }
 \arguments{
   \item{DATA}{
@@ -68,10 +67,6 @@ hydromad(DATA = zoo(), ...,
     optional specification for fitting the routing component. If a
     character string is given, then a corresponing function
     \var{routing}\code{.}\var{rfit}\code{.fit} must exist.
-  }
-  \item{weights}{
-    weights associated with data points, or a function to apply to the
-    data to calculate weights. Not currently used!
   }
   \item{warmup}{
     warmup period in number of time steps.
@@ -135,6 +130,9 @@ hydromad(DATA = zoo(), ...,
       (up to 3) such components they may be in a parallel and/or
       series configuration. 
     }
+    \item{\code{\link{powuh}}}{
+      a power-law form of the unit hydrograph.
+    }
     \item{\code{\link{lambda}}}{
       a non-linear variant of two exponential stores in parallel: the
       partitioning of flow between the two stores is allowed to vary,
@@ -142,9 +140,6 @@ hydromad(DATA = zoo(), ...,
       rainfall events tend to be dominated by quick flow, while light
       rainfall events tend to be dominated by slow flow.
     }
-%    \item{\code{\link{powuh}}}{
-%      [TODO]
-%    }
   }
   
   The built-in routing fitting (\code{rfit}) methods are
@@ -172,9 +167,8 @@ hydromad(DATA = zoo(), ...,
       random, latin hypercube sampling, or a uniform grid (all combinations). 
     }
     \item{\code{\link{fitByOptim}}}{
-      fits using R's \code{\link{optim}} function - which includes a
-      Newton type method and a Simplex method. Has multi-start and
-      pre-sampling options.
+      fits using R's \code{optim} or \code{nlminb} functions.
+      Has multi-start and pre-sampling options.
     }
     \item{\code{\link{fitBySCE}}}{
       fit using the Shuffled Complex Evolution (SCE) algorithm.
@@ -213,8 +207,8 @@ x <- Cotter[1:1000]
 modx <- hydromad(x, sma = "cwi", routing = "expuh",
                  tau_s = c(2,100), v_s = c(0,1))
 modx
-## now try to fit it (roughly - only 1 iteration of SCE!)
-fitx <- fitBySCE(modx, control = list(maxit = 1))
+## now try to fit it
+fitx <- fitByOptim(modx)
 fitx
 summary(fitx)
 xyplot(fitx, with.P = TRUE, type = c("l", "g"))
@@ -228,7 +222,7 @@ xyplot(x)
 mod0 <- hydromad(x, sma = "cwi", l = c(0, 100), 
              routing = "armax", rfit = list("inverse", order = c(1,1)))
 mod0
-## now try to fit the free parameters using a Simplex method
+## now try to fit the free parameters
 fit1 <- fitByOptim(mod0)
 fit1
 summary(fit1)

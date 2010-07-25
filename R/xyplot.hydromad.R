@@ -14,7 +14,7 @@ plot.hydromad <-
 xyplot.hydromad <-
     function(x, data = NULL, ..., scales = list(),
              feasible.bounds = FALSE,
-             col.bounds = "grey20", alpha.bounds = 1, border = NA,
+             col.bounds = "grey80", alpha.bounds = 1, border = NA,
              all = FALSE, superpose = TRUE,
              with.P = FALSE, type = "l",
              type.P = c("h", if ("g" %in% type) "g"),
@@ -33,8 +33,8 @@ xyplot.hydromad <-
             layer_(panel.polygon(x = c(time, rev(time)),
                                  y = c(bounds[,1], rev(bounds[,2])),
                                  ..., col = col, alpha = alpha, border = border),
-                   data = list(time = index(bounds), bounds = coredata(bounds)),
-                   col = col.bounds, alpha = alpha.bounds, border = border)
+                   data = list(time = index(bounds), bounds = coredata(bounds),
+                   col = col.bounds, alpha = alpha.bounds, border = border))
     }
         
     if (with.P) {

@@ -177,6 +177,7 @@ export(buildTsObjective)
 export(buildTsLikelihood)
 
 export(glue.hydromad)
+export(glue.hydromad.default)
 
 
 ## RUNLIST

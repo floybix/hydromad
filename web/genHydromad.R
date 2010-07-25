@@ -39,7 +39,7 @@ spec[["calibration"]] <-
          list("fitByDE"),
          list("fitByDream"),
          list("optimtrace", -1, do.example = TRUE, examplename = "fitByOptim"),
-         list("glue", helpname = "glue.hydromad")
+         list("glue", helpname = "glue.hydromad", do.example = TRUE)
          )
 
 spec[["discrete events"]] <-
@@ -107,7 +107,7 @@ spec[["datasets"]] <-
 
 spec[["datasets"]] <- lapply(spec[["datasets"]], function(x) {
     x$do.example <- TRUE
-    x$codefile <- paste("../data/", x[[1]], sep = "")
+    x$codefile <- paste("../data/", x[[1]], ".R", sep = "")
     x
 })
 
@@ -130,4 +130,4 @@ generateWebsite("hydromad", spec = spec, do.example = FALSE,
                 image.src.base = imageSrcBase,
                 topleveljs = paste('var imageSrcBase = "', imageSrcBase, '";', sep = ""),
                 code.url = "http://github.com/floybix/hydromad/tree/master/R/%s",
-                themes = list(custom_theme_2 = custom.theme.2()))
+                themes = list(custom_theme_2 = list(theme = custom.theme.2())))

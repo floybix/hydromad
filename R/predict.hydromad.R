@@ -94,7 +94,8 @@ predict.hydromad <-
                 time <<- index(Q)
             coredata(Q)
         })
-        return(zooreg(do.call(cbind, result), time))
+        ans <- zooreg(do.call(cbind, result), time)
+        return(if (all) ans else stripWarmup(ans, object$warmup))
     }
     ## check that parameters are fully specified
     if (!isFullySpecified(object, which = which))

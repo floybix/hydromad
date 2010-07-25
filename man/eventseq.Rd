@@ -165,35 +165,36 @@ eventinfo(X, events, FUN = mean, ...)
   \code{clusters} in the \pkg{evd} package.
 }
 \examples{
-data(SalmonBrook)
-x <- window(SalmonBrook, start = "1990-01-01", end = "1995-01-01")
-ev <- eventseq(x$Q, thresh = 2, inthresh = 1)
-ev2 <- eventseq(x$Q, thresh = 2, mingap = 5)
+data(Queanbeyan)
+## wet period
+x <- window(Queanbeyan, start = "1974-01-01", end = "1976-12-01")
 
-nlevels(ev) ## number of events
-nlevels(ev2)
-str(ev)
-table(coredata(ev))
-eventapply(x$Q, ev, FUN = sum)
-eventapply(x, ev, FUN = mean)
-eventinfo(x$Q, ev)
+evp <- eventseq(x$P, thresh = 5, inthresh = 1, indur = 4, continue = TRUE)
+evq <- eventseq(x$Q, thresh = 2, indur = 4, mingap = 5)
+
+nlevels(evp) ## number of events
+nlevels(evq)
+str(evq)
+table(coredata(evq))
+eventapply(x$Q, evq, FUN = sum)
+eventapply(x, evq, FUN = mean)
+eventinfo(x$Q, evq)
 
 evplot <- xyplot(x) + 
-  layer_(panel.xblocks(ev, col = "grey")) +
-  layer(panel.xblocks(ev2, block.y = 0, vjust = 1, col = 1))
+  layer_(panel.xblocks(evp, col = c("grey90", "grey80"), border = "grey80")) +
+  layer(panel.xblocks(evq, block.y = 0, vjust = 1, col = 1))
 
 evplot
 
 update(evplot, type = "s",
     xlim = as.Date(c("1990-07-01", "1990-08-31"))) +
-  layer(panel.abline(h = 1:2, lty = 2), packets = 2)
+  layer(panel.abline(h = c(5,1), lty = 2), packets = 1)
 
 ## example of requesting a threshold giving about 'n' events
 set.seed(0)
 ee <- eventseq(rnorm(100), n = 10, mingap = 2)
 nlevels(ee)
 attr(ee, "thresh")
-
 }
 \keyword{ ts }
 \keyword{ utilities }
