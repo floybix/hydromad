@@ -76,7 +76,7 @@ framework, and implementations of some of these are included in the
 
 The first effective rainfall model for \ihacres{} incorporated an
 antecedent precipitation index and was introduced by
-\citet{JakemanEtAl:1990}, and was based on the Bedford-Ouse model of
+\citet{JakemanEtAl:1990}, based on the Bedford-Ouse model of
 \citet{WhiteheadEtAl:1979}. A slightly more physics-based version
 based on a Catchment Wetness Index (CWI) was developed in
 \citet{JakemanHornberger:1993}. It is also known as the \emph{classic}

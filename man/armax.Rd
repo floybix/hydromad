@@ -5,9 +5,9 @@
 \alias{normalise.armax}
 \title{ ARMAX Transfer Function models }
 \description{
-  ARMAX linear transfer functions
-  (\emph{instantaneous unit hydrograph} or \emph{flow routing} in hydrology),
-  with a single input and single output series.
+  ARMAX linear transfer functions with a single input and single output
+  series. Can be used as a general Unit Hydrograph transfer function,
+  defined by Auto-Regressive and Moving Average coefficients.
 }
 \usage{
 armax.sim(U, a_1 = 0, a_2 = 0, a_3 = 0,

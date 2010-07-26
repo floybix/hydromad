@@ -3,7 +3,7 @@
 \alias{awbm.sim}
 \title{ Australian Water Balance Model (AWBM) }
 \description{
-  Australian Water Balance Model (AWBM).
+  Australian Water Balance Model (AWBM): simple 3 bucket model.
 }
 \usage{
 awbm.sim(DATA, cap.ave,

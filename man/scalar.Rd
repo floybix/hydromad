@@ -4,7 +4,8 @@
 \alias{absorbScale.hydromad.scalar}
 \title{ Simple constant runoff proportion }
 \description{
-  Simple constant runoff proportion.
+  Simple constant runoff proportion: a constant fraction of rainfall
+  reaches the stream.
 }
 \usage{
 scalar.sim(DATA, scale, return_state = FALSE)

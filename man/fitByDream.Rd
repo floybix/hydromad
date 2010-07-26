@@ -4,7 +4,13 @@
   Fit a hydromad model using the DREAM (DiffeRential Evolution Adaptive Metropolis) algorithm.
 }
 \description{
-  Fit a hydromad model using the DREAM (DiffeRential Evolution Adaptive Metropolis) algorithm.
+  Fit a hydromad model using the DREAM (DiffeRential Evolution Adaptive
+  Metropolis) algorithm. This is a Markov Chain Monte Carlo algorithm
+  which gives estimates of the joint probability distribution of
+  parameters according to a likelihood function. The fitting function
+  returns the maximum likelihood model, but the full MCMC results are
+  also available as component \code{$fit.result}. The result can also be
+  used in a \link[=glue.hydromad]{GLUE} uncertainty analysis.
 }
 \usage{
 fitByDream(MODEL, loglik = hydromad.getOption("loglik"),

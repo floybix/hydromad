@@ -5,9 +5,7 @@
 \alias{normalise.powuh}
 \title{ Power law transfer function models }
 \description{
-  Power law transfer functions
-  (\emph{instantaneous unit hydrograph} or \emph{flow routing} in hydrology),
-  with a single input and single output series.
+  A power-law form of unit hydrograph (transfer function).
 }
 \usage{
 powuh.sim(U, delay = 0,

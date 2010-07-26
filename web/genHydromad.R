@@ -2,6 +2,7 @@
 
 ## setwd("X:/Packages/hydromad/web")
 ## Sys.setenv(R_GSCMD = "C:/Program Files/gs/gs8.63/bin/gswin32c.exe")
+## Sys.setenv(R_GSCMD = "D:/Program Files/GPLGS/gswin32c.exe")
 ## source("genHydromad.R", echo = TRUE)
 
 library(hydromad)
@@ -25,7 +26,6 @@ spec[["assessment"]] <-
          list("nseStat"),
          list("xyplot", helpname = "xyplot.hydromad", do.example = TRUE),
          list("xyplot.runlist", do.example = TRUE),
-         list("errormasscurve", -1, helpname = "xyplot.hydromad", do.example = TRUE),
          list("qqmath", -2, helpname = "xyplot.hydromad", do.example = TRUE)
          )
 
@@ -52,14 +52,14 @@ spec[["discrete events"]] <-
 
 spec[["soil moisture accounting"]] <-
     list(
-         list("scalar"),
-         list("cwi", helpname = "IHACRES.CWI.model", codefile = "cwi.R"),
          list("cmd", helpname = "IHACRES.CMD.model", codefile = "cmd.R"),
-         list("bucket"),
+         list("cwi", helpname = "IHACRES.CWI.model", codefile = "cwi.R"),
          list("gr4j"),
          list("awbm"),
+         list("bucket"),
          list("sacramento"),
          list("snow"),
+         list("scalar"),
          list("intensity"),
          list("runoffratio"),
          list("dbm")

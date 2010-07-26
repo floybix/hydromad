@@ -5,9 +5,11 @@
 \alias{normalise.expuh}
 \title{ Exponential components transfer function models }
 \description{
-  Exponential components linear transfer functions
-  (\emph{instantaneous unit hydrograph} or \emph{flow routing} in hydrology),
-  with a single input and single output series.
+  A unit hydrograph (linear transfer function) defined as a system of
+  exponentially receding components. Each component is defined by
+  its time constant and fractional volume, and if there are multiple
+  (up to 3) such components they may be in a parallel and/or
+  series configuration. 
 }
 \usage{
 expuh.sim(U, delay = 0,

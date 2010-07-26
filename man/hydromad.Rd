@@ -1,6 +1,5 @@
 \name{hydromad}
 \alias{hydromad}
-\alias{ihacres}
 \title{
   Specify rainfall - runoff (hydrology) models.
 }
@@ -78,114 +77,16 @@ hydromad(DATA = zoo(), ...,
   object can later be modified using the
   \code{\link[=update.hydromad]{update}} method using the same syntax.
   
-  The supplied Soil Moisture Accounting (\code{sma}) models are:
-  \describe{
-    \item{\code{\link{scalar}}}{
-      simple linear model: a constant fraction of rainfall reaches
-      the stream.
-    }
-    \item{\code{\link{cwi}}}{
-      IHACRES Catchment Wetness Index (CWI) model.
-    }
-    \item{\code{\link{cmd}}}{
-      IHACRES Catchment Moisture Deficit (CMD) model.
-    }
-    \item{\code{\link{bucket}}}{
-      single-bucket models with saturated/unsaturated zones and
-      interception. 
-    }
-%    \item{\code{\link{multibucket}}}{
-%      multiple-bucket models (UNDER DEVELOPMENT).
-%    }
-    \item{\code{\link{awbm}}}{
-      Australian Water Balance Model: simple 3 bucket model.
-    }
-    \item{\code{\link{sacramento}}}{
-      Sacramento Soil Moisture Accounting model (from US NWS).
-    }
-    \item{\code{\link{snow}}}{
-      simple degree day factor snow model coupled with IHACRES CMD soil
-      moisture model. 
-    }
-    \item{\code{\link{runoffratio}}}{
-      rainfall is scaled by the runoff coefficient estimated in a moving
-      window (can not be used for prediction).
-    }
-    \item{\code{\link{dbm}}}{
-      rainfall is scaled by corresponding streamflow values raised to a
-      power (can not be used for prediction). 
-    }
-  }
-
-  The supplied Routing (\code{routing}) models are:
-  \describe{
-    \item{\code{\link{armax}}}{
-      A general Unit Hydrograph transfer function, defined by
-      ARMA (auto-regressive / moving average) coefficients.
-    }
-    \item{\code{\link{expuh}}}{
-      A Unit Hydrograph transfer function defined as a system of
-      exponentially receding components. Each component is defined by
-      its time constant and fractional volume, and if there are multiple
-      (up to 3) such components they may be in a parallel and/or
-      series configuration. 
-    }
-    \item{\code{\link{powuh}}}{
-      a power-law form of the unit hydrograph.
-    }
-    \item{\code{\link{lambda}}}{
-      a non-linear variant of two exponential stores in parallel: the
-      partitioning of flow between the two stores is allowed to vary,
-      depending on the magnitude of (effective) rainfall. Intense
-      rainfall events tend to be dominated by quick flow, while light
-      rainfall events tend to be dominated by slow flow.
-    }
-  }
-  
-  The built-in routing fitting (\code{rfit}) methods are
-  (for \code{armax} and \code{expuh} routing):
-  \describe{
-    \item{\code{\link[=armax.ls.fit]{ls}}}{
-      Least Squares fitting (with prefiltering and optional
-      weighting) of the transfer function. 
-    }
-    \item{\code{\link[=armax.sriv.fit]{sriv}}}{
-      Simple Refined Instrumental Variables (SRIV) fitting of the
-      transfer function. 
-    }
-    \item{\code{\link[=armax.inverse.fit]{inverse}}}{
-      Fitting a transfer function model to the streamflow data,
-      independently of the SMA model.
-    }
-  }
-
-  The built-in model fitting method (for all parameters or just the
-  \code{sma} parameters) are:
-  \describe{
-    \item{\code{\link{fitBySampling}}}{
-      returns best result from sampling in parameter ranges using
-      random, latin hypercube sampling, or a uniform grid (all combinations). 
-    }
-    \item{\code{\link{fitByOptim}}}{
-      fits using R's \code{optim} or \code{nlminb} functions.
-      Has multi-start and pre-sampling options.
-    }
-    \item{\code{\link{fitBySCE}}}{
-      fit using the Shuffled Complex Evolution (SCE) algorithm.
-    }
-    \item{\code{\link{fitByDE}}}{
-      fit using the Differential Evolution (DE) algorithm.
-    }
-    \item{\code{\link{fitByDream}}}{
-      fit using the DiffeRential Evolution Adaptive Metropolis (DREAM)
-      algorithm. This is a Markov Chain Monte Carlo algorithm which also
-      gives estimates of the joint probability distribution of
-      parameters according to a likelihood function.
-    }
-  }
-  
   Methods for working with the model objects are listed under
-  \code{\link{hydromad.object}}. 
+  \code{\link{hydromad.object}}.
+
+  For a tutorial, type
+  \code{vignette("tutorial", package = "hydromad")}.
+
+  For an overview of the package, see the paper (in preparation).
+
+  For a list of the package functions with their help pages, see the
+  website \url{http://hydromad.catchment.org/}.
 }
 \value{
   the result from \code{hydromad()} is a

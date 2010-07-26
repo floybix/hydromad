@@ -2,10 +2,11 @@
 \alias{fitByOptim}
 \alias{fitByOptim1}
 \title{
-  Fit a hydromad model using a general-purpose optimiser.
+  Fit a hydromad model using general optimisation algorithms.
 }
 \description{
-  Fit a hydromad model using a general-purpose optimiser.
+  Fits a hydromad model using R's \code{optim} or \code{nlminb}
+  functions. Has multi-start and pre-sampling options.
 }
 \usage{
 fitByOptim(MODEL, objective = hydromad.getOption("objective"),

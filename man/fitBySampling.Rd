@@ -5,6 +5,11 @@
 }
 \description{
   Fit a hydromad model by sampling the parameter space.
+  Returns best result from sampling in parameter ranges using
+  random, latin hypercube sampling, or a uniform grid (all
+  combinations). The function also retains the parameter sets and
+  objective function values, which can be used in a
+  \link[=glue.hydromad]{GLUE} uncertainty analysis.
 }
 \usage{
 fitBySampling(MODEL, objective = hydromad.getOption("objective"),

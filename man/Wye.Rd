@@ -53,6 +53,8 @@ Littlewood, I.G. and Croke, B.F.W. (2008). Data time-step dependency of conceptu
 \examples{
 data(Wye)
 
+xyplot(Wye)
+
 ## note: first three months of rainfall data are daily averages
 xyplot(window(Wye, start = as.POSIXct("1987-01-01"),
                      end = as.POSIXct("1987-09-01")))
