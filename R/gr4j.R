@@ -102,13 +102,16 @@ gr4jrouting.sim <-
     m <- ceiling(x4 * 2)
 
     ## S-curves: cumulative proportion of input with time
-    SH1 <- (1:x4 / x4) ^ (5/2)
-    SH2 <- c(0.5 * SH1,
-             1 - 0.5 * (2 - floor(x4+1):(2*x4) / x4) ^ (5/2)
-             )
+    n2 <- floor(x4)
+    SH1 <- pmin((1:n / x4) ^ (5/2), 1)
+    SH2 <- pmin(c(
+                  0 + 0.5 * (1:n2 / x4) ^ (5/2),
+                  1 - 0.5 * (2 - n:m / x4) ^ (5/2)),
+                1)
+    SH2[1:m / x4 > 2] <- 1
     ## unit hydrographs
-    UH1 <- diff(SH1)
-    UH2 <- diff(SH2)
+    UH1 <- diff(c(0, SH1))
+    UH2 <- diff(c(0, SH2))
 
     ## skip over missing values (maintaining the state)
     bad <- is.na(U)

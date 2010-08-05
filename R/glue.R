@@ -56,7 +56,7 @@ glue.hydromad.default <-
         cover <- mean(isinside[-(1:model$warmup)], na.rm = TRUE)
         if (!is.null(target.coverage) && (cover >= target.coverage))
             break
-        thisPars <- as.list(psets[i,,drop=FALSE])
+        thisPars <- as.list(psets[i,])
         thisVal <- objseq[i]
         if (!is.finite(thisVal))
             break
