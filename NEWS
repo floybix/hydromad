@@ -1,5 +1,9 @@
 
-Changes in Version 0.9-4 (in development)
+Changes in Version 0.9-5 (in development)
+
+  o updated to use new version of 'car' package.
+
+Changes in Version 0.9-4
 
   o fixed error in gr4jrouting with x4 = 1.999999999.
 

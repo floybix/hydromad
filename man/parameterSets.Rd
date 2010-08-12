@@ -17,7 +17,9 @@ parameterSets(par.ranges, samples,
       \item a length-2 vector, representing a range of values;
       \item a vector of length > 2, representing a fixed set of
       values. Also, a length 2 vector can be defined as a fixed set of
-      values by wrapping it in \code{I()}.
+      values by wrapping it in \code{I()}. Such fixed sets of
+      values are resampled when \code{method = "latin.hypercube"} or
+      \code{"random"}. 
     }
   }
   \item{samples}{ Number of samples to generate. In the

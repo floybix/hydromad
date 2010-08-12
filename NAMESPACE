@@ -5,6 +5,9 @@ importFrom(stats,
 importFrom(lattice,
            xyplot,
            qqmath)
+importFrom(car,
+           powerTransform,
+           bcPower)
 
 ## CORE FUNCTIONS
 

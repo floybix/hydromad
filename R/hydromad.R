@@ -57,14 +57,14 @@ residuals.hydromad <-
             start <-
                 quantile(coreQ[coreQ > 0], 0.1, names = FALSE)
         if (isTRUE(boxcox)) {
-            lambda <- box.cox.powers(coreQ + start)$lambda
+            lambda <- coef(powerTransform(coreQ + start))
         } else if (is.numeric(boxcox)) {
             lambda <- boxcox
         } else {
             stop("'boxcox' should be logical or numeric")
         }
-        coredata(obs) <- box.cox(coredata(obs), lambda, start = start)
-        coredata(fit) <- box.cox(coredata(fit), lambda, start = start)
+        coredata(obs) <- bcPower(coredata(obs)+start, lambda)
+        coredata(fit) <- bcPower(coredata(fit)+start, lambda)
     }
     tmp <- (obs - fit)
     if (all) tmp else stripWarmup(tmp, object$warmup)

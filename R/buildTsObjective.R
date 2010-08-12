@@ -31,14 +31,14 @@ buildTsObjective <-
             start <-
                 quantile(coreaggrQ[coreaggrQ > 0], 0.1, names = FALSE)
         if (isTRUE(boxcox)) {
-            lambda <- box.cox.powers(coreaggrQ + start)$lambda
+            lambda <- coef(powerTransform(coreaggrQ + start))
         } else {
             stopifnot(is.numeric(boxcox))
             lambda <- boxcox
         }
         function(Q, X, ...) {
             nseStat(aggrQ, doaggr(X), ref = aggrRef, ...,
-                    trans = function(x) box.cox(x, lambda, start = start))
+                    trans = function(x) bcPower(x+start, lambda))
         }
     } else {
         function(Q, X, ...) {
@@ -71,12 +71,12 @@ buildTsLikelihood <-
             start <-
                 quantile(coreaggrQ[coreaggrQ > 0], 0.1, names = FALSE)
         if (isTRUE(boxcox)) {
-            lambda <- box.cox.powers(coreaggrQ + start)$lambda
+            lambda <- coef(powerTransform(coreaggrQ + start))
         } else {
             stopifnot(is.numeric(boxcox))
             lambda <- boxcox
         }
-        trans <- function(x) {x[] <- box.cox(x, lambda, start = start); x}
+        trans <- function(x) {x[] <- bcPower(x+start, lambda); x}
     }
     function(Q, X) {
         resids <- trans(aggrQ) - trans(doaggr(X))
