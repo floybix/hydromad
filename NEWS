@@ -3,6 +3,10 @@ Changes in Version 0.9-5 (in development)
 
   o updated to use new version of 'car' package.
 
+  o xyplot(feasible.bounds = TRUE) now works on log scales too.
+
+  o xyplot() now run on hydromad objects which have not been fitted.
+
 Changes in Version 0.9-4
 
   o fixed error in gr4jrouting with x4 = 1.999999999.

@@ -14,7 +14,7 @@ plot.hydromad <-
 xyplot.hydromad <-
     function(x, data = NULL, ..., scales = list(),
              feasible.bounds = FALSE,
-             col.bounds = "grey80", alpha.bounds = 1, border = NA,
+             col.bounds = "grey80", border = "grey60", alpha.bounds = 1, 
              all = FALSE, superpose = TRUE,
              with.P = FALSE, type = "l",
              type.P = c("h", if ("g" %in% type) "g"),
@@ -22,19 +22,37 @@ xyplot.hydromad <-
 {
     stopifnot(is.null(data))
     
-    tsdat <- cbind(observed = observed(x, all = all),
-                   modelled = fitted(x, all = all))
+    if (isValidModel(x)) {
+        tsdat <- cbind(observed = observed(x, all = all),
+                       modelled = fitted(x, all = all))
+    } else {
+        tsdat <- observed(x, all = all)
+    }
     foo <- xyplot(tsdat, ...,
                   scales = scales, superpose = superpose,
                   type = type)
     if (feasible.bounds) {
         bounds <- fitted(x, all = all, feasible.bounds = TRUE)
+        ## make a whole plot, passing scales, rather than just a layer
+        ## because the y scale may be log in which case the data must be transformed.
         foo <- foo +
-            layer_(panel.polygon(x = c(time, rev(time)),
-                                 y = c(bounds[,1], rev(bounds[,2])),
-                                 ..., col = col, alpha = alpha, border = border),
-                   data = list(time = index(bounds), bounds = coredata(bounds),
-                   col = col.bounds, alpha = alpha.bounds, border = border))
+            as.layer(xyplot(bounds, ...,
+                            scales = scales, superpose = TRUE, type = type,
+                            col = col.bounds, alpha = alpha.bounds, border = border,
+                            panel = function(x, y, ..., col, alpha, border) {
+                                x2 <- matrix(x, ncol = 2)
+                                y2 <- matrix(y, ncol = 2)
+                                ## TODO: panel.ribbon
+                                ## handle missing values in y; otherwise splits up polygon.
+                                ## e.g. avoid -Inf arising from log scales with 0 values
+#                                bad <- !is.finite(y2[,1]) | !is.finite(y2[,2])
+#                                y2[bad,1] <- min(current.panel.limits()$y)
+#                                y2[bad,2] <- max(current.panel.limits()$y)
+                                panel.polygon(x = c(x2[,1], rev(x2[,2])),
+                                              y = c(y2[,1], rev(y2[,2])),
+                                              col = col, alpha = alpha, border = border)
+                            }),
+                     under = TRUE)
     }
         
     if (with.P) {

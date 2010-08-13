@@ -48,7 +48,8 @@ glue.hydromad.default <-
     ## extract observed data to check coverage of uncertainty bounds
     obs <- observed(model)
     ## best model as starting point
-    sim.lower <- sim.upper <- fitted(model, all = TRUE)
+    bestmodel <- update(model, newpars = as.list(psets[1,]))
+    sim.lower <- sim.upper <- fitted(bestmodel, all = TRUE)
     cover <- 0
     for (i in 2:length(objseq)) {
         ## check coverage interval
