@@ -17,6 +17,7 @@ runlist <- function(...)
             }
         }
     }
+    names(object) <- make.unique(names(object))
     if (length(object) > 0)
         class(object) <- paste(class(object[[1]]), "runlist", sep = ".")
     class(object) <- unique(c(class(object), "runlist", "list"))

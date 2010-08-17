@@ -40,18 +40,19 @@ simulate.hydromad <-
     length(result) <- NROW(psets)
     for (i in seq_len(NROW(psets))) {
         thisPars <- as.list(psets[i,,drop=FALSE])
+        run_name <- paste(names(thisPars), signif(unlist(thisPars), 3),
+                          sep = "=", collapse = ", ")
         if (isTRUE(hydromad.getOption("trace"))) {
-            run_name <- paste(names(thisPars), signif(unlist(thisPars), 3),
-                              sep = "=", collapse = ", ")
             message(run_name)
         }
         thisMod <- update(MODEL, newpars = thisPars)
         ## store model or derived result
-        result[[i]] <-
+        result[[run_name]] <-
             if (is.null(FUN)) thisMod else FUN(thisMod, ...)
     }
     if (bind) {
         if (is.null(FUN)) stop("bind requires the 'FUN' argument")
+        names(result) <- NULL
         result <- lapply(result, unlist)
         lens <- range(unlist(lapply(result, length)))
         if (max(lens) != min(lens))
