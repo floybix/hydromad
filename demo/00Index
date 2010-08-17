@@ -4,4 +4,4 @@ Canning        Model calibration for an intermittent (semi arid?) catchment.
 Murrindindi    Model calibration for a high baseflow catchment.
 Wye            Model calibration on hourly data for a very wet catchment.
 tfFit          Simulation study of SRIV transfer function estimator.
-glue           Estimation and visualisation of 90 percent coverage bounds.
+glue           Estimation and visualisation of feasible parameter sets and bounds.
