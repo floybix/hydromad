@@ -123,6 +123,10 @@ source("http://latticeextra.r-forge.r-project.org/generate.R")
 ## stop on errors
 lattice.options(panel.error = NULL)
 
+ltheme <- custom.theme.2()
+ltheme$strip.background$col <- grey(7/8)
+ltheme$strip.shingle$col <- grey(6/8)
+
 imageSrcBase <- ""
 
 generateWebsite("hydromad", spec = spec, do.example = FALSE,
@@ -130,4 +134,4 @@ generateWebsite("hydromad", spec = spec, do.example = FALSE,
                 image.src.base = imageSrcBase,
                 topleveljs = paste('var imageSrcBase = "', imageSrcBase, '";', sep = ""),
                 code.url = "http://github.com/floybix/hydromad/tree/master/R/%s",
-                themes = list(custom_theme_2 = list(theme = custom.theme.2())))
+                themes = list(custom_theme_2 = list(theme = ltheme)))

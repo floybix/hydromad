@@ -217,29 +217,35 @@ with(Cotter, sum(Q[ok]) / sum(P[ok]))
 @ 
 
 This figure is within the range we would expect, so is looks like we
-have the right data series and units.
+probably have the right data series and units.
 
-As a more detailed, graphical check, we can calculate smoothed
-versions of the rainfall and streamflow time series, and plot these
-together as in Figure \ref{fig:rain-flow-smoother-plot}. This shows, in
-a very general way, the relationship between average rainfall and
-average streamflow. If there is no apparent relationship at this
-stage, then the data requires serious examination.
+To estimate the delay time between rainfall and a consequent
+streamflow response, we can look at the cross-correlation
+function. The \pkg{hydromad} function \code{estimateDelay} picks out
+the lag time corresponding to the maximum correlation between rainfall
+and \emph{rises in} streamflow. In the Cotter this is 0 days. For more
+detail there is a function \code{rollccf} which calculates the
+cross-correlation in a moving window through the data, shown in Figure
+\ref{fig:rollccf-plot}. When the cross-correlation value drops down
+towards zero, there is little connection between rainfall and
+streamflow, and you should start to worry about the data. If the lag 1
+value jumps above the lag 0 value, this indicates that the delay time
+has changed.
 
 \begin{figure}[hpbt]
 \begin{center}
-  \emph{To plot smoothed rainfall and streamflow together:}
-<<rain-flow-smoother-code, echo=TRUE, results=hide>>=
-xyplot(simpleSmoothTs(Cotter[,c("P","Q")], width = 365, c = 2, n = 300), 
-       superpose = TRUE, type = c("l", "g"), ylab = "average mm / day")
+  \emph{Rolling cross-correlation between rainfall and
+    streamflow rises:}
+<<rollccf-plot-code, echo=TRUE, results=hide>>=
+x <- rollccf(Cotter)
+xyplot(x, xlim = extendrange(as.Date(c("1980-01-01","1995-01-01"))))
 @
-<<rain-flow-smoother-plot, fig=TRUE, height=3.5>>=
+<<rollccf-plot, fig=TRUE, height=3.5>>=
 print(trellis.last.object())
 @
-\caption{\label{fig:rain-flow-smoother-plot} 
-  Smoothed versions of the rainfall and streamflow time series. Here
-  we are using a triangular filter (c = 2) with an effective bandwidth
-  of 365 days.
+\caption{\label{fig:rollccf-plot} 
+  Cross-correlation between rainfall and streamflow rises, in two
+  rolling windows of width 90 days and 365 days. 
 }
 \end{center}
 \end{figure}
@@ -283,8 +289,9 @@ here as \code{"expuh"}. Up to three time constants can be specified,
 referred to as \code{tau\_s} (slow component $\tau_s$), \code{tau\_q} (quick
 component $\tau_q$) and \code{tau\_3}. The partitioning of flow
 between the stores is set by \code{v\_s} (fractional volume in the slow
-store $v_s$), and optionally \code{v\_3} and/or \code{v\_q}. See the
-help page for details.
+component $v_s$), and by default the quick flow component is assigned
+the remainder.\footnote{for more complex structures \code{v\_3} and/or
+  \code{v\_q} may be specified. See the help page for details.}
 
 When a model structure is specified, default parameter ranges for
 the given SMA model are applied, and others can be specified:
@@ -331,7 +338,7 @@ Subscript $*$ denotes transformed data, and the transform can be
 specified. See \code{?nseStat} and \code{?hydromad.stats} for examples.
 
 Here we use the default, which is a weighted sum of the $R^2$ of
-square-root transformed data, and (with one third the weight) the
+square-root transformed data, and (with less weight) the
 $R^2$ of monthly-aggregated data.
 
 For this simple example, the model will be calibrated using the
@@ -385,13 +392,13 @@ functions \code{print()} and \code{summary()} on the model object.
 \begin{figure}[hpbt]
 \begin{center}
 <<obs-mod-plot-the70s-code, echo=TRUE, results=hide>>=
-xyplot(cotterFit, with.P = TRUE)
+xyplot(cotterFit, with.P = TRUE, xlim = as.Date(c("1994-01-01", "1997-01-01")))
 @
 <<obs-mod-plot-the70s, fig=TRUE, height=4>>=
 print(trellis.last.object())
 @
 \caption{\label{fig:obs-mod-plot} Observed vs modelled
-  streamflow in the calibration period. }
+  streamflow in part of the calibration period. }
 \end{center}
 \end{figure}
 
@@ -406,7 +413,7 @@ print(cotterFit)
   Printing a model to view its parameter values. Note one can get hold of
 the parameter values using
 \code{coef(cotterFit)} or
-\code{coef(cotterFit, which = "routing")} (for the unit hydrograph module).
+\code{coef(cotterFit, which = "routing")} (for the unit hydrograph only).
 }
 \end{center}
 \end{figure}

@@ -125,9 +125,6 @@ print.hydromad <-
     cat("Start = ", index2char(index(rx)[1], frequency(rx)),
         ", End = ", index2char(index(rx)[NROW(rx)], frequency(rx)),
         "\n", sep = "")
-    cat("Last updated:", format(x$last.updated), "\n")
-    cat("\nCall:\n")
-    print(x$call)
     cat("\n")
     for (which in c("sma", "routing")) {
         if (!is.null(x[[which]])) {
