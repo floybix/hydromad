@@ -70,6 +70,167 @@ framework, and implementations of some of these are included in the
 \pkg{hydromad} package. 
 
 
+\section{Unit Hydrograph routing}
+\label{sec:routing}
+
+The function traditionally used to model the unit hydrograph
+\citep[e.g. in \ihacres{}][]{JakemanEtAl:1990} is an ARMAX
+(auto-regressive, moving average, with exogenous inputs) 
+type model, where the input series is denoted $U$ and the output $X$:
+\begin{equation} \label{eq:armax}
+X[t] = a_1 X[t-1] + \ldots + a_n X[t-n] +
+       b_0 U[t-\delta] + \ldots + b_m U[t-m-\delta]
+\end{equation}
+The \emph{order} is denoted $(n, m)$, with delay $\delta$. The
+number of parameters is $n + m + 1$.
+
+
+A recommended approach is to begin with a simple first-order model,
+then test whether a more complex model leads to substantial
+improvement. Complex models often can not be well identified from
+observed data; in this case the calibration may fail to converge, or may
+converge to an invalid parameter set.
+
+In order to examine the routing dynamics, a simple data-based method
+was used to estimate effective rainfall inputs. The method assumes
+effective rainfall as a fraction of rainfall is proportional to a
+measure of catchment water storage (wetness). If we also assume that
+catchment outflow is directly related to storage by a power law
+\citep{Kirchner:2009}, then observed streamflow can be used to model
+effective rainfall by raising it to a power.
+This is a typical structure used in the
+early stages of Data-Based Mechanistic modelling
+\citep{Young:2003}. For this reason it is termed \code{dbm} in
+\pkg{hydromad}.
+  
+To test different ARMAX model orders systematically, a convenience
+function \code{tryModelOrders} is provided. This is applied to the
+Queanbeyan River data in Table \ref{tab:try-model-orders}. For
+increasing complexity of the auto-regressive and moving-average
+components, the table shows the $R^2$ coefficient of determination, as
+well as the average relative parameter error (ARPE); as model
+complexity increases, typically the fit ($R^2$) improves while the
+confidence in parameter estimates (ARPE) gets worse
+\citep{JakemanEtAl:1990}. Young's Information Criterion (YIC) is
+computed from both $R^2$ and $ARPE$ such that more negative values
+indicate a reasonable compromise \citep{Young:2003} / REF?. Also shown
+in Table \ref{tab:try-model-orders} is the $R^2$ of log-transformed
+data, which reflects the fit of all flow levels more equally, rather
+than just the peaks. The ARMAX models were estimated using the SRIV
+algorithm \citep{Young:2008}.
+
+\begin{table}[hpbt]
+\begin{center}
+<<try-model-orders-table, results=tex>>=
+load("tf-orders.Rdata") ## for 'dbmords'
+summary_dbmords <- summary(dbmords, stats = c("ARPE", "r.squared", "r.sq.log"))
+print(xtable(summary_dbmords), floating = FALSE)
+@
+\caption{\label{tab:try-model-orders}
+  Fit and information statistics for various ARMAX transfer function
+  orders estimated in the period 1990--2000 for the Queanbeyan River
+  catchment. A simple data-based method was used to estimate effective
+  rainfall inputs (proportional to lagged streamflow to a power, times
+  rainfall). Statistics are described in the text.
+}
+\end{center}
+\end{table}
+
+
+In hydrology it is natural to decompose the transfer function into a
+system of exponentially receding components, which may be in a
+parallel and/or series configuration. Each component is defined by a
+recession rate $\alpha$ and peak response $\beta$, or equivalently, a
+time constant $\tau$ and fractional volume $v$. In this form the
+parameters are physically interpretable. For further discussion, see
+for example \citet{Young:2003}.
+
+If there are two components in parallel, these are conventionally
+called slow ($s$) and quick ($q$) flow components. The total simulated
+flow $X$ is the sum of these; $X[t] = X_s[t] + X_q[t]$, and:
+
+\begin{align} \label{eq:expuh2}
+X_s[t] &= \alpha_s X_s[t-1] + \beta_s U[t] \notag \\
+X_q[t] &= \alpha_q X_q[t-1] + \beta_q U[t]
+\end{align}
+  
+Two components might also be arranged in series rather than parallel,
+in which case:
+
+\begin{align} \label{eq:expuh2-series}
+X_s[t] &= \alpha_s X_s[t-1] + \beta_s U[t] \notag \\
+X[t] &= \alpha_q X[t-1] + \beta_q X_s[t]
+\end{align}
+
+In the case of three components, these are referred to as ``$s$'',
+``$q$'' and ``3''; however, there is no actual requirement that one is
+faster or slower than the others. Their corresponding time constants
+are $\tau_s$, $\tau_q$ and $\tau_3$ (argument names \code{tau\_s,
+  tau\_q, tau\_3}). There are four possible types of configuration of
+three components, as shown in Figure \ref{fig:uh3-structures}.  When
+using the \code{expuh} routing model in \pkg{hydromad}, the argument
+\code{series} selects one of these configurations, as shown.
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics{uh3-structures.pdf}
+    \caption{\label{fig:uh3-structures} Possible configurations of
+      third-order unit hydrograph transfer functions (i.e. three
+      stores, arranged in parallel and/or series). The \code{series}
+      argument to the \code{expuh} routing function selects one of
+      these configurations: \code{series = 0} sets all stores in
+      parallel; \code{series = 1} sets ``q'' in series with ``3'';
+      \code{series = 2} sets ``3'' in series with both ``s'' and
+      ``q''; and \code{series = 3} sets all stores in series. The
+      steady state gain (ssg) is also shown for each case, in terms of
+      the fractional throughput volumes $v$ of each store.  
+    }
+  \end{center}
+\end{figure}
+
+
+If we calibrate each of the four possible model structures shown in
+Figure \ref{fig:uh3-structures}, we can compare the candidate routing
+models in more hydrologically intuitive terms.  For comparison with
+the ARMAX routing procedure (Table \ref{tab:try-model-orders}), the
+same (\code{dbm}) method was used to estimate effective rainfall
+inputs.  Each routing model structure was then calibrated using the
+SCE algorithm \citep{DuanEtAl:1992}.  The results are shown in Table
+\ref{tab:expuh-structures-summ}.
+
+
+<<expuh-structures>>=
+load("expuh-structures.Rdata")  ## for 'fitstructs'
+@ 
+
+\begin{table}[hpbt]
+\begin{center}
+<<expuh-structures-summ-table, results=tex>>=
+tmp <- summary(fitstructs, with.hydrostats = FALSE)
+print(xtable(tmp), floating = FALSE)
+@
+\caption{\label{tab:expuh-structures-summ} Fit statistics for various
+  exponential-components unit hydrograph structures estimated in the
+  period 1990--2000 for the Queanbeyan River catchment.  The models
+  correspond to the four possible model structures shown in Figure
+  \ref{fig:uh3-structures}.  A simple data-based method was used to
+  estimate effective rainfall inputs (proportional to lagged streamflow to a
+  power, times rainfall). Statistics are described in the text.  
+}
+\end{center}
+\end{table}
+
+
+Comment on different model structrures
+
+Differences between ARMAX and expuh?
+
+Choose one structure for use in the full model including soil moisture accounting.
+
+Note other routing options -- varuh (variable partitioning); and
+power law models.
+
+
 
 \section{The CWI effective rainfall model}
 \label{sec:cwi}
