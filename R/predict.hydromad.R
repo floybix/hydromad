@@ -94,7 +94,7 @@ predict.hydromad <-
                 time <<- index(Q)
             coredata(Q)
         })
-        ans <- zooreg(do.call(cbind, result), time)
+        ans <- zoo(do.call(cbind, result), time)
         return(if (all) ans else stripWarmup(ans, object$warmup))
     }
     ## check that parameters are fully specified

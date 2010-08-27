@@ -41,9 +41,9 @@ buildTsObjective(Q, groups = NULL, FUN = sum, ...,
   }
   \item{boxcox, start}{
     if \code{boxcox = TRUE}, each dataset will be transformed with a
-    Box-Cox transformation (see \code{\link{box.cox}}). The power is
+    Box-Cox transformation (see \code{\link[car]{bcPower}}). The power is
     estimated from the observed series \code{Q} (after any aggregation)
-    by \code{\link{box.cox.powers}}. Alternatively the power can be
+    by \code{\link[car]{powerTransform}}. Alternatively the power can be
     specified as the value of the \code{boxcox} argument. 
     Note that \code{boxcox = 0} is a log transform. The offset is
     specified as the \code{start} argument; if \code{NULL} it defaults
@@ -84,10 +84,12 @@ objfun(X = dat$Q + 10)
 ## extract the estimated Box-Cox parameters
 lambda <- environment(objfun)$lambda
 start <- environment(objfun)$start
-qqmath(~ box.cox(dat$Q, lambda, start))
+
+require(car)
+qqmath(~ bcPower(dat$Q + start, lambda))
 ## in this case the result is the same as:
-nseStat(box.cox(dat$Q,      lambda, start),
-        box.cox(dat$Q + 10, lambda, start))
+nseStat(bcPower(dat$Q + start, lambda),
+        bcPower(dat$Q + 10 + start, lambda))
 
 ## use monthly aggregation and log transform (Box-Cox lambda = 0)
 objfun <- buildTsObjective(dat$Q, groups = cut(time(dat), "months"),

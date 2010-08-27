@@ -119,11 +119,14 @@ update.hydromad <-
     }
     if (RUNFEASIBLE && !is.null(object$feasible.set)) {
         feasible.fitted <-
-            as.data.frame(predict(object, feasible.set = TRUE))
+            predict(object, feasible.set = TRUE)
+        time <- time(feasible.fitted)
+        feasible.fitted <- as.data.frame(feasible.fitted)
         object$feasible.fitted <-
-            cbind(lower = do.call("pmin", feasible.fitted),
-                  upper = do.call("pmax", feasible.fitted))
-        rm(feasible.fitted)
+            zoo(cbind(lower = do.call("pmin", feasible.fitted),
+                      upper = do.call("pmax", feasible.fitted)),
+                time)
+        rm(feasible.fitted, time)
         ## TODO: calculate coverage?
     }
     ## update parameters.

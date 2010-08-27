@@ -8,10 +8,14 @@
   Extract a feasible parameter set, like GLUE method.
 }
 \usage{
-glue.hydromad(model,
-              threshold.value = NULL,
-              target.coverage = 0.9, eps = 0.01,
-              thin = NA)
+glue.hydromad(model, ..., thin = NA)
+
+glue.hydromad.default(model, objseq, psets,
+             frac.within = 0,
+             within.abs = 0.01,
+             within.rel = 0.01,
+             target.coverage = 1,
+             threshold = -Inf)
 }
 \arguments{
   \item{model}{
@@ -20,7 +24,7 @@ glue.hydromad(model,
     a large number of random parameter sets with associated objective
     function scores. 
   }
-  \item{threshold.value}{
+  \item{threshold}{
     value of the objective function (specified in fitting call) used to
     define the feasible set: all parameter sets meeting this criterion
     will be kept. Ignored if \code{NULL}.
@@ -57,12 +61,32 @@ glue.hydromad(model,
 \examples{
 data(Queanbeyan)
 ts74 <- window(Queanbeyan, start = "1974-01-01", end = "1976-12-01")
-mod <- hydromad(ts74, sma = "cwi",
-    routing = "armax", rfit = list("ls", order = c(2,1)))
-fit <- fitBySampling(mod, samples = 100)
+mod <- hydromad(ts74, routing = "expuh", rfit = list("inverse", order = c(2,1)))
+mod <- update(mod, sma = "cwi",
+    tw = c(0,100), f = c(0, 8), loss = c(-0.1, 0.1))
+#    routing = "armax", rfit = list("ls", order = c(2,1)))
+
+fit <- fitBySampling(mod, samples = 200, objective = hmadstat("r.sq.sqrt"))
+
+## estimate the 90 percent coverage set
 fitglu <- glue.hydromad(fit, target.coverage = 0.9)
+
+## view ranges of parameters
 fitglu
-coef(fitglu, feasible.set = TRUE)
-xyplot(fitglu, feasible.bounds = TRUE)
+## (or)
+summary(coef(fitglu, feasible.set = TRUE))
+
+## plot simulation bounds from 90 percent coverage set
+xyplot(fitglu, feasible.bounds = TRUE, cut = 3)
+xyplot(fitglu, feasible.bounds = TRUE, cut = 3,
+       scales = list(y = list(log = TRUE)))
+sim <- fitted(fitglu, feasible.bounds = TRUE)
+summary(sim$upper - sim$lower)
+
+## simulate on a new data period
+newglu <- update(fitglu, newdata = window(Queanbeyan,
+                  start = "1980-01-01", end = "1982-01-01"))
+xyplot(newglu, feasible.bounds = TRUE)
+
 }
 \keyword{ ts }

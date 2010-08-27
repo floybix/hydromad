@@ -10,8 +10,9 @@
 }
 \usage{
 \method{xyplot}{hydromad}(x, data = NULL, ..., scales = list(),
-        feasible.bounds = FALSE, col.bounds = "grey80", alpha.bounds = 1,
-        border = NA, all = FALSE, superpose = TRUE,
+        feasible.bounds = FALSE, col.bounds = "grey80", border = "grey60",
+        alpha.bounds = 1,
+        all = FALSE, superpose = TRUE,
         with.P = FALSE, type = "l",
         type.P = c("h", if ("g" \%in\% type) "g"),
         layout = c(1, NA))

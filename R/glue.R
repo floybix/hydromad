@@ -1,10 +1,7 @@
 
 
 glue.hydromad <-
-    function(model,
-             threshold.value = NULL,
-             target.coverage = 0.9, eps = 0.01,
-             thin = NA)
+    function(model, ..., thin = NA)
 {
     if (inherits(model$fit.result, "dream")) {
         result <- model$fit.result
@@ -30,49 +27,57 @@ glue.hydromad <-
                        "(or other methods generating fit.result$objseq and fit.result$psets)"))
         }
     }
-    glue.hydromad.default(model, objseq = objseq, psets = psets,
-                          threshold = threshold.value,
-                          target.coverage = target.coverage, eps = eps)
+    glue.hydromad.default(model, objseq = objseq, psets = psets, ...)
 }
 
 
 glue.hydromad.default <-
     function(model, objseq, psets,
-             threshold = NULL,
-             target.coverage = NULL, eps = 0.01)
+             frac.within = 0,
+             within.abs = 0.01,
+             within.rel = 0.01,
+             target.coverage = 1,
+             threshold = -Inf)
 {
     ## order parameter sets by objective function value
     ordlik <- order(objseq, decreasing = TRUE)
     objseq <- objseq[ordlik]
     psets <- psets[ordlik,,drop=FALSE]
     ## extract observed data to check coverage of uncertainty bounds
-    obs <- observed(model)
+    obs <- observed(model, all = TRUE)
     ## best model as starting point
     bestmodel <- update(model, newpars = as.list(psets[1,]))
-    sim.lower <- sim.upper <- fitted(bestmodel, all = TRUE)
+    sim.lower <- sim.upper <- xsim <- fitted(bestmodel, all = TRUE)
     cover <- 0
     for (i in 2:length(objseq)) {
-        ## check coverage interval
-        isinside <- (sim.lower - eps < obs) & (obs < sim.upper + eps)
-        cover <- mean(isinside[-(1:model$warmup)], na.rm = TRUE)
-        if (!is.null(target.coverage) && (cover >= target.coverage))
-            break
         thisPars <- as.list(psets[i,])
         thisVal <- objseq[i]
         if (!is.finite(thisVal))
             break
         ## don't expand feasible set beyond the threshold (if given)
-        if (!is.null(threshold) && (thisVal < threshold))
+        if (thisVal < threshold)
             break
         xsim <- fitted(update(model, newpars = thisPars), all = TRUE)
-        sim.lower <- pmin(sim.lower, xsim)
-        sim.upper <- pmax(sim.upper, xsim)
+        sim.lower.tmp <- pmin(sim.lower, xsim)
+        sim.upper.tmp <- pmax(sim.upper, xsim)
+        ## check what fraction of this simulation is within given tolerances
+        this.eps <- pmax(abs(xsim * within.rel), within.abs)
+        this.ok <- (xsim - this.eps < obs) & (obs < xsim + this.eps)
+        this.within <- mean(this.ok[-(1:model$warmup)], na.rm = TRUE)
+        if (this.within < frac.within)
+            break
+        ## check coverage of cumulative set of simulations
+        isinside <- (sim.lower.tmp - within.abs < obs) & (obs < sim.upper.tmp + within.abs)
+        cover <- mean(isinside[-(1:model$warmup)], na.rm = TRUE)
+        if (cover > target.coverage)
+            break
+        sim.lower <- sim.lower.tmp
+        sim.upper <- sim.upper.tmp
     }
     ok <- 1:(i-1)
     model$feasible.set <- as.matrix(psets[ok,,drop=FALSE])
     model$feasible.scores <- objseq[ok]
     model$feasible.fitted <- cbind(lower = sim.lower,
                                    upper = sim.upper)
-    model$feasible.coverage <- cover
     model
 }

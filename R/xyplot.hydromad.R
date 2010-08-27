@@ -39,18 +39,10 @@ xyplot.hydromad <-
             as.layer(xyplot(bounds, ...,
                             scales = scales, superpose = TRUE, type = type,
                             col = col.bounds, alpha = alpha.bounds, border = border,
-                            panel = function(x, y, ..., col, alpha, border) {
+                            panel = function(x, y, ...) {
                                 x2 <- matrix(x, ncol = 2)
                                 y2 <- matrix(y, ncol = 2)
-                                ## TODO: panel.ribbon
-                                ## handle missing values in y; otherwise splits up polygon.
-                                ## e.g. avoid -Inf arising from log scales with 0 values
-#                                bad <- !is.finite(y2[,1]) | !is.finite(y2[,2])
-#                                y2[bad,1] <- min(current.panel.limits()$y)
-#                                y2[bad,2] <- max(current.panel.limits()$y)
-                                panel.polygon(x = c(x2[,1], rev(x2[,2])),
-                                              y = c(y2[,1], rev(y2[,2])),
-                                              col = col, alpha = alpha, border = border)
+                                panel.ribbon(zoo(y2, x2[,1]), ...)
                             }),
                      under = TRUE)
     }
