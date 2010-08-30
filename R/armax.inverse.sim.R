@@ -3,11 +3,29 @@
 ## Copyright (c) Felix Andrews <felix@nfrac.org>
 ##
 
+expuh.inverse.sim <-
+    function(DATA, delay = 0,
+             tau_s = 0, tau_q = 0, tau_3 = 0,
+             v_s = 1, v_q = NA, v_3 = 0,
+             series = 0, 
+             Xs_0 = 0, Xq_0 = 0, X3_0 = 0,
+             pars = NULL,
+             ...)
+{
+    pars0 <- list(tau_s = tau_s, tau_q = tau_q, tau_3 = tau_3,
+                 v_s = v_s, v_q = v_q, v_3 = v_3, series = series)
+    pars <- modifyList(pars0, as.list(pars))
+    pars <- tfParsConvert(pars, "a,b")
+    armax.inverse.sim(DATA, pars = pars, ...)
+}
+
 
 armax.inverse.sim <-
-    function(Q, P = NULL,
-             pars = c(a_1 = 0, b_0 = 1),
-             delay = 0, Xs_0 = 0, Xq_0 = 0,
+    function(DATA, 
+             a_1 = 0, a_2 = 0, a_3 = 0, 
+             b_0 = 1, b_1 = 0, b_2 = 0, b_3 = 0,
+             pars = NULL,
+             delay = 0, init = 0,
              rain.factor = 1.1,
              rises.only = FALSE,
              use.Qm = TRUE,
@@ -16,13 +34,29 @@ armax.inverse.sim <-
              mass.balance = use.fft.method,
              scale.window = NA)
 {
-    if (!is.ts(Q)) Q <- as.ts(Q)
+    P <- NULL
+    if (NCOL(DATA) > 1) {
+        Q <- DATA[,"Q"]
+        if ("P" %in% colnames(DATA))
+            P <- DATA[,"P"]
+    } else {
+        Q <- DATA
+    }
+    inAttr <- attributes(Q)
+    Q <- as.ts(Q)
+    if (!is.null(P)) P <- as.ts(P)
+    
     pars <- tfParsConvert(pars, "a,b")
+    pars0 <- list(a_1 = a_1, a_2 = a_2, a_3 = a_3,
+                  b_0 = b_0, b_1 = b_1, b_2 = b_2, b_3 = b_3)
+    pars <- unlist(modifyList(pars0, as.list(pars)))
     tfParsCheck(pars)
     ## extract first parts of parameter names (before underscore)
     parSymbols <- gsub("_.*", "", names(pars))
     a <- pars[parSymbols == "a"]
     b <- pars[parSymbols == "b"]
+    a <- stripzeros(a)
+    b <- stripzeros(b, up.to = 1)
     n <- length(a)
     m <- length(b) - 1
                                         #if (constrain.zeros) {
@@ -121,6 +155,7 @@ armax.inverse.sim <-
     if (delay > 0) {
         U <- shiftWindow(U, delay = -delay, and.lag = TRUE)
     }
+    attributes(U) <- inAttr
     U
 }
 

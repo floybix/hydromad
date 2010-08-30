@@ -66,8 +66,8 @@ export(armax.sim,
        normalise.armax,
        armax.ls.fit,
        armax.sriv.fit,
-       armax.inverse.sim,
-       armax.inverse.fit)
+       armax.inverse.fit,
+       armax.inverse.sim)
 useDynLib(hydromad, sriv_system)
 useDynLib(hydromad, inverse_filter)
 
@@ -76,7 +76,8 @@ export(expuh.sim,
        normalise.expuh,
        expuh.ls.fit,
        expuh.sriv.fit,
-       expuh.inverse.fit)
+       expuh.inverse.fit,
+       expuh.inverse.sim)
 
 export(filter_loss) # export?
 useDynLib(hydromad, filter_constloss)

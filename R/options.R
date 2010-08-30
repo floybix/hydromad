@@ -33,7 +33,7 @@
          riv.noise.order = NULL,
          inverse.fit.method = "sriv",
          inverse.iterations = 30,
-         inverse.rel.tolerance = 1/1000,
+         inverse.rel.tolerance = 1/5000,
          inverse.par.epsilon = 0.001,
          sce.control = list(),
          de.control = list(itermax = 1000/50),

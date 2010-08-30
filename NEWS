@@ -1,5 +1,10 @@
 
-Changes in Version 0.9-5 (in development)
+Changes in Version 0.9-6 (in development)
+
+  o arguments to the function armax.inverse.sim() have changed, such that 
+    sma = "armax.inverse" can be used for baseflow filtering. See the help.
+
+Changes in Version 0.9-5
 
   o summary() and runlist() were failing on results from simulate().
 
@@ -10,6 +15,8 @@ Changes in Version 0.9-5 (in development)
   o xyplot(feasible.bounds = TRUE) now works on log scales too.
 
   o xyplot() now run on hydromad objects which have not been fitted.
+
+  o if the sma or routing functions have a '...' they get all parameters.
 
 Changes in Version 0.9-4
 

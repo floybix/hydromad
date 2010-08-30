@@ -30,7 +30,6 @@ armax.inverse.fit <-
     } else {
         stop("need Q in DATA")
     }
-    P <- if ("P" %in% colnames(DATA)) DATA[,"P"]
 
     if (is.na(delay)) {
         delay <- 0
@@ -63,8 +62,8 @@ armax.inverse.fit <-
 #        U[U <= quantile(U, zeros, na.rm=TRUE)] <- 0
         ## scale to ensure mass balance with Q
 #        U <- U * sum(Q[!isna]) / sum(U[!isna])
-        if (!is.null(P)) {
-            U <- P
+        if ("P" %in% colnames(DATA)) {
+            U <- DATA[,"P"]
         } else {
             U <- rises(Q)
             ## positive innovations from an ar1 model:
@@ -93,7 +92,7 @@ armax.inverse.fit <-
         if (init.U && (i == 1)) {
             ## we already have an estimate for U
         } else {
-            U <- armax.inverse.sim(Q, P = P,
+            U <- armax.inverse.sim(DATA,
                                      pars = pars, delay = delay,
                                      use.Qm = use.Qm,
                                      use.fft.method = fft.inverse.sim,

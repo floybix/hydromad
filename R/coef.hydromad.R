@@ -49,11 +49,11 @@ coef.hydromad <-
     unmatched <- (!forSMA) & (!forRouting)
     unmatchedOK <- FALSE
     if ("..." %in% sma.argnames) {
-        forSMA <- forSMA | unmatched
+        forSMA <- TRUE #forSMA | unmatched
         unmatchedOK <- TRUE
     }
     if ("..." %in% r.argnames) {
-        forRouting <- forRouting | unmatched
+        forRouting <- TRUE #forRouting | unmatched
         unmatchedOK <- TRUE
     }
     if (any(unmatched) && !unmatchedOK)
