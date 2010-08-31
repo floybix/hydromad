@@ -1,8 +1,14 @@
 
 Changes in Version 0.9-6 (in development)
 
+  o glue.hydromad() has been revised and renamed to defineFeasibleSet().
+
   o arguments to the function armax.inverse.sim() have changed, such that 
     sma = "armax.inverse" can be used for baseflow filtering. See the help.
+
+  o fix bug in simulate(): additional empty values were returned.
+
+  o remove functions byDays(), byYears(), bySecs(), tsCleanup(), autocorrTime().
 
 Changes in Version 0.9-5
 
@@ -15,8 +21,6 @@ Changes in Version 0.9-5
   o xyplot(feasible.bounds = TRUE) now works on log scales too.
 
   o xyplot() now run on hydromad objects which have not been fitted.
-
-  o if the sma or routing functions have a '...' they get all parameters.
 
 Changes in Version 0.9-4
 

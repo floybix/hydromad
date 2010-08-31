@@ -4,77 +4,12 @@
 ##
 
 
-## clean up regular zoo time series
-tsCleanup <-
-    function(x,
-             na.action=na.pass,
-             neg.rm=FALSE,
-             return.info=TRUE,
-             na.verb="removed")
-{
-    stopifnot(inherits(x, "zooreg"))
-    ## trim off extraneous values at ends
-    n <- NROW(x)
-    x <- na.trim(x)
-    trimmed <- n - NROW(x)
-    ## detect and remove duplicated dates
-    dup <- duplicated(index(x))
-    ndups <- length(unique(index(x)[dup])) #sum(duplicated(index(x)))
-    if (any(dup)) x <- aggregate(x, force, tail, 1)
-    ## are any dates missing?
-    regular <- is.regular(x, strict=TRUE)
-    missdates <- 0
-    if (!regular) {
-        n <- NROW(x)
-        xts <- as.ts(x)
-        x <- zooreg(coredata(xts), start=start(x), #end=end(x),
-                    frequency=frequency(x))
-        #x <- byDays(as.ts(x))
-        missdates <- NROW(x) - n
-    }
-    special <- is.infinite(x) | is.nan(x)
-    nspecials <- sum(special)
-    nnegs <- NA
-    if (neg.rm) {
-        neg <- (x < 0)
-        nnegs <- sum(neg, na.rm=TRUE)
-        if (nnegs > 0) x[neg] <- NA
-    }
-    missing <- sum(!complete.cases(x))
-    missingPct <- round(100 * missing / NROW(x), digits=1)
-    if (missingPct >= 1) missingPct <- round(missingPct)
-    x <- na.action(x)
-    finalmissing <- sum(!complete.cases(x))
-    na.act <- missing - finalmissing
-    info <- as.list(data.frame(missing, missingPct, finalmissing, na.act,
-                                  trimmed, ndups, regular, missdates,
-                                  nspecials, nnegs))
-    desc <- paste(sep="", collapse="",
-                  c(
-                    if (neg.rm && (nnegs > 0)) c(nnegs, " negative values were removed. "),
-                    if (missing == 0) "No time steps had missing values. "
-                    else c(missing,
-                           " time steps ",
-                           " (", missingPct, " percent)",
-                           " had missing values",
-                           if (missdates > 0) c(" (", missdates, " of these were missing times)"),
-                           if (na.act > 0) c(
-                                             if (finalmissing == 0) " and all were " else
-                                             c(", of which ", na.act, " were "),
-                                             na.verb
-                                             ),
-                           ". "),
-                    if (ndups > 0) c(ndups, " times were duplicated ",
-                                     "(only the last value of each was kept). "),
-                    if (nspecials > 0) c("Note: ", nspecials, " values were Inf or NaN.")
-                    ))
-    if (return.info) {
-        attr(x, "cleanup.info") <- info
-        attr(x, "cleanup.desc") <- desc
-    }
-    #return(list(object=x, info=info, description=desc))
-    x
-}
+observed <- function(object, ...)
+    UseMethod("observed")
+
+observed.default <- function(object, ...)
+    fitted(object, ...) + residuals(object, ...)
+
 
 
 autocorrTime <-
@@ -169,34 +104,6 @@ stripWarmup <-
 #    ans <- ts(x, t_warm, t_end, freq)
 #}
 
-byDays <- function(x)
-{
-    x <- as.zoo(x)
-    index(x) <- as.Date(index(x), origin="1970-01-01")
-    x
-}
-byYears <- function(x)
-{
-    x <- as.zoo(x)
-    index(x) <- as.yearmon(index(x))
-    x
-}
-bySecs <- function(x, tz="")
-{
-    x <- as.zoo(x)
-    origin <- ISOdate(1970,1,1,0,0,0)
-    attr(origin, "tzone") <- tz
-    index(x) <- origin + as.numeric(index(x))
-    x
-}
-
-observed <- function(object, ...)
-    UseMethod("observed")
-
-observed.default <- function(object, ...)
-    fitted(object, ...) + residuals(object, ...)
-
-
 numericSummary <- function(x) {
     x <- as.data.frame(x)
     foo <- sapply(x, function(z) {
@@ -214,22 +121,3 @@ numericSummary <- function(x) {
     foo
 }
 
-
-
-## TODO remove this when latticeExtra 0.6-7 released
-simpleSmoothTs <- 
-    function(x, width = NROW(x) %/% 10 + 1,
-             c = 1, sides = 2, circular = FALSE,
-             kern = kernel("daniell", rep(floor((width/sides)/sqrt(c)), c)))
-{
-    if (sides == 2) {
-        ii <- -kern$m:kern$m
-        filter <- kern[ii]
-    } else if (sides == 1) {
-        ii <- -kern$m:0
-        filter <- kern[ii] / sum(kern[ii]) ## normalise
-    } else stop("unrecognised value of 'sides'")
-    xf <- x
-    xf[] <- filter(as.matrix(x), filter, sides = sides, circular = circular)
-    xf
-}

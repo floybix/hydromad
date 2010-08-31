@@ -8,6 +8,8 @@ importFrom(lattice,
 importFrom(car,
            powerTransform,
            bcPower)
+importFrom(Hmisc,
+           wtd.quantile)
 
 ## CORE FUNCTIONS
 
@@ -56,7 +58,7 @@ S3method(tsdiag, hydromad)
 export(tryModelOrders)
 S3method(summary, tryModelOrders)
 
-export(makePrefilter,
+export(makePrefilter, ## remove this?
        estimateDelay)
 
 export(tfParsConvert)
@@ -180,8 +182,9 @@ export(buildCachedObjectiveFun)
 export(buildTsObjective)
 export(buildTsLikelihood)
 
-export(glue.hydromad)
-export(glue.hydromad.default)
+export(defineFeasibleSet)
+S3method(defineFeasibleSet, default)
+S3method(defineFeasibleSet, hydromad)
 
 
 ## RUNLIST
@@ -220,10 +223,7 @@ S3method(event.xyplot, hydromad)
 S3method(event.xyplot, hydromad.runlist)
 
 ## utilities.R
-export(tsCleanup,
-       autocorrTime,
-       byDays, byYears, bySecs,
-       observed,
+export(observed,
        observed.default,
        numericSummary)
 

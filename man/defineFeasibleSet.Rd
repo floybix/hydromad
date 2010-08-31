@@ -1,28 +1,36 @@
-\name{glue.hydromad}
-\alias{glue.hydromad}
-\alias{glue.hydromad.default}
+\name{defineFeasibleSet}
+\alias{defineFeasibleSet}
+\alias{defineFeasibleSet.hydromad}
+\alias{defineFeasibleSet.default}
 \title{
-  Extract a feasible parameter set, like GLUE method.
+  Compute the set of feasible parameter values meeting some criteria.
 }
 \description{
-  Extract a feasible parameter set, like GLUE method.
+  Compute the set of feasible parameter values meeting some
+  criteria. These could be used as a feasible set or to estimate
+  prediction quantiles according to the 
+  GLUE (Generalised Likelihood Uncertainty Estimation) method.
 }
 \usage{
-glue.hydromad(model, ..., thin = NA)
+defineFeasibleSet(x, ...)
 
-glue.hydromad.default(model, objseq, psets,
-             frac.within = 0,
-             within.abs = 0.01,
-             within.rel = 0.01,
-             target.coverage = 1,
-             threshold = -Inf)
+\method{defineFeasibleSet}{hydromad}(x, psets = NULL, objseq = NULL, ..., thin = NA)
+
+\method{defineFeasibleSet}{default}(x, objseq, pred, obs,
+                  within.abs = 0.01,
+                  within.rel = 0.01,
+                  frac.within = 0,
+                  target.coverage = 1,
+                  threshold = -Inf)
 }
 \arguments{
-  \item{model}{
-    a \code{hydromad} object which has been run through either
-    \code{\link{fitBySampling}} or \code{\link{fitByDream}} to generate
-    a large number of random parameter sets with associated objective
-    function scores. 
+  \item{x}{
+    in the \code{hydromad} method this is a \code{hydromad} model object
+    which has been run through either \code{\link{fitBySampling}} or
+    \code{\link{fitByDream}} to generate a large number of random
+    parameter sets with associated objective function scores. 
+    In the \code{default} method, \code{x} is a matrix of parameter
+    values corresponding to \code{objseq}.
   }
   \item{threshold}{
     value of the objective function (specified in fitting call) used to
@@ -69,7 +77,7 @@ mod <- update(mod, sma = "cwi",
 fit <- fitBySampling(mod, samples = 200, objective = hmadstat("r.sq.sqrt"))
 
 ## estimate the 90 percent coverage set
-fitglu <- glue.hydromad(fit, target.coverage = 0.9)
+fitglu <- defineFeasibleSet(fit, target.coverage = 0.9)
 
 ## view ranges of parameters
 fitglu

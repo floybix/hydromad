@@ -1,10 +1,13 @@
 
 
-glue.hydromad <-
-    function(model, ..., thin = NA)
+defineFeasibleSet <- function(x, ...)
+    UseMethod("defineFeasibleSet")
+
+defineFeasibleSet.hydromad <-
+    function(x, ..., thin = NA)
 {
-    if (inherits(model$fit.result, "dream")) {
-        result <- model$fit.result
+    if (inherits(x$fit.result, "dream")) {
+        result <- x$fit.result
         ## extract last half of Sequences (assumed to have converged)
         mcmc <- window(result)
         logp <- as.mcmc(window(result$hist.logp, start = start(mcmc)))
@@ -19,7 +22,7 @@ glue.hydromad <-
         psets <- as.matrix(mcmc)
         objseq <- as.vector(logp)
     } else {
-        result <- model$fit.result
+        result <- x$fit.result
         objseq <- result$objseq
         psets <- result$psets
         if (is.null(objseq) || is.null(psets)){
@@ -27,18 +30,21 @@ glue.hydromad <-
                        "(or other methods generating fit.result$objseq and fit.result$psets)"))
         }
     }
-    glue.hydromad.default(model, objseq = objseq, psets = psets, ...)
+    defineFeasibleSet.default(psets, objseq = objseq, model = x, ...)
 }
 
+## TODO
 
-glue.hydromad.default <-
-    function(model, objseq, psets,
-             frac.within = 0,
+defineFeasibleSet.default <-
+    function(x, objseq, model,
              within.abs = 0.01,
              within.rel = 0.01,
+             frac.within = 0,
              target.coverage = 1,
-             threshold = -Inf)
+             threshold = -Inf,
+             glue.quantiles = NULL)
 {
+    psets <- x
     ## order parameter sets by objective function value
     ordlik <- order(objseq, decreasing = TRUE)
     objseq <- objseq[ordlik]

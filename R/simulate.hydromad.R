@@ -47,8 +47,9 @@ simulate.hydromad <-
         }
         thisMod <- update(MODEL, newpars = thisPars)
         ## store model or derived result
-        result[[run_name]] <-
+        result[[i]] <-
             if (is.null(FUN)) thisMod else FUN(thisMod, ...)
+        names(result)[i] <- run_name
     }
     if (bind) {
         if (is.null(FUN)) stop("bind requires the 'FUN' argument")

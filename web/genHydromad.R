@@ -39,7 +39,7 @@ spec[["calibration"]] <-
          list("fitByDE"),
          list("fitByDream"),
          list("optimtrace", -1, do.example = TRUE, examplename = "fitByOptim"),
-         list("glue", helpname = "glue.hydromad", do.example = TRUE)
+         list("defineFeasibleSet", do.example = TRUE)
          )
 
 spec[["discrete events"]] <-
@@ -79,6 +79,7 @@ spec[["routing fitting"]] <-
          list("armax.sriv.fit"),
          list("armax.inverse.fit"),
          #"lambda.inverse.fit"
+         list("armax.inverse.sim", do.example = TRUE),
          list("tryModelOrders"),
          list("estimateDelay")
          )

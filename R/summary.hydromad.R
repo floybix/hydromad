@@ -138,9 +138,7 @@ print.summary.hydromad <-
             cat(nm, ": ", format(xi, digits = digits), "\n", sep = "")
         }
     }
-    cat("\n", "For definitions see:\n",
-        "lapply(hydromad.stats(", paste(deparse(nms), collapse = "\n"), "), body)", "\n",
-        sep = "")
+    cat("\n", "For definitions see ?hydromad.stats\n", "\n", sep = "")
     invisible(x)
 }
 

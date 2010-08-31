@@ -13,7 +13,7 @@ simQ <- fitted(hydromad(obsdat, sma = "cwi", tw = 30, f = 0.5, scale = 1/1000,
                         routing = "expuh", tau_s = 30, tau_q = 2, v_s = 0.3),
                all = TRUE)
 
-modDat <- merge(obsdat[,c("P","E")], Q = byDays(simQ))
+modDat <- merge(obsdat[,c("P","E")], Q = simQ)
 spec <- hydromad(modDat, sma = "cwi", routing = "armax")
 ## give actual SMA parameter values, so we are fitting Q from exact U
 xspec <- update(spec, tw = 30, f = 0.5, scale = 1/1000)
