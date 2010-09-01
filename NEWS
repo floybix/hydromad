@@ -10,6 +10,8 @@ Changes in Version 0.9-6 (in development)
 
   o remove functions byDays(), byYears(), bySecs(), tsCleanup(), autocorrTime().
 
+  o revised catchment area of Queanbeyan data from 506 to 490 km^2 (from BOM).
+
 Changes in Version 0.9-5
 
   o summary() and runlist() were failing on results from simulate().

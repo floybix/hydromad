@@ -16,8 +16,8 @@ Queanbeyan <- local({
     tdat <- subset(tdat, !is.na(Date))
 
     ## convert from ML to mm (i.e. divide by catchment area km^2)
-    pqdat$Q <- pqdat$Q / 506
-#    pqdat$Q <- convertFlow(pqdat$Q, from = "ML", area.km2 = 506)
+    pqdat$Q <- pqdat$Q / 490
+#    pqdat$Q <- convertFlow(pqdat$Q, from = "ML", area.km2 = 490)
 
     ## zoo objects
     library(zoo)

@@ -26,7 +26,7 @@ cmd.sim(DATA, f, e, d, shape = 0,
   \item{d}{ CMD threshold for producing flow. }
   \item{shape}{
     defines form of the \eqn{dU/dP} relationship:
-    \code{shape = 0} is the linear form, \code{shape = 1} is the hyperbolic
+    \code{shape = 0} is the linear form, \code{shape = 1} is the trigonometric
     form, and \code{shape > 1} is the power form.
   }
   \item{M_0}{ starting CMD value. }
@@ -49,12 +49,17 @@ cmd.sim(DATA, f, e, d, shape = 0,
   \deqn{\frac{\mathrm{d}U}{\mathrm{d}P} = 1 - \min(1, M/d)}{
     dU/dP = 1 - min(1, M/d)}
 
+  The trigonometric form is
+
+  \deqn{\frac{\mathrm{d}U}{\mathrm{d}P} = 1 - \min(1, \sin^2(\pi M / 2d))}{
+    dU/dP = 1 - min(1, sin^2(pi M / 2d))}
+
   The power form is
 
   \deqn{\frac{\mathrm{d}U}{\mathrm{d}P} = 1 - \min(1, (M/d)^b)}{
     dU/dP = 1 - min(1, (M/d)^b)}
 
-  The actual drainage each time step involves the integral of that relation.
+  The actual drainage each time step involves the integral of these relations.
 
   Evapo-transpiration (as a proportion of the potential rate, \code{E[t]})
   is also a simple function of the CMD, with a threshold at \eqn{M = f d}{M = f * d}:

@@ -60,7 +60,7 @@ cmd.sim <-
             if (P[t] > 0) {
                 ## rainfall reduces CMD (Mf)
                 if (shape < 1) {
-                    ## linear form: dU/dP = 1 - (M/d)
+                    ## linear form: dU/dP = 1 - (M/d) for M < d
                     if (M_prev < d) {
                         Mf <- M_prev * exp(-P[t] / d)
                     } else if (M_prev < d + P[t]) {
@@ -70,7 +70,7 @@ cmd.sim <-
                     }
                 }
                 else if (shape == 1) {
-                    ## hyperbolic form: dU/dP = 1 - ??
+                    ## trigonometric form: dU/dP = 1 - sin^2(pi M / 2d) for M < d
                     if (M_prev < d) {
                         Mf <- 1 / tan((M_prev / d) * (pi / 2))
                         Mf <- (2 * d / pi) * atan(1 / (pi * P[t] / (2 * d) + Mf))
@@ -81,7 +81,7 @@ cmd.sim <-
                     }
                 }
                 else { ## shape > 1
-                    ## power form: dU/dP = 1 - (M/d)^b
+                    ## power form: dU/dP = 1 - (M/d)^b for M < d
                     a <- 10 ^ (shape / 50)
                     if (M_prev < d) {
                         Mf <- M_prev * (1 - ((1-a) * P[t] / (d^a)) /
