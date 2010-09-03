@@ -38,8 +38,8 @@ spec[["calibration"]] <-
          list("fitBySCE"),
          list("fitByDE"),
          list("fitByDream"),
-         list("optimtrace", -1, do.example = TRUE, examplename = "fitByOptim"),
-         list("defineFeasibleSet", do.example = TRUE)
+         list("optimtrace", -1, do.example = TRUE, examplename = "fitByOptim")
+#         list("defineFeasibleSet", do.example = TRUE)
          )
 
 spec[["discrete events"]] <-

@@ -126,8 +126,7 @@ algorithm \citep{Young:2008}.
 \begin{table}[hpbt]
 \begin{center}
 <<try-model-orders-table, results=tex>>=
-load("tf-orders.Rdata") ## for 'dbmords'
-summary_dbmords <- summary(dbmords, stats = c("ARPE", "r.squared", "r.sq.log"))
+load("tf-orders.Rdata") ## for 'summary_dbmords'
 print(xtable(summary_dbmords), floating = FALSE)
 @
 \caption{\label{tab:try-model-orders}

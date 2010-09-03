@@ -238,9 +238,9 @@ has changed.
     streamflow rises:}
 <<rollccf-plot-code, echo=TRUE, results=hide>>=
 x <- rollccf(Cotter)
-xyplot(x, xlim = extendrange(as.Date(c("1980-01-01","1995-01-01"))))
+xyplot(x, xlim = extendrange(as.Date(c("1980-01-01","1990-01-01"))))
 @
-<<rollccf-plot, fig=TRUE, height=3.5>>=
+<<rollccf-plot, fig=TRUE, height=7>>=
 print(trellis.last.object())
 @
 \caption{\label{fig:rollccf-plot} 
