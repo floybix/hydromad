@@ -555,7 +555,7 @@ which is the CMD \emph{after} precipitation and drainage have been
 accounted for (as in the \code{drainage} function above).
 
 
-\bibliography{felixandrews}
+\bibliography{hydromad}
 
 
 \end{document}

@@ -3,9 +3,8 @@ library(hydromad)
 data(Queanbeyan)
 
 ts90s <- window(Queanbeyan, start = "1990-01-01", end = "1999-12-31")
-tsCal <- ts90s
 
-dbmspec <- fitDbmToPeaks(hydromad(tsCal, sma = "dbm"))
+dbmspec <- fitDbmToPeaks(hydromad(ts90s, sma = "dbm"))
 
 dbmords <-
     tryModelOrders(update(dbmspec, routing = "armax", rfit = "sriv"),
@@ -13,4 +12,4 @@ dbmords <-
 
 summary_dbmords <- summary(dbmords, stats = c("ARPE", "r.squared", "r.sq.log"))
 
-save(summary_dbmords, file = "tf-orders.Rdata")
+save(summary_dbmords, file = "ihacres_tf-orders.Rdata")

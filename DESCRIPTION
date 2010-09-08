@@ -10,7 +10,7 @@ Description: A modelling framework for environmental hydrology: water
   flow response to time series of rainfall and other drivers. Includes 
   models (such as IHACRES CMD, Sacramento), transfer function estimators
   (including SRIV - Simplified Refined Instrumental Variable), etc.
-Depends: R (>= 2.11.0), zoo (>= 1.6-3), lattice (>= 0.19-4), latticeExtra (>= 0.6-15), polynom
+Depends: R (>= 2.11.0), zoo (>= 1.6-3), lattice (>= 0.19-11), latticeExtra (>= 0.6-14), polynom
 Imports: car (>= 2.0-2), Hmisc, lattice, stats, utils
 Suggests: dream, DEoptim, mgcv, chron, playwith, testthat
 License: GPL (>= 2)
