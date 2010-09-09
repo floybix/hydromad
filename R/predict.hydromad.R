@@ -9,6 +9,7 @@ predict.hydromad <-
              which = c("both", "sma", "routing"),
              ..., all = TRUE,
              feasible.set = FALSE,
+             glue.quantiles = NULL,
              return_state = FALSE,
              return_components = FALSE)
 {
@@ -72,7 +73,7 @@ predict.hydromad <-
     ## handle full feasible set of parameters -- simple case only
     if (feasible.set) {
         if (is.null(object$feasible.set)) {
-            stop("there is no estimate of the feasible set; try glue.hydromad")
+            stop("there is no estimate of the feasible set; try defineFeasibleSet()")
         }
         psets <- object$feasible.set
         ## take default arguments from normal fitted coef(); update with psets
@@ -95,6 +96,12 @@ predict.hydromad <-
             coredata(Q)
         })
         ans <- zoo(do.call(cbind, result), time)
+        if (!is.null(glue.quantiles)) {
+            weights <- object$feasible.scores - min(object$feasible.scores, na.rm = TRUE)
+            weights <- weights / sum(weights, na.rm = TRUE)
+            bounds <- t(apply(ans, 1, safe.wtd.quantile, weights = weights, probs = glue.quantiles, normwt = TRUE))
+            ans <- zoo(bounds, time(ans))
+        }
         return(if (all) ans else stripWarmup(ans, object$warmup))
     }
     ## check that parameters are fully specified

@@ -14,14 +14,16 @@
 \usage{
 defineFeasibleSet(x, ...)
 
-\method{defineFeasibleSet}{hydromad}(x, psets = NULL, objseq = NULL, ..., thin = NA)
+\method{defineFeasibleSet}{hydromad}(x, ..., thin = NA)
 
-\method{defineFeasibleSet}{default}(x, objseq, pred, obs,
+\method{defineFeasibleSet}{default}(x, objseq, model,
+                  frac.within = 0,
                   within.abs = 0.01,
                   within.rel = 0.01,
-                  frac.within = 0,
                   target.coverage = 1,
-                  threshold = -Inf)
+                  threshold = -Inf,
+                  glue.quantiles = NULL,
+                  ...)
 }
 \arguments{
   \item{x}{
@@ -74,27 +76,45 @@ mod <- update(mod, sma = "cwi",
     tw = c(0,100), f = c(0, 8), loss = c(-0.1, 0.1))
 #    routing = "armax", rfit = list("ls", order = c(2,1)))
 
-fit <- fitBySampling(mod, samples = 200, objective = hmadstat("r.sq.sqrt"))
+fit <- fitBySampling(mod, samples = 300, objective = hmadstat("r.sq.sqrt"))
 
-## estimate the 90 percent coverage set
-fitglu <- defineFeasibleSet(fit, target.coverage = 0.9)
+## calculate the set of simulations within 15\% error (or 1 mm/day) 90\% of time
+feas <- defineFeasibleSet(fit, frac.within = 0.9, within.rel = 0.15,
+                          within.abs = 1)
 
 ## view ranges of parameters
-fitglu
+feas
 ## (or)
-summary(coef(fitglu, feasible.set = TRUE))
+summary(coef(feas, feasible.set = TRUE))
 
-## plot simulation bounds from 90 percent coverage set
+## plot simulation bounds
+xyplot(feas, feasible.bounds = TRUE, cut = 3)
+
+## estimate the 90 percent coverage set, for GLUE.
+## calculate 5 percent and 95 percent GLUE quantiles (i.e. weighted).
+fitglu <- defineFeasibleSet(fit, target.coverage = 0.9,
+  glue.quantiles = c(0.05, 0.95))
+
+## plot simulated GLUE quantiles
 xyplot(fitglu, feasible.bounds = TRUE, cut = 3)
 xyplot(fitglu, feasible.bounds = TRUE, cut = 3,
        scales = list(y = list(log = TRUE)))
 sim <- fitted(fitglu, feasible.bounds = TRUE)
 summary(sim$upper - sim$lower)
+## coverage of the GLUE quantile simulations
+## (not to be confused with the coverage to define feasible set)
+mean(sim$lower < observed(fitglu) &
+     sim$upper > observed(fitglu))
 
 ## simulate on a new data period
 newglu <- update(fitglu, newdata = window(Queanbeyan,
-                  start = "1980-01-01", end = "1982-01-01"))
-xyplot(newglu, feasible.bounds = TRUE)
+                   start = "1980-01-01", end = "1982-01-01"),
+                 glue.quantiles = c(0.05, 0.95))
+xyplot(newglu, feasible.bounds = TRUE, cut = 3)
+sim <- fitted(newglu, feasible.bounds = TRUE)
+## coverage of the GLUE quantile simulations
+mean(sim$lower < observed(newglu) &
+     sim$upper > observed(newglu), na.rm = TRUE)
 
 }
 \keyword{ ts }

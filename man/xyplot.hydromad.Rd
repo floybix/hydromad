@@ -2,7 +2,6 @@
 \alias{xyplot.hydromad}
 \alias{xyplot.hydromad.runlist}
 \alias{qqmath.hydromad}
-\alias{errormasscurve}
 \alias{tsdiag.hydromad}
 \title{ Plot methods for Hydromad model objects }
 \description{
@@ -26,8 +25,6 @@
 \method{qqmath}{hydromad}(x, data, ..., all = FALSE, type = "l",
        auto.key = list(lines = TRUE, points = FALSE),
        f.value = ppoints(100), tails.n = 100)
-
-errormasscurve(x, ...)
 
 \method{tsdiag}{hydromad}(object, gof.lag, ...)
 }
@@ -90,8 +87,6 @@ xyplot(residuals(mod)) +
 
 qqmath(mod, scales = list(y = list(log = TRUE)), distribution = qnorm,
        type = c("g", "l"))
-
-errormasscurve(mod, type = c("g", "l"))
 }
 \keyword{ hplot }
 \keyword{ ts }

@@ -118,23 +118,3 @@ qqmath.hydromad <-
 
 tsdiag.hydromad <- function(object, gof.lag, ...)
     stats:::tsdiag.Arima(object$uh, gof.lag = gof.lag, ...)
-
-errormasscurve <- function(x, ...)
-    UseMethod("errormasscurve")
-
-errormasscurve.default <-
-    function(x, ...)
-{
-    if (!is.atomic(x)) {
-        x <- residuals(x)
-        if (length(x) == 0) stop("could not get residuals() from 'x'")
-    }
-    bad <- is.na(x)
-    x[bad] <- 0
-    x[] <- cumsum(x)
-    x[bad] <- NA
-    foo <- xyplot(x, ...)
-    foo$call <- sys.call(sys.parent())
-    foo
-}
-

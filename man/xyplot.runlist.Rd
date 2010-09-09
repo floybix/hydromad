@@ -1,7 +1,6 @@
 \name{xyplot.runlist}
 \alias{xyplot.runlist}
 \alias{qqmath.runlist}
-\alias{errormasscurve.runlist}
 \title{ Plot results from a set of model runs }
 \description{
   Plot results from a set of model runs using Lattice graphics.

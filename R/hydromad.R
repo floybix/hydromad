@@ -36,7 +36,7 @@ fitted.hydromad <-
     tmp <- if (U) object$U else object$fitted.values
     if (feasible.bounds) {
         if (is.null(object$feasible.fitted)) {
-            stop("there is no estimate of the feasible bounds; try glue.hydromad")
+            stop("there is no estimate of the feasible bounds; try defineFeasibleSet()")
         }
         tmp <- object$feasible.fitted
     }

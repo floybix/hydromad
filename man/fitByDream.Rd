@@ -10,7 +10,7 @@
   parameters according to a likelihood function. The fitting function
   returns the maximum likelihood model, but the full MCMC results are
   also available as component \code{$fit.result}. The result can also be
-  used in a \link[=glue.hydromad]{GLUE} uncertainty analysis.
+  used to define a \link[=defineFeasibleSet]{feasible parameter set}.
 }
 \usage{
 fitByDream(MODEL, loglik = hydromad.getOption("loglik"),

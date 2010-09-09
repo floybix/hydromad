@@ -6,6 +6,7 @@ defineFeasibleSet <- function(x, ...)
 defineFeasibleSet.hydromad <-
     function(x, ..., thin = NA)
 {
+    x <- update(x, feasible.set = NULL)
     if (inherits(x$fit.result, "dream")) {
         result <- x$fit.result
         ## extract last half of Sequences (assumed to have converged)
@@ -33,57 +34,87 @@ defineFeasibleSet.hydromad <-
     defineFeasibleSet.default(psets, objseq = objseq, model = x, ...)
 }
 
-## TODO
-
 defineFeasibleSet.default <-
     function(x, objseq, model,
+             frac.within = 0,
              within.abs = 0.01,
              within.rel = 0.01,
-             frac.within = 0,
              target.coverage = 1,
              threshold = -Inf,
-             glue.quantiles = NULL)
+             glue.quantiles = NULL,
+             ...)
 {
     psets <- x
+    model <- update(model, feasible.set = NULL)
     ## order parameter sets by objective function value
     ordlik <- order(objseq, decreasing = TRUE)
     objseq <- objseq[ordlik]
     psets <- psets[ordlik,,drop=FALSE]
     ## extract observed data to check coverage of uncertainty bounds
     obs <- observed(model, all = TRUE)
-    ## best model as starting point
-    bestmodel <- update(model, newpars = as.list(psets[1,]))
-    sim.lower <- sim.upper <- xsim <- fitted(bestmodel, all = TRUE)
-    cover <- 0
+    ## tolerances for each time step
+    obs.tol <- pmax(abs(obs * within.rel), within.abs)
+
+    sims <- NULL
+    sim.lower <- sim.upper <- NULL
+    ok <- rep(FALSE, length(obs))
+    
     for (i in 2:length(objseq)) {
         thisPars <- as.list(psets[i,])
         thisVal <- objseq[i]
         if (!is.finite(thisVal))
             break
-        ## don't expand feasible set beyond the threshold (if given)
+        ## don't expand feasible set beyond the threshold objective (if given)
         if (thisVal < threshold)
             break
+        ok[i] <- TRUE
+        ## simulate
         xsim <- fitted(update(model, newpars = thisPars), all = TRUE)
-        sim.lower.tmp <- pmin(sim.lower, xsim)
-        sim.upper.tmp <- pmax(sim.upper, xsim)
         ## check what fraction of this simulation is within given tolerances
-        this.eps <- pmax(abs(xsim * within.rel), within.abs)
-        this.ok <- (xsim - this.eps < obs) & (obs < xsim + this.eps)
-        this.within <- mean(this.ok[-(1:model$warmup)], na.rm = TRUE)
-        if (this.within < frac.within)
-            break
+        if (frac.within > 0) {
+            this.ok <- abs(xsim - obs < obs.tol)
+            this.frac.within <- mean(this.ok[-(1:model$warmup)], na.rm = TRUE)
+            if (this.frac.within < frac.within) {
+                ok[i] <- FALSE
+                next
+            }
+        }
+        if (is.null(sim.lower)) {
+            sim.lower <- sim.upper <- xsim
+        }
+        sim.lower <- pmin(sim.lower, xsim)
+        sim.upper <- pmax(sim.upper, xsim)
+        if (!is.null(glue.quantiles)) {
+            sims <- cbind(sims, coredata(xsim))
+        }
         ## check coverage of cumulative set of simulations
-        isinside <- (sim.lower.tmp - within.abs < obs) & (obs < sim.upper.tmp + within.abs)
-        cover <- mean(isinside[-(1:model$warmup)], na.rm = TRUE)
-        if (cover > target.coverage)
-            break
-        sim.lower <- sim.lower.tmp
-        sim.upper <- sim.upper.tmp
+        if (target.coverage < 1) {
+            isinside <- (sim.lower - within.abs < obs) & (obs < sim.upper + within.abs)
+            cover <- mean(isinside[-(1:model$warmup)], na.rm = TRUE)
+            if (cover > target.coverage)
+                break
+        }
     }
-    ok <- 1:(i-1)
     model$feasible.set <- as.matrix(psets[ok,,drop=FALSE])
     model$feasible.scores <- objseq[ok]
-    model$feasible.fitted <- cbind(lower = sim.lower,
-                                   upper = sim.upper)
+    if (!is.null(glue.quantiles)) {
+        glue.quantiles <- range(glue.quantiles)
+        weights <- model$feasible.scores - min(model$feasible.scores, na.rm = TRUE)
+        weights <- weights / sum(weights, na.rm = TRUE)
+        bounds <-
+            t(apply(sims, 1, safe.wtd.quantile, weights = weights,
+                    probs = glue.quantiles, normwt = TRUE))
+        colnames(bounds) <- c("lower", "upper")
+        model$feasible.fitted <- zoo(bounds, time(obs))
+    } else {
+        model$feasible.fitted <- cbind(lower = sim.lower,
+                                       upper = sim.upper)
+    }
     model
+}
+
+safe.wtd.quantile <- function(x, ..., probs) {
+    if (any(is.finite(x)))
+        wtd.quantile(x, ..., probs = probs)
+    else rep(NA_real_, length(probs))
 }

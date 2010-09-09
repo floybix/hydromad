@@ -6,7 +6,8 @@
 update.hydromad <-
     function(object, ..., newdata = NULL, newpars = NULL,
              sma, routing, rfit, warmup, 
-             feasible.set, and.rescale = TRUE)
+             feasible.set, glue.quantiles = NULL,
+             and.rescale = TRUE)
 {
     if (length(newpars) > 0) {
         ## re-call this function with elements of newpars
@@ -116,18 +117,25 @@ update.hydromad <-
             RUNFEASIBLE <- TRUE
         }
         object$feasible.set <- feasible.set
+        if (is.null(feasible.set))
+            object$feasible.fitted <- NULL
     }
     if (RUNFEASIBLE && !is.null(object$feasible.set)) {
+        if (!is.null(glue.quantiles))
+            glue.quantiles <- range(glue.quantiles)
         feasible.fitted <-
-            predict(object, feasible.set = TRUE)
-        time <- time(feasible.fitted)
-        feasible.fitted <- as.data.frame(feasible.fitted)
-        object$feasible.fitted <-
-            zoo(cbind(lower = do.call("pmin", feasible.fitted),
-                      upper = do.call("pmax", feasible.fitted)),
-                time)
-        rm(feasible.fitted, time)
-        ## TODO: calculate coverage?
+            predict(object, feasible.set = TRUE, glue.quantiles = glue.quantiles)
+        if (!is.null(glue.quantiles)) {
+            colnames(feasible.fitted) <- c("lower", "upper")
+        } else {
+            time <- time(feasible.fitted)
+            feasible.fitted <- as.data.frame(feasible.fitted)
+            feasible.fitted <-
+                zoo(cbind(lower = do.call("pmin", feasible.fitted),
+                          upper = do.call("pmax", feasible.fitted)),
+                    time)
+        }
+        object$feasible.fitted <- feasible.fitted
     }
     ## update parameters.
     ## the arguments in `...` may be intended for sma and/or routing

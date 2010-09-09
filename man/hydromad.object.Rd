@@ -18,11 +18,11 @@
 }
 \usage{
 \method{update}{hydromad}(object, ..., newdata, newpars,
-       sma, routing, rfit, warmup, feasible.set, and.rescale)
+       sma, routing, rfit, warmup, feasible.set, glue.quantiles, and.rescale)
 
 \method{predict}{hydromad}(object, newdata = NULL,
 	which = c("both", "sma", "routing"), ...,
-        all = TRUE, feasible.set = FALSE,
+        all = TRUE, feasible.set = FALSE, glue.quantiles = NULL,
         return_state = FALSE, return_components = FALSE)
 
 \method{fitted}{hydromad}(object, ..., U = FALSE,
@@ -61,7 +61,7 @@ isValidModel(object, ...)
     specifying the same values as named arguments (as in
     \dQuote{\dots}).
   }
-  \item{sma, routing, rfit, warmup, weights}{
+  \item{sma, routing, rfit, warmup}{
     same arguments as for the \code{\link{hydromad}} function. The
     \code{update} method allows these to be changed on an existing model
     object.     

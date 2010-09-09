@@ -126,7 +126,7 @@ algorithm \citep{Young:2008}.
 \begin{table}[hpbt]
 \begin{center}
 <<try-model-orders-table, results=tex>>=
-load("tf-orders.Rdata") ## for 'summary_dbmords'
+load("ihacres_tf-orders.Rdata") ## for 'summary_dbmords'
 print(xtable(summary_dbmords), floating = FALSE)
 @
 \caption{\label{tab:try-model-orders}
@@ -183,7 +183,7 @@ using the \code{expuh} routing model in \pkg{hydromad}, the argument
 
 \begin{figure}[ht]
   \begin{center}
-    \includegraphics{uh3-structures.pdf}
+    \includegraphics{ihacres_uh3-structures.pdf}
     \caption{\label{fig:uh3-structures} Possible configurations of
       third-order unit hydrograph transfer functions (i.e. three
       stores, arranged in parallel and/or series). The \code{series}

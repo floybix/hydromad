@@ -116,30 +116,3 @@ update.runlist <-
 {
     as.runlist(lapply(object, update, ...))
 }
-
-## TODO: delete?
-errormasscurve.runlist <-
-    function(x,
-             coerce=byDays,
-             superpose=TRUE,
-             type=c("total", "average", "relative"),
-             ...)
-{
-    type <- match.arg(type)
-    if (type == "relative") {
-        Q <- observed(x[[1]])
-        Q[is.na(Q)] <- 0
-        Qcum <- cumsum(Q)
-        cumsumok <- function(Q) { Q[is.na(Q)] <- 0; cumsum(Q) / Qcum }
-    } else if (type == "average") {
-        cumsumok <- function(Q) { Q[is.na(Q)] <- 0; cumsum(Q) / seq_along(Q) }
-    } else {
-        cumsumok <- function(Q) { Q[is.na(Q)] <- 0; cumsum(Q) }
-    }
-    foo <- xyplot(x, residuals=TRUE,
-                  coerce=coerce, trans=cumsumok,
-                  superpose=superpose, ...)
-    foo$call <- sys.call(sys.parent())
-    foo
-}
-
