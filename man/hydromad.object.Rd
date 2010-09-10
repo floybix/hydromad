@@ -129,10 +129,9 @@ isValidModel(object, ...)
   The \code{\link[=summary.hydromad]{summary}} method is documented on a
   different page.
   
-  Plot methods include
-  \code{\link{xyplot.hydromad}},
-  \code{\link{qqmath.hydromad}},
-  \code{\link{errormasscurve}}.
+  The main plot methods are
+  \code{\link{xyplot.hydromad}} and
+  \code{\link{qqmath.hydromad}}.
   
   \code{isValidModel()} returns \code{TRUE} only if the supplied
   \code{hydromad} object is fully specified and has a calculated output

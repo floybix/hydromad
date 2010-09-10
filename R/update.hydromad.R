@@ -6,7 +6,7 @@
 update.hydromad <-
     function(object, ..., newdata = NULL, newpars = NULL,
              sma, routing, rfit, warmup, 
-             feasible.set, glue.quantiles = NULL,
+             glue.quantiles = NULL, feasible.set, feasible.scores,
              and.rescale = TRUE)
 {
     if (length(newpars) > 0) {
@@ -119,6 +119,18 @@ update.hydromad <-
         object$feasible.set <- feasible.set
         if (is.null(feasible.set))
             object$feasible.fitted <- NULL
+    }
+    if (!missing(feasible.scores)) {
+        if (!is.null(feasible.scores)) {
+            if (length(feasible.scores) == 1) {
+                feasible.scores <-
+                    rep(feasible.scores, NROW(object$feasible.set))
+            } else {
+                stopifnot(length(feasible.scores) == NROW(object$feasible.set))
+            }
+            RUNFEASIBLE <- TRUE
+        }
+        objects$feasible.scores <- feasible.scores
     }
     if (RUNFEASIBLE && !is.null(object$feasible.set)) {
         if (!is.null(glue.quantiles))
