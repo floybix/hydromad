@@ -18,7 +18,8 @@
 }
 \usage{
 \method{update}{hydromad}(object, ..., newdata, newpars,
-       sma, routing, rfit, warmup, feasible.set, glue.quantiles, and.rescale)
+       sma, routing, rfit, warmup,
+       feasible.set, feasible.scores, glue.quantiles, and.rescale)
 
 \method{predict}{hydromad}(object, newdata = NULL,
 	which = c("both", "sma", "routing"), ...,

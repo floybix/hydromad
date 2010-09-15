@@ -160,9 +160,10 @@ print.hydromad <-
         }
     }
     if (!is.null(x$feasible.set)) {
-        cat("Feasible parameter set: (>", signif(tail(x$feasible.scores,1),4),
-            ", coverage ", round(x$feasible.coverage * 100, 2), "%)\n", sep = "")
-        print(apply(x$feasible.set, 2, function(xi) c(lower = min(xi), upper = max(xi))))
+        cat("Feasible parameter set:\n")
+        print(apply(x$feasible.set, 2, function(xi) {
+            signif(c(lower = min(xi), upper = max(xi)), digits = digits)
+        }))
     }
     if (!is.null(x$rfit)) {
         cat("Routing fit spec.:",

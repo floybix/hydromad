@@ -14,6 +14,10 @@ predict.hydromad <-
              return_components = FALSE)
 {
     which <- match.arg(which)
+    dots <- list(...)
+    if (length(dots) > 1)
+        stop("unrecognised arguments: ",
+             paste(names(dots), collapse = ","))
     if (is.null(newdata)) {
         if (which == "routing") {
             newdata <- object$U
@@ -62,7 +66,7 @@ predict.hydromad <-
                                args))
             if (return_components)
                 rcall$return_components <- TRUE
-            Q <- eval(rcall)
+            X <- eval(rcall)
         }
     } else {
         ## default (NULL) routing action is to return U (from SMA)
@@ -79,9 +83,13 @@ predict.hydromad <-
         ## take default arguments from normal fitted coef(); update with psets
         sma.fs.names <- intersect(names(sma.args), colnames(psets))
         r.fs.names <- intersect(names(r.args), colnames(psets))
+        ## can use less memory if only estimating max/min bounds
+        boundsOnly <- isTRUE(all.equal(glue.quantiles, c(0, 1)))
+        sims <- sim.lower <- sim.upper <- NULL
         time <- NULL
         ## TODO: option to show progress bar?
-        result <- lapply(1:NROW(psets), function(i) {
+        #result <- lapply(1:NROW(psets), function(i) {
+        for (i in 1:NROW(psets)) {
             pset.i <- as.list(psets[i,])
             ## run SMA
             sma.args.i <- sma.args
@@ -90,17 +98,33 @@ predict.hydromad <-
             ## run routing
             r.args.i <- r.args
             r.args.i[r.fs.names] <- pset.i[r.fs.names]
-            Q <- doRouting(U, r.args.i)
-            if (i == 1)
-                time <<- index(Q)
-            coredata(Q)
-        })
-        ans <- zoo(do.call(cbind, result), time)
-        if (!is.null(glue.quantiles)) {
+            xsim <- doRouting(U, r.args.i)
+            if (i == 1) {
+                time <- index(xsim)
+                sim.lower <- sim.upper <- xsim
+            }
+            if (boundsOnly) {
+                sim.lower <- pmin(sim.lower, xsim)
+                sim.upper <- pmax(sim.upper, xsim)
+            } else {
+                sims <- cbind(sims, coredata(xsim))
+            }
+        }
+        if (boundsOnly) {
+            ans <- cbind(lower = sim.lower,
+                         upper = sim.upper)
+        } else if (!is.null(glue.quantiles)) {
+            ## weighted quantiles
+            glue.quantiles <- sort(glue.quantiles)
             weights <- object$feasible.scores - min(object$feasible.scores, na.rm = TRUE)
             weights <- weights / sum(weights, na.rm = TRUE)
-            bounds <- t(apply(ans, 1, safe.wtd.quantile, weights = weights, probs = glue.quantiles, normwt = TRUE))
-            ans <- zoo(bounds, time(ans))
+            bounds <- t(apply(sims, 1, safe.wtd.quantile, weights = weights, probs = glue.quantiles, normwt = TRUE))
+            colnames(bounds) <- paste("GLUE", glue.quantiles * 100, sep = ".")
+            ans <- zoo(bounds, time)
+        } else {
+            ## glue.quantiles is NULL; return all simulations
+            colnames(sims) <- paste("X", 1:NCOL(sims), sep = "")
+            ans <- zoo(sims, time)
         }
         return(if (all) ans else stripWarmup(ans, object$warmup))
     }
@@ -117,17 +141,17 @@ predict.hydromad <-
         }
     }
     ## run routing
-    Q <- doRouting(U, r.args)
+    X <- doRouting(U, r.args)
     if (return_state) {
         if (is.null(routing)) {
             ans <- S
         } else {
-            ans <- cbind(S, Q)
+            ans <- cbind(S, X)
             if (length(colnames(S)) > 0)
                 colnames(ans)[1:NCOL(S)] <- colnames(S)
         }
     } else {
-        ans <- Q
+        ans <- X
     }
     if (all) ans else stripWarmup(ans, object$warmup)
 }

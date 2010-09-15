@@ -41,11 +41,16 @@ defineFeasibleSet.default <-
              within.rel = 0.01,
              target.coverage = 1,
              threshold = -Inf,
-             glue.quantiles = NULL,
+             glue.quantiles = c(0, 1),
              ...)
 {
     psets <- x
-    model <- update(model, feasible.set = NULL)
+    ## avoid running multiple simulations in every update()!
+    model$feasible.set <- NULL
+    model$feasible.scores <- NULL
+    model$feasible.fitted <- NULL
+    ## can use less memory if only estimating max/min bounds
+    boundsOnly <- isTRUE(all.equal(glue.quantiles, c(0, 1)))
     ## order parameter sets by objective function value
     ordlik <- order(objseq, decreasing = TRUE)
     objseq <- objseq[ordlik]
@@ -55,8 +60,7 @@ defineFeasibleSet.default <-
     ## tolerances for each time step
     obs.tol <- pmax(abs(obs * within.rel), within.abs)
 
-    sims <- NULL
-    sim.lower <- sim.upper <- NULL
+    sims <- sim.lower <- sim.upper <- NULL
     ok <- rep(FALSE, length(obs))
     
     for (i in 2:length(objseq)) {
@@ -84,7 +88,7 @@ defineFeasibleSet.default <-
         }
         sim.lower <- pmin(sim.lower, xsim)
         sim.upper <- pmax(sim.upper, xsim)
-        if (!is.null(glue.quantiles)) {
+        if (boundsOnly == FALSE) {
             sims <- cbind(sims, coredata(xsim))
         }
         ## check coverage of cumulative set of simulations
@@ -97,19 +101,20 @@ defineFeasibleSet.default <-
     }
     model$feasible.set <- as.matrix(psets[ok,,drop=FALSE])
     model$feasible.scores <- objseq[ok]
-    if (!is.null(glue.quantiles)) {
-        glue.quantiles <- range(glue.quantiles)
+    if (boundsOnly) {
+        model$feasible.fitted <- cbind(lower = sim.lower,
+                                       upper = sim.upper)
+    } else {
+        glue.quantiles <- sort(glue.quantiles)
         weights <- model$feasible.scores - min(model$feasible.scores, na.rm = TRUE)
         weights <- weights / sum(weights, na.rm = TRUE)
         bounds <-
             t(apply(sims, 1, safe.wtd.quantile, weights = weights,
                     probs = glue.quantiles, normwt = TRUE))
-        colnames(bounds) <- c("lower", "upper")
+        colnames(bounds) <- paste("GLUE", glue.quantiles * 100, sep = ".")
         model$feasible.fitted <- zoo(bounds, time(obs))
-    } else {
-        model$feasible.fitted <- cbind(lower = sim.lower,
-                                       upper = sim.upper)
     }
+    model$glue.quantiles <- glue.quantiles
     model
 }
 

@@ -22,7 +22,7 @@ defineFeasibleSet(x, ...)
                   within.rel = 0.01,
                   target.coverage = 1,
                   threshold = -Inf,
-                  glue.quantiles = NULL,
+                  glue.quantiles = c(0, 1),
                   ...)
 }
 \arguments{
@@ -59,7 +59,7 @@ defineFeasibleSet(x, ...)
 }
 \value{
   a modified version of \code{model}, with \code{feasible.set},
-  \code{feasible.scores}, \code{feasible.fitted} and \code{coverage}
+  \code{feasible.scores}, \code{feasible.fitted} and \code{glue.quantiles}
   values. Can be passed to \code{xyplot}, \code{fitted}, \code{predict},
   \code{update}, \code{print}, etc.
 }
@@ -84,8 +84,7 @@ feas <- defineFeasibleSet(fit, frac.within = 0.9, within.rel = 0.15,
 
 ## view ranges of parameters
 feas
-## (or)
-summary(coef(feas, feasible.set = TRUE))
+## (or) summary(coef(feas, feasible.set = TRUE))
 
 ## plot simulation bounds
 xyplot(feas, feasible.bounds = TRUE, cut = 3)
@@ -100,11 +99,11 @@ xyplot(fitglu, feasible.bounds = TRUE, cut = 3)
 xyplot(fitglu, feasible.bounds = TRUE, cut = 3,
        scales = list(y = list(log = TRUE)))
 sim <- fitted(fitglu, feasible.bounds = TRUE)
-summary(sim$upper - sim$lower)
+## summarise size of the simulation bounds: lower as fraction of upper
+summary(coredata(sim[,1] / sim[,2]))
 ## coverage of the GLUE quantile simulations
 ## (not to be confused with the coverage to define feasible set)
-mean(sim$lower < observed(fitglu) &
-     sim$upper > observed(fitglu))
+mean(sim[,1] < observed(fitglu) & observed(fitglu) < sim[,2])
 
 ## simulate on a new data period
 newglu <- update(fitglu, newdata = window(Queanbeyan,
@@ -113,8 +112,7 @@ newglu <- update(fitglu, newdata = window(Queanbeyan,
 xyplot(newglu, feasible.bounds = TRUE, cut = 3)
 sim <- fitted(newglu, feasible.bounds = TRUE)
 ## coverage of the GLUE quantile simulations
-mean(sim$lower < observed(newglu) &
-     sim$upper > observed(newglu), na.rm = TRUE)
+mean(sim[,1] < observed(newglu) & observed(newglu) < sim[,2])
 
 }
 \keyword{ ts }

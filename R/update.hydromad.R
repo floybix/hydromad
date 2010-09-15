@@ -6,7 +6,7 @@
 update.hydromad <-
     function(object, ..., newdata = NULL, newpars = NULL,
              sma, routing, rfit, warmup, 
-             glue.quantiles = NULL, feasible.set, feasible.scores,
+             feasible.set, feasible.scores, glue.quantiles,
              and.rescale = TRUE)
 {
     if (length(newpars) > 0) {
@@ -132,22 +132,14 @@ update.hydromad <-
         }
         objects$feasible.scores <- feasible.scores
     }
+    if (!missing(glue.quantiles)) {
+        object$glue.quantiles <- glue.quantiles
+        RUNFEASIBLE <- TRUE
+    }
     if (RUNFEASIBLE && !is.null(object$feasible.set)) {
-        if (!is.null(glue.quantiles))
-            glue.quantiles <- range(glue.quantiles)
-        feasible.fitted <-
-            predict(object, feasible.set = TRUE, glue.quantiles = glue.quantiles)
-        if (!is.null(glue.quantiles)) {
-            colnames(feasible.fitted) <- c("lower", "upper")
-        } else {
-            time <- time(feasible.fitted)
-            feasible.fitted <- as.data.frame(feasible.fitted)
-            feasible.fitted <-
-                zoo(cbind(lower = do.call("pmin", feasible.fitted),
-                          upper = do.call("pmax", feasible.fitted)),
-                    time)
-        }
-        object$feasible.fitted <- feasible.fitted
+        object$feasible.fitted <-
+            predict(object, feasible.set = TRUE,
+                    glue.quantiles = object$glue.quantiles)
     }
     ## update parameters.
     ## the arguments in `...` may be intended for sma and/or routing

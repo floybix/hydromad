@@ -33,6 +33,8 @@ xyplot.hydromad <-
                   type = type)
     if (feasible.bounds) {
         bounds <- fitted(x, all = all, feasible.bounds = TRUE)
+        if (NCOL(bounds) > 2) ## show lowest and highest quantiles
+            bounds <- bounds[,c(1,NCOL(bounds))]
         ## make a whole plot, passing scales, rather than just a layer
         ## because the y scale may be log in which case the data must be transformed.
         foo <- foo +
