@@ -115,10 +115,12 @@ update.hydromad <-
             stopifnot(is.matrix(feasible.set))
             stopifnot(length(colnames(feasible.set)) > 0)
             RUNFEASIBLE <- TRUE
+            if (is.null(object$glue.quantiles))
+                object$glue.quantiles <- c(0,1)
+        } else {
+            object$feasible.fitted <- NULL
         }
         object$feasible.set <- feasible.set
-        if (is.null(feasible.set))
-            object$feasible.fitted <- NULL
     }
     if (!missing(feasible.scores)) {
         if (!is.null(feasible.scores)) {

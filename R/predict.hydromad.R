@@ -10,14 +10,21 @@ predict.hydromad <-
              ..., all = TRUE,
              feasible.set = FALSE,
              glue.quantiles = NULL,
+             groups = NULL, FUN = sum,
              return_state = FALSE,
              return_components = FALSE)
 {
     which <- match.arg(which)
-    dots <- list(...)
-    if (length(dots) > 1)
+    ## throw an error if any extra arguments
+    if (length(list(...)) > 1)
         stop("unrecognised arguments: ",
-             paste(names(dots), collapse = ","))
+             paste(names(list(...)), collapse = ","))
+    ## optional aggregation
+    doaggr <- identity
+    if (!is.null(groups)) {
+        doaggr <- function(x)
+            eventapply(x, groups, FUN = FUN)
+    }
     if (is.null(newdata)) {
         if (which == "routing") {
             newdata <- object$U
@@ -99,6 +106,7 @@ predict.hydromad <-
             r.args.i <- r.args
             r.args.i[r.fs.names] <- pset.i[r.fs.names]
             xsim <- doRouting(U, r.args.i)
+            xsim <- doaggr(xsim)
             if (i == 1) {
                 time <- index(xsim)
                 sim.lower <- sim.upper <- xsim
@@ -116,7 +124,10 @@ predict.hydromad <-
         } else if (!is.null(glue.quantiles)) {
             ## weighted quantiles
             glue.quantiles <- sort(glue.quantiles)
-            weights <- object$feasible.scores - min(object$feasible.scores, na.rm = TRUE)
+            threshold <- object$feasible.threshold
+            if (is.infinite(threshold))
+                threshold <- min(object$feasible.scores, na.rm = TRUE)
+            weights <- object$feasible.scores - threshold
             weights <- weights / sum(weights, na.rm = TRUE)
             bounds <- t(apply(sims, 1, safe.wtd.quantile, weights = weights, probs = glue.quantiles, normwt = TRUE))
             colnames(bounds) <- paste("GLUE", glue.quantiles * 100, sep = ".")
@@ -153,5 +164,6 @@ predict.hydromad <-
     } else {
         ans <- X
     }
+    ans <- doaggr(ans)
     if (all) ans else stripWarmup(ans, object$warmup)
 }

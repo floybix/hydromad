@@ -1,7 +1,6 @@
 \name{hydromad.object}
 \alias{hydromad.object}
 \alias{update.hydromad}
-\alias{predict.hydromad}
 \alias{fitted.hydromad}
 \alias{observed.hydromad}
 \alias{residuals.hydromad}
@@ -20,11 +19,6 @@
 \method{update}{hydromad}(object, ..., newdata, newpars,
        sma, routing, rfit, warmup,
        feasible.set, feasible.scores, glue.quantiles, and.rescale)
-
-\method{predict}{hydromad}(object, newdata = NULL,
-	which = c("both", "sma", "routing"), ...,
-        all = TRUE, feasible.set = FALSE, glue.quantiles = NULL,
-        return_state = FALSE, return_components = FALSE)
 
 \method{fitted}{hydromad}(object, ..., U = FALSE,
        all = FALSE, feasible.bounds = FALSE)
@@ -50,7 +44,6 @@ isValidModel(object, ...)
     In the \code{update} method, parameter values or ranges for the SMA
     and/or routing simulation functions can be given, as with the
     \code{hydromad()} function. 
-    Further arguments to \code{predict} are ignored.
   }
   \item{newdata}{
     a \code{\link{ts}}-like object containing a new time series
@@ -67,6 +60,15 @@ isValidModel(object, ...)
     \code{update} method allows these to be changed on an existing model
     object.     
   }
+  \item{feasible.set, feasible.scores, glue.quantiles}{
+    the \emph{feasible set} of parameter sets can be specified as a
+    matrix, where parameter values are given in named columns. The
+    corresponding objective function values for each row can be given as
+    \code{feasible.scores}. If \code{glue.quantiles} is omitted or NULL,
+    then overall bounds of the ensemble simulation will be
+    calculated. Otherwise GLUE-like quantiles can be given as
+    \code{glue.quantiles}. See \code{\link{defineFeasibleSet}}.
+  }
   \item{and.rescale}{
     set to \code{FALSE} to suppress any automatic adjustment of
     parameters for mass balance.
@@ -74,20 +76,20 @@ isValidModel(object, ...)
   \item{which}{
     selects either the SMA or routing model, or both models (the
     default).
-    For the \code{predict} method, note that if \code{which =
-      "routing"}, then \code{newdata} is treated as the effective rainfall
-    (U). 
-  }
-  \item{return_state}{
-    passed to the SMA simulation function, to return state variables.
-  }
-  \item{return_components}{
-    passed to the routing simulation function, to return flow components.
   }
   \item{all}{
     if \code{TRUE}, return the entire time series for which data
     exists. Otherwise, the warmup period (specified as an argument to
     \code{\link{hydromad}} or \code{update}) is stripped off.
+  }
+  \item{feasible.bounds}{
+    if \code{TRUE}, then ensemble simulation bounds are extracted and
+    returned. This only works if a \emph{feasible set} has been specified
+    using \code{\link{defineFeasibleSet}} or the \code{update}
+    method. Note that the meaning depends on what value of
+    \code{glue.quantiles} was specified to those methods: it might be
+    the overall simulation bounds, or some GLUE-like quantile
+    values. This will be indicated by the returned column names.
   }
   \item{U}{
     to return modelled effective rainfall (the output from SMA) rather
@@ -127,8 +129,9 @@ isValidModel(object, ...)
   \code{\link{vcov}},
   etc.
 
-  The \code{\link[=summary.hydromad]{summary}} method is documented on a
-  different page.
+  The \code{\link[=summary.hydromad]{summary}} and
+  \code{\link[=predict.hydromad]{predict}} methods are documented on
+  different pages.
   
   The main plot methods are
   \code{\link{xyplot.hydromad}} and
@@ -142,7 +145,7 @@ isValidModel(object, ...)
   
   \code{update} returns a new \code{hydromad} object.
   
-  \code{predict}, \code{fitted}, \code{observed} and \code{residuals}
+  \code{fitted}, \code{observed} and \code{residuals}
   returns time series. 
   
   \code{coef} returns a named numeric vector, or a named \code{list} if
@@ -153,6 +156,7 @@ isValidModel(object, ...)
 \seealso{
   \code{\link{hydromad}},
   \code{\link{summary.hydromad}},
+  \code{\link{predict.hydromad}},
   \code{\link{xyplot.hydromad}},
   \code{\link{runlist}}
 }

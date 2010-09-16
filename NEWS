@@ -3,6 +3,7 @@ Changes in Version 0.9-7 (in development)
 
   o defineFeasibleSet() works now, along with a new argument 'glue.quantiles'
     which is also now an argument to predict() and update().
+    The help pages have been updated.
 
   o new vignette("hydromad").
 

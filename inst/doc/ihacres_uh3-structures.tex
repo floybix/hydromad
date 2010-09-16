@@ -1,0 +1,161 @@
+\documentclass{article}
+\pagestyle{empty}
+
+\usepackage[paperwidth=11cm, paperheight=7cm, margin=0.2cm, noheadfoot]{geometry}
+
+\usepackage{tikz}
+
+\usetikzlibrary{%
+  arrows,%
+  shapes.misc,% wg. rounded rectangle
+  shapes.arrows,%
+  chains,%
+  matrix,%
+  positioning,% wg. " of "
+  scopes,%
+  decorations.pathmorphing,%
+  shadows%
+}
+
+\begin{document}
+
+\tikzset{
+  nonterminal/.style={
+    rectangle, 
+    minimum size=6mm,
+    % The border:
+    thick, draw,%draw=black!50,
+    %top color=white,bottom color=black!20,
+    text height=1.5ex,text depth=.25ex,
+    join=by {->,shorten >=-1pt,
+             decoration={post length=4pt}},
+    font=\itshape
+  },
+  terminal/.style={
+    rounded rectangle,
+    minimum size=6mm,
+    % The border:
+    thick, draw,
+    text height=1.5ex,text depth=.25ex,
+    font=\ttfamily},
+  support/.style={
+    coordinate,
+    join=by {->}
+  },
+  line join=round,line cap=round,
+  every join/.style={rounded corners},
+  node distance=5mm
+}
+
+\begin{tabular}{|c|c|}
+  \hline
+  \texttt{series = 0} & \texttt{series = 1} \\
+
+%% series = 0: (s + q + 3)
+\begin{tikzpicture}[>=latex,thick]
+    \ttfamily
+    \begin{scope}[start chain,
+            every node/.style={on chain},
+            terminal/.append style={join=by {->,shorten >=-1pt,
+                                    decoration={post length=4pt}}}
+        ]
+        \node [coordinate]          (start)        {};
+        \node [coordinate]          (before split) {};
+        \node [nonterminal]         (qstore)       {"q"};
+        \node [terminal]            (plus)         {+};
+        \node [coordinate]          (end)          {};
+    \end{scope}
+    \draw (start) -- (before split);
+    \node (sstore)  [nonterminal,above=of qstore,yshift=-3mm] {"s"};
+    \node (3store)  [nonterminal,below=of qstore,yshift=3mm] {"3"};
+    \begin{scope}[->,decoration={post length=4pt},rounded corners=2mm]
+        \draw (before split)   |- (sstore);
+        \draw (before split)   |- (3store);
+        \draw (sstore)         -| (plus);
+        \draw (3store)         -| (plus);
+    \end{scope}
+\end{tikzpicture}
+      &
+% series = 1: (s + (q * 3))
+\begin{tikzpicture}[>=latex,thick]
+    \ttfamily
+    \begin{scope}[start chain,
+            every node/.style={on chain}
+        ]
+        \node [coordinate]          (start)        {};
+        \node [coordinate]          (before split) {};
+        \node [coordinate,xshift=5mm] (between1)   {};
+        \node [coordinate,xshift=8mm] (between2)   {};
+        \node [terminal]            (plus)         {+};
+        \node [coordinate]          (end)          {};
+    \end{scope}
+    \draw (start) -- (before split);
+    \node (sstore)  [nonterminal,above=of between1,xshift=5mm] {"s"};
+    \node (qstore)  [nonterminal,below=of between1] {"q"};
+    \node (3store)  [nonterminal,below=of between2] {"3"};
+    \begin{scope}[->,decoration={post length=4pt}]
+        \draw (qstore)        |- (3store);
+    \end{scope}
+    \begin{scope}[->,decoration={post length=4pt},rounded corners=2mm]
+        \draw (before split)  |- (sstore);
+        \draw (before split)  |- (qstore);
+        \draw (sstore)        -| (plus);
+        \draw (3store)        -| (plus);
+    \end{scope}
+\end{tikzpicture}
+      \\
+      %% series = 0:
+      $\mathrm{ssg} = v_s + v_q + v_3$ &
+      %% series = 1:
+      $\mathrm{ssg} = v_s + v_q \times v_3$ \\
+      
+      \hline
+      \texttt{series = 2} & \texttt{series = 3} \\
+
+% series = 2: ((s + q) * 3)
+\begin{tikzpicture}[>=latex,thick]
+    \ttfamily
+    \begin{scope}[start chain,
+            every node/.style={on chain}
+        ]
+        \node [coordinate]          (start)        {};
+        \node [coordinate]          (before split) {};
+        \node [coordinate,xshift=5mm] (between)    {};
+        \node [terminal,xshift=2mm] (plus)         {+};
+        \node [nonterminal]                        {"3"};
+        \node [coordinate]          (end)          {};
+    \end{scope}
+    \draw (start) -- (before split);
+    \node (sstore)  [nonterminal,above=of between] {"s"};
+    \node (qstore)  [nonterminal,below=of between] {"q"};
+    \begin{scope}[->,decoration={post length=4pt},rounded corners=2mm]
+        \draw (before split)  |- (sstore);
+        \draw (before split)  |- (qstore);
+        \draw (qstore)        -| (plus);
+        \draw (sstore)        -| (plus);
+    \end{scope}
+\end{tikzpicture}
+      &
+%% series = 3: (s * q * 3)
+\begin{tikzpicture}[>=latex,thick,baseline=-3em]
+    \ttfamily
+    \begin{scope}[start chain,
+            every node/.style={on chain}
+        ]
+        \node [support]             (start)        {};
+        \node [nonterminal]                        {"s"};
+        \node [nonterminal]                        {"q"};
+        \node [nonterminal]                        {"3"};
+        \node [support]             (end)          {};
+    \end{scope}
+\end{tikzpicture}
+      \\
+      %% series = 2:
+      $\mathrm{ssg} = (v_s + v_q) \times v_3$ &
+      %% series = 3:
+      $\mathrm{ssg} = v_s \times v_q \times v_3$ \\
+    \hline
+
+  \end{tabular}
+
+\end{document}

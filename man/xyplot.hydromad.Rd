@@ -34,7 +34,19 @@
   \item{\dots, scales, type, auto.key, layout}{
     further arguments passed on to
     \code{\link{xyplot.zoo}} or \code{\link{qqmath}}.
-  } 
+  }
+  \item{feasible.bounds}{
+    if \code{TRUE}, then ensemble simulation bounds are extracted and
+    plotted. This only works if a \emph{feasible set} has been specified
+    using \code{\link{defineFeasibleSet}} or the \code{update}
+    method. Note that the meaning depends on what value of
+    \code{glue.quantiles} was specified to those methods: it might be
+    the overall simulation bounds, or some GLUE-like quantile values.
+  }
+  \item{col.bounds, border, alpha.bounds}{
+    graphical parameters of the ensemble simulation bounds if
+    \code{feasible.bounds = TRUE}.
+  }
   \item{all}{
     passed to \code{fitted()} and \code{observed()}.
   }

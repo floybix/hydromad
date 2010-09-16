@@ -14,6 +14,7 @@ spec[["modelling framework"]] <-
          list("hydromad"),
          list("methods...", helpname = "hydromad.object",
               codefile = "update.hydromad.R"),
+         list("predict", helpname = "predict.hydromad"),
          list("simulate", helpname = "simulate.hydromad", do.example = TRUE),
          list("runlist"),
          list("hydromad.options", codefile = "options.R")
