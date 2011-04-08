@@ -84,7 +84,7 @@ gr4j.ranges <- function()
          etmult = 1)
 
 gr4jrouting.sim <-
-    function(U, x2, x3, x4, R_0 = 0,
+    function(U, x2, x3, x4, R_0 = 0, split = 0.9,
              return_components = FALSE,
              epsilon = hydromad.getOption("sim.epsilon"))
 {
@@ -117,8 +117,8 @@ gr4jrouting.sim <-
     bad <- is.na(U)
     U[bad] <- 0
     
-    Q9 <- filter(0.9 * U, UH1, sides = 1)
-    Q1 <- filter(0.1 * U, UH2, sides = 1)
+    Q9 <- filter(split * U, UH1, sides = 1)
+    Q1 <- filter((1-split) * U, UH2, sides = 1)
 
     ## fill in values undefined by UH filter
     Q9[seq_along(UH1)] <- 0

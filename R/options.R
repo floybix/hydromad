@@ -28,7 +28,7 @@
          objective = ~ 0.7 * hmadstat("r.sq.sqrt")(Q, X) + 0.3 * .(hmadstat("r.sq.monthly", DATA = DATA))(Q, X),
          summary.stats = c("rel.bias", "r.squared", "r.sq.sqrt", "r.sq.log"),
          prefilter = list(0.9, 0.98, 0.5),
-         sriv.iterations = 20,
+         sriv.iterations = 12,
          sriv.epsilon = 1e-3,
          riv.noise.order = NULL,
          inverse.fit.method = "sriv",

@@ -347,7 +347,7 @@ pre-specified ranges, selecting the best of these, and then runs an
 optimisation algorithm from that starting point.
 
 <<model-fit, echo=TRUE>>=
-cotterMod <- update(cotterMod, rfit = list("sriv", order = c(n=2, m=1)))
+cotterMod <- update(cotterMod, routing = "armax", rfit = list("sriv", order = c(n=2, m=1)))
 cotterFit <- fitByOptim(cotterMod, samples = 100, method = "PORT")
 @
 

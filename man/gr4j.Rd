@@ -11,7 +11,7 @@
 \usage{
 gr4j.sim(DATA, x1, etmult = 1, S_0 = 0.5, return_state = FALSE)
 
-gr4jrouting.sim(U, x2, x3, x4, R_0 = 0,
+gr4jrouting.sim(U, x2, x3, x4, R_0 = 0, split = 0.9,
                 return_components = FALSE,
                 epsilon = hydromad.getOption("sim.epsilon"))
 }
@@ -25,7 +25,9 @@ gr4jrouting.sim(U, x2, x3, x4, R_0 = 0,
   \item{x4}{ time base of unit hydrograph UH1 (time steps). }
   \item{etmult}{Multiplier for the \code{E} input data.}
   \item{S_0}{Initial soil moisture level as fraction of \code{x1}.}
-  \item{R_0}{Initial groundwater reservoir level as fraction of \code{x3}.}
+  \item{R_0}{Initial groundwater reservoir level as fraction of
+\code{x3}.}
+  \item{split}{ Fraction to go into quick flow routing, usually fixed at 0.9. }
   \item{return_state}{
     to return the series U, S (storage) and ET (evapotranspiration).
   }
