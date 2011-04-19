@@ -72,22 +72,19 @@ event.xyplot(x, ...)
 data(Canning)
 ev <- eventseq(Canning$P, thresh = 20, inthresh = 1, indur = 3,
                continue = FALSE)
-event.xyplot(log10(e(Q,sum)+0.01) ~ e(P,sum) + sqrt(e(P,max)) + log10(e(lag(Q,-1),first)+0.01),
-             data = Canning, events = ev, 
-             ylab = "event-aggregated flow sums (mm, log10)")
-## change to nicer strip labels and add a loess smoother
-foo <- trellis.last.object(type = c("p", "smooth"))
-dimnames(foo)[[1]] <-
-    paste("vs.", c("total rain (mm)", "max rain (sqrt mm/day)", "log10 antecedent flow (mm/day)"))
-foo
+event.xyplot(e(Q,sum) / e(P,sum) ~ e(P,sum) + e(P,max) + e(lag(Q,-1),first),
+             data = Canning, events = ev,
+             scales = list(y = list(log = TRUE)),
+             yscale.components = yscale.components.fractions,
+             ylab = "event runoff ratio (Q/P)", layout = c(3,1),
+             xlab = c("total rain (mm)", "max rain (mm/day)",
+             "antecedent flow (mm/day)"))
 
 ## multiple response variables
-zquantile <- function(x,...) quantile(coredata(x),...)
-event.xyplot(cbind(e(Q,zquantile,0.9),e(Q,zquantile,0.98)) ~
+event.xyplot(cbind(e(Q,quantile,0.9),e(Q,quantile,0.99)) ~
              e(P,max) + e(P,mean) + e(P,sum),
              data = Canning, events = ev,
-             scales = list(log = TRUE),
-             xscale.components = xscale.components.log10ticks,
+             scales = list(y = list(log = TRUE)),
              yscale.components = yscale.components.log10.3)
 }
 \keyword{ hplot }

@@ -64,7 +64,7 @@ hydromad(DATA = zoo(), ...,
   }
   \item{rfit}{
     optional specification for fitting the routing component. If a
-    character string is given, then a corresponing function
+    character string is given, then a corresponding function
     \var{routing}\code{.}\var{rfit}\code{.fit} must exist.
   }
   \item{warmup}{
@@ -83,7 +83,8 @@ hydromad(DATA = zoo(), ...,
   For a tutorial, type
   \code{vignette("tutorial", package = "hydromad")}.
 
-  For an overview of the package, see the paper (in preparation).
+  For an overview of the package, see the paper
+  \code{vignette("hydromad")}.
 
   For a list of the package functions with their help pages, see the
   website \url{http://hydromad.catchment.org/}.

@@ -195,6 +195,37 @@ set.seed(0)
 ee <- eventseq(rnorm(100), n = 10, mingap = 2)
 nlevels(ee)
 attr(ee, "thresh")
+
+## 
+## example of classifying events based on hydro properties
+##
+
+data(Queanbeyan)
+x <- window(Queanbeyan, start = "1974-01-01", end = "1976-12-01")
+e <- eventseq(x$P, thresh = 5, inthresh = 1, indur = 4, continue = TRUE)
+
+## classify events based on max flow
+qclass <- cut(ave(coredata(x$Q), coredata(e), FUN = max),
+              c(0, 0.5, 1, Inf))
+qclass <- zoo(qclass, time(x))
+
+## Classify events based on antecedent flow
+x <- merge(x, Q1 = lag(x$Q, -1), all = c(TRUE, FALSE))
+head1 <- function(z) z[1]
+q1class <- cut(ave(coredata(x$Q1), coredata(e), FUN = head1),
+               c(0, 0.2, 0.3, Inf))
+q1class <- zoo(q1class, time(x))
+
+## combined classification
+combin <- factor(paste("M", unclass(qclass), "_A", unclass(q1class), sep =""))
+combin <- zoo(combin, time(x))
+
+## check results
+head(data.frame(x, event = unclass(e), qclass, q1class, combin), 50)
+
+## number of events in each class
+each.e <- !duplicated(e)
+table(coredata(combin[each.e]))
 }
 \keyword{ ts }
 \keyword{ utilities }

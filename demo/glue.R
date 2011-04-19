@@ -2,6 +2,8 @@
 library(hydromad)
 data(Queanbeyan)
 
+stop("this needs to be updated")
+
 ts83 <- window(Queanbeyan, start = "1983-01-01", end = "1986-01-01")
 
 cmdspec80s <-

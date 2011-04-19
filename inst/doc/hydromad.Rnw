@@ -67,9 +67,7 @@ Fenner School of Environment and Society, The Australian National University}
   daily time step), spatially-aggregated conceptual or statistical
   models.  The package functions are designed to fit seamlessly into
   the \R{} system, and builds on its powerful data manipulation and
-  analysis capabilities.  The main design goals were
-  \emph{flexibility}, to explore research questions and develop
-  improved methods, and \emph{simplicity} of the basic framework.  The
+  analysis capabilities.  The
   framework used in the package encourages a separation of model
   components based on Unit Hydrograph theory; many published models
   are consistent with this and implementations of several are
@@ -190,10 +188,7 @@ statistical or conceptual models to complex spatially-distributed or
 physics-based models \citep{WheaterEtAl:1993}.  In practice all
 catchment hydrology models need to be calibrated to measured data;
 model parameters do not have a precise physical analogue when applied
-at large scales \citep{WagenerEtAl:2009}. Given that the data
-available in most catchments is badly limited in terms of duration,
-quality, and spatio-temporal resolution, only relatively simple models
-can typically be justified \citep{JakemanHornberger:1993}.  The
+at large scales \citep{WagenerEtAl:2009}.  The
 simplest models of catchment hydrology dynamics are spatially lumped,
 and conceptual or empirical in their approach. Such models can be used
 to address questions in terms of aggregate effects, without
@@ -606,7 +601,7 @@ in this regard will depend on the task at hand.
 load("hydromad_optimtraces.Rdata")
 xyplot(traces, superpose = TRUE, ylim = c(0.55, NA), xlab = "Function evaluations",
        ylab = "objective function value",
-       auto.key = FALSE) + #list(corner = c(1, 0.02))) +
+       auto.key = list(corner = c(1, 0.02))) +
     glayer(i <- length(na.trim(y, sides = "right")), 
            panel.text(x[i], y[i], group.value, cex = 0.75,
                       pos = if (group.value == "DREAM") 1 else 4))
@@ -1930,7 +1925,7 @@ Aggregated and event-based statistics:
     R Squared with data aggregated into calendar months.
 
   \item \code{e.rain5}:
-    1 - R Squared of flow totals in
+    R Squared of flow totals in
     each event, defined by rainfall exceeding 5mm per time step, and
     continuing until the next such event. Each single event continues
     at least until rainfall remains below 1 mm for 4 time steps.
@@ -1943,7 +1938,7 @@ Aggregated and event-based statistics:
     (with the non-zero 10 percentile of these totals as an offset).
 
   \item \code{e.q90}:
-    1 - R Squared of flow totals in
+    R Squared of flow totals in
     each event, defined by observed flow exceeding the 90 percentile
     level for at least 2 time steps, and continuing until the next
     such event. Each single event continues at least until flow falls
@@ -1956,7 +1951,7 @@ Aggregated and event-based statistics:
     same as \code{e.q90} but the event totals are Box-Cox-transformed.
     
   \item \code{e.q90.all}:
-    1 - R Squared of flow totals in
+    R Squared of flow totals in
     \emph{and between} each event, defined by observed flow exceeding
     the 90 percentile level for at least 2 time steps, and continuing
     until the flow falls below the 90 percentile level for 4 time

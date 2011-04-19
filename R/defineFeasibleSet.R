@@ -88,6 +88,7 @@ defineFeasibleSet.default <-
         ok[i] <- TRUE
         ## simulate
         xsim <- fitted(update(model, newpars = thisPars), all = TRUE)
+        if (is.null(xsim)) stop("can not simulate; were all parameters given?")
         xsim <- doaggr(xsim)
         ## check what fraction of this simulation is within given tolerances
         if (frac.within > 0) {
