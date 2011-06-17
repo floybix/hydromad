@@ -1,4 +1,4 @@
-\documentclass[preprint,authoryear]{elsarticle}
+\documentclass[1p,authoryear]{elsarticle}
 
 \usepackage{Sweave}
 \usepackage{graphicx}
@@ -84,6 +84,19 @@ Fenner School of Environment and Society, The Australian National University}
   always has the freedom to adapt it as required.  Use of the software
   is demonstrated in a case study of the Queanbeyan River catchment in
   South-East Australia.
+\\
+
+\framebox{\parbox{0.9\textwidth}{\small
+NOTICE: This is the author's version of a work accepted for publication
+by Elsevier. Changes resulting from the publishing process, including
+peer review, editing, corrections, structural formatting and other quality
+control mechanisms, may not be reflected in this document. Changes
+may have been made to this work since it was submitted for publication.
+A definitive version was subsequently published in 
+\emph{Environmental Modelling and Software} 26 (2011), 
+\code{doi:10.1016/j.envsoft.2011.04.006}. 
+}}
+
 \end{abstract}
 
 \begin{keyword}
@@ -167,13 +180,14 @@ evq.all <-
 
 \maketitle
 
-%NOTICE: This is the author's version of a work accepted for publication
-%by Elsevier. Changes resulting from the publishing process, including
-%peer review, editing, corrections, structural formatting and other quality
-%control mechanisms, may not be reflected in this document. Changes
-%may have been made to this work since it was submitted for publication.
-%A definitive version was subsequently published in PUBLICATION TITLE,
-%[VOL#, ISSUE#], DATE, DOI.
+NOTICE: This is the author's version of a work accepted for publication
+by Elsevier. Changes resulting from the publishing process, including
+peer review, editing, corrections, structural formatting and other quality
+control mechanisms, may not be reflected in this document. Changes
+may have been made to this work since it was submitted for publication.
+A definitive version was subsequently published in 
+\emph{Environmental Modelling and Software} 26 (2011), 
+\code{doi:10.1016/j.envsoft.2011.04.006}.
 
 \section{Introduction and motivation}
 
@@ -599,12 +613,12 @@ in this regard will depend on the task at hand.
 \begin{center}
 <<optimtrace-plot, fig=TRUE, width=7, height=3>>=
 load("hydromad_optimtraces.Rdata")
-xyplot(traces, superpose = TRUE, ylim = c(0.55, NA), xlab = "Function evaluations",
+xyplot(traces, superpose = TRUE, ylim = c(0.60, NA), xlab = "Function evaluations",
        ylab = "objective function value",
        auto.key = list(corner = c(1, 0.02))) +
     glayer(i <- length(na.trim(y, sides = "right")), 
            panel.text(x[i], y[i], group.value, cex = 0.75,
-                      pos = if (group.value == "DREAM") 1 else 4))
+                      pos = if (group.value == "DREAM") 3 else 4))
 
 print(trellis.last.object())
 @ 
@@ -1156,10 +1170,7 @@ large runoff events have a more consistent delay time of 1 day. This
 makes sense as large runoff events would take a more direct flow
 path. Whether it is worth trying to model this effect would depend on
 the problem context. Also, some of the outlying delay times may be
-worth investigating as possible errors. For tasks like this, the \R{}
-package \pkg{playwith} \citep{playwith} provides an interface for
-identifying outlying data points in plots, and for zooming and
-scrolling time series plots.
+worth investigating as possible errors. 
 
 Having satisfied some basic checks, we can move on to
 analyse the dynamics in more detail using conceptual models.

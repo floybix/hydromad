@@ -84,7 +84,7 @@ hydromad(DATA = zoo(), ...,
   \code{vignette("tutorial", package = "hydromad")}.
 
   For an overview of the package, see the paper
-  \code{vignette("hydromad")}.
+  \code{vignette("hydromad_paper")}.
 
   For a list of the package functions with their help pages, see the
   website \url{http://hydromad.catchment.org/}.

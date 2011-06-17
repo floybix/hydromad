@@ -28,7 +28,7 @@
 \restylefloat{figure}
 
 \title{Hydromad Tutorial}
-\author{Felix Andrews\\The Australian National University}
+\author{Felix Andrews}
 
 %\VignetteIndexEntry{Getting started with hydromad}
 %\VignettePackage{hydromad}
@@ -143,9 +143,9 @@ analysing a simple model.
 
 Once you have \proglang{R}
 running\footnote{See \url{http://www.r-project.org/}}
-and have installed the \pkg{hydromad} package\footnote{at this beta
-development stage, you will need to ask Felix how to do this.}, you
-can load it:
+and have installed the \pkg{hydromad} 
+package\footnote{See \url{http://hydromad.catchment.org/}}, 
+you can load it:
 <<load-package, echo=TRUE>>=
 library(hydromad)
 @

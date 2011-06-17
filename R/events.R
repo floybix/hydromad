@@ -268,7 +268,7 @@ preInterEventDuration <- function(x)
     if (inherits(x, "zoo"))
         stopifnot(is.regular(x, strict = TRUE))
     interCounter <- cumsum(is.na(coredata(x)))
-    vals <- tapply(interCounter, x, FUN = head, 1)
+    vals <- tapply(interCounter, coredata(x), FUN = head, 1)
     c(vals[1], diff(vals))
 }
 

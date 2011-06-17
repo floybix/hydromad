@@ -220,9 +220,9 @@ S3method(event.xyplot, hydromad)
 S3method(event.xyplot, hydromad.runlist)
 
 export(panel.ribbon)
-S3methods(panel.ribbon, default)
-S3methods(panel.ribbon, ts)
-S3methods(panel.ribbon, zoo)
+S3method(panel.ribbon, default)
+S3method(panel.ribbon, ts)
+S3method(panel.ribbon, zoo)
 
 ## utilities.R
 export(observed,

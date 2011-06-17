@@ -1,5 +1,17 @@
 
-Changes in Version 0.9-7 (in development)
+Changes in Version 0.9-8
+
+  o renamed 'hydromad' vignette to 'hydromad_paper' (build problems).
+
+  o bug fix for preInterEventDuration().
+
+  o updates and docs for feasible set / GLUE stuff.
+
+  o make .9/.1 split in gr4j an option.
+
+  o remove strict dependency on 'dream' package since it is not on CRAN.
+
+Changes in Version 0.9-7
 
   o defineFeasibleSet() works now, along with a new argument 'glue.quantiles'
     which is also now an argument to predict() and update().

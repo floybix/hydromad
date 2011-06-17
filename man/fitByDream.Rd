@@ -61,7 +61,8 @@ fitByDream(MODEL, loglik = hydromad.getOption("loglik"),
   \code{\link{objFunVal}}
 }
 \examples{
-library("dream")
+
+if (require("dream", quietly = TRUE)) {
 
 data(Cotter)
 x <- Cotter[1:1000]
@@ -92,5 +93,7 @@ xyplot(optimtrace(foo, objective = ~ - hmadstat("r.squared")(Q,X)),
 
 ## MCMC diagnostics and more are available:
 methods(class = "dream")
+
+}
 }
 \keyword{ optimization }
