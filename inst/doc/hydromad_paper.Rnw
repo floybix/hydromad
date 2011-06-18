@@ -180,15 +180,6 @@ evq.all <-
 
 \maketitle
 
-NOTICE: This is the author's version of a work accepted for publication
-by Elsevier. Changes resulting from the publishing process, including
-peer review, editing, corrections, structural formatting and other quality
-control mechanisms, may not be reflected in this document. Changes
-may have been made to this work since it was submitted for publication.
-A definitive version was subsequently published in 
-\emph{Environmental Modelling and Software} 26 (2011), 
-\code{doi:10.1016/j.envsoft.2011.04.006}.
-
 \section{Introduction and motivation}
 
 Catchment hydrology is the study of the water cycle at the scale of a

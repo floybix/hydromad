@@ -91,7 +91,7 @@ spec[["utilities"]] <-
          list("rollccf", do.example = TRUE),
          list("parameterSets"),
          list("observed"),
-         list("SCEoptim")
+         list("SCEoptim", codefile = "sce.R")
          )
 
 spec[["datasets"]] <-
@@ -131,7 +131,7 @@ ltheme$strip.shingle$col <- grey(6/8)
 
 imageSrcBase <- ""
 
-generateWebsite("hydromad", spec = spec, do.example = FALSE,
+generateWebsite("hydromad", spec = spec, do.example = FALSE, ## default
                 man.src.dir = "../man/",
                 image.src.base = imageSrcBase,
                 topleveljs = paste('var imageSrcBase = "', imageSrcBase, '";', sep = ""),

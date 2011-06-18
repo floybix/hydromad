@@ -216,3 +216,7 @@ code {
     opacity: 0.5;
     filter: alpha(opacity=50);
 }
+
+dt {
+    font-weight: bold;
+}
