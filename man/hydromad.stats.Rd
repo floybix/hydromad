@@ -70,9 +70,17 @@ hydromad.stats(...)
     }
     \item{r.sq.log}{
       R Squared using log
-      transformed data,
+      transformed data, with an offset:
       \eqn{1 - \frac{\sum |\log{(Q+\epsilon)} - \log{(X+\epsilon)}|^2 }
 	            {\sum |\log{(Q+\epsilon)} - \bar{\log{(Q+\epsilon)}}|^2 }}.
+      Here \eqn{\epsilon} is the 10 percentile (i.e. lowest
+      decile) of the non-zero values of Q.
+    }
+    \item{r.sq.boxcox}{
+      R Squared using a Box-Cox transform. The power
+      lambda is chosen to fit Q to a normal distribution. When
+      lambda = 0 it is a log transform; otherwise it is
+      \eqn{y_* = \frac{(y+\epsilon)^\lambda - 1}{\lambda}}
       Here \eqn{\epsilon} is the 10 percentile (i.e. lowest
       decile) of the non-zero values of Q.
     }
@@ -84,10 +92,9 @@ hydromad.stats(...)
       R Squared with data aggregated into
       calendar months.
     }
-    \item{r.sq.smooth7}{
-      R Squared using data smoothed with
-      a triangular kernel with an effective bandwidth of 7 time steps
-      (the actual width of the kernel is about 40\% larger).
+    \item{r.sq.smooth5}{
+      R Squared using data smoothed with a triangular kernel of width 5
+      time steps: \code{c(1,2,3,2,1)/9}.
     }
     \item{r.sq.seasonal}{
       R Squared where the reference model

@@ -1,4 +1,11 @@
 
+Changes in Version 0.9-9 (in development)
+
+  o fixed convertFlow() to or from "metres".
+
+  o updated list of objective functions in ?hydromad.stats
+
+
 Changes in Version 0.9-8
 
   o renamed 'hydromad' vignette to 'hydromad_paper' (build problems).

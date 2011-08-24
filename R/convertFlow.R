@@ -55,8 +55,8 @@ convertFlow <-
     Litres <- (1 / area.km2) / 1e6
     vfactors <- alist(mm = 1,
                       cm = 10,
-                      metres =, metre =, m = 100,
-                      km = 100 * 1000,
+                      metres =, metre =, m = 1000,
+                      km = 1000 * 1000,
                       inches =, inch =, `in` = 25.4,
                       feet =, ft = 304.8,
                       mL =, cm3 =, `cm^3` = 1e-3 * Litres,

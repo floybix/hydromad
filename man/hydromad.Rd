@@ -94,7 +94,10 @@ hydromad(DATA = zoo(), ...,
   \link[=hydromad.object]{hydromad object}.
 }
 \references{
-  ... TODO
+  F.T. Andrews, B.F.W. Croke and A.J. Jakeman (2011). An open software
+  environment for hydrological model assessment and
+  development. \emph{Environmental Modelling and Software} 26 (2011),
+  pp. 1171-1185. \url{http://dx.doi.org/10.1016/j.envsoft.2011.04.006}
 }
 \author{ Felix Andrews \email{felix@nfrac.org} }
 \seealso{
