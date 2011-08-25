@@ -1,6 +1,9 @@
 
 Changes in Version 0.9-9 (in development)
 
+  o fixes for gr4j model based on comparison to reference
+    implementation (xls).  Contributed by Joseph Guillaume.
+
   o fixed convertFlow() to or from "metres".
 
   o updated list of objective functions in ?hydromad.stats

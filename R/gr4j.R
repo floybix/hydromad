@@ -61,7 +61,7 @@ gr4j.sim <-
             }
             S[t] <- S_prev - ET[t] + Ps
             ## percolation leakage
-            perc <- S[t] * ( 1 - (1 + ((4/9) * St_x1)^4)^(-0.25) )
+            perc <- S[t] * ( 1 - (1 + ((4/9) * (S[t]/x1))^4)^(-0.25) )
             S[t] <- S[t] - perc
             U[t] <- perc + (Pn - Ps)
             S_prev <- S[t]
@@ -116,15 +116,17 @@ gr4jrouting.sim <-
     ## skip over missing values (maintaining the state)
     bad <- is.na(U)
     U[bad] <- 0
-    
-    Q9 <- filter(split * U, UH1, sides = 1)
-    Q1 <- filter((1-split) * U, UH2, sides = 1)
 
-    ## fill in values undefined by UH filter
-    Q9[seq_along(UH1)] <- 0
-    Q1[seq_along(UH2)] <- 0
-    bad[seq_along(UH2)] <- TRUE
-    
+    filter.pad0 <- function(x, f) {
+        y <- x
+        y[] <- filter(c(rep(0, length(f)), x),
+                      filter = f, sides = 1)[-(1:length(f))]
+        y
+    }
+
+    Q9 <- filter.pad0(split * U, UH1)
+    Q1 <- filter.pad0((1-split) * U, UH2)
+
     COMPILED <- (hydromad.getOption("pure.R.code") == FALSE)
     if (COMPILED) {
         ans <- .C(routing_gr4j,
@@ -152,7 +154,7 @@ gr4jrouting.sim <-
             ## reservoir level
             R[t] <- max(0, R_prev + Q9[t] + F)
             ## outflow of reservoir
-            Qr[t] <- R[t] * ( 1 - (1 + Rt_x3^4)^(-0.25) )
+            Qr[t] <- R[t] * ( 1 - (1 + (R[t]/x3)^4)^(-0.25) )
             R[t] <- R[t] - Qr[t]
             ## other store
             Qd[t] <- max(0, Q1[t] + F)

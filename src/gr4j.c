@@ -40,7 +40,7 @@ sma_gr4j(double *P, double *E, int *n,
         }
         S[t] = S_prev - ET[t] + Ps;
         // percolation leakage
-        perc = S[t] * ( 1.0 - pow(1.0 + pow((4.0/9.0)*St_x1, 4.0), -0.25) );
+        perc = S[t] * ( 1.0 - pow(1.0 + pow((4.0/9.0) * S[t] / (*x1), 4.0), -0.25) );
         S[t] = S[t] - perc;
         U[t] = perc + (Pn - Ps);
         S_prev = S[t];
@@ -62,7 +62,7 @@ routing_gr4j(double *Q9, double *Q1, int *n,
         // reservoir level
         R[t] = max(0, R_prev + Q9[t] + F);
         // outflow of reservoir
-        Qr[t] = R[t] * ( 1.0 - pow(1.0 + pow(Rt_x3, 4.0), -0.25) );
+        Qr[t] = R[t] * ( 1.0 - pow(1.0 + pow(R[t] / (*x3), 4.0), -0.25) );
         R[t] = R[t] - Qr[t];
         // other store
         Qd[t] = max(0, Q1[t] + F);
