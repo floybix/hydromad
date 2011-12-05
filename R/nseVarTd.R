@@ -16,19 +16,24 @@
 ##     return(nseStat(coredata(lag.rain$Q), coredata(lag.rain$mod1), ...))
 ## }
 
-nseVarTd <- function(obs,mod,event,...){
-    event.1lag <- lag(event, 1) # to consider the increment of the first obsQ
-    whole.lag<-estimateDelay(x,lag.max=4,negative.ok=T)
 
-    PQEM=cbind(U=mod,Q=obs)
-    lag.rain<-eventapply(PQEM,event.1lag,by.column=FALSE,function(x){
+adjVarTd <- function(obs,mod,event,...){
+    event.1lag <- lag(event, 1) # to consider the increment of the first obsQ
+    mod.obs=cbind(U=mod,Q=obs)
+    whole.lag<-estimateDelay(mod.obs,lag.max=4,negative.ok=T)
+    lag.mod<-eventapply(mod.obs,event.1lag,by.column=FALSE,function(x){
         ans.lag<-estimateDelay(x, lag.max = 4,negative.ok=T)
         if (is.na(ans.lag)) {ans.lag <- whole.lag} # if obsQ=0 then delay=NA, put whole delay value
-        x2<-merge(x, mod1 = lag(PQEM[,1], ans.lag), all = c(TRUE, FALSE))
+        x2<-merge(x, mod1 = lag(mod.obs[,1], ans.lag), ans.lag,all = c(TRUE, FALSE))
         return(x2)
     })
-    lag.rain <- do.call(rbind,lag.rain)
-    return(nseStat(coredata(lag.rain$Q), coredata(lag.rain$mod1), ...))
+    return(do.call(rbind,lag.mod))
+}
+
+
+nseVarTd <- function(obs,mod,event,...){
+    lag.mod <- adjVarTd(obs,mod,event,...)
+    return(nseStat(coredata(lag.mod$Q), coredata(lag.mod$mod1), ...))
 }
 
 ################################################################################

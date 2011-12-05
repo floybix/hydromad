@@ -1,15 +1,19 @@
 \name{nseVarTd}
 \alias{nseVarTd}
+\alias{adjVarTd}
 \title{
   Time-delay corrected performance measure
 }
 \description{
-  Performance measure where modelled flow peaks have been coalesced to
-  observed flow peaks for each event separately, i.e. gives a better
-  indication of performance ignoring timing error
+  adjVarTd coalesces modelled flow peaks to
+  observed flow peaks for each event separately. nseVarTd calculates
+  Nash-Sutcliffe efficiency on the result using \code{\link{nseStat}}.
+  Depending on the quality of the coalescing, this better indicate
+  performance ignoring timing error.
 }
 \usage{
 nseVarTd(obs, mod, event, ...)
+adjVarTd(obs,mod,event,...)
 }
 \arguments{
   \item{obs}{
@@ -26,7 +30,9 @@ nseVarTd(obs, mod, event, ...)
 }
 }
 \value{
-  a single numeric value
+  For nseVarTd, a single numeric value.
+  For adjVarTd, a zoo object with the original modelled and observed
+  data, the adjusted model output and the lag estimated for each event.
 }
 \author{
   Joseph Guillaume

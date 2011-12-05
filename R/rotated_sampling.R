@@ -1,6 +1,7 @@
 ## Sample from the rotated space defined by the eigenvectors of XtX
 rotatedSampling <- function(X,samples,expand=0,...){
   if(is.null(colnames(X))) colnames(X) <- sprintf("X%d",1:ncol(X))
+  ##TODO: set fixed
   ##subtract mean for each parameter
   means <- colMeans(X)
   X2 <- t(t(X)-means)
@@ -21,6 +22,7 @@ rotatedSampling <- function(X,samples,expand=0,...){
   Y <- parameterSets(bounds,samples,...)
   ## Rotate back
   Ys <- t(t(as.matrix(Y)%*%t(V))+means)
+  Ys<-as.data.frame(Ys)
   names(Ys) <- names(Y)
   Ys
   ## TODO: adaptive, multiple rotations

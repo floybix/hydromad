@@ -52,4 +52,4 @@ fitByCMAES(MODEL, objective = hydromad.getOption("objective"), control = hydroma
 \seealso{
   \code{\link{cma_es}}
 }
-\keywords{optimization}
+\keyword{optimisation}

@@ -6,7 +6,7 @@
   (rises in) the corresponding output time series.
 }
 \usage{
-estimateDelay(DATA = data.frame(U=, Q=), rises = TRUE, 
+estimateDelay(DATA = data.frame(U=, Q=), rises = TRUE,
               lag.max = hydromad.getOption("max.delay"),
               n.estimates = 1, negative.ok = FALSE,
               na.action = na.exclude,
@@ -39,7 +39,7 @@ estimateDelay(DATA = data.frame(U=, Q=), rises = TRUE,
   If \code{n.estimates > 1}, that number of integer delays, ordered by the CCF.
 }
 \author{ Felix Andrews \email{felix@nfrac.org} }
-\seealso{ \code{\link{ccf}} }
+\seealso{ \code{\link{ccf}},\code{\link{estimateDelayFrac}} }
 \examples{
 set.seed(1)
 x <- ts(pmax(0, rgamma(200, shape=0.1, scale=20) - 5))

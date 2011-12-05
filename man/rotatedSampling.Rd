@@ -33,7 +33,10 @@ rotatedSampling(X, samples, expand = 0, ...)
   data.frame of parameter values drawn from rotated hypercube
 }
 \references{
-  Karel Keesman
+  Karel, K. (1990). Membership-set estimation using random scanning and principal component analysis. Mathematics and Computers in Simulation 32(5-6): 535-543 DOI: http://dx.doi.org/10.1016/0378-4754(90)90009-8.
+
+Also possibly related to Iman, R.L. and W.J. Conover (1982). A distribution-free approach to inducing rank correlation among input variables. Communications in Statistics - Simulation and Computation 11(3): 311-334 DOI: http://dx.doi.org/10.1080/03610918208812265.
+
 }
 \author{
   Joseph Guillaume
