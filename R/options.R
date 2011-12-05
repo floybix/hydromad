@@ -38,6 +38,8 @@
          sce.control = list(),
          de.control = list(itermax = 1000/50),
          dream.control = list(),
+         cmaes.control=list(),
+         nsga2.control=list(),
          fit.samples = 100,
          optim.method = "PORT",
          optim.control = list(reltol = 1e-6, maxit = 150,

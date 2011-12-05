@@ -1,10 +1,10 @@
 Package: hydromad
-Version: 0.9-9
-Date: 2011-08-25
+Version: 0.9-10
+Date: 2011-12-05
 Title: Hydrological Model Assessment and Development
-Author: Felix Andrews <felix@nfrac.org>
-Maintainer: Felix Andrews <felix@nfrac.org>
-Description: A modelling framework for environmental hydrology: water 
+Author: Felix Andrews <felix@nfrac.org>, Joseph Guillaume <joseph.guillaume@anu.edu.au>
+Maintainer: Joseph Guillaume <joseph.guillaume@anu.edu.au>
+Description: Forked version with additional potentially unstable features. A modelling framework for environmental hydrology: water 
   balance accounting and flow routing in spatially aggregated catchments. 
   It supports simulation, estimation, assessment and visualisation of 
   flow response to time series of rainfall and other drivers. Includes 
@@ -12,6 +12,6 @@ Description: A modelling framework for environmental hydrology: water
   (including SRIV - Simplified Refined Instrumental Variable), etc.
 Depends: R (>= 2.11.0), zoo (>= 1.6-3), lattice (>= 0.19-11), latticeExtra (>= 0.6-14), polynom
 Imports: car (>= 2.0-2), Hmisc, lattice, stats, utils
-Suggests: DEoptim, mgcv, chron, testthat
+Suggests: DEoptim, mgcv, chron, testthat, mco, cmaes
 License: GPL (>= 2)
 URL: http://hydromad.catchment.org/

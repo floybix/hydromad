@@ -38,6 +38,7 @@ S3method(absorbScale, hydromad)
 S3method(simulate, hydromad)
 
 export(parameterSets)
+export(rotatedSampling)
 
 S3method(summary, hydromad)
 S3method(summary, hydromad.runlist)
@@ -57,7 +58,9 @@ export(tryModelOrders)
 S3method(summary, tryModelOrders)
 
 export(makePrefilter, ## remove this?
-       estimateDelay)
+       estimateDelay,
+       estimateDelayFrac,lagFrac
+       )
 
 export(tfParsConvert)
 
@@ -77,7 +80,9 @@ export(expuh.sim,
        expuh.ls.fit,
        expuh.sriv.fit,
        expuh.inverse.fit,
-       expuh.inverse.sim)
+       expuh.inverse.sim,
+       maexpuh.sim
+)
 
 export(filter_loss) # export?
 useDynLib(hydromad, filter_constloss)
@@ -152,11 +157,12 @@ export(fitBySampling)
 export(fitByOptim)
 export(fitByOptim1)
 
-export(fitBySCE)
-
-export(fitByDE)
-
-export(fitByDream)
+export(fitBySCE,
+       fitByDE,
+       fitByDream,
+       fitByNsga2,
+       fitByCMAES
+       )
 
 ## TODO: fitByGenoud?
 
@@ -170,6 +176,7 @@ S3method(optimtrace, default)
 
 export(nseStat)
 export(fitStat) ## deprecated
+export(nseVarTd)
 
 export(objFunVal)
 S3method(objFunVal, default)
@@ -208,7 +215,7 @@ export(convertFlow)
 
 ## events.R
 export(findThresh,
-       eventseq, 
+       eventseq,
        eventapply,
        eventinfo)
 
@@ -236,6 +243,8 @@ export(rollccf,
 
 export(hydromad.stats,
        hmadstat)
+
+export(fdc.allpoints,fdc.sample)
 
 export(hydromad.options,
        hydromad.getOption)
