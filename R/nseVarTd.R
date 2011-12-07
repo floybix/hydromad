@@ -16,13 +16,13 @@
 ##     return(nseStat(coredata(lag.rain$Q), coredata(lag.rain$mod1), ...))
 ## }
 
-
+## TODO: allow specifying rest of estimate-delay parameters
 adjVarTd <- function(obs,mod,event,...){
     event.1lag <- lag(event, 1) # to consider the increment of the first obsQ
     mod.obs=cbind(U=mod,Q=obs)
-    whole.lag<-estimateDelay(mod.obs,lag.max=4,negative.ok=T)
+    whole.lag<-estimateDelay(mod.obs,negative.ok=T,...)
     lag.mod<-eventapply(mod.obs,event.1lag,by.column=FALSE,function(x){
-        ans.lag<-estimateDelay(x, lag.max = 4,negative.ok=T)
+        ans.lag<-estimateDelay(x, negative.ok=T,...)
         if (is.na(ans.lag)) {ans.lag <- whole.lag} # if obsQ=0 then delay=NA, put whole delay value
         x2<-merge(x, mod1 = lag(mod.obs[,1], ans.lag), ans.lag,all = c(TRUE, FALSE))
         return(x2)
