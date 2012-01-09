@@ -6,8 +6,9 @@
 gr4j.sim <-
     function(DATA,
              x1, etmult = 1, S_0 = 0.5, 
-             return_state = FALSE)
+             return_state = FALSE,transformed=FALSE)
 {
+    if (transformed) x1 <- exp(x1)
     stopifnot(c("P","E") %in% colnames(DATA))
     ## check values
     stopifnot(x1 >= 0)
@@ -86,8 +87,13 @@ gr4j.ranges <- function()
 gr4jrouting.sim <-
     function(U, x2, x3, x4, R_0 = 0, split = 0.9,
              return_components = FALSE,
-             epsilon = hydromad.getOption("sim.epsilon"))
+             epsilon = hydromad.getOption("sim.epsilon"),transformed=FALSE)
 {
+    if (transformed){
+      x2 <- sinh(x2)
+      x3 <- exp(x3)
+      x4 <- exp(x4)+0.5
+    }
     ## check values
     stopifnot(is.numeric(x2))
     stopifnot(x3 >= 0)
