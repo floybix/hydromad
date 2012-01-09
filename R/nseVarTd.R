@@ -16,9 +16,15 @@
 ##     return(nseStat(coredata(lag.rain$Q), coredata(lag.rain$mod1), ...))
 ## }
 
-## TODO: allow specifying rest of estimate-delay parameters
 adjVarTd <- function(obs,mod,event,...){
-    event.1lag <- lag(event, 1) # to consider the increment of the first obsQ
+    ## Needs to be zoo objects with same indices
+    stopifnot(is.zoo(event))
+    stopifnot(identical(index(obs),index(mod)))
+    stopifnot(identical(index(obs),index(event)))
+    ## Shift events by one day to allow rises to be better picked up
+    event.1lag <- merge(lag(event,1), zoo(, index(event)))
+    event.1lag[length(event.1lag)]<-event.1lag[length(event.1lag)-1]
+
     mod.obs=cbind(U=mod,Q=obs)
     whole.lag<-estimateDelay(mod.obs,negative.ok=T,...)
     lag.mod<-eventapply(mod.obs,event.1lag,by.column=FALSE,function(x){

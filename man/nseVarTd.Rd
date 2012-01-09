@@ -36,7 +36,7 @@ adjVarTd(obs,mod,event,...)
 \item \code{event} - The separation into events - too short events result in spurious cross-correlations, too long events may not adequately capture the variability in lag. Other settings of \code{\link{eventseq}} may also have an effect.
 \item \code{lag.max} - How long a lag is considered. Too long may result
 in correlations between peaks, too short will fail to consider the true
-peak. Instead of passing it as an argument, consider setting using \code{link{hydromad.options}}
+peak. Instead of passing it as an argument, consider setting max.delay using \code{link{hydromad.options}}
 \item Other settings of \code{\link{estimateDelay}} may also have an
 effect.
 \item The function currently considers both positive and negative lag up
