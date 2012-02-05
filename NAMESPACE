@@ -98,6 +98,8 @@ export(lambda.sim,
        lambda.inverse.fit)
 useDynLib(hydromad, inverse_filter_lambda)
 
+export(deconvolution.uh)
+
 ## tf.R
 S3method(print, tf)
 S3method(coef, tf)
