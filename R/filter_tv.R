@@ -36,3 +36,16 @@ filter_tv <-
     y[bad] <- NA
     y
 }
+
+## recursive filter skimming over NAs (treated as zeros)
+## TODO: or could maintain state using na.exclude(), naresid()
+filter_ok <-
+    function(x, filter, method = "recursive", ...)
+{
+    bad <- !is.finite(x)
+    x[bad] <- 0
+    y <- filter(x, filter = filter, method = method, ...)
+    ## re-insert missing values
+    y[bad] <- NA
+    y
+}

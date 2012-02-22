@@ -54,7 +54,7 @@ rollccf <-
         lapply(width,
                function(wid) {
                        tmp <- rollapply(DATA, width = wid, by = by,
-                                 by.column = FALSE, na.pad = FALSE,
+                                 by.column = FALSE, 
                                  FUN = ccfForLags, lags = lags,
                                  na.action = na.action,
                                  na.max.fraction = na.max.fraction)

@@ -1,5 +1,10 @@
 
-Changes in Version 0.9-9 (in development)
+Changes in Version 0.9-10 (in development)
+
+  o fixed several problems caused by the change in behaviour of filter() 
+    introduced in R 2.13.2.
+
+Changes in Version 0.9-9
 
   o fixes for gr4j model based on comparison to reference
     implementation (xls).  Contributed by Joseph Guillaume.

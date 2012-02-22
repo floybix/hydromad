@@ -88,7 +88,7 @@ armax.ls.fit <-
         if (is.function(pf)) {
             pf <- pf(DATA)
         }
-        z2 <- filter(z, filter = pf, method = "recursive")
+        z2 <- filter_ok(z, filter = pf, method = "recursive")
         ## set column names for parameters
         a_names <- if (n > 0) paste("a", 1:n, sep="_")
         b_names <- paste("b", 0:m, sep="_")
@@ -103,7 +103,7 @@ armax.ls.fit <-
         z2 <- z2[-(1:warmup),, drop=FALSE]
         ## fit the model
         if (!is.null(weights)) {
-            w2 <- filter(w, filter = pf, method = "recursive")
+            w2 <- filter_ok(w, filter = pf, method = "recursive")
             w2 <- w2[-(1:warmup)]
             fit.f <- lm.wfit(x=z2[,-1, drop=FALSE], y=z2[,1], w=w2)
         } else {

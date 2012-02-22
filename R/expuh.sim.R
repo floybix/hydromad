@@ -71,33 +71,33 @@ expuh.sim <-
     
     if ((series == 0) || return_components) {
         ## components in parallel.
-        Xq[] <- filter(beta_q * U, alpha_q, method = "recursive", init = Xq_0)
+        Xq[] <- filter_ok(beta_q * U, alpha_q, method = "recursive", init = Xq_0)
         if (v_3)
-            X3[] <- filter(beta_3 * U, alpha_3, method = "recursive", init = X3_0)
+            X3[] <- filter_ok(beta_3 * U, alpha_3, method = "recursive", init = X3_0)
     } else {
         if (v_3 == 0) {
             ## second-order model in series (s --> q)
-            Xq[] <- filter(beta_q * Xs, alpha_q, method = "recursive", init = Xq_0)
+            Xq[] <- filter_ok(beta_q * Xs, alpha_q, method = "recursive", init = Xq_0)
             Xs[] <- 0
         } else {
             ## third-order model
             if (series == 1) {
                 ## two components in series and one in parallel
                 ## (q & 3 are in series; s in parallel)
-                X3[] <- filter(beta_3 * U, alpha_3, method = "recursive", init = X3_0)
-                Xq[] <- filter(beta_q * X3, alpha_q, method = "recursive", init = Xq_0)
+                X3[] <- filter_ok(beta_3 * U, alpha_3, method = "recursive", init = X3_0)
+                Xq[] <- filter_ok(beta_q * X3, alpha_q, method = "recursive", init = Xq_0)
                 X3[] <- 0
             } else if (series == 2) {
                 ## one component in series with two in parallel
                 ## (3 in series; s & q in parallel)
-                Xq[] <- filter(beta_q * U, alpha_q, method = "recursive", init = Xq_0)
-                Xq[] <- filter(beta_3 * Xq, alpha_3, method = "recursive", init = X3_0)
-                Xs[] <- filter(beta_3 * Xs, alpha_3, method = "recursive", init = X3_0)
+                Xq[] <- filter_ok(beta_q * U, alpha_q, method = "recursive", init = Xq_0)
+                Xq[] <- filter_ok(beta_3 * Xq, alpha_3, method = "recursive", init = X3_0)
+                Xs[] <- filter_ok(beta_3 * Xs, alpha_3, method = "recursive", init = X3_0)
                 X3[] <- 0
             } else if (series == 3) {
                 ## three components in series
-                Xq[] <- filter(beta_q * Xs, alpha_q, method = "recursive", init = Xq_0)
-                X3[] <- filter(beta_3 * Xq, alpha_3, method = "recursive", init = X3_0)
+                Xq[] <- filter_ok(beta_q * Xs, alpha_q, method = "recursive", init = Xq_0)
+                X3[] <- filter_ok(beta_3 * Xq, alpha_3, method = "recursive", init = X3_0)
                 Xs[] <- 0
                 Xq[] <- 0
             } else {
