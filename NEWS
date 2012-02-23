@@ -1,6 +1,7 @@
 
 Changes in Version 0.9-13 (in development)
 
+  o gr4j parameters can now be transformed to improve identifiability
   o fixed several problems caused by the change in behaviour of filter() 
     introduced in R 2.13.2.
   o added deconvolution of unit hydrograph (deconvolution.uh)

@@ -189,3 +189,20 @@ gr4jrouting.ranges <- function()
     list(x2 = c(-5, 3),
          x3 = c(20, 300),
          x4 = c(1.1, 2.9))
+
+gr4j.transformpar <- function(pars,back=F){
+  pars<-modifyList(list(x1=NA,x2=NA,x3=NA,x4=NA),as.list(pars))
+  newpars <- pars
+  if (back){
+    newpars[["x1"]] <- exp(pars[["x1"]])
+    newpars[["x2"]] <- sinh(pars[["x2"]])
+    newpars[["x3"]] <- exp(pars[["x3"]])
+    newpars[["x4"]] <- exp(pars[["x4"]])+0.5
+  } else{
+    newpars[["x1"]] <- log(pars[["x1"]])
+    newpars[["x2"]] <- asinh(pars[["x2"]])
+    newpars[["x3"]] <- log(pars[["x3"]])
+    newpars[["x4"]] <- log(pars[["x4"]]-0.5)
+  }
+  newpars
+}
