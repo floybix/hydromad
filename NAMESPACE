@@ -123,6 +123,7 @@ useDynLib(hydromad, ar1_tv)
 
 export(cmd.sim)
 useDynLib(hydromad, sma_cmd)
+export(cmd_unstable.sim)
 
 export(bucket.sim)
 useDynLib(hydromad, sma_bucket)
@@ -131,6 +132,7 @@ export(gr4j.sim)
 useDynLib(hydromad, sma_gr4j)
 export(gr4jrouting.sim)
 useDynLib(hydromad, routing_gr4j)
+export(gr4j.transformpar)
 
 export(awbm.sim)
 useDynLib(hydromad, sma_awbm)

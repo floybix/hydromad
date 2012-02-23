@@ -17,11 +17,9 @@ gr4j.transformpar(pars, back = F)
   Whether to transform or untransform (reverse) the parameters.
 }
 }
-\details{
-%%  ~~ If necessary, more details than the description above ~~
-}
 \value{
 	Named list of transformed/untransformed parameters, depending on value of \code{back}.
+}
 \author{
 	Joseph Guillaume
 }
