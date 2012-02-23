@@ -1,8 +1,14 @@
 
-Changes in Version 0.9-10 (in development)
+Changes in Version 0.9-13 (in development)
 
   o fixed several problems caused by the change in behaviour of filter() 
     introduced in R 2.13.2.
+  o added deconvolution of unit hydrograph (deconvolution.uh)
+  o added code to apply variable event-based time delay to time series (adjVarTd)
+  o added non-integer time delay estimation
+  o added fitByCMAES
+  o added fitByNSGA2
+  o added rotatedSampling
 
 Changes in Version 0.9-9
 
