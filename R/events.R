@@ -118,7 +118,7 @@ eventseq <-
     ## and remains below inthresh for at least 'indur' steps
     if (inthreshGiven) {
         if (indur > 1) { ## set inx to rolling maximum of last 'indur' steps
-            inx <- rollmax(inx, indur, align = "right", na.pad = TRUE)
+            inx <- rollmax(inx, indur, align = "right", fill = NA)
             inx <- na.locf(inx, fromLast = TRUE)
         }
         if (is.matrix(inx)) {

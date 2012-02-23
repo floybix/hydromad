@@ -20,7 +20,7 @@ SalmonBrook <- local({
     tsT <- zoo(tdat$T, order.by = tdat$Date, frequency = 1)
 
     ## start temperature series from first month of PQ series
-    tsT <- window(tsT, start = as.Date(as.yearmon(start(tsPQ))))
+    tsT <- window(tsT, start = zoo:::as.Date.yearmon(as.yearmon(start(tsPQ))))
     ## make monthly temperature record a regular series (expand gaps)
     tsT <- merge(tsT, zoo(order.by = seq(start(tsT), end(tsT), by = "months")))
     ## fill monthly temperature gaps with seasonal averages

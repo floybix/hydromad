@@ -39,7 +39,7 @@ lambda.sim <-
     lossVal <- (1 - alpha_s) * loss
     Xs <- filter_loss(beta_s * U, alpha_s, loss = lossVal, init = Xs_0)
     Xq <- beta_q * U
-    Xq[] <- filter(Xq, alpha_q, method = "recursive", init = Xq_0)
+    Xq[] <- filter_ok(Xq, alpha_q, method = "recursive", init = Xq_0)
 
     ## align results to original input
     Xs <- shiftWindow(Xs, delay)

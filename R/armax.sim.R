@@ -56,7 +56,7 @@ armax.sim <-
     X[] <- filter(U, b, sides = 1)
     if (length(a) > 0) {
         X <- shiftWindow(X, -m, fill = 0)
-        X[] <- filter(X, a, method = "recursive", init = init)
+        X[] <- filter_ok(X, a, method = "recursive", init = init)
         X <- shiftWindow(X, m)
     }
     ## zap simulated values smaller than epsilon

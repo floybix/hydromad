@@ -119,12 +119,12 @@ do_srivfit <-
                 nma <- coef(i.arma)[nn + seq_len(nm)]
                 ## apply model AR and inverse of noise
                 ## TODO: is this correct?
-                DATAf <- filter(DATAf, filter = nar, sides = 1)
-                DATAf <- filter(DATAf, filter = nma, method = "recursive")
-                DATAf <- filter(DATAf, filter = a.hat, method = "recursive")
+                DATAf <- filter_ok(DATAf, filter = nar, sides = 1)
+                DATAf <- filter_ok(DATAf, filter = nma, method = "recursive")
+                DATAf <- filter_ok(DATAf, filter = a.hat, method = "recursive")
             } else {
                 ## SRIV: auto-regressive filter only
-                DATAf <- filter(DATAf, filter = a.hat, method = "recursive")
+                DATAf <- filter_ok(DATAf, filter = a.hat, method = "recursive")
             }
         }
         colnames(DATAf) <- c("U", "Q", "X")
