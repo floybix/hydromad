@@ -7,7 +7,7 @@ fitByDream <-
     function(MODEL,
              loglik = hydromad.getOption("loglik"),
              control = hydromad.getOption("dream.control"),
-             vcov = TRUE)
+             vcov = TRUE,save=NULL)
 {
     library(dream)
     start_time <- proc.time()
@@ -31,7 +31,9 @@ fitByDream <-
         thisMod <- update(MODEL, newpars = pars)
         if (!isValidModel(thisMod))
             return(-1e8)
-        objFunVal(thisMod, objective = loglik)
+        obj <- objFunVal(thisMod, objective = loglik)
+        if(!is.null(save)) save(pars,obj,thisMod)
+        obj
     }
     ans <- dream(do_dream, pars = parlist,
                  func.type = "logposterior.density",

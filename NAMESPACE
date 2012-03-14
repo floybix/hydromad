@@ -165,10 +165,11 @@ export(fitBySCE,
        fitByDE,
        fitByDream,
        fitByNsga2,
-       fitByCMAES
+       fitByCMAES,
+       fitByDDS
        )
 
-## TODO: fitByGenoud?
+## TODO?: fitByGenoud,fitByPSO
 
 ## sce.R
 export(SCEoptim)
