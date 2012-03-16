@@ -1,5 +1,5 @@
 
-Changes in Version 0.9-13 (in development)
+Changes in Version 0.9-15 (in development)
 
   o gr4j parameters can now be transformed to improve identifiability
   o fixed several problems caused by the change in behaviour of filter() 
@@ -10,6 +10,7 @@ Changes in Version 0.9-13 (in development)
   o added fitByCMAES
   o added fitByNSGA2
   o added rotatedSampling
+  o if return_state is specified, state variables from SMA can be used for calibration
 
 Changes in Version 0.9-9
 

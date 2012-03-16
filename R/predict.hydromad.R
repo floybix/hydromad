@@ -26,13 +26,13 @@ predict.hydromad <-
             eventapply(x, groups, FUN = FUN)
     }
     if (is.null(newdata)) {
-        if (which == "routing") {
-            newdata <- object$U
-        } else {
-            newdata <- object$data
-        }
+      if (which == "routing") {
+        newdata <- object$U
+      } else {
+        newdata <- object$data
+      }
     } else {
-        newdata <- as.zooreg(newdata)
+      newdata <- as.zooreg(newdata)
     }
     DATA <- newdata
     sma <- object$sma
@@ -57,10 +57,11 @@ predict.hydromad <-
         ## default (NULL) SMA action is to return rainfall
         doSMA <- function(args) {
             if (NCOL(DATA) > 1) {
-                stopifnot("P" %in% colnames(DATA))
-                DATA[,"P"]
+              if ("U" %in% colnames(DATA)) return(DATA[,"U"])
+              else if (("U" %in% colnames(DATA))) return(DATA[,"P"])
+              else stop("No U or P in DATA to be provided to routing")
             } else {
-                DATA
+              DATA
             }
         }
     }
