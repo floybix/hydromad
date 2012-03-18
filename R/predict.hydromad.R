@@ -58,7 +58,7 @@ predict.hydromad <-
         doSMA <- function(args) {
             if (NCOL(DATA) > 1) {
               if ("U" %in% colnames(DATA)) return(DATA[,"U"])
-              else if (("U" %in% colnames(DATA))) return(DATA[,"P"])
+              else if (("P" %in% colnames(DATA))) return(DATA[,"P"])
               else stop("No U or P in DATA to be provided to routing")
             } else {
               DATA
