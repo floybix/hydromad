@@ -17,7 +17,7 @@ hydromad.stats(...)
   \item{DATA, Q}{
     If either \code{DATA} or \code{Q} is given, the returned statistic
     function will be pre-evaluated with the given data. Technically, any
-    special \code{.()} expressions in the named objective 
+    special \code{.()} expressions in the named objective
     function will be evaluated and may refer to variables \code{DATA}
     and/or \code{Q}.
     These chunks are cached so that repeated evaluation of the objective
@@ -27,7 +27,7 @@ hydromad.stats(...)
     whole time series passed to \code{hydromad}. The observed data
     excluding warmup can be extracted from a model object as
     \code{Q = observed(model)} or \code{DATA = observed(model, select =
-      TRUE)}. 
+      TRUE)}.
   }
   \item{...}{
     new stats can be defined, or existing ones modified, using one or
@@ -40,7 +40,7 @@ hydromad.stats(...)
 \details{
   \code{hmadstat} returns the named statistical function, while
   \code{hydromad.stats} gets or sets a list of named functions.
-  
+
   The default set of available statistics can be listed with
   \code{str(hydromad.stats())}, and consists of:
 
@@ -101,13 +101,20 @@ hydromad.stats(...)
       is the mean in each calendar month, rather than the default which
       is the overall mean.
     }
+    \item{r.sq.vartd}{
+      \code{\link{nseVarTd}}
+      R Squared where the modelled peaks have been coalesced to observed
+    peaks, minimising timing error. Note that this statistic requires \code{event} to be
+    specified using \code{\link{eventseq}}
+    }
+
     \item{persistence}{
       R Squared where the reference model
       predicts each time step as the previous observed value. This
       statistic therefore represents a model's performance compared to a
       \emph{naive} one-time-step forecast.
     }
-    
+
 
 
     \item{X0}{
@@ -115,7 +122,7 @@ hydromad.stats(...)
     }
     \item{X1}{
       correlation of modelled flow with the model residuals from the
-      previous time step. 
+      previous time step.
     }
     \item{ARPE}{
       Average Relative Parameter Error. Requires that a

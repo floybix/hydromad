@@ -6,8 +6,9 @@
 gr4j.sim <-
     function(DATA,
              x1, etmult = 1, S_0 = 0.5, 
-             return_state = FALSE)
+             return_state = FALSE,transformed=FALSE)
 {
+    if (transformed) x1 <- exp(x1)
     stopifnot(c("P","E") %in% colnames(DATA))
     ## check values
     stopifnot(x1 >= 0)
@@ -86,8 +87,13 @@ gr4j.ranges <- function()
 gr4jrouting.sim <-
     function(U, x2, x3, x4, R_0 = 0, split = 0.9,
              return_components = FALSE,
-             epsilon = hydromad.getOption("sim.epsilon"))
+             epsilon = hydromad.getOption("sim.epsilon"),transformed=FALSE)
 {
+    if (transformed){
+      x2 <- sinh(x2)
+      x3 <- exp(x3)
+      x4 <- exp(x4)+0.5
+    }
     ## check values
     stopifnot(is.numeric(x2))
     stopifnot(x3 >= 0)
@@ -183,3 +189,20 @@ gr4jrouting.ranges <- function()
     list(x2 = c(-5, 3),
          x3 = c(20, 300),
          x4 = c(1.1, 2.9))
+
+gr4j.transformpar <- function(pars,back=F){
+  pars<-modifyList(list(x1=NA,x2=NA,x3=NA,x4=NA),as.list(pars))
+  newpars <- pars
+  if (back){
+    newpars[["x1"]] <- exp(pars[["x1"]])
+    newpars[["x2"]] <- sinh(pars[["x2"]])
+    newpars[["x3"]] <- exp(pars[["x3"]])
+    newpars[["x4"]] <- exp(pars[["x4"]])+0.5
+  } else{
+    newpars[["x1"]] <- log(pars[["x1"]])
+    newpars[["x2"]] <- asinh(pars[["x2"]])
+    newpars[["x3"]] <- log(pars[["x3"]])
+    newpars[["x4"]] <- log(pars[["x4"]]-0.5)
+  }
+  newpars
+}

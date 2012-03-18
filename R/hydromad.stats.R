@@ -29,7 +29,7 @@ buildCachedObjectiveFun <-
             try( objective[[2]] <-
                 eval(substitute(bquote(x), list(x = objective[[2]]))) )
         } else if (is.function(objective)) {
-            try( body(objective) <- 
+            try( body(objective) <-
                 eval(substitute(bquote(x), list(x = body(objective)))) )
         } else {
             stop("'objective' should be a function or formula, not a ",
@@ -48,7 +48,7 @@ buildCachedObjectiveFun <-
 {
     ## keep R CMD check happy:
     . <- function(x) x
-    
+
     ## default set of stats
     list("bias" = function(Q, X, ...) mean(X - Q, na.rm = TRUE),
          "rel.bias" = function(Q, X, ...) {
@@ -125,7 +125,7 @@ buildCachedObjectiveFun <-
              })
              objfun(Q, X, ...)
          },
-         
+
          "e.rain5" = function(Q, X, ..., DATA) {
              objfun <- .({
                  ev <- eventseq(DATA$P, thresh = 5, inthresh = 1,
@@ -150,7 +150,7 @@ buildCachedObjectiveFun <-
              })
              objfun(Q, X, ...)
          },
-         
+
          #= flowq90_indur4_mindur5_mingap5
 
          "e.q90" = function(Q, X, ...) {
@@ -228,13 +228,16 @@ buildCachedObjectiveFun <-
              })
              objfun(Q, X, ...)
          },
-         
+
          "ar1" = function(Q, X, ...) {
              cor(head(Q-X, -1), tail(Q-X, -1), use = "complete")
          },
          "X0" = function(Q, X, ...) cor(Q-X, X, use = "complete"),
          "X1" = function(Q, X, ...) cor(head(Q-X, -1), tail(X, -1), use = "complete"),
-         "U1" = function(Q, X, ..., U) cor(head(Q-X, -1), tail(U, -1), use = "complete")
+         "U1" = function(Q, X, ..., U) cor(head(Q-X, -1), tail(U, -1), use = "complete"),
+         "r.sq.vartd" = function(Q, X, ...,event) {
+             nseVarTd(Q, X, event,...)
+         }
          )
 }
 
@@ -275,7 +278,7 @@ hydromad.stats <- function(...)
     nm <- nm[isNamed]
 
     newfuns <- new[nm]
-    
+
     ## ensure that everything being assigned is of the required type:
     ## functions of (Q, X, ...)
     if (!all(sapply(newfuns, is.function)))

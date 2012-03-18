@@ -5,3 +5,4 @@ Murrindindi    Model calibration for a high baseflow catchment.
 Wye            Model calibration on hourly data for a very wet catchment.
 tfFit          Simulation study of SRIV transfer function estimator.
 glue           Estimation and visualisation of feasible parameter sets and bounds.
+ET_Calibration Example model calibration of CMD using observed actual ET

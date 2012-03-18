@@ -15,7 +15,7 @@
 \usage{
 fitByDream(MODEL, loglik = hydromad.getOption("loglik"),
            control = hydromad.getOption("dream.control"),
-           vcov = TRUE)
+           vcov = TRUE,save=NULL)
 }
 \arguments{
   \item{MODEL}{
@@ -35,6 +35,10 @@ fitByDream(MODEL, loglik = hydromad.getOption("loglik"),
     if \code{vcov = TRUE}, the parameter variance-covariance matrix
     will be estimated from the last half of the sequences.
     It can be extract using \code{\link{vcov}}.
+  }
+  \item{save}{
+    Optional \code{function(pars,objective value,model)} that will be
+    called for every model evaluation, for example to save every model run.
   }
 }
 \value{

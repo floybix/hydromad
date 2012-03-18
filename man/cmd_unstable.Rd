@@ -1,0 +1,53 @@
+\name{cmd_unstable}
+\alias{cmd_unstable}
+\alias{cmd_unstable.sim}
+\title{ Unstable/unoptimised version of IHACRES Catchment Moisture Deficit (CMD) model }
+\description{
+  Unoptimised version of CMD model. \code{g} is directly specified, and therefore highly correlated with \code{d}.
+  Other anything than for demonstration purposes, \code{\link{cmd}} should be used instead.
+}
+\usage{
+cmd_unstable.sim(DATA, g, e, d, shape = 0,
+        M_0 = d/2, return_state = FALSE)
+}
+\arguments{
+  \item{DATA}{
+    a \code{\link{ts}}-like object with named columns:
+    \describe{
+      \item{\code{P}}{ time series of areal rainfall depths, usually in mm. }
+      \item{\code{E}}{ time series of potential evapo-transpiration, or more typically,
+	temperature as an indicator of this. }
+    }
+  }
+  \item{g}{ CMD stress threshold }
+  \item{e}{ temperature to PET conversion factor. }
+  \item{d}{ CMD threshold for producing flow. }
+  \item{shape}{
+    defines form of the \eqn{dU/dP} relationship:
+    \code{shape = 0} is the linear form, \code{shape = 1} is the trigonometric
+    form, and \code{shape > 1} is the power form.
+  }
+  \item{M_0}{ starting CMD value. }
+  \item{return_state}{ to return state variables as well as the effective rainfall. }
+}
+\details{
+ See \code{\link{cmd.sim}} for details.
+
+ This version is modified so that \code{g} is specified directly instead of being calculated as \code{g=f*d}
+}
+\value{
+  \code{cmd_unstable.sim} returns the modelled time series of effective rainfall,
+  or if \code{return_state = TRUE}, a multi-variate time series with named
+  columns \code{U} (effective rainfall), \code{CMD} and
+  \code{ET} (evapo-transpiration \eqn{E_T}).
+}
+\note{
+  Normally compiled C code is used for simulation, but if
+  \code{return_state = TRUE} a slower implementation in R is used.
+}
+\author{ Joseph Guillaume }
+\seealso{
+	\code{\link{cmd.sim}} for preferred version.
+}
+\keyword{ models }
+

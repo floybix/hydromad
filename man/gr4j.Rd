@@ -9,11 +9,12 @@
   GR4J model (mode`le du Ge´nie Rural a` 4 parame`tres Journalier).
 }
 \usage{
-gr4j.sim(DATA, x1, etmult = 1, S_0 = 0.5, return_state = FALSE)
+gr4j.sim(DATA, x1, etmult = 1, S_0 = 0.5, return_state = FALSE,transformed=FALSE)
 
 gr4jrouting.sim(U, x2, x3, x4, R_0 = 0, split = 0.9,
                 return_components = FALSE,
-                epsilon = hydromad.getOption("sim.epsilon"))
+                epsilon = hydromad.getOption("sim.epsilon"),
+		transformed=FALSE)
 }
 \arguments{
   \item{DATA}{time-series-like object with columns P (precipitation,
@@ -37,9 +38,9 @@ gr4jrouting.sim(U, x2, x3, x4, R_0 = 0, split = 0.9,
   \item{epsilon}{
     values smaller than this in the output will be set to zero.
   }
+  \item{transformed}{transform parameters before use to improve identifiability. They can be untransformed using \code{\link{gr4j.transformpar}}}
 }
 \details{
-
   The default parameter ranges were taken from the "80% confidence
   intervals" given in Perrin et. al. (2003).
 }
@@ -54,7 +55,7 @@ model for streamflow simulation." \emph{Journal of Hydrology} 279(1-4):
 
 \url{http://www.cemagref.fr/webgr/Modelesgb/gr4j/fonctionnement_gr4jgb.htm}
 }
-\author{ Felix Andrews \email{felix@nfrac.org} }
+\author{ Felix Andrews \email{felix@nfrac.org} and Joseph Guillaume \email{josephguillaume@gmail.com} }
 \seealso{
   \code{\link{hydromad}(sma = "gr4j", routing = "gr4jrouting")} to work
   with models as objects (recommended). 
