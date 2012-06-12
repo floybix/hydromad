@@ -165,9 +165,7 @@ update.hydromad <-
     ## run SMA to generate U
     if (RUNSMA) {
       object$U <- as.zooreg(predict(object, which = "sma",
-                                    return_state=ifelse(is.null(object$parlist$return_state),
-                                      FALSE,object$parlist$return_state)
-                                    ))
+                                    return_state=isTRUE(object$parlist$return_state)))
     }
     ## handle routing
     routing <- object$routing
