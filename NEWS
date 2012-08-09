@@ -11,6 +11,8 @@ Changes in Version 0.9-15 (in development)
   o added fitByNSGA2
   o added rotatedSampling
   o if return_state is specified, state variables from SMA can be used for calibration
+  o fix override of cmd default parameters
+  o corrected demo using CMD ET output
 
 Changes in Version 0.9-9
 

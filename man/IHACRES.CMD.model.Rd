@@ -61,8 +61,7 @@ cmd.sim(DATA, f, e, d, shape = 0,
 
   The actual drainage each time step involves the integral of these relations.
 
-  Evapo-transpiration (as a proportion of the potential rate, \code{E[t]})
-  is also a simple function of the CMD, with a threshold at \eqn{M = f d}{M = f * d}:
+  Evapo-transpiration is also a simple function of the CMD, with a threshold at \eqn{M = f d}{M = f * d}:
   \deqn{E_T[t] = e E[t] \min(1, \exp\left(2\left(1 - \frac{M_f}{fd}\right)\right))}{
     E_T[t] = e E[t] \min(1, \exp(2(1 - M_f / (fd))))}
 

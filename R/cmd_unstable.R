@@ -111,8 +111,8 @@ cmd_unstable.sim <-
     return(ans)
 }
 
-cmd.ranges <- function()
-    list(f = c(0.01*50, 3*550),
+cmd_unstable.ranges <- function()
+    list(g = c(0.01*50, 3*550),
          e = c(0.01, 1.5),
          d = c(50, 550),
          shape = 0)

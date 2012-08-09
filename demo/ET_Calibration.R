@@ -7,7 +7,7 @@ fitt <- hydromad(DATA = x, sma = "cmd",f=0.6,e=0.166,d=220,return_state=T,
                  routing="expuh",tau_q=2,tau_s=25,v_s=0.1
                  )
 ## Calculate observed actual ET
-x$aET <- fitt$U$ET*fitt$data$E
+x$aET <- fitt$U$ET
 ## Calculate exact Q resulting from calculated ET
 x$Q <- fitted(fitt,all=TRUE)
 
@@ -15,7 +15,7 @@ x$Q <- fitted(fitt,all=TRUE)
 ## Method 1.
 ## First fit SMA using actual ET
 mod.sma<-hydromad(DATA=x,sma="cmd",return_state=T)
-fit.sma<-fitByOptim(mod.sma,objective=~hmadstat("r.squared")(DATA$aET,DATA$E*U$ET))
+fit.sma<-fitByOptim(mod.sma,objective=~hmadstat("r.squared")(DATA$aET,U$ET))
 fit.sma
 
 ## Then fit routing using Q
@@ -39,7 +39,7 @@ fito
 ##   SRIV with inverse simulation from the observed streamflow data
 modr <- hydromad(DATA=x,sma="cmd",return_state=T,
                  routing = "expuh", rfit = list("inverse", order = c(2,1)))
-fitr<-fitByOptim(modr,objective=~hmadstat("r.squared")(DATA$aET,DATA$E*U$ET))
+fitr<-fitByOptim(modr,objective=~hmadstat("r.squared")(DATA$aET,U$ET))
 fitr
 
 ## results
