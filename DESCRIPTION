@@ -1,6 +1,6 @@
 Package: hydromad
-Version: 0.9-15
-Date: 2012-06-12
+Version: 0.9-16
+Date: 2012-08-15
 Title: Hydrological Model Assessment and Development
 Author: Felix Andrews <felix@nfrac.org>, Joseph Guillaume <joseph.guillaume@anu.edu.au>
 Maintainer: Joseph Guillaume <joseph.guillaume@anu.edu.au>

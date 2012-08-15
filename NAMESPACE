@@ -87,6 +87,8 @@ export(expuh.sim,
 export(filter_loss) # export?
 useDynLib(hydromad, filter_constloss)
 
+export(expuh3s.sim,leakyExpStore.sim)
+
 export(powuh.sim,
        ssg.powuh,
        normalise.powuh)

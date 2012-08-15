@@ -1,6 +1,7 @@
 
-Changes in Version 0.9-15 (in development)
+Changes in Version 0.9-16 (in development)
 
+  o Added leakyExpStore and expuh3s to model disconnection of streamflow from slowflow store
   o gr4j parameters can now be transformed to improve identifiability
   o fixed several problems caused by the change in behaviour of filter() 
     introduced in R 2.13.2.
