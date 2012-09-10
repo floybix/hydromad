@@ -76,5 +76,7 @@ doRoutingFit <-
     ## delete the fit specification, as it has done its work now
     object$used.rfit <- rfit
     object$rfit <- NULL
+    ## Add U to data if rfit method wanted it set
+    if(!is.null(rans$U)) object$data <- cbind(object$data,U=rans$U)
     object
 }

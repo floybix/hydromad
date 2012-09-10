@@ -144,6 +144,9 @@ armax.inverse.fit <-
         oldpars <- pars
         i <- i + 1
     }
+    
+    ##U is to be kept - will be overwritten if sma is specified
+    mod$U <- U
 
     #if (normalise)
     #    mod <- normalise.tf(mod)
