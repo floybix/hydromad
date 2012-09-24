@@ -92,6 +92,7 @@ fitByOptim <-
         } else {
             initpars <- sapply(parlist, mean)
         }
+        if(!identical(names(initpars),names(parlist))) stop("Names of initpars do not match parlist. If using rfit, check that order matches the parameters specified to hydromad")
         ## now optimise
         control0 <- hydromad.getOption("optim.control")
         ## choose parscale automatically (nlminb has 'scale' = 1/parscale)

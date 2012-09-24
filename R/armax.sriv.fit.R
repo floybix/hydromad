@@ -247,10 +247,10 @@ do_srivfit <-
     resid.var <- var(residuals(obj), na.rm = TRUE)
     info.mat <- xx / resid.var
     cov.mat <- matrix()
-    try({
+    cm.solve <- try({
         cov.mat <- solve(info.mat) ## symmetric -- use chol?
-        colnames(cov.mat) <- rownames(cov.mat) <- names(theta)[mask]
     }, silent = !hydromad.getOption("trace"))
+    if (!inherits(cm.solve, "try-error"))  colnames(cov.mat) <- rownames(cov.mat) <- names(theta)
     if (trace) {
         if (converged)
             message("converged after ", iteration, " iterations")

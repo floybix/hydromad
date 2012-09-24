@@ -77,6 +77,6 @@ doRoutingFit <-
     object$used.rfit <- rfit
     object$rfit <- NULL
     ## Add U to data if rfit method wanted it set
-    if(!is.null(rans$U)) object$data <- cbind(object$data,U=rans$U)
+    if(!is.null(rans$U)) object$data <- cbind(object$data,U=zoo(rans$U,order.by=index(object$data)))
     object
 }
