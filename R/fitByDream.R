@@ -38,6 +38,7 @@ fitByDream <-
     ans <- dream(do_dream, pars = parlist,
                  func.type = "logposterior.density",
                  control = control)
+    environment(ans$call)<-environment()
     bestPars <- coef(ans, method = "sample.ml")
     bestModel <- update(MODEL, newpars = bestPars)
     bestModel$funevals <- ans$fun.evals
