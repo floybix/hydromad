@@ -220,6 +220,9 @@ S3method(qqmath, runlist)
 
 export(convertFlow)
 
+export(evalPars)
+export(getFreeParsRanges)
+
 ## events.R
 export(findThresh,
        eventseq,
