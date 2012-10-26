@@ -27,7 +27,7 @@ mm <- morris(
              ##number of elementary effects computed per factor
              r=4,
              design=list(
-               ## Uses Morris, 1992
+               ## Uses Morris (1991) One-at-a-Time (OAT) sampling scheme (see ?morris)
                type="oat",
                ## Number of levels of parameter values 
                levels=10,
@@ -38,7 +38,7 @@ mm <- morris(
              ## Maximum value for each parameter
              bsup=sapply(getFreeParsRanges(modx),max),
              ## Arguments to be passed to evalPars: model and objective
-             mod=modx,
+             object=modx,
              ## NSE* objective function
              objective=~ hmadstat("r.squared")(Q, X) /(2-hmadstat("r.squared")(Q, X))
              )
@@ -53,19 +53,19 @@ mu.star <- apply(mm$ee, 2, function(x) mean(abs(x)))
 sigma <- apply(mm$ee, 2, sd)
 plot(mu.star, sigma, pch = 20, xlab = expression(mu^"*"), 
      ylab = expression(sigma))
-text(mu.star, sigma, labels = colnames(mm$ee), pos = 4,offset=0.1)
+text(mu.star, sigma, labels = colnames(mm$ee), pos = 4,offset=0.4)
 
 ################################################################################
 ## We then perform sensitivity analysis on the prediction function, to identify
 ## whether parameters that are insensitive with the objective function can be fixed:
-##  Sensitivity using Morris method of nQ20 prediction function to
-##  IHACRES-CWI model parameters using a subset of data from Cotter catchment
+##  Sensitivity using Morris method of F20 prediction function 
+##  (frequency/ratio of days of flow below 20%ile)
+##  to IHACRES-CWI model parameters using a subset of data from Cotter catchment
 
-## nQ20 is proportion of days of flow below 20%ile
 ## Calculate observed 20%ile flow
 thres.Q20 <- as.numeric(quantile(obs$Q, probs = c(0.2), na.rm = TRUE))
 ## Define function to calculate number of days below thres.Q20
-nQ20 <- function(X) length(which(X<thres.Q20))/length(X)
+F20 <- function(X) length(which(X<thres.Q20))/length(X)
 
 mm <- morris(
              model=evalPars, 
@@ -77,23 +77,27 @@ mm <- morris(
                grid.jump=2),
              binf=sapply(getFreeParsRanges(modx),min),
              bsup=sapply(getFreeParsRanges(modx),max),
-             mod=modx,
+             object=modx,
              ## Change objective to use the prediction function defined above
              ## See ?objFunVal
-             ## The objective function can refer to Q and X, representing observed and modelled flow, respectively.
-             ## It should return a single numeric value.
-             objective=~nQ20(X)
+             ## The objective function can refer to Q and X, 
+             ##  representing observed and modelled flow, respectively.
+             ##  It should return a single numeric value.
+             objective=~F20(X)
              )
 
 print(mm)
-plot(mm,main = "Sensitivity nQ20~IHACRES-CWI parameters with Cotter data")
+plot(mm,main = "Sensitivity F20~IHACRES-CWI parameters with Cotter data")
 
-## NSE* is insensitive to tau_s (mu.star=0.065), but nQ20 is sensitive to tau_s (mu.star=0.34)
-## The parameter value selected therefore affects the prediction,
-##  so tau_s cannot be fixed to improve identifiability unless its value is sufficiently certain.
+## See the Morris (1991) journal paper(?morris) for a more comprehensive interpretation.
+## These results are only an example, but if sampling were sufficient, the results would 
+##  suggest that NSE* is insensitive to tau_s (mu.star=0.065), but F20 is sensitive to 
+##  tau_s (mu.star=0.34)
+## The parameter value selected therefore affects the prediction, so tau_s cannot be 
+##  fixed to improve identifiability unless its value is sufficiently certain.
 ## Using a different objective function, e.g. NSElog* might improve identifiability.
-## The settings for Morris used may also influence results. Try chainging: the parameter ranges,
-##  number of replicates, number of levels and length of data series
+## The settings for Morris used may also influence results. Try changing: the parameter ranges,
+##  number of replicates, number of levels and length of data series.
 ## A SOBOL sensitivity analysis would also provide confidence intervals around the TSI.
 
 
@@ -113,8 +117,8 @@ ss <- sobol2002(model = evalPars,
                 X2 = parameterSets(getFreeParsRanges(modx),n),
                 ## Number of bootstrap replicates
                 nboot = 100,
-                ##Arguments to be passed to evalPars
-                mod=modx,
+                ## Arguments to be passed to evalPars
+                object=modx,
                 ## NSElog* objective function (using the logarithm of Q and X)
                 objective=~ hmadstat("r.sq.log")(Q, X) /(2-hmadstat("r.sq.log")(Q, X))
                 )

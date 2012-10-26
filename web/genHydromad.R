@@ -74,8 +74,8 @@ spec[["routing"]] <-
          list("armax", codefile = "armax.sim.R"),
          list("expuh", codefile = "expuh.sim.R"),
          list("lambda", codefile = "lambda.sim.R"),
-         list("powuh", codefile = "powuh.sim.R"),
-         list("maexpuh", codefile = "maexpuh.R")
+         list("powuh", codefile = "powuh.sim.R")
+         ##list("maexpuh", codefile = "maexpuh.R")
          )
 
 spec[["routing fitting"]] <-
@@ -96,6 +96,8 @@ spec[["utilities"]] <-
          list("convertFlow"),
          list("rollccf", do.example = TRUE),
          list("parameterSets"),
+         list("evalPars"),
+         list("getFreeParsRanges"),
          list("rotatedSampling"),
          list("gr4j.transformpar"),
          list("observed"),
