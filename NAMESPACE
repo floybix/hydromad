@@ -241,6 +241,13 @@ S3method(panel.ribbon, default)
 S3method(panel.ribbon, ts)
 S3method(panel.ribbon, zoo)
 
+## ParetoFiltering.R
+export(ParetoResultsMultiCatchment)
+export(plotPCNSE)
+export(areModelsDominated)
+export(getDominatedLong)
+export(paretoFilter)
+
 ## utilities.R
 export(observed,
        observed.default,

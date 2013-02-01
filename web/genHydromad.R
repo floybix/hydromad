@@ -27,7 +27,8 @@ spec[["assessment"]] <-
          list("nseVarTd"),
          list("xyplot", helpname = "xyplot.hydromad", do.example = TRUE),
          list("xyplot.runlist", do.example = TRUE),
-         list("qqmath", -2, helpname = "xyplot.hydromad", do.example = TRUE)
+         list("qqmath", -2, helpname = "xyplot.hydromad", do.example = TRUE),
+         list("ParetoResultsMultiCatchment",do.example=TRUE)
          )
 
 spec[["calibration"]] <-
@@ -74,7 +75,8 @@ spec[["routing"]] <-
          list("armax", codefile = "armax.sim.R"),
          list("expuh", codefile = "expuh.sim.R"),
          list("lambda", codefile = "lambda.sim.R"),
-         list("powuh", codefile = "powuh.sim.R")
+         list("powuh", codefile = "powuh.sim.R"),
+         list("leakyExpStore",codefile="leakyExpStore.R")
          ##list("maexpuh", codefile = "maexpuh.R")
          )
 
