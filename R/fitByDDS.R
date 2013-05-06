@@ -16,7 +16,7 @@ fitByDDS<-function (MODEL, objective = hydromad.getOption("objective"),
   ##TODO: if (isTRUE(hydromad.getOption("trace"))) 
   lower <- sapply(parlist, min)
   upper <- sapply(parlist, max)
-  initpars <- sapply(parlist, mean)
+  if(is.null(control$initial_estimates)) control$initial_estimates <- as.matrix(sapply(parlist, mean))
   bestModel <- MODEL
   bestFunVal <- -Inf
   do_dds <- function(pars) {
@@ -35,9 +35,8 @@ fitByDDS<-function (MODEL, objective = hydromad.getOption("objective"),
                  modifyList(control,
                             list(
                                  objective_function = do_dds,
-                                 number_of_parameters = length(initpars),
-                                 parameter_bounds=cbind(lower,upper),
-                                 initial_estimates=as.matrix(initpars)
+                                 number_of_parameters = length(control$initial_estimates),
+                                 parameter_bounds=cbind(lower,upper)
                                  )
                             ))
   bestModel$msg <- ans$break_flag
