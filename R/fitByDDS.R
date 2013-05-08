@@ -1,5 +1,5 @@
 fitByDDS<-function (MODEL, objective = hydromad.getOption("objective"), 
-    control = hydromad.getOption("dds.control"), save=NULL) 
+                    control = hydromad.getOption("dds.control"), save=NULL) 
 {
   library(ppso)
   start_time <- proc.time()
@@ -16,7 +16,18 @@ fitByDDS<-function (MODEL, objective = hydromad.getOption("objective"),
   ##TODO: if (isTRUE(hydromad.getOption("trace"))) 
   lower <- sapply(parlist, min)
   upper <- sapply(parlist, max)
-  if(is.null(control$initial_estimates)) control$initial_estimates <- as.matrix(sapply(parlist, mean))
+  if(is.null(control$initial_estimates)) {
+    control$initial_estimates <- as.matrix(sapply(parlist, mean))
+  } else {
+    if(is.list(control$initial_estimates) | !is.matrix(control$initial_estimates)) stop("control$initial_estimates should be a named column matrix of mode numeric")
+    if(!all(names(parlist) %in% rownames(control$initial_estimates)))
+      stop(sprintf("Not all parameters to be optimised have
+initial_estimates: %s",
+                   paste(setdiff(names(parlist),rownames(control$initial_estimates)),collapse=",")))
+    control$initial_estimates<-control$initial_estimates[names(parlist),,drop=F]
+  }
+
+
   bestModel <- MODEL
   bestFunVal <- -Inf
   do_dds <- function(pars) {
