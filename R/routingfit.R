@@ -76,7 +76,8 @@ doRoutingFit <-
     ## delete the fit specification, as it has done its work now
     object$used.rfit <- rfit
     object$rfit <- NULL
-    ## Add U to data if rfit method wanted it set
-    if(!is.null(rans$U)) object$data <- cbind(object$data,U=zoo(rans$U,order.by=index(object$data)))
+    ## Add U to data if rfit method wanted it set, accounting for case where object$data had no names
+    if(!is.null(rans$U) & is.null(names(object$data))) { object$data <- cbind(Q=object$data,U=zoo(rans$U,order.by=index(object$data)))
+    } else if(!is.null(rans$U)) { object$data <- cbind(object$data,U=zoo(rans$U,order.by=index(object$data))) }	
     object
 }
