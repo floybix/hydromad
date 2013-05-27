@@ -40,7 +40,7 @@ areModelsDominated(res, objectives = "r.squared")
 Joseph Guillaume
 }
 \seealso{
-  \code{\link{paretoFilter}}, \code{\link{ParetoResultsMultiCatchment}}
+  \code{\link{paretoFilter}}, \code{\link{paretoCatchments}}
 }
 \examples{
 

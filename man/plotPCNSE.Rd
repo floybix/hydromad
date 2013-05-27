@@ -34,7 +34,7 @@ Joseph Guillaume
 }
 \seealso{
   \code{\link{areModelsDominated}} for raw data,
-  \code{\link{ParetoResultsMultiCatchment}} for further analysis
+  \code{\link{paretoCatchments}} for further analysis
 }
 \examples{
 data(YeAl97)

@@ -1,5 +1,5 @@
-\name{ParetoResultsMultiCatchment}
-\alias{ParetoResultsMultiCatchment}
+\name{paretoCatchments}
+\alias{paretoCatchments}
 \alias{getDominatedLong}
 \title{
   Analysis using Pareto-filtering of model performance across simulation
@@ -7,10 +7,10 @@
 }
 \description{
   Functions to evaluate model realisations and structures that perform
-  well across simulation periods
+  well across simulation periods in multiple catchments
 }
 \usage{
-ParetoResultsMultiCatchment(stat, csv.name = NA, objectives = "r.squared")
+paretoCatchments(stat, csv.name = NA, objectives = "r.squared")
 getDominatedLong(res.dom)
 }
 \arguments{
@@ -62,7 +62,7 @@ getDominatedLong(res.dom)
   non-dominated model realisations would be rejected.
 }
 
-  \code{getDominatedLong} is a utility function used by \code{ParetoResultsMultiCatchment}
+  \code{getDominatedLong} is a utility function used by \code{paretoCatchments}
 }
 \value{
   No value returned, used for its side-effects. Prints results described
@@ -76,6 +76,6 @@ Joseph Guillaume
 }
 \examples{
 data(YeAl97)
-ParetoResultsMultiCatchment(YeAl97,objectives="E")
+paretoCatchments(YeAl97,objectives="E")
 }
 \keyword{ models }

@@ -28,7 +28,7 @@
   Ye, W., B.C. Bates, N.R. Viney, M. Sivapalan and A.J. Jakeman (1997). Performance of conceptual rainfall-runoff models in low-yielding ephemeral catchments. \emph{Water Resour. Res.} 33(1): 153-166 DOI: \url{http://dx.doi.org/10.1029/96wr02840}.
 }
 \references{
- Used by \code{\link{ParetoResultsMultiCatchment}}.
+ Used by \code{\link{paretoCatchments}}.
 }
 \examples{
 data(YeAl97)
