@@ -8,7 +8,8 @@
   can therefore model longer-term disconnection of a store from streamflow.
 }
 \usage{
-leakyExpStore.sim(x, tau, loss, thres, init = 0, return_components = FALSE)
+leakyExpStore.sim(x, tau, loss, thres, init = 0,
+  return_components = FALSE)
 }
 \arguments{
   \item{x}{
@@ -34,7 +35,7 @@ leakyExpStore.sim(x, tau, loss, thres, init = 0, return_components = FALSE)
 \details{
   Storage is increased by effective rainfall and decreased by flow and losses.
   \deqn{G[k] = G[k-1] + U[k] - Q[k] - L[k]}
-  
+
   Flow is proportional to storage
   \deqn{Q[k] = a G[k], G[k]>0}
   \deqn{Q[k] = 0, otherwise}
@@ -63,7 +64,8 @@ U  <- ts(c(1, rep(0, 10),1,rep(0, 20)))
 all.equal(leakyExpStore.sim(U,5,loss=0,thres=0),expuh.sim(U, tau_s = 5))
 
 ## With losses stopping when flow stops, equivalent to expuh with a loss
-all.equal(leakyExpStore.sim(U,5,loss=0.1,thres=0),expuh.sim(U, tau_s = 5,loss=0.1))
+all.equal(leakyExpStore.sim(U,5,loss=0.1,thres=0),
+  expuh.sim(U, tau_s = 5,loss=0.1))
 
 ## Plot of unit hydrographs
 xyplot(cbind("U"=U,
@@ -75,16 +77,22 @@ xyplot(cbind("U"=U,
 
 ## Time series plot of value of store
 xyplot(cbind(
-"thres=0"=leakyExpStore.sim(U,5,loss=0.1,thres=0,return_components=TRUE)[,"G"],
-"thres=-0.3"=leakyExpStore.sim(U,5,loss=0.1,thres=-0.3,return_components=TRUE)[,"G"],
-"thres=-Inf"=leakyExpStore.sim(U,5,loss=0.1,thres=-Inf,return_components=TRUE)[,"G"]
+"thres=0"=leakyExpStore.sim(U,5,loss=0.1,thres=0,
+  return_components=TRUE)[,"G"],
+"thres=-0.3"=leakyExpStore.sim(U,5,loss=0.1,thres=-0.3,
+  return_components=TRUE)[,"G"],
+"thres=-Inf"=leakyExpStore.sim(U,5,loss=0.1,thres=-Inf,
+  return_components=TRUE)[,"G"]
 ),superpose=TRUE)
 
 ## Time series of loss
 xyplot(cbind(
-"thres=0"=leakyExpStore.sim(U,5,loss=0.1,thres=0,return_components=TRUE)[,"L"],
-"thres=-0.3"=leakyExpStore.sim(U,5,loss=0.1,thres=-0.3,return_components=TRUE)[,"L"],
-"thres=-Inf"=leakyExpStore.sim(U,5,loss=0.1,thres=-Inf,return_components=TRUE)[,"L"]
+"thres=0"=leakyExpStore.sim(U,5,loss=0.1,thres=0,
+  return_components=TRUE)[,"L"],
+"thres=-0.3"=leakyExpStore.sim(U,5,loss=0.1,thres=-0.3,
+  return_components=TRUE)[,"L"],
+"thres=-Inf"=leakyExpStore.sim(U,5,loss=0.1,thres=-Inf,
+  return_components=TRUE)[,"L"]
 ),superpose=TRUE)
 
 }
