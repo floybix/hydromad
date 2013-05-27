@@ -5,7 +5,8 @@
   evolutionary strategy) from cmaes package
 }
 \usage{
-fitByCMAES(MODEL, objective = hydromad.getOption("objective"), control = hydromad.getOption("cmaes.control"), vcov = FALSE)
+fitByCMAES(MODEL, objective = hydromad.getOption("objective"),
+  control = hydromad.getOption("cmaes.control"), vcov = FALSE)
 }
 \arguments{
   \item{MODEL}{

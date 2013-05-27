@@ -7,7 +7,8 @@
     Fit a hydromad model using DDS (Dynamically Dimensioned Search) algorithm.
 }
 \usage{
-fitByDDS(MODEL, objective = hydromad.getOption("objective"), control = hydromad.getOption("dds.control"), save = NULL)
+fitByDDS(MODEL, objective = hydromad.getOption("objective"),
+  control = hydromad.getOption("dds.control"), save = NULL)
 }
 \arguments{
   \item{MODEL}{

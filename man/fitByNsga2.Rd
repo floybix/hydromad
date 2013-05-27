@@ -4,7 +4,8 @@
   Fit a hydromad model using the NSGA2 genetic algorithm from the mco package
 }
 \usage{
-fitByNsga2(MODEL, objective = hydromad.getOption("objective"), control = hydromad.getOption("nsga2.control"))
+fitByNsga2(MODEL, objective = hydromad.getOption("objective"),
+  control = hydromad.getOption("nsga2.control"))
 }
 \arguments{
   \item{MODEL}{
