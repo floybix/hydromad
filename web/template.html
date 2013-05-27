@@ -142,23 +142,9 @@ pageTracker._trackPageview();
       recommended).</li>
       <li>Install required packages from within <b>R</b>: <br/>
         <code>install.packages(c("zoo", "latticeExtra", "polynom", "car", "Hmisc"))</code></li>
-      <li>
-        <dl>
-          <dt>For Windows:</dt>
-          <dd>Download the Windows binary
-            package from the <a href="https://github.com/josephguillaume/hydromad/downloads"
-            onClick="javascript:pageTracker._trackPageview('/outbound/github/downloads');
-            ">downloads page</a> and choose <i>"Install
-            package from local zip file"</i> under the <i>Packages</i>
-            menu.</dd>
-          <dt>Otherwise, e.g. GNU/Linux:</dt>
-          <dd>Download the source
-            package from the <a href="https://github.com/josephguillaume/hydromad/downloads"
-            onClick="javascript:pageTracker._trackPageview('/outbound/github/downloads');
-            ">downloads page</a> and and run <code>R CMD
-            INSTALL hydromad_0.9-10.tar.gz</code>. You will need a C
-            compiler, but the vignettes are pre-built as PDFs.</dd>
-        </dl>
+      <li>Install hydromad<br/>
+	<code>install.packages("hydromad", repos="http://hydromad.catchment.org")</code><br/>
+	To instead download the package manually see: <a href="/bin/windows/contrib/" onClick="javascript:pageTracker._trackPageview('/bin/windows/contrib/');">Windows binary</a> and <a href="/src/contrib/" onClick="javascript:pageTracker._trackPageview('/src/contrib/');">source</a>.
       </li>
       <li>Optionally install other packages required for certain functions:
         <code>install.packages("DEoptim")<br/> install.packages("dream",

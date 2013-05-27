@@ -28,7 +28,8 @@ spec[["assessment"]] <-
          list("xyplot", helpname = "xyplot.hydromad", do.example = TRUE),
          list("xyplot.runlist", do.example = TRUE),
          list("qqmath", -2, helpname = "xyplot.hydromad", do.example = TRUE),
-         list("ParetoResultsMultiCatchment",do.example=TRUE)
+         list("areModelsDominated",do.example=FALSE),
+         list("paretoCatchments",do.example=FALSE)
          )
 
 spec[["calibration"]] <-
@@ -99,7 +100,7 @@ spec[["utilities"]] <-
          list("rollccf", do.example = TRUE),
          list("parameterSets"),
          list("evalPars"),
-         list("getFreeParsRanges"),
+         ##list("getFreeParsRanges"), ##same page as evalPars
          list("rotatedSampling"),
          list("gr4j.transformpar"),
          list("observed"),
@@ -132,7 +133,7 @@ spec[["datasets"]] <- lapply(spec[["datasets"]], function(x) {
 #         )
 
 #source("http://latticeextra.r-forge.r-project.org/generate.R")
-source("../../latticeExtra/www/generate.R")
+source("generate.R")
 
 ## stop on errors
 lattice.options(panel.error = NULL)
