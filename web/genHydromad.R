@@ -77,7 +77,8 @@ spec[["routing"]] <-
          list("expuh", codefile = "expuh.sim.R"),
          list("lambda", codefile = "lambda.sim.R"),
          list("powuh", codefile = "powuh.sim.R"),
-         list("leakyExpStore",codefile="leakyExpStore.R")
+         list("leakyExpStore",codefile="leakyExpStore.R"),
+         list("expuh3s",codefile="expuh3s.sim.R")
          ##list("maexpuh", codefile = "maexpuh.R")
          )
 
