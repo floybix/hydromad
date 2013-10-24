@@ -141,6 +141,7 @@ useDynLib(hydromad, sma_awbm)
 
 export(sacramento.sim)
 useDynLib(hydromad, sma_sac)
+useDynLib(hydromad, sma_sac_state)
 
 export(snow.sim)
 useDynLib(hydromad, sma_snow)

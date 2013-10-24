@@ -39,22 +39,54 @@ sacramento.sim <-
     bad <- is.na(P) | is.na(E)
     P[bad] <- 0
     E[bad] <- 0
-    ## NOTE: there is not ability to return state variables yet
-    ## also no pure.R.code implementation
-    U <- .C(sma_sac,
-            as.double(P),
-            as.double(E),
-            as.integer(NROW(DATA)),
-            as.double(xpar),
-            as.double(etmult),
-            as.double(dt),
-            U = double(NROW(DATA)),
-            NAOK = FALSE, DUP = FALSE, PACKAGE="hydromad")$U
-    ## make it a time series object again
-    attributes(U) <- attributes(P)
-    ## re-insert missing values
-    U[bad] <- NA
-    return(U)
+    ## NOTE: there is no pure.R.code implementation
+    if (return_state) {
+        states <- .C(sma_sac_state,
+                     as.double(P),
+                     as.double(E),
+                     as.integer(NROW(DATA)),
+                     as.double(xpar),
+                     as.double(etmult),
+                     as.double(dt),
+                     U = double(NROW(DATA)),
+                     uztwc = double(NROW(DATA)),
+                     uzfwc = double(NROW(DATA)),
+                     lztwc = double(NROW(DATA)),
+                     lzfsc = double(NROW(DATA)),
+                     lzfpc = double(NROW(DATA)),
+                     adimc = double(NROW(DATA)),
+                     sett = double(NROW(DATA)),
+                     se1 = double(NROW(DATA)),
+                     se3 = double(NROW(DATA)),
+                     se4 = double(NROW(DATA)),
+                     se5 = double(NROW(DATA)),
+                     roimp = double(NROW(DATA)),
+                     sdro = double(NROW(DATA)),
+                     ssur = double(NROW(DATA)),
+                     sif = double(NROW(DATA)),
+                     bfp = double(NROW(DATA)),
+                     bfs = double(NROW(DATA)),
+                     bfcc = double(NROW(DATA)),
+                     NAOK = FALSE, DUP = FALSE, PACKAGE="hydromad")
+        for(i in 7:25) attributes(states[[i]]) <- attributes(P)
+        ans <- do.call(cbind,states[7:25])
+        return(ans)
+    } else {
+        U <- .C(sma_sac,
+                as.double(P),
+                as.double(E),
+                as.integer(NROW(DATA)),
+                as.double(xpar),
+                as.double(etmult),
+                as.double(dt),
+                U = double(NROW(DATA)),
+                NAOK = FALSE, DUP = FALSE, PACKAGE="hydromad")$U
+        ## make it a time series object again
+        attributes(U) <- attributes(P)
+        ## re-insert missing values
+        U[bad] <- NA
+        return(U)
+    }
 }
 
 sacramento.ranges <- function()
