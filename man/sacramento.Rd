@@ -44,7 +44,8 @@ sacramento.sim(DATA, uztwm, uzfwm, uzk, pctim, adimp, zperc, rexp,
   \item{etmult}{Multiplier applied to \code{DATA$E} to estimate
     potential evapotranspiration.}
   \item{dt}{Length of each time step in days.}
-  \item{return_state}{Not currently supported.}
+  \item{return_state}{to return time series of each state variable and
+    flow component}
 }
 \details{
   This description of the model is given by Burnash (1995):
@@ -83,6 +84,28 @@ sacramento.sim(DATA, uztwm, uzfwm, uzk, pctim, adimp, zperc, rexp,
 \value{
   the simulated effective rainfall (\dQuote{total channel
     inflow}), a time series of the same length as the input series.
+
+  if \code{return_state=TRUE}, a list with components:
+  \item{uztwc}{Upper zone tension water content}
+  \item{uzfwc}{Upper zone free water content}
+  \item{lztwc}{Lower zone tension water content}
+  \item{lzfsc}{Lower zone free secondary water content}
+  \item{lzfpc}{Lower zone free primary water content}
+  \item{adimc}{Tension water contents of the additional impervious area}
+  \item{sett}{Cumulative total evapotranspiration}
+  \item{se1}{Cumulative evapotranspiration from upper zone tension
+    water}
+  \item{se3}{Cumulative evapotranspiration from lower zone tension
+    water}
+  \item{se4}{Cumulative evapotranspiration}
+  \item{se5}{Cumulative evapotranspiration from riparian zone}
+  \item{roimp}{Runoff from impervious area}
+  \item{sdro}{Six hour sum of runoff (?)}
+  \item{ssur}{Surface runoff}
+  \item{sif}{Interflow}
+  \item{bfp}{Primary baseflow}
+  \item{bfs}{Secondary baseflow}
+  \item{bfcc}{Channel baseflow (bfp+bfs)}
 }
 \references{
   Burnash, R.J.C (1995). The NWS River Forecast System -- Catchment Modeling.
