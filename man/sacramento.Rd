@@ -9,7 +9,11 @@
 \usage{
 sacramento.sim(DATA, uztwm, uzfwm, uzk, pctim, adimp, zperc, rexp,
                lztwm, lzfsm, lzfpm, lzsk, lzpk, pfree,
-               etmult = 1, dt = 1, return_state = FALSE)
+               etmult = 1, dt = 1,
+               uztwc_0=0.5,uzfwc_0=0.5,
+               lztwc_0=0.5,lzfsc_0=0.5,lzfpc_0=0.5,
+               adimc_0=0.5,
+               return_state = FALSE)
 }
 \arguments{
   \item{DATA}{
@@ -44,6 +48,18 @@ sacramento.sim(DATA, uztwm, uzfwm, uzk, pctim, adimp, zperc, rexp,
   \item{etmult}{Multiplier applied to \code{DATA$E} to estimate
     potential evapotranspiration.}
   \item{dt}{Length of each time step in days.}
+  \item{uztwc_0}{Initial upper zone tension water contents as proportion
+    of \code{uztwm}}
+  \item{uzfwc_0}{Initial upper zone free water content as proportion of
+    \code{uzfwm}}
+  \item{lztwc_0}{Initial lower zone tension water content as proportion
+    of \code{lztwm}}
+  \item{lzfsc_0}{Initial lower zone free water secondary as proportion
+    of \code{lzfsm}}
+  \item{lzfpc_0}{Initial lower zone free water primary as proportion of
+    \code{lzfpm}}
+  \item{adimc_0}{Initial additional impervious flow store, as proportion
+    of \code{uztwm+lztwm}}
   \item{return_state}{to return time series of each state variable and
     flow component}
 }

@@ -29,7 +29,11 @@ struct FSUM1 { /* I/O passed in function FLAND1 (THE SMA
 /* FUNCTION DECLARATION */
 void sma_sac(double *P, double *E, int *n,
 	     double *xpar, double *etmult,
-	     double *dt, double *U);
+	     double *dt, double *U,
+	     double *uztwc_0,double *uzfwc_0,
+	     double *lztwc_0,double *lzfsc_0, double *lzfpc_0,
+	     double *adimc_0
+);
 
 void fland1(struct SMA *sma, struct FSUM1 *fsum1);
 

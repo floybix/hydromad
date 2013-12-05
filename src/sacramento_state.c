@@ -17,7 +17,11 @@ void sma_sac_state(double *P, double *E, int *n,
 		   double *roimp,double *sdro,
 		   double *ssur,double *sif,
 		   double *bfp,double *bfs,
-		   double *bfcc)
+		   double *bfcc,
+		   double *uztwc_0,double *uzfwc_0,
+		   double *lztwc_0,double *lzfsc_0, double *lzfpc_0,
+		   double *adimc_0   
+)
 {
     struct SMA sma;
     struct FSUM1 fsum1;
@@ -41,12 +45,12 @@ void sma_sac_state(double *P, double *E, int *n,
     sma.side  = 0.0;
     sma.pxmlt = 1.0;
 
-    sma.uztwc = 0.5 * sma.uztwm;
-    sma.uzfwc = 0.5 * sma.uzfwm;
-    sma.lztwc = 0.5 * sma.lztwm;
-    sma.lzfsc = 0.5 * sma.lzfsm;
-    sma.lzfpc = 0.5 * sma.lzfpm;
-    sma.adimc = 0.5 * (sma.uztwm + sma.lztwm);
+    sma.uztwc = *uztwc_0 * sma.uztwm;
+    sma.uzfwc = *uzfwc_0 * sma.uzfwm;
+    sma.lztwc = *lztwc_0 * sma.lztwm;
+    sma.lzfsc = *lzfsc_0 * sma.lzfsm;
+    sma.lzfpc = *lzfpc_0 * sma.lzfpm;
+    sma.adimc = *adimc_0 * (sma.uztwm + sma.lztwm);
 
     /* SET SOME INITIAL VALUES TO ZERO */
     fsum1.srot=fsum1.simpvt=fsum1.srodt=fsum1.srost=0.;
