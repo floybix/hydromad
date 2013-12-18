@@ -213,7 +213,7 @@ export(runRSM)
 S3method(print,summary.rsm.hydromad)
 
 
-## RUNLIST
+## RUNLIST / MULTI-MODEL
 
 ## runlist.R
 export(runlist,
@@ -228,6 +228,20 @@ S3method(fitted, runlist)
 S3method(update, runlist)
 S3method(xyplot, runlist)
 S3method(qqmath, runlist)
+S3method(objFunVal, runlist)
+
+export(splitData)
+export(crossValidate)
+S3method(summary,crossvalidation)
+
+export(paretoObjectivesNsga2)
+
+## ParetoFiltering.R
+export(paretoCatchments)
+export(plotPCNSE)
+export(areModelsDominated)
+export(getDominatedLong)
+export(paretoFilter)
 
 
 ## MISCELLANEOUS
@@ -254,13 +268,6 @@ export(panel.ribbon)
 S3method(panel.ribbon, default)
 S3method(panel.ribbon, ts)
 S3method(panel.ribbon, zoo)
-
-## ParetoFiltering.R
-export(paretoCatchments)
-export(plotPCNSE)
-export(areModelsDominated)
-export(getDominatedLong)
-export(paretoFilter)
 
 ## utilities.R
 export(observed,
