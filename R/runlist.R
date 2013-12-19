@@ -114,5 +114,11 @@ fitted.runlist <-
 update.runlist <-
     function(object, ...)
 {
-    as.runlist(lapply(object, update, ...))
+  switch(hydromad.getOption("parallel"),
+         "clusterApply"={
+           runs <- as.runlist(parLapply(cl,object,update,...))
+         },
+         runs <- as.runlist(lapply(object, update, ...))
+         ) ## switch parallel
+  return(runs)
 }
