@@ -122,3 +122,6 @@ update.runlist <-
          ) ## switch parallel
   return(runs)
 }
+
+isValidModel.runlist <- function(object,...)
+  return(TRUE)
