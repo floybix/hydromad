@@ -105,7 +105,7 @@ objFunVal.hydromad <-
 objFunVal.runlist <- function (x, objective = list(hydromad.getOption("objective"),mean), ...) 
 {
   if(is.list(objective) && length(objective) == 2){
-    switch(hydromad.getOption("parallel"),
+    switch(hydromad.getOption("parallel")[["objFunVal.runlist"]],
            clusterApply = {
              vals <- parSapply(cl,x, objFunVal, objective[[1]], ...)
            },

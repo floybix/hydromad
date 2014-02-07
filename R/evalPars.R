@@ -1,6 +1,6 @@
 evalPars<- function(par.matrix,object,objective=hydromad.getOption("objective")) {
   stopifnot(inherits(object,"hydromad"))
-  switch(hydromad.getOption("parallel"),
+  switch(hydromad.getOption("parallel")[["evalPars"]],
          "clusterApply"={
            objs <- parApply(cl=cl,par.matrix,1,
                                  function(p,object,objective) {

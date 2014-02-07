@@ -1,7 +1,7 @@
 paretoObjectivesVaryWeights<-function (MODEL, objective = hydromad.getOption("objective"), weights, fitBy,...)
 {
   objective <- buildCachedObjectiveFun(objective, MODEL)
-  switch(hydromad.getOption("parallel"),
+  switch(hydromad.getOption("parallel")[["paretoObjectivesVaryWeights"]],
          "clusterApply"={
            library(parallel)
            clusterExport(cl,c("objective","fitBy","MODEL"),envir=environment())
