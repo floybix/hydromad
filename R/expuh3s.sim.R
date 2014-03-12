@@ -32,7 +32,7 @@ expuh3s.sim <-
 
     ## convert from 'tau' and 'v' to 'alpha' and 'beta'
     alpha_q <- exp(-1 / tau_q)
-    beta_q <- 1 - v_s * (1 - alpha_q)
+    beta_q <- (1 - v_s) * (1 - alpha_q)
     
     ### apply exponential decay filter to quick flow
     Xq <- U * NA
