@@ -200,6 +200,9 @@ S3method(defineFeasibleSet, default)
 S3method(defineFeasibleSet, hydromad)
 
 export(findUnivariateBounds)
+export(eigen.plot,eigen.plot.single)
+export(evalRSM)
+
 
 ## RUNLIST
 
