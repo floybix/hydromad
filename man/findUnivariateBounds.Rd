@@ -22,10 +22,10 @@ findUnivariateBounds(modx, fitx, thres, objective = hydromad.getOption("objectiv
     used as one end point for a line search
 }
   \item{thres}{
-    Minimum threshold on objective. Should be less than \code{objFunVal(fitx,objective=objective)}
+    Minimum threshold on objective, defining a feasible region. Should be less than \code{objFunVal(fitx,objective=objective)}
 }
   \item{objective}{
-    objective function to maximise, given as a \code{function(Q, X, ...)}.
+    objective function used to determine feasible region, given as a \code{function(Q, X, ...)}.
     See \code{\link{objFunVal}}.
 }
 }
@@ -34,10 +34,16 @@ findUnivariateBounds(modx, fitx, thres, objective = hydromad.getOption("objectiv
   bounds. It may not work as desired in some cases.
   
   Errors may be produced by \code{\link{uniroot}} of the type
-  \code{lower < upper  is not fulfilled} and \code{ f() values at end
-    points not of opposite sign}. This indicates that no parameter value
+  \code{ f() values at end points not of opposite sign}. This indicates that no parameter value
   could be found that has an objective value equal to \code{thres}. In
-  that case, the relevant bound is kept unchanged as specified in \code{modx}.
+  that case, the relevant bound is kept unchanged as specified in
+  \code{modx}.
+
+  Errors of the type \code{lower < upper  is not fulfilled} occur if the
+  parameters of \code{fitx} are at the boundaries specified in \code{modx}. This
+  error can usually be ignored, though it suggests that the \code{fitx}
+  parameter estimation could perhaps be improved.
+  
 }
 \value{
   A named list of bounds for each free parameter in \code{modx}.
