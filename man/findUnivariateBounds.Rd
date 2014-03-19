@@ -1,0 +1,74 @@
+\name{findUnivariateBounds}
+\alias{findUnivariateBounds}
+\title{
+Find univariate feasible bounds 
+}
+\description{
+Find bounds on parameters within which a threshold of performance
+is satisfied by solving \code{objective(single.par)=thres} using
+univariate line searches for the lower and upper bounds of each parameter.
+}
+\usage{
+findUnivariateBounds(modx, fitx, thres, objective = hydromad.getOption("objective"))
+}
+\arguments{
+  \item{modx}{
+    a model specification created by \code{\link{hydromad}}. It should
+    not be fully specified, i.e one or more parameters should be defined
+    by \emph{ranges} of values rather than exact values.
+}
+  \item{fitx}{
+    a best guess model with fully specified parameters. This will be
+    used as one end point for a line search
+}
+  \item{thres}{
+    Minimum threshold on objective. Should be less than \code{objFunVal(fitx,objective=objective)}
+}
+  \item{objective}{
+    objective function to maximise, given as a \code{function(Q, X, ...)}.
+    See \code{\link{objFunVal}}.
+}
+}
+\details{
+  This is intended as a heuristic method for identifying feasible
+  bounds. It may not work as desired in some cases.
+  
+  Errors may be produced by \code{\link{uniroot}} of the type
+  \code{lower < upper  is not fulfilled} and \code{ f() values at end
+    points not of opposite sign}. This indicates that no parameter value
+  could be found that has an objective value equal to \code{thres}. In
+  that case, the relevant bound is kept unchanged as specified in \code{modx}.
+}
+\value{
+  A named list of bounds for each free parameter in \code{modx}.
+}
+\author{
+Joseph Guillaume
+}
+\seealso{
+\code{\link{evalRSM}} which requires narrowed bounds
+}
+\examples{
+data(Cotter)
+x <- Cotter[1:1000]
+
+## IHACRES CWI model with exponential unit hydrograph
+## an unfitted model, with ranges of possible parameter values
+modx <- hydromad(x, sma = "cwi", routing = "expuh",
+                 tau_s = c(2,100), v_s = c(0,1))
+
+## Best fit, used as initial feasible solution
+fitx <- fitByOptim(modx)
+
+## Identify bounds
+thres <- objFunVal(fitx)-0.05 ## Look for models within 0.05 of best fit
+bounds <- findUnivariateBounds(modx,fitx,thres)
+
+## Create model object with the new bounds
+modx2 <- update(modx,newpars=bounds)
+
+bounds
+modx2
+
+}
+\keyword{models }

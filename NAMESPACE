@@ -199,6 +199,7 @@ export(defineFeasibleSet)
 S3method(defineFeasibleSet, default)
 S3method(defineFeasibleSet, hydromad)
 
+export(findUnivariateBounds)
 
 ## RUNLIST
 
