@@ -12,6 +12,6 @@ lagFrac<-function(P,TDopt){
         y
     }
     V<-filter.pad0(P,X)
-    V[1:(I-1)]<-ifelse(V[1:(I-1)]==0,NA,V[1:(I-1)])
+    if (I>1) V[1:(I-1)]<-ifelse(V[1:(I-1)]==0,NA,V[1:(I-1)])
     return(V)
 }
