@@ -52,7 +52,7 @@ findUnivariateBounds(modx, fitx, thres, objective = hydromad.getOption("objectiv
 Joseph Guillaume
 }
 \seealso{
-\code{\link{evalRSM}} which requires narrowed bounds
+\code{\link{runRSM}} which requires narrowed bounds
 }
 \examples{
 data(Cotter)

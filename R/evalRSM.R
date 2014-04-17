@@ -1,4 +1,4 @@
-evalRSM <- function(modx,...,objective = hydromad.getOption("objective")){
+runRSM <- function(modx,...,objective = hydromad.getOption("objective")){
   library(rsm)
   ## Sample using design
   bounds <- getFreeParsRanges(modx)
@@ -22,4 +22,40 @@ evalRSM <- function(modx,...,objective = hydromad.getOption("objective")){
   evals.rsm <- rsm(form, data=evals)
 
   return(evals.rsm)
+}
+
+evalRSM <- function(modx,rsm.object,n=100,
+                    objective = hydromad.getOption("objective"),
+                    method="latin.hypercube"){
+  indep.sample=parameterSets(getFreeParsRanges(modx),samples=n,method=method)
+  indep.sample.coded=coded.data(indep.sample,formulas=codings(rsm.object))
+  cat(sprintf("Running %d model evaluations\n", nrow(indep.sample)))
+  indep.sample.coded$Y <- evalPars(decode.data(indep.sample),modx, objective = objective)
+  f <- predict(rsm.object,newdata=indep.sample.coded)
+  r <- indep.sample.coded$Y - f
+  ans<-list(fitted.values=f,
+            model.values=indep.sample.coded$Y,
+            indep.sample=indep.sample.coded
+            )
+  rss <- sum(r^2)
+  mss <-  sum((f - mean(f))^2)
+  rdf=n-rsm.object$rank
+  ans$df <- c(rsm.object$rank,rdf,NCOL(rsm.object$qr$qr))
+  resvar <- rss/rdf
+  ans$sigma <- sqrt(resvar)
+  ans$r.squared <- mss/(mss + rss)
+  df.int=1 ##intercept present
+  ans$adj.r.squared <- 1 - (1 - ans$r.squared) * ((n - df.int)/rdf)
+  class(ans)<-"summary.rsm.hydromad"
+  ans
+}
+
+print.summary.rsm.hydromad <- function(x,digits=max(3L, getOption("digits") - 3L),...){
+  rdf <- x$df[2L]
+  cat("\nResidual standard error:", format(signif(x$sigma, 
+        digits)), "on", rdf, "degrees of freedom")
+  cat("\n")
+  cat("Multiple R-squared: ", formatC(x$r.squared, digits = digits))
+  cat(",\tAdjusted R-squared: ", formatC(x$adj.r.squared,digits = digits))
+  cat("\n")
 }

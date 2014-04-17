@@ -1,14 +1,16 @@
-\name{evalRSM}
+\name{runRSM}
 \alias{evalRSM}
+\alias{runRSM}
 \title{
   Response Surface Method
 }
 \description{
   Fit second-order response-surface model to model objective function,
-  see \code{\link{rsm}}.
+  see \code{\link{rsm}}; and evaluate on an independent sample.
 }
 \usage{
-evalRSM(modx, ..., objective = hydromad.getOption("objective"))
+runRSM(modx, ..., objective = hydromad.getOption("objective"))
+evalRSM(modx,rsm.object,n=100,objective = hydromad.getOption("objective"),method="latin.hypercube")
 }
 \arguments{
   \item{modx}{
@@ -29,7 +31,10 @@ evalRSM(modx, ..., objective = hydromad.getOption("objective"))
   \item{objective}{
     objective function to use to generate response surface, given as a \code{function(Q, X, ...)}.
     See \code{\link{objFunVal}}.
-}
+  }
+  \item{rsm.object}{rsm object produced by runRSM}
+  \item{n}{Number of independent samples to draw for evaluation of fit}
+  \item{method}{Sampling scheme for \code{evalRSM}. See \code{\link{parameterSets}}}
 }
 \details{
   Wrapper around \code{\link{ccd}}, \code{\link{evalPars}} and
@@ -42,10 +47,27 @@ evalRSM(modx, ..., objective = hydromad.getOption("objective"))
   The fit of the resulting response surface model should evaluated,
   e.g. using \code{summary.lm}. Fit might be improved with better
   design parameters \code{ccd} or by reducing the ranges of parameters
-  in \code{modx} to a region that can be better approximated by a quadratic.
+  in \code{modx} to a region that can be better approximated by a
+  quadratic.
+
+  \code{evalRSM} randomly samples an independent set of parameters, evaluates
+  the objective using the hydromad model and response surface at each
+  point and calculates measures of fit similarly to
+  \code{\link{summary.lm}}, displaying them using the print method.
 }
 \value{
-an \code{\link{rsm}} object
+  For \code{runRSM}, an \code{\link{rsm}} object.
+
+  For \code{evalRSM}, a list with elements:
+  \item{fitted.values}{objective values from rsm object}
+  \item{model.values}{objective values from hydromad runs}
+  \item{indep.sample}{\code{coded.data} describing new sampled points}
+  \item{df}{Degrees of freedom, see \code{\link{summary.lm}}}
+  \item{sigma}{the square root of the estimated variance of the
+    random error, see \code{\link{summary.lm}}}
+  \item{r.squared}{R^2, the 'fraction of variance explained by the
+    model', see \code{\link{summary.lm}}}
+  \item{adj.r.squared}{the above R^2 statistic 'adjusted', penalizing for higher p}
 }
 \author{
 Joseph Guillaume
@@ -98,7 +120,7 @@ ccd.pick(4)
 ################################################################################
 ## Run RSM with n0.c=10 and n0.s=5
 set.seed(10) #make replicable
-evals.rsm <- evalRSM(modx,n0=c(10,5))
+evals.rsm <- runRSM(modx,n0=c(10,5))
 
 ##evaluate fit
 summary.lm(evals.rsm) 
@@ -108,6 +130,9 @@ summary.lm(evals.rsm)
 
 ## Standard results from ?rsm
 summary(evals.rsm)
+
+## Evaluate on an independent sample
+evalRSM(modx,evals.rsm,n=100)
 
 ## Plot eigen plots
 eigen.plot(evals.rsm,fixed.axis=TRUE)
