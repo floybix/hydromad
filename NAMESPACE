@@ -1,6 +1,5 @@
-
 importFrom(stats,
-           simulate,
+           simulate,fitted,residuals,predict,update,coef
            tsdiag)
 importFrom(lattice,
            xyplot,
@@ -10,6 +9,14 @@ importFrom(car,
            bcPower)
 importFrom(Hmisc,
            wtd.quantile)
+import(zoo)
+importFrom(graphics,plot)
+
+## Exports from imported packages
+export(simulate,fitted,residuals,predict,update,coef)
+export(xyplot)
+export(summary,print)
+export(plot)
 
 ## CORE FUNCTIONS
 
