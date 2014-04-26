@@ -1,5 +1,5 @@
 importFrom(stats,
-           simulate,fitted,residuals,predict,update,coef
+           simulate,fitted,residuals,predict,update,coef,
            tsdiag)
 importFrom(lattice,
            xyplot,
