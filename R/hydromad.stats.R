@@ -65,7 +65,7 @@ buildCachedObjectiveFun <-
          },
          "r.sq.log" = function(Q, X, ...) {
              nseStat(Q, X, ..., trans = function(x)
-                     log(x + .(quantile(coredata(subset(Q, Q>0)), 0.1, na.rm = TRUE, names = FALSE))))
+                     log(x + .(quantile(coredata(Q)[coredata(Q)>0], 0.1, na.rm = TRUE, names = FALSE))))
          },
          "r.sq.boxcox" = function(Q, X, ...) {
              .(buildTsObjective(Q, boxcox = TRUE))(Q, X, ...)
