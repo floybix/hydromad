@@ -54,7 +54,8 @@ parameterSets(par.ranges, samples,
 \author{ Felix Andrews \email{felix@nfrac.org} }
 \seealso{
   \code{\link{sample}},
-  \code{\link{quantile}}
+  \code{\link{quantile}},
+  \code{\link{evalPars}} to then evaluate the parameter sets with a model in hydromad
 }
 \examples{
 pars <- list(a = 1, b = 0:1, c = c(1,10), d = c(-2,-4,-8))
