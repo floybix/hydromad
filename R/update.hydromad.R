@@ -60,6 +60,7 @@ update.hydromad <-
             stopifnot(is.character(sma))
             ## take default parameter ranges/values from hydromad.options()
             pardefs <- hydromad.getOption(sma)
+            ## or sma.ranges() if available
             if (is.null(pardefs)) {
                 pardef.fn <- paste(sma, ".ranges", sep = "")
                 if (exists(pardef.fn, mode = "function"))
@@ -90,8 +91,15 @@ update.hydromad <-
         if (!is.null(routing)) {
             stopifnot(is.character(routing))
             ## take default parameter ranges/values from hydromad.options()
+            pardefs <- hydromad.getOption(routing)
+            ## or routing.ranges() if available
+            if (is.null(pardefs)) {
+                pardef.fn <- paste(routing, ".ranges", sep = "")
+                if (exists(pardef.fn, mode = "function"))
+                    pardefs <- do.call(pardef.fn, list())
+            }
             object$parlist <-
-                modifyList(as.list(hydromad.getOption(routing)),
+                modifyList(as.list(pardefs),
                            object$parlist)
         }
         object$routing <- routing
