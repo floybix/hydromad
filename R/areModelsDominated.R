@@ -4,6 +4,10 @@
 ## Assume objectives higher value is better. Values should be transformed prior to use
 areModelsDominated <- function(res,objectives="r.squared"){
     res <- as.data.frame(res)
+    
+    if(!all(objectives %in% names(res))) stop(sprintf("objectives not recognised: %s",
+                                                      paste(setdiff(objectives,names(res))),collapse=", "))
+      
     id.vars <- intersect(names(res),c("Model.str","Catchment","calib.period","sim.period","Cal.objfn"))
     res <- res[,c(id.vars,objectives)]
 
