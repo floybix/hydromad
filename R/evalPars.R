@@ -1,6 +1,23 @@
-evalPars<- function(par.matrix,object,objective=hydromad.getOption("objective")) {
+evalPars<- function(par.matrix,object,objective=hydromad.getOption("objective"),
+                    parallel=hydromad.getOption("parallel")[["evalPars"]],
+                    async=FALSE,export=c()) {
   stopifnot(inherits(object,"hydromad"))
-  switch(hydromad.getOption("parallel")[["evalPars"]],
+  switch(parallel,
+         "foreach"={
+           opts=hydromad.options()
+           objs <- foreach(p=iter(par.matrix,by="row"),
+                           .packages="hydromad",
+                           .inorder=TRUE,
+                           .export=export,
+                           .final=function(x) as.numeric(x),
+                           .options.redis=list(async=async)
+           ) %dopar% {
+             hydromad.options(opts)
+             thisMod <- update(object, newpars = p)
+             if (!isValidModel(thisMod)) return(NA)
+             objFunVal(thisMod,objective=objective)
+           }
+         },
          "clusterApply"={
            objs <- parApply(cl=cl,par.matrix,1,
                                  function(p,object,objective) {
