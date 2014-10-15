@@ -30,8 +30,43 @@ as.runlist <- function(x, ...)
 "[.runlist" <- function (x, i, ...)
     structure(NextMethod("["), class = class(x))
 
-c.runlist <- function(..., recursive = FALSE)
-    as.runlist(NextMethod("c"))
+c.hydromad <- function(...,recursive=FALSE) {
+  args=list(...)
+  
+  ## If some are runlists, then call c.runlist instead
+  is.runlist=sapply(args,inherits,what="runlist")
+  if(any(is.runlist)) return(c.runlist(...))
+  
+  ## If all hydromad objects, equivalent to just calling runlist
+  if(!all(sapply(args,inherits,what="hydromad"))) stop("Expected all elements to be hydromad objects")
+  runlist(...)
+}
+
+c.runlist <- function(..., recursive = FALSE){
+  args <- list(...)
+  
+  ## If any are hydromad objects, convert them to unit runlists
+  is.hydromad=sapply(args,inherits,what="hydromad")
+  for(i in which(is.hydromad)) args[[i]] <- do.call(runlist,args[i])
+  
+  ## Preserve classes, because primitive c strips them
+  ## We keep only the classes common to all runlists
+  ## Other user-defined attributes are still lost
+  classes <- Reduce(intersect,lapply(args,class))
+  
+  ## Call primitive c
+  args <- lapply(args, unclass)
+  names(args) <- NULL
+  rval <- do.call("c", args)
+  
+  ## Make a valid runlist
+  rval <- as.runlist(rval)
+  
+  ## Restore classes
+  class(rval) <- classes
+  
+  rval
+}
 
 coef.runlist <-
     function(object, ..., items = NULL)
