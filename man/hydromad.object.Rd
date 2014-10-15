@@ -5,6 +5,7 @@
 \alias{observed.hydromad}
 \alias{residuals.hydromad}
 \alias{coef.hydromad}
+\alias{getFreeParsRanges}
 \alias{vcov.hydromad}
 \alias{isValidModel}
 \alias{print.hydromad}
@@ -30,6 +31,8 @@
 
 \method{coef}{hydromad}(object, which = c("both", "sma", "routing"),
      ..., feasible.set = FALSE, etc = FALSE, warn = TRUE)
+     
+getFreeParsRanges(object)
 
 \method{vcov}{hydromad}(object, ...)
 %% deviance?
@@ -140,6 +143,8 @@ isValidModel(object, ...)
   \code{isValidModel()} returns \code{TRUE} only if the supplied
   \code{hydromad} object is fully specified and has a calculated output
   series. 
+  
+  To help sample parameters, \code{getFreeParsRanges} returns the list of ranges of parameters that do not have fixed parameter values. In particular, it is used in conjunction with \code{\link{evalPars}} to perform sensitivity analyses.
 }
 \value{
   
@@ -151,6 +156,8 @@ isValidModel(object, ...)
   \code{coef} returns a named numeric vector, or a named \code{list} if
   one or more parameters are not fully specified.
   
+  \code{getFreeParsRanges} returns a named list of parameter ranges, for each parameter that has a range defined. Note that this excludes fixed parameters and parameters defines as a set of discrete values, for which \code{coef(object,warn=FALSE)} should be used instead.
+  
 }
 \author{ Felix Andrews \email{felix@nfrac.org} }
 \seealso{
@@ -158,7 +165,8 @@ isValidModel(object, ...)
   \code{\link{summary.hydromad}},
   \code{\link{predict.hydromad}},
   \code{\link{xyplot.hydromad}},
-  \code{\link{runlist}}
+  \code{\link{runlist}},
+  \code{\link{evalPars}}
 }
 \examples{
 
