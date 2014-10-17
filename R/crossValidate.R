@@ -8,26 +8,31 @@ crossValidate <- function(MODEL,periods,
                           name.Cal.objfn="unknown",
                           name.Catchment=as.character(MODEL$call$DATA),
                           fitBy,...,
-                          parallel=hydromad.getOption("parallel")[["crossValidate"]],
-                          async=FALSE,export=c()
+                          trace=isTRUE(hydromad.getOption("trace")),
+                          parallel=hydromad.getOption("parallel")[["crossValidate"]]
 ){
   cv.set <- splitData(MODEL,periods=periods)
-  switch(parallel,
+  
+  # Sets default settings for parallelisation if missing
+  parallel=hydromad.parallel(parallel)
+  
+  switch(parallel$method,
          "foreach"={
+           if(trace) message(sprintf("Running crossvalidate in parallel using foreach: %s",getDoParName()))
            opts=hydromad.options()
            runs=foreach(n=names(cv.set),
-                        .packages="hydromad",
+                        .packages=parallel$packages,
                         .inorder=FALSE,
-                        .export=export,
+                        .export=parallel$export,
                         .final=function(runs){
                           runs <- do.call(c,runs)
                           class(runs) <- unique(c("crossvalidation",class(runs),"runlist", "list"))
                           runs
                         },
-                        .options.redis=list(async=async)
+                        .options.redis=list(async=parallel$async)
            ) %dopar% {
              hydromad.options(opts)
-             if(isTRUE(hydromad.getOption("trace"))) cat("\nFitting period: ",n,"\n")    
+             if(trace) cat("\nFitting period: ",n,"\n")    
              fitx <- fitBy(cv.set[[n]],...)
              new.runs <- update(cv.set,newpars=coef(fitx))
              names(new.runs) <- sprintf("%s_cal%s",names(cv.set),n)
@@ -44,9 +49,10 @@ crossValidate <- function(MODEL,periods,
            }
          },
 {
+  if(trace) message("Running crossvalidate sequentially")
   runs <- runlist()                   
   for(n in names(cv.set)){
-    if(isTRUE(hydromad.getOption("trace"))) cat("\nFitting period: ",n,"\n")    
+    if(trace) cat("\nFitting period: ",n,"\n")    
     fitx <- fitBy(cv.set[[n]],...)
     new.runs <- update(cv.set,newpars=coef(fitx))
     names(new.runs) <- sprintf("%s_cal%s",names(cv.set),n)

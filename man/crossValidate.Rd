@@ -4,13 +4,14 @@
   Cross-validation of hydromad model specification
 }
 \description{
-  Using a split dataset, 
-  Estimate parameters using optimisation on data subsets and evaluate
-  their performance on all other
+  Using a split dataset, estimate parameters using optimisation on data subsets and evaluate
+  their performance on all other subsets.
 }
 \usage{
 crossValidate(MODEL, periods, name.Model.str = paste(MODEL$sma, MODEL$routing), 
-    name.Cal.objfn = "unknown", fitBy, ...)
+    name.Cal.objfn = "unknown", fitBy, ...,
+    trace=isTRUE(hydromad.getOption("trace")),
+    parallel=hydromad.getOption("parallel")[["crossValidate"]])
 }
 \arguments{
   \item{MODEL}{
@@ -34,6 +35,23 @@ crossValidate(MODEL, periods, name.Model.str = paste(MODEL$sma, MODEL$routing),
   \item{\dots}{
     Arguments passed to \code{fitBy}
 }
+  \item{trace}{
+  Whether to report messages.
+  }
+  \item{parallel}{
+    name of method to use for parallelisation ("foreach" or "none"), or list giving settings for parallelisation. See \link{hydromad_parallelisation}.
+  }
+}
+\section{Parallelisation}{
+  \code{crossValidate} optionally allows the separate optimisations to be run concurrently with the parallel option \code{method="foreach"}. This is usually only worthwhile for longer running optimisations such as \code{\link{fitBySCE}} rather than relatively fast methods such as \code{\link{fitByOptim}}. 
+  
+  The total runtime is limited by the runtime of the slowest of optimisations, e.g. the longest data subset, most complex objective function response surface, or slowest computer on which an optimisation is being run. Some of the workers may therefore be idle (potentially wasting money) even though others are still running. 
+  
+  The evaluation of parameters on validation data subsets is also optionally parallelised through the function \code{update.runlist}, by setting \code{hydromad.options(parallel=list(update.runlist="clusterApply"))}. The advantage of this is likely to be minor, unless a large number of cross validation periods are used, due to the overhead involved and its relative speed compared to the optimisation. Note that this requires parallelisation to be setup on the worker, which is where the evaluation occurs.
+  
+  If the parallelisation backend for \code{foreach} supports it, the cross-validations can be set to occur in the background using \code{parallel=list(method="foreach",async=TRUE)}. In this case, the function returns immediately and the progress and results can be retrieved using functions provided by the parallelisation backend. This can be useful to submit a number of cross-validations for which the results are not immediately needed. As with a single cross-validation, mixing long and short running optimisations can make it difficult to fully utilise available workers.
+  
+  In future, it may also be possible to parallelise each optimisation itself in addition to or instead of parallelising the optimisation of each data period.
 }
 \value{
   A runlist of n*n models evaluated in each of n periods with parameters
