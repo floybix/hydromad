@@ -6,6 +6,7 @@
 crossValidate <- function(MODEL,periods,
                           name.Model.str=paste(MODEL$sma,MODEL$routing),
                           name.Cal.objfn="unknown",
+                          name.Catchment=as.character(MODEL$call$DATA),
                           fitBy,...,
                           parallel=hydromad.getOption("parallel")[["crossValidate"]],
                           async=FALSE,export=c()
@@ -32,10 +33,12 @@ crossValidate <- function(MODEL,periods,
              names(new.runs) <- sprintf("%s_cal%s",names(cv.set),n)
              ## Preserve fit attributes
              new.runs[[sprintf("%s_cal%s",n,n)]] <- fitx
-             for(m in names(new.runs)){
-               ##new.runs[[m]]$objective <- fitx$objective
+             for(m in 1:length(new.runs)){
                new.runs[[m]]$name.Model.str <- name.Model.str
                new.runs[[m]]$name.Cal.objfn <- name.Cal.objfn
+               new.runs[[m]]$name.calib.period <- n
+               new.runs[[m]]$name.sim.period <- names(cv.set)[m]
+               new.runs[[m]]$name.Catchment <- name.Catchment
              }
              new.runs
            }
@@ -49,10 +52,12 @@ crossValidate <- function(MODEL,periods,
     names(new.runs) <- sprintf("%s_cal%s",names(cv.set),n)
     ## Preserve fit attributes
     new.runs[[sprintf("%s_cal%s",n,n)]] <- fitx
-    for(m in names(new.runs)){
-      ##new.runs[[m]]$objective <- fitx$objective
+    for(m in 1:length(new.runs)){
       new.runs[[m]]$name.Model.str <- name.Model.str
       new.runs[[m]]$name.Cal.objfn <- name.Cal.objfn
+      new.runs[[m]]$name.calib.period <- n
+      new.runs[[m]]$name.sim.period <- names(cv.set)[m]
+      new.runs[[m]]$name.Catchment <- name.Catchment
     }
     runs <- c(runs,new.runs)
   }
@@ -64,9 +69,10 @@ return(runs)
 
 summary.crossvalidation <- function(object, ...){
   s=NextMethod(object,...)
-  s$sim.period <- sub("_cal.*","",rownames(s))
-  s$calib.period <- sub(".*_cal","",rownames(s))
+  s$sim.period <- sapply(object,function(x) x$name.sim.period)
+  s$calib.period <- sapply(object,function(x) x$name.calib.period)
   s$Model.str <- sapply(object,function(x) x$name.Model.str)
   s$Cal.objfn <- sapply(object,function(x) x$name.Cal.objfn)
+  s$Catchment <- sapply(object,function(x) x$name.Catchment)
   s
 }  
