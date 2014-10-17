@@ -1,13 +1,19 @@
-paretoTimeAnalysis <- function(rl,
+paretoTimeAnalysis <- function(...) UseMethod("paretoTimeAnalysis")
+
+paretoTimeAnalysis.crossvalidation <- function(rl,
+                             show.models=NA,
                              objectives="r.squared",
                              qoi=list(
-                               q90=function(Q,X,...) quantile(X,0.9,na.rm=TRUE),
+                               q90.in.units.of.runoff=function(Q,X,...) quantile(X,0.9,na.rm=TRUE),
                                r.sq.log=hmadstat("r.sq.log")
                                ),...
                              ){
   stopifnot(inherits(rl,"crossvalidation"))
   stat <- summary(rl,...)
-  paretoCatchments(stat,objectives=objectives)
+  pars <- coef(rl)
+  pars <- melt(unique(subset(pars,select=-sim.period)),na.rm=TRUE,
+               id.vars=intersect(names(pars),c("calib.period","Model.str","Cal.objfn","Catchment")))
+  paretoTimeAnalysis.data.frame(stat,show.models=show.models,objectives=objectives,pars=pars)
 
   cat("
 == Performance with other statistics ==
@@ -19,7 +25,7 @@ Is the model unacceptable in any period? Is the uncertainty too large?
   stat <- as.data.frame(stat)
   if(is.null(stat$Catchment)) stat$Catchment <- "Somewhere"
   stat.split <- split(stat,stat$Catchment)
-  stat.split <- do.call(rbind,lapply(stat.split,areModelsDominated,objectives=objectives))
+  stat.split <- do.call(rbind,lapply(stat.split,paretoTimeAnalysis_areModelsDominated,objectives=objectives))
   id.vars <- intersect(names(stat), c("Model.str", "Catchment", 
                                      "calib.period", "Cal.objfn"))
   is.nondominated <- apply(stat[,id.vars],1,paste,collapse="_") %in% apply(stat.split[!stat.split$dominated,id.vars],1,paste,collapse="_")
@@ -37,7 +43,7 @@ Is the model unacceptable in any period? Is the uncertainty too large?
   ## Cast and aggregate showing min, max and range of each qoi
   p2 <- cast(pm,variable+sim.period~.,
              fun.aggregate=function(x) c(min=min(x),max=max(x),range=diff(range(x))))
-  print(p2)
+  print(p2,row.names=FALSE)
 
   invisible(NULL)
 }##paretoTimeAnalysis

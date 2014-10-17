@@ -56,7 +56,7 @@ periods=list(P1=as.Date(c("1966-05-01","1976-04-30")),
 runs=crossValidate(modx,periods=periods,fitBy=fitByOptim,samples=1)
 summary(runs)
 ## Cross-validation statistics can then be analysed with other methods
-areModelsDominated(summary(runs))
+paretoTimeAnalysis_areModelsDominated(summary(runs))
 cast(melt(summary(runs),id.vars=c("calib.period","sim.period")),calib.period~variable+sim.period)
 paretoTimeAnalysis(runs)
 }

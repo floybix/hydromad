@@ -238,14 +238,13 @@ S3method(summary,crossvalidation)
 export(paretoObjectivesNsga2)
 export(paretoObjectivesVaryWeights)
 
-## ParetoFiltering.R
-export(paretoCatchments)
-export(plotPCNSE)
-export(areModelsDominated)
-export(getDominatedLong)
-export(paretoFilter)
-
+## paretoTimeAnalysis
 export(paretoTimeAnalysis)
+export(paretoTimeAnalysis.crossvalidation)
+export(paretoTimeAnalysis.data.frame)
+export(paretoTimeAnalysis_areModelsDominated)
+export(paretoFilter)
+export(plotPCNSE)
 
 ## MISCELLANEOUS
 
