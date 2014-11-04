@@ -1,16 +1,24 @@
+## hydromad: Hydrological Modelling and Analysis of Data
+##
+## Copyright (c) Joseph Guillaume <josephguillaume@gmail.com>
+##
+
 evalPars<- function(par.matrix,object,objective=hydromad.getOption("objective"),
-                    parallel=hydromad.getOption("parallel")[["evalPars"]],
-                    async=FALSE,export=c()) {
+                    parallel=hydromad.getOption("parallel")[["evalPars"]]) {
   stopifnot(inherits(object,"hydromad"))
-  switch(parallel,
+  
+  # Sets default settings for parallelisation if missing
+  parallel=hydromad.parallel(parallel)
+  
+  switch(parallel$method,
          "foreach"={
            opts=hydromad.options()
            objs <- foreach(p=iter(par.matrix,by="row"),
-                           .packages="hydromad",
+                           .packages=parallel$packages,
                            .inorder=TRUE,
-                           .export=export,
+                           .export=parallel$export,
                            .final=function(x) as.numeric(x),
-                           .options.redis=list(async=async)
+                           .options.redis=list(async=parallel$async)
            ) %dopar% {
              hydromad.options(opts)
              thisMod <- update(object, newpars = p)
@@ -19,6 +27,8 @@ evalPars<- function(par.matrix,object,objective=hydromad.getOption("objective"),
            }
          },
          "clusterApply"={
+           if(length(parallel$packages)>0) clusterCall(cl,library,parallel$packages,character.only=TRUE)
+           if(length(parallel$export)>0) clusterExport(cl,parallel$export)
            objs <- parApply(cl=cl,par.matrix,1,
                                  function(p,object,objective) {
                                    thisMod <- update(object, newpars = p)
