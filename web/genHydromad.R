@@ -1,7 +1,7 @@
 ## generate the web site
 
 ## setwd("~/devel/hydromad/web")
-## Sys.setenv(R_GSCMD = "C:/Program Files/gs/gs8.63/bin/gswin32c.exe")
+## Sys.setenv(R_GSCMD = "C:/Program Files/gs/gs9.06/bin/gswin64c.exe")
 ## source("genHydromad.R", echo = TRUE)
 
 library(hydromad)
@@ -27,9 +27,7 @@ spec[["assessment"]] <-
          list("nseVarTd"),
          list("xyplot", helpname = "xyplot.hydromad", do.example = TRUE),
          list("xyplot.runlist", do.example = TRUE),
-         list("qqmath", -2, helpname = "xyplot.hydromad", do.example = TRUE),
-         list("areModelsDominated",do.example=FALSE),
-         list("paretoCatchments",do.example=FALSE)
+         list("qqmath", -2, helpname = "xyplot.hydromad", do.example = TRUE)
          )
 
 spec[["calibration"]] <-
@@ -48,6 +46,23 @@ spec[["calibration"]] <-
          list("defineFeasibleSet", do.example = TRUE)
          )
 
+spec[["multimodel"]] <-
+  list(
+    list("hydromad_parallelisation",do.example=FALSE),
+    list("paretoObjectivesNsga2",do.example=FALSE),
+    list("paretoObjectivesVaryWeights",do.example=FALSE),
+    list("crossValidate",do.example=FALSE),
+    list("splitData",do.example=FALSE),
+    list("paretoTimeAnalysis",do.example=FALSE)
+  )
+
+spec[["identifiability"]] <-
+  list(
+      list("runRSM",do.example=FALSE),
+      list("eigen.plot",do.example=FALSE),
+      list("findUnivariateBounds",do.example=FALSE)
+    )
+  
 spec[["discrete events"]] <-
     list(
          list("eventseq", do.example = TRUE),

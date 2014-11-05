@@ -43,7 +43,7 @@ code {
 #nav {
   clear: left;
   float: left;
-  width: 10em; 
+  width: 16em; 
   margin-left: 2em;
 }
 
@@ -119,7 +119,7 @@ code {
 }
 
 #content_container {
-  margin-left: 15em;
+  margin-left: 20em;
   margin-right: 2em;
   max-width: 40em;
   padding: 0;
