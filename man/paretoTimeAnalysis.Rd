@@ -14,11 +14,19 @@ Analysis using Pareto-filtering of model performance across simulation periods
 paretoTimeAnalysis(...)
 
 paretoTimeAnalysis.crossvalidation(rl, 
-show.models = NA,
-objectives = "r.squared", 
-qoi = list(q90 = function(Q, X, ...) quantile(X, 0.9, na.rm = TRUE), r.sq.log = hmadstat("r.sq.log")))
+  show.models = NA,
+  objectives = "r.squared", 
+  qoi = list(
+    q90.in.units.of.runoff = function(Q, X, ...) quantile(X, 0.9, na.rm = TRUE), 
+    r.sq.log = hmadstat("r.sq.log")
+  )
+)
 
-paretoTimeAnalysis.data.frame(stat, show.models = NA, objectives = "r.squared",pars=NULL)
+paretoTimeAnalysis.data.frame(stat, 
+  show.models = NA, 
+  objectives = "r.squared",
+  pars=NULL
+)
 
 paretoTimeAnalysis_areModelsDominated(stat, objectives = "r.squared")
 
@@ -85,3 +93,4 @@ paretoTimeAnalysis_areModelsDominated(subset(YeAl97,Catchment=="Salmon"),objecti
 ## For all catchments, performance analysis
 paretoTimeAnalysis.data.frame(YeAl97,objectives="E")
 }
+\keyword{ models }

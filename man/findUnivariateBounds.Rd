@@ -9,7 +9,8 @@ is satisfied by solving \code{objective(single.par)=thres} using
 univariate line searches for the lower and upper bounds of each parameter.
 }
 \usage{
-findUnivariateBounds(modx, fitx, thres, objective = hydromad.getOption("objective"))
+findUnivariateBounds(modx, fitx, thres, 
+  objective = hydromad.getOption("objective"))
 }
 \arguments{
   \item{modx}{

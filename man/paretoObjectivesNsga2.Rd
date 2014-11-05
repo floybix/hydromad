@@ -7,7 +7,9 @@
   Estimate multi-objective Pareto front using NSGAII
 }
 \usage{
-paretoObjectivesNsga2(MODEL, objective = hydromad.getOption("objective"), control = hydromad.getOption("nsga2.control"))
+paretoObjectivesNsga2(MODEL, 
+  objective = hydromad.getOption("objective"), 
+  control = hydromad.getOption("nsga2.control"))
 }
 \arguments{
   \item{MODEL}{

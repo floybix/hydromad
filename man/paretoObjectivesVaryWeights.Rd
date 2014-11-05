@@ -8,7 +8,11 @@
   objective optimisations
 }
 \usage{
-paretoObjectivesVaryWeights(MODEL, objective = hydromad.getOption("objective"), weights, fitBy, ...)
+paretoObjectivesVaryWeights(MODEL, 
+  objective = hydromad.getOption("objective"), 
+  weights, 
+  fitBy, 
+  ...)
 }
 \arguments{
   \item{MODEL}{

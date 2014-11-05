@@ -10,7 +10,9 @@
 }
 \usage{
 runRSM(modx, ..., objective = hydromad.getOption("objective"))
-evalRSM(modx,rsm.object,n=100,objective = hydromad.getOption("objective"),method="latin.hypercube")
+evalRSM(modx,rsm.object,n=100,
+  objective = hydromad.getOption("objective"),
+  method="latin.hypercube")
 }
 \arguments{
   \item{modx}{
