@@ -81,7 +81,7 @@ cmd.sim <-
                     }
                 }
                 else { ## shape > 1
-                    ## power form: dU/dP = 1 - (M/d)^b for M < d
+                    ## power form: dU/dP = 1 - (M/d)^a for M < d
                     a <- 10 ^ (shape / 50)
                     if (M_prev < d) {
                         Mf <- M_prev * (1 - ((1-a) * P[t] / (d^a)) /

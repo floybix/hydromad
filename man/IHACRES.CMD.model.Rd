@@ -56,8 +56,9 @@ cmd.sim(DATA, f, e, d, shape = 0,
 
   The power form is
 
-  \deqn{\frac{\mathrm{d}U}{\mathrm{d}P} = 1 - \min(1, (M/d)^b)}{
-    dU/dP = 1 - min(1, (M/d)^b)}
+  \deqn{\frac{\mathrm{d}U}{\mathrm{d}P} = 1 - \min(1, (M/d)^a)}{
+    dU/dP = 1 - min(1, (M/d)^a)}
+    where a = 10 ^ (shape / 50)
 
   The actual drainage each time step involves the integral of these relations.
 
