@@ -6,7 +6,7 @@
 }
 \description{
   Fit second-order response-surface model to model objective function,
-  see \code{\link{rsm}}; and evaluate on an independent sample.
+  see \code{\link{rsm}}; and evaluate on an independent sample. Uses the \code{\link[rsm]{rsm}} package.
 }
 \usage{
 runRSM(modx, ..., objective = hydromad.getOption("objective"))
@@ -74,8 +74,17 @@ evalRSM(modx,rsm.object,n=100,
 \author{
 Joseph Guillaume
 }
+\references{
+Shin, Mun-Ju, Joseph H.A. Guillaume, Barry F.W. Croke, and Anthony J. Jakeman. 2015. "A Review of Foundational Methods for Checking the Structural Identifiability of Models: Results for Rainfall-Runoff." Journal of Hydrology 520(November): 1-16. doi:\href{http://dx.doi.org/10.1016/j.jhydrol.2014.11.040}{10.1016/j.jhydrol.2014.11.040}
+
+Lenth RV (2009) "Response-Surface Methods in R, Using rsm", Journal of Statistical Software, 32(7), 1-17. \url{http://www.jstatsoft.org/v32/i07/}
+
+G.E.P. Box, N.R. Draper. 1987. Empirical Model-building and Response Surfaces. John Wiley and Sons, New York
+
+A. Abusam, K.J. Keesman, G. van Straten, H. Spanjers, K. Meinema. 2001. "Sensitivity analysis in oxidation ditch modelling: the effect of variations in stoichiometric, kinetic and operating parameters on the performance indices" J. Chem. Technol. Biot., 76(4):430-438. doi:\href{http://dx.doi.org/10.1002/jctb.398}{10.1002/jctb.398}
+}
 \seealso{
-\code{\link{findUnivariateBounds}} to help reduce bounds to a quadratic
+the \code{\link[rsm]{rsm}} package; \code{\link{findUnivariateBounds}} to help reduce bounds to a quadratic
 region, \code{\link{ccd.pick}} to help determine parameters of design
 (passed as \dots)
 }
