@@ -118,6 +118,7 @@ spec[["utilities"]] <-
          list("parameterSets"),
          list("evalPars"),
          ##list("getFreeParsRanges"), ##same page as evalPars
+         list("evalParsRollapply"),
          list("rotatedSampling"),
          list("gr4j.transformpar"),
          list("observed"),

@@ -252,6 +252,7 @@ export(convertFlow)
 
 export(evalPars)
 export(getFreeParsRanges)
+export(evalParsRollapply)
 
 ## events.R
 export(findThresh,
