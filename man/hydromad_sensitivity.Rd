@@ -28,7 +28,7 @@ Shin, Mun-Ju, Joseph H.A. Guillaume, Barry F.W. Croke, and Anthony J. Jakeman. 2
 }
 \keyword{models}
 \seealso{
-Utilities \code{\link{evalPars}} and \code{\link{getFreeParsRanges}}
+Utilities \code{\link{evalPars}} and \code{\link{getFreeParsRanges}}. \code{\link{tellTS}} for calculating sensitivity indices on a time series.
 }
 \examples{
 library(sensitivity)

@@ -253,6 +253,11 @@ export(convertFlow)
 export(evalPars)
 export(getFreeParsRanges)
 export(evalParsRollapply)
+export(tellTS)
+export(tellTS.default)
+export(tellTS.sobol2002)
+export(tellTS.sobol2007)
+export(tellTS.morris)
 
 ## events.R
 export(findThresh,

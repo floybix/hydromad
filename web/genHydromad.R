@@ -59,6 +59,7 @@ spec[["multimodel"]] <-
 spec[["identifiability"]] <-
   list(
       list("hydromad_sensitivity",do.example=FALSE),
+      list("tellTS",do.example=FALSE),
       list("runRSM",do.example=FALSE),
       list("eigen.plot",do.example=FALSE),
       list("findUnivariateBounds",do.example=FALSE)
