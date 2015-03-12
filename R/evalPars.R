@@ -13,6 +13,7 @@ evalPars<- function(par.matrix,object,objective=hydromad.getOption("objective"),
   switch(parallel$method,
          "foreach"={
            opts=hydromad.options()
+           export=parallel$export
            objs <- foreach(p=iter(par.matrix,by="row"),
                            .packages=parallel$packages,
                            .inorder=TRUE,
@@ -20,6 +21,9 @@ evalPars<- function(par.matrix,object,objective=hydromad.getOption("objective"),
                            .final=function(x) as.numeric(x),
                            .options.redis=list(async=parallel$async)
            ) %dopar% {
+             # Work-around for hydromad functions to have access to .export
+             for (e in export) assign(e, get(e), envir = .GlobalEnv)
+             # Work-around to use same opts as in user's environment
              hydromad.options(opts)
              thisMod <- update(object, newpars = p)
              if (!isValidModel(thisMod)) return(NA)
