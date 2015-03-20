@@ -8,12 +8,15 @@ evalParsRollapply <- function(par.matrix,object,
                               parallel=hydromad.getOption("parallel")[["evalParsRollapply"]],
                               filehash.name=tempfile()
 ){
-  if(is.null(parallel)) parallel <- "none"
+  
+  # Sets default settings for parallelisation if missing
+  parallel=hydromad.parallel(parallel)
+  
   if(is.null(filehash.name)){
     results=matrix(NA,nrow=nrow(par.matrix),ncol=length(observed(object))-width+1)
-    if(parallel!="none") 
-      warning("setting parallel='none', parallelisation requires filehash.name to be non-null")
-    parallel="none"
+    if(parallel$method!="none") 
+      warning("setting parallel$method='none', parallelisation requires filehash.name to be non-null")
+    parallel$method="none"
   } else {
     library(parallel)
     library(ff)
@@ -22,11 +25,12 @@ evalParsRollapply <- function(par.matrix,object,
   
   ## Do runs, storing all ts
   cat(sprintf("Running %d model evaluations %s parallelisation\n", nrow(par.matrix),
-              ifelse(parallel=="none","*without*","with")
+              ifelse(parallel$method=="none","*without*","with")
   ))
-  switch(parallel,
+  switch(parallel$method,
          "clusterApply"={
-           clusterEvalQ(cl,library(ff))
+           lapply(c("ff",parallel$packages),function(pkg) clusterCall(cl,library,pkg,character.only=TRUE))
+           if(length(parallel$export)>0) clusterExport(cl,parallel$export)
            clusterExport(cl,c("par.matrix","object","objective","width","results"),envir=environment())
            parLapply(cl=cl,as.list(1:nrow(par.matrix)),
                      function(ip) {

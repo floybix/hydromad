@@ -31,7 +31,7 @@ evalPars<- function(par.matrix,object,objective=hydromad.getOption("objective"),
            }
          },
          "clusterApply"={
-           if(length(parallel$packages)>0) clusterCall(cl,library,parallel$packages,character.only=TRUE)
+           if(length(parallel$packages)>0) lapply(parallel$packages,function(pkg) clusterCall(cl,library,pkg,character.only=TRUE))
            if(length(parallel$export)>0) clusterExport(cl,parallel$export)
            objs <- parApply(cl=cl,par.matrix,1,
                                  function(p,object,objective) {
