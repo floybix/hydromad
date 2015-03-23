@@ -1,15 +1,23 @@
-\name{evalParsRollapply}
+\name{evalParsTS}
 \alias{evalParsRollapply}
+\alias{evalParsTS}
 \title{
 Calculate an objective function on a rolling time series for a matrix of parameters
 }
 \description{
-For each row of a named matrix of parameters, run a model and calculate an objective function on rolling windows of the resulting time series, i.e. see how the objective function changes over time. Special facilities are provided to evaluate large sample sizes in parallel on a single multicore machine.
+For each row of a named matrix of parameters, run a model and return a vector. By default, \code{evalParsTS} returns the predicted time series. \code{evalParsRollapply} instead calculates an objective function on rolling windows of the resulting time series, i.e. see how the objective function changes over time. Special facilities are provided to evaluate large sample sizes, including with parallelisation.
 }
 \usage{
+evalParsTS(par.matrix,object,
+  fun=function(thisMod) fitted(thisMod),
+  length.out=NULL,
+  ...,
+  parallel=hydromad.getOption("parallel")[["evalParsTS"]],
+  filehash.name=tempfile())
+
 evalParsRollapply(par.matrix, object, width = 30, 
   objective = hydromad.getOption("objective"), 
-  parallel = hydromad.getOption("parallel")[["evalParsRollapply"]], 
+  parallel = hydromad.getOption("parallel")[["evalParsTS"]], 
   filehash.name = tempfile())
 }
 \arguments{
@@ -19,18 +27,32 @@ evalParsRollapply(par.matrix, object, width = 30,
   \item{object}{
     an object of class \code{hydromad}.
 }
-  \item{width}{
-integer specifying window width, aligned center. Passed to \code{\link[zoo]{rollapply}}
-}
-  \item{objective}{
-    the objective function or expression, which can refer to Q and X.  See \code{\link{objFunVal.hydromad}}
-}
+  \item{fun}{
+  function that takes a hydromad object and returns a vector, by default the fitted timeseries.
+  }
+  \item{length.out}{
+  Length of output vector returned by \code{fun}. If missing, \code{fun} will be run on the first parameter set in \code{par.matrix}.
+  }
+  \item{\dots}{
+  Additional arguments to \code{fun}
+  }
   \item{parallel}{
 If \code{"clusterApply"}, evaluate parameters in parallel using a local cluster. The implementation assumes that the \code{\link{ff}} file \code{filehash.name} can be written to simultaneously all cluster workers.
 }
   \item{filehash.name}{
 Name of \code{\link{ff}} file in which to store results, allowing large samples that do not fit in memory. Defaults to \code{tempfile()}, which is automatically deleted when exiting from R. To store results in memory, set \code{filehash.name=NULL}.
 }
+  \item{width}{
+integer specifying window width, aligned center. Passed to \code{\link[zoo]{rollapply}}
+}
+  \item{objective}{
+    the objective function or expression, which can refer to Q and X.  See \code{\link{objFunVal.hydromad}}
+}
+}
+\details{
+If timeseries are long, then the results matrix will be large (\code{nrow(par.matrix)} x \code{length.out}). By default the results matrix is therefore stored in a \code{\link{ff}} file-backed matrix. 
+
+Individual model evaluations are generally very fast, so parallelisation is only really worthwhile when large numbers of evaluations are needed. Parallelisation method \code{"clusterApply"} uses multiple R sessions that write to a shared \code{\link{ff}} object. It only operates on a single multicore machine. Parallelisation method \code{"foreach"} offers a broader range of options but only works if the final results matrix is small enough to fit in memory.
 }
 \value{
 Either a matrix or \code{\link{ff}} file-backed matrix, with each row being a time series of rolling objective functions for the corresponding row of \code{par.matrix}
@@ -69,7 +91,7 @@ runs <- evalParsRollapply(par.matrix,object,
 \dontrun{
 ## Setup parallelisation on three cores
 library(parallel)
-hydromad.options("parallel"=list("evalParsRollapply"="clusterApply"))
+hydromad.options("parallel"=list("evalParsTS"="clusterApply"))
 cl <- makeCluster(3)
 clusterEvalQ(cl,library(hydromad))
 
@@ -87,6 +109,17 @@ filename(runs)
 # ff object can be used like a regular matrix, e.g. plotting the 
 #  rolling time series of R.squared for the first parameter set
 plot(runs[1,])
+
+## Do the same with foreach
+library(doParallel)
+registerDoParallel(cl)
+hydromad.options("parallel"=list("evalParsTS"="foreach"))
+runs <- evalParsRollapply(par.matrix,object,
+  objective=hmadstat("r.squared"),filehash.name=NULL)
+## runs is a matrix
 }
+
+
+
 }
 \keyword{ models }

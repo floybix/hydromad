@@ -9,4 +9,5 @@ hydromad.parallel <- function(settings){
   ## Backwards compatible-case, specifying only name of method
   if(is.character(settings)) return(modifyList(output,list(method=settings)))
   if(is.list(settings)) return(modifyList(output,settings))
+  return(output)
 }

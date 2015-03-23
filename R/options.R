@@ -61,6 +61,7 @@
            update.runlist="none",
            objFunVal.runlist="none",
            evalPars="none",
+           evalParsTS="none",
            crossValidate="none",
            paretoObjectivesVaryWeights="none"
          )
