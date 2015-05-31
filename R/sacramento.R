@@ -12,7 +12,7 @@ sacramento.sim <-
              etmult = 1, dt = 1,
              uztwc_0=0.5,uzfwc_0=0.5,
              lztwc_0=0.5,lzfsc_0=0.5,lzfpc_0=0.5,
-             adimc_0=0.5,
+             adimc_0=0.5,min_ninc=20,
              return_state = FALSE)
 {
     stopifnot(c("P","E") %in% colnames(DATA))
@@ -73,6 +73,7 @@ sacramento.sim <-
                      as.double(uztwc_0),as.double(uzfwc_0),
                      as.double(lztwc_0),as.double(lzfsc_0),as.double(lzfpc_0),
                      as.double(adimc_0),
+                     as.integer(min_ninc),
                      NAOK = FALSE, DUP = FALSE, PACKAGE="hydromad")
         for(i in 7:25) attributes(states[[i]]) <- attributes(P)
         ans <- do.call(cbind,states[7:25])
@@ -89,6 +90,7 @@ sacramento.sim <-
                 as.double(uztwc_0),as.double(uzfwc_0),
                 as.double(lztwc_0),as.double(lzfsc_0),as.double(lzfpc_0),
                 as.double(adimc_0),
+                as.integer(min_ninc),
                 NAOK = FALSE, DUP = FALSE, PACKAGE="hydromad")$U
         ## make it a time series object again
         attributes(U) <- attributes(P)

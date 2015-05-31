@@ -12,7 +12,7 @@ sacramento.sim(DATA, uztwm, uzfwm, uzk, pctim, adimp, zperc, rexp,
                etmult = 1, dt = 1,
                uztwc_0=0.5,uzfwc_0=0.5,
                lztwc_0=0.5,lzfsc_0=0.5,lzfpc_0=0.5,
-               adimc_0=0.5,
+               adimc_0=0.5,min_ninc=20,
                return_state = FALSE)
 }
 \arguments{
@@ -60,6 +60,7 @@ sacramento.sim(DATA, uztwm, uzfwm, uzk, pctim, adimp, zperc, rexp,
     \code{lzfpm}}
   \item{adimc_0}{Initial additional impervious flow store, as proportion
     of \code{uztwm+lztwm}}
+  \item{min_ninc}{Minimum number of inner iterations. This is a simple attempt to improve numerical stability. See Details.}
   \item{return_state}{to return time series of each state variable and
     flow component}
 }
@@ -96,6 +97,9 @@ sacramento.sim(DATA, uztwm, uzfwm, uzk, pctim, adimp, zperc, rexp,
     flow, and (5) primary base flow.} (Burnash, 1995)
 
   The default parameter ranges were taken from Blasone et. al. (2008).
+  
+  Note that the Sacramento model potentially suffers from numerical instabilities, which can be seen for example as discontinuities in output and derivatives of outputs (see Hendrickson et al. 1988). Ideally, the underlying differential equations of the model would be solved using a numerically robust timestepping scheme (see Clark & Kavetski 2010). The hydromad package makes use of an existing implementation. To help remedy the numerical instability, the argument \code{min_ninc} has been added, which defines the minimum number of inner loops used within each timestep. The user is encouraged to test the effect of increasing \code{min_ninc} on their dataset.
+  
 }
 \value{
   the simulated effective rainfall (\dQuote{total channel
@@ -133,8 +137,18 @@ sacramento.sim(DATA, uztwm, uzfwm, uzk, pctim, adimp, zperc, rexp,
   G.A. Zyvoloski (2008). Generalized likelihood uncertainty estimation
   (GLUE) using adaptive Markov Chain Monte Carlo
   sampling. \emph{Advances in Water Resources} 31, pp. 630-648.
+  
+  Hendrickson, Jene' D., Soroosh Sorooshian, and Larry E. Brazil (1988)
+  Comparison of Newton-Type and Direct Search Algorithms for Calibration of
+  Conceptual Rainfall-Runoff Models. \emph{Water Resources Research} 24 (5): 691-700.
+  \url{http://dx.doi.org/10.1029/WR024i005p00691}
+  
+  Clark, Martyn P., and Dmitri Kavetski (2010) Ancient Numerical 
+  Daemons of Conceptual Hydrological Modeling: 1. Fidelity and Efficiency 
+  of Time Stepping Schemes.” Water Resources Research 46 (10).
+  \url{http://dx.doi.org/10.1029/2009WR008894}
 }
-\author{ Felix Andrews \email{felix@nfrac.org} }
+\author{ Felix Andrews \email{felix@nfrac.org} and Joseph Guillaume, based on code from the University of Arizona MOSCEM project}
 \seealso{
   \code{\link{hydromad}(sma = "sacramento")} to work with models as objects (recommended).
 }

@@ -20,11 +20,12 @@ void fland1(struct SMA *sma,struct FSUM1 *fsum1)
  *  PATRICE O. YAPO 7/27/93  */
 /*  Last revised poy 2/20/94 */
 
-   int i,j,k,ninc;
+   int i,ninc;
    double edmnd,e1,e2,e3,e4,e5,red,uzrat,ratlzt,saved,ratlz;
-   double del,twx,roimp,spf,ssur,sif,sperc,sdro,spbf,sbf;
+   double del,twx,roimp,ssur,sif,sperc,sdro,spbf,sbf;
    double dinc,pinc,duz,dlzp,dlzs,parea,adsur,ratio;
-   double addro,bf,percm,zp,perc,defr,uzdefr,check,perct;
+   double addro,bf,percm,zp,perc,defr,check,perct;
+   //double uzdefr; //upper zone deficiency ratio, not used
    double percf,hpl,ratlp,ratls,fracp,percp,percs,excess;
    double sur,eused,tbf,bfcc,bfp,bfs,bfncc,tet;
    double rsum[7];
@@ -149,6 +150,7 @@ void fland1(struct SMA *sma,struct FSUM1 *fsum1)
  *     ninc = (int) (1.0 + 0.2 * sma->uzfwc + twx);      */
 
       ninc = (int) (1.0 + 0.2 * (sma->uzfwc + twx));
+      if (ninc < sma->min_ninc) ninc=sma->min_ninc; //minimum number of loops
       dinc = 1.0 / (double) ninc * sma->dt;
       pinc = twx / (double) ninc;
 
@@ -215,7 +217,7 @@ void fland1(struct SMA *sma,struct FSUM1 *fsum1)
              printf("%f  %f  %f\n",sma->lztwm,sma->lzfpm,sma->lzfsm);
              exit(1);
           }
-          uzdefr = 1.0 - (sma->uztwc + sma->uzfwc) / (sma->uztwm + sma->uzfwm);
+          //uzdefr = 1.0 - (sma->uztwc + sma->uzfwc) / (sma->uztwm + sma->uzfwm);
           perc *= (1.0 + zp * pow(defr,sma->rexp));
 
 /* NOTE...PERCOLATION OCCURS FROM UZFWC BEFORE PAV IS ADDED */
