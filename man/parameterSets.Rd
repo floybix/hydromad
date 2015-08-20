@@ -46,6 +46,8 @@ parameterSets(par.ranges, samples,
   \code{samples}. However, if fixed parameter sets are given, the
   number of combinations of these may exceed \code{samples}, and then
   any free parameters will be fixed at their mean values.
+  
+  Replicable results can be obtained by using \code{\link{set.seed}}.
 }
 \value{
   the result is a \code{data.frame}, with named columns for each
@@ -60,6 +62,7 @@ parameterSets(par.ranges, samples,
 \examples{
 pars <- list(a = 1, b = 0:1, c = c(1,10), d = c(-2,-4,-8))
 
+set.seed(10)
 parameterSets(pars, 10, method = "random")
 
 parameterSets(pars, 10, method = "latin")
