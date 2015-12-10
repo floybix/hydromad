@@ -69,7 +69,7 @@ convertFlow <-
                       ML = 1e6 * Litres,
                       GL = 1e9 * Litres,
                       TL =, km3 =, `km^3` = 1e12 * Litres,
-                      ft3 =, `ft^3` = 0.0353146667 * Litres,
+                      ft3 =, `ft^3` = 1 / 0.0353146667 * Litres,
                       stop("unrecognised volume unit"))
     ## first convert to mm
     x <- x * do.call(switch, c(from, vfactors))
