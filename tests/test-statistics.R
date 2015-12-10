@@ -45,3 +45,18 @@ test_that("custom objective functions work", {
     expect_that(fit3, is_a("hydromad"))
     expect_that(coef(fit1)[["v_s"]] != coef(fit3)[["v_s"]], is_true())
 })
+
+test_that("formula works within functions",{
+  library(hydromad)
+  data(HydroTestData)
+  modx <- hydromad(HydroTestData, sma = "cmd", routing = "expuh",d = 200, f = 0.5, e = 0.1, tau_s = 10)
+  
+  formula.in.function=function(w=1) objFunVal(modx,~w*hmadstat("r.squared")(Q,X,...))
+  
+  expect_that(formula.in.function(), not(throws_error()))
+  expect_equal(formula.in.function(),objFunVal(modx,hmadstat("r.squared")))
+  
+  time.fun=system.time(replicate(200,objFunVal(modx,hmadstat("r.squared"))))
+  time.formula=system.time(replicate(200,objFunVal(modx,~hmadstat("r.squared")(Q,X,...))))
+  expect_less_than((time.formula[3]-time.fun[3])/time.fun[3],0.1)
+})
