@@ -305,3 +305,8 @@ useDynLib(hydromad, swimp_core)
 
 ## poweroid.R
 export(poweroid)
+
+## Rcpp simhyd
+export(simhyd.sim,simhydrouting.sim)
+useDynLib(hydromad,hydromad_simhyd_sim)
+importFrom(Rcpp, sourceCpp)

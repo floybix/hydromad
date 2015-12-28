@@ -105,11 +105,30 @@ test_that("snow simulation is the same in R and C", {
     }
 })
 
-test_that("sacramento simulation runs", {
+test_that("simhyd simulation is the same in R and C", {
+  set.seed(0)
+  mod0 <- hydromad(DATA, sma = "simhyd")
+  for (mod in simulate(mod0, 5)) {
+    Csim <- predict(mod)
+    expect_that(all(Csim >= 0), is_true())
+    hydromad.options(pure.R.code = TRUE)
+    pureRsim <- predict(mod)
+    hydromad.options(pure.R.code = FALSE)
+    expect_that(Csim, equals(pureRsim))
+    plot(Csim)
+  }
+})
+
+test_that("sacramento simulation is the same in R and C", {
     set.seed(0)
     mod0 <- hydromad(DATA, sma = "sacramento")
     for (mod in simulate(mod0, 5)) {
-        expect_that(all(predict(mod) >= 0), is_true())
+      Csim <- predict(mod)
+      expect_that(all(Csim >= 0), is_true())
+      hydromad.options(pure.R.code = TRUE)
+      pureRsim <- predict(mod)
+      hydromad.options(pure.R.code = FALSE)
+      expect_that(Csim, equals(pureRsim))
     }
 })
 
