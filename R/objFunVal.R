@@ -25,8 +25,7 @@ objFunVal.default <-
     objFunVal1 <- function(obj, ...)
     {
         if (inherits(obj, "formula")) {
-          parent.env(environment(obj))<-environment()
-          val <- eval(obj[[2]],environment(obj))
+          val<-with(as.list(environment(obj)),eval(obj[[2]]))
         } else if (is.function(obj)) {
             assign(".", function(x) x, environment(obj))
             val <- obj(Q, X, ..., U = U, DATA = DATA)
@@ -77,8 +76,7 @@ objFunVal.hydromad <-
         if (!isValidModel)
             return(NA_real_)
         if (inherits(obj, "formula")) {
-          parent.env(environment(obj))<-environment()
-          val <- eval(obj[[2]],environment(obj))
+          val<-with(as.list(environment(obj)),eval(obj[[2]]))
         } else if (is.function(obj)) {
             assign(".", function(x) x, environment(obj))
             val <- obj(Q, X, ..., U = U, DATA = DATA, model = model)

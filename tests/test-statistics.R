@@ -20,7 +20,10 @@ test_that("basic summary() works", {
 })
 
 test_that("all statistics can be evaluated", {
-    ss <- objFunVal(mod, hydromad.stats())
+    hydromad_stats<- hydromad.stats()
+    #Ignore r.sq.vartd because it requires event to be specified
+    hydromad_stats$r.sq.vartd<-NULL
+    ss <- objFunVal(mod, hydromad_stats)
     expect_that(ss, is_a("list"))
     ok <- sapply(ss, is.finite)
     if (!all(ok))
@@ -50,6 +53,8 @@ test_that("formula works within functions",{
   library(hydromad)
   data(HydroTestData)
   modx <- hydromad(HydroTestData, sma = "cmd", routing = "expuh",d = 200, f = 0.5, e = 0.1, tau_s = 10)
+  
+  expect_equal(objFunVal(modx,hmadstat("r.squared")),objFunVal(modx,~hmadstat("r.squared")(Q,X)))
   
   formula.in.function=function(w=1) objFunVal(modx,~w*hmadstat("r.squared")(Q,X,...))
   
