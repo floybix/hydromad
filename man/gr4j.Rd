@@ -89,6 +89,7 @@ mod1 <- update(mod0, x1 = 100, x2 = 20, x3 = 1, x4 = 10)
 testQ <- predict(mod1, return_state = TRUE)
 xyplot(cbind(HydroTestData[,1:2], gr4j = testQ))
 
+############################################
 ## show effect of increase/decrease in each parameter
 parRanges <- c(hydromad.getOption("gr4j")[1],
                hydromad.getOption("gr4jrouting"))
@@ -105,5 +106,38 @@ xyplot.list(parsims, superpose = TRUE, layout = c(1,NA),
             strip = FALSE, strip.left = TRUE,
             main = "Simple parameter perturbation example") +
   layer(panel.lines(fitted(mod1), col = "grey", lwd = 2))
+
+
+############################################
+# Example optimisation, using transformed parameters
+
+data(Cotter)
+x <- Cotter[1:1000]
+
+#Specify gr4j model
+mod0 <- hydromad(x, sma = "gr4j", routing = "gr4jrouting",transformed=TRUE)
+#Use transformed parameter ranges
+mod0 <- update(mod0,newpars=gr4j.transformpar(c(hydromad.getOption("gr4j"),
+                                                hydromad.getOption("gr4jrouting")
+                                                )))
+#Allow etmult to vary, because we're using temperature data instead of PET.
+mod0<-update(mod0,etmult=c(0.05,1.5))
+# Broaden a single parameter range, just as an example
+mod0<-update(mod0,x1=gr4j.transformpar(list(x1=c(100,5000)))[["x1"]])
+               
+mod0
+
+## now try to fit the free parameters
+set.seed(10)
+fit1 <- fitByOptim(mod0)
+
+fit1
+summary(fit1)
+xyplot(fit1)
+
+#Parameters in original parameter space
+gr4j.transformpar(coef(fit1),back=T)
+
+
 }
 \keyword{models}
