@@ -11,6 +11,7 @@ simhyd.sim <-
              SQ,
              SMSC, SUB, CRAK, K, 
              etmult = 0.15,
+             GWt0=0,SMSt0=0.5,
              return_state = FALSE)
 
 	# See Figure 2 in Chiew et al. 2009
@@ -33,7 +34,6 @@ simhyd.sim <-
     stopifnot(SUB >= 0)
     stopifnot(CRAK >= 0)
     stopifnot(K >= 0)
-
     xpar <-
         c(INSC, COEFF, SQ, SMSC, SUB, CRAK, K)
  
@@ -51,15 +51,15 @@ simhyd.sim <-
     if (COMPILED) {
     # run the cpp version
       ans <- simhyd_sim(P, E, INSC, COEFF, SQ,SMSC, 
-                 SUB,CRAK,K)
+                 SUB,CRAK,K,GWt0,SMSt0)
       U <- ans$U
       ET <- ans$ET
     } else {	 ## very slow, even on my x64
     U <- IMAX <- INT <- INR <- RMO <- IRUN <- 
     ET <- SRUN <- REC <- SMF <- POT <- BAS <- 
       SMS <- GW <- rep(NA_real_,length(P))
-    GWt1 <- 0
-    SMSt1<- 0.5*SMSC
+    GWt1 <- GWt0
+    SMSt1<- SMSt0*SMSC
 # run through a loop
     for (t in seq(1,length(P))) {
   		# interception store

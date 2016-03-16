@@ -8,7 +8,8 @@ DataFrame simhyd_sim(NumericVector P, NumericVector E,
                      double INSC, double COEFF,
                      double SQ,double SMSC,
                      double SUB, double CRAK,
-                     double K) {
+                     double K, 
+                     double GWt0, double SMSt0) {
   //size
   int n = P.size();
   // storage output vector
@@ -22,8 +23,8 @@ DataFrame simhyd_sim(NumericVector P, NumericVector E,
   double SMSt1,GWt1;
 	
 	// initialise vectors
-	SMSt1 = SMSC*0.5;
-	GWt1 = 0.0;
+	SMSt1 = SMSC*SMSt0;
+	GWt1 = GWt0;
 	//Rcout << SMSt1;
 	
 	// run a loop

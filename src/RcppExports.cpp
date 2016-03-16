@@ -6,8 +6,8 @@
 using namespace Rcpp;
 
 // simhyd_sim
-DataFrame simhyd_sim(NumericVector P, NumericVector E, double INSC, double COEFF, double SQ, double SMSC, double SUB, double CRAK, double K);
-RcppExport SEXP hydromad_simhyd_sim(SEXP PSEXP, SEXP ESEXP, SEXP INSCSEXP, SEXP COEFFSEXP, SEXP SQSEXP, SEXP SMSCSEXP, SEXP SUBSEXP, SEXP CRAKSEXP, SEXP KSEXP) {
+DataFrame simhyd_sim(NumericVector P, NumericVector E, double INSC, double COEFF, double SQ, double SMSC, double SUB, double CRAK, double K, double GWt0, double SMSt0);
+RcppExport SEXP hydromad_simhyd_sim(SEXP PSEXP, SEXP ESEXP, SEXP INSCSEXP, SEXP COEFFSEXP, SEXP SQSEXP, SEXP SMSCSEXP, SEXP SUBSEXP, SEXP CRAKSEXP, SEXP KSEXP, SEXP GWt0SEXP, SEXP SMSt0SEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -20,7 +20,9 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type SUB(SUBSEXP);
     Rcpp::traits::input_parameter< double >::type CRAK(CRAKSEXP);
     Rcpp::traits::input_parameter< double >::type K(KSEXP);
-    __result = Rcpp::wrap(simhyd_sim(P, E, INSC, COEFF, SQ, SMSC, SUB, CRAK, K));
+    Rcpp::traits::input_parameter< double >::type GWt0(GWt0SEXP);
+    Rcpp::traits::input_parameter< double >::type SMSt0(SMSt0SEXP);
+    __result = Rcpp::wrap(simhyd_sim(P, E, INSC, COEFF, SQ, SMSC, SUB, CRAK, K, GWt0, SMSt0));
     return __result;
 END_RCPP
 }
