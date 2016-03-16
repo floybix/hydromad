@@ -22,8 +22,7 @@ paretoFilter <- function (x, ...)
 }
 
 plotPCNSE <- function(res,objectives="r.squared",return.data=FALSE){
-  library(ggplot2)
-  library(reshape)
+  if(!requireNamespace("ggplot2")) stop("package ggplot2 is required for plotPCNSE")
     res <- as.data.frame(res)
     stopifnot(!"Catchment" %in% names(res) | length(unique(res$Catchment))==1)
     resm <- melt(res,measure.vars=objectives,

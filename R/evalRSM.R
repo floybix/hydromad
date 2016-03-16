@@ -1,5 +1,5 @@
 runRSM <- function(modx,...,objective = hydromad.getOption("objective")){
-  library(rsm)
+  if(!requireNamespace("rsm")) stop("package rsm is required for runRSM")
   ## Sample using design
   bounds <- getFreeParsRanges(modx)
   

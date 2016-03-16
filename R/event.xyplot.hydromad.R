@@ -18,7 +18,7 @@ event.xyplot.hydromad <-
              panel = panel.superpose,
              panel.groups = function(x, y, ...) {
                  panel.xyplot(x, y, ...)
-                 library(mgcv)
+                 if(!requireNamespace("mgcv")) stop("package mgcv is required for event.xyplot")
                  panel.smoother(x, y, y ~ s(x), method = "gam", ...)
              },
              abline = list(h = 0), pch = ".", 

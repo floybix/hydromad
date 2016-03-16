@@ -56,10 +56,10 @@ maexpuh.sim <-
   }
   if (v_3 == 0)
     X3 <- NULL
-  Xs <- hydromad:::shiftWindow(Xs, delay)
-  Xq <- hydromad:::shiftWindow(Xq, delay)
+  Xs <- shiftWindow(Xs, delay)
+  Xq <- shiftWindow(Xq, delay)
   X3 <- if (!is.null(X3))
-    hydromad:::shiftWindow(X3, delay)
+    shiftWindow(X3, delay)
   Xs[Xs < epsilon] <- 0
   Xq[Xq < epsilon] <- 0
   if (!is.null(X3))

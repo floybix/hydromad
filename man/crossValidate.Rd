@@ -9,7 +9,8 @@
 }
 \usage{
 crossValidate(MODEL, periods, name.Model.str = paste(MODEL$sma, MODEL$routing), 
-    name.Cal.objfn = "unknown", fitBy, ...,
+    name.Cal.objfn = "unknown", name.Catchment = as.character(MODEL$call$DATA), 
+    fitBy, ...,
     trace=isTRUE(hydromad.getOption("trace")),
     parallel=hydromad.getOption("parallel")[["crossValidate"]])
 }
@@ -27,6 +28,9 @@ crossValidate(MODEL, periods, name.Model.str = paste(MODEL$sma, MODEL$routing),
     Name to give to this model identification process (e.g. name of
     objective function and/or optimisation algorithm), to allow a
     combined analysis
+  }
+  \item{name.Catchment}{
+    Name to give to this catchment to allow a combined analysis
   }
   \item{fitBy}{
     function to estimate parameters of \code{MODEL},

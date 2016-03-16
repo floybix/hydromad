@@ -1,6 +1,4 @@
-importFrom(stats,
-           simulate,fitted,residuals,predict,update,coef,
-           tsdiag)
+import(stats)
 importFrom(lattice,
            xyplot,
            qqmath)
@@ -11,6 +9,9 @@ importFrom(Hmisc,
            wtd.quantile)
 import(zoo)
 importFrom(graphics,plot)
+import(latticeExtra)
+import(polynom)
+import(reshape)
 
 ## Exports from imported packages
 export(simulate,fitted,residuals,predict,update,coef)

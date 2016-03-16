@@ -1,7 +1,7 @@
 fitByNsga2<-function (MODEL, objective = hydromad.getOption("objective"), 
     control = hydromad.getOption("nsga2.control")) 
 {
-    library(mco)
+    if(!requireNamespace("mco")) stop("package mco is required for fitByNsga2")
     start_time <- proc.time()
     objective <- buildCachedObjectiveFun(objective, MODEL)
     parlist <- as.list(coef(MODEL, warn = FALSE))

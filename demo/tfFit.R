@@ -60,4 +60,4 @@ print(c('Time Constant' = taubwp, 'Steady State Gain' = vbwp))
 tau_s <- mean(ivCoef[,1])
 v_s <- mean(ivCoef[,2])
 print(xyplot(Y) +
-      layer(panel.lines(expuh.sim(U, tau_s = tau_s, v_s = v_s)))
+      layer(panel.lines(expuh.sim(U, tau_s = tau_s, v_s = v_s))))

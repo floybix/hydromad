@@ -28,7 +28,7 @@ paretoFilter(x, ...)
   <email: olafm@statistik.uni-dortmund.de>
 }
 \seealso{
-  \code{\link{areModelsDominated}} which uses this function to evaluate
+  \code{\link{paretoTimeAnalysis_areModelsDominated}} which uses this function to evaluate
   model performance across time-periods
   }
 \examples{

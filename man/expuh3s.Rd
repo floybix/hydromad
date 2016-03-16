@@ -10,9 +10,9 @@
 }
 \usage{
 expuh3s.sim(U, delay = 0,v_s,
-          tau_s = 0, tau_q = 0, tau_g = 0,
+          tau_q, tau_s, tau_g,
           R,G_1=0,loss,G_2,
-          Xs_0 = 0, Xq_0 = 0, X3_0 = 0,
+          Xs_0 = 0, Xq_0 = 0, Xg_0 = 0,
           pars = NULL,
           return_components = FALSE,
 	  na.action = na.pass,
@@ -110,7 +110,7 @@ expuh3s.sim(U, delay = 0,v_s,
 }
 \references{
 	Herron, N.F. and B.F.W. Croke (2009). IHACRES-3S - A 3-store formulation for modelling 
-groundwater-surface water interactions. In Anderssen, R.S., R.D. Braddock and L.T.H. Newham (eds) \emph{18th World IMACS Congress and MODSIM09 International Congress on Modelling and Simulation.} Modelling and Simulation Society of Australia and New Zealand and International Association for Mathematics and Computers in Simulation, July 2009, pp. 3081-3087. ISBN: 978-0-9758400-7-8. \link{http://www.mssanz.org.au/modsim09/I1/herron.pdf}
+groundwater-surface water interactions. In Anderssen, R.S., R.D. Braddock and L.T.H. Newham (eds) \emph{18th World IMACS Congress and MODSIM09 International Congress on Modelling and Simulation.} Modelling and Simulation Society of Australia and New Zealand and International Association for Mathematics and Computers in Simulation, July 2009, pp. 3081-3087. ISBN: 978-0-9758400-7-8. \url{http://www.mssanz.org.au/modsim09/I1/herron.pdf}
 }
 \author{ Joseph Guillaume \email{joseph.guillaume@anu.edu.au} }
 \seealso{

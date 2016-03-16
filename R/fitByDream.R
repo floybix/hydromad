@@ -9,7 +9,7 @@ fitByDream <-
              control = hydromad.getOption("dream.control"),
              vcov = TRUE,save=NULL)
 {
-    library(dream)
+    if(!requireNamespace("dream")) stop('package dream is required for fitByDream.\n  Use: install.packages("dream", repos="http://hydromad.catchment.org")')
     start_time <- proc.time()
     loglik <- buildCachedObjectiveFun(loglik, MODEL)
     parlist <- as.list(coef(MODEL, warn = FALSE))

@@ -1,7 +1,7 @@
 fitByDDS<-function (MODEL, objective = hydromad.getOption("objective"), 
                     control = hydromad.getOption("dds.control"), save=NULL) 
 {
-  library(ppso)
+  if(!requireNamespace("ppso")) stop("package ppso is required for fitByDDS")
   start_time <- proc.time()
   objective <- buildCachedObjectiveFun(objective, MODEL)
   parlist <- as.list(coef(MODEL, warn = FALSE))

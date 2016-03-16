@@ -1,9 +1,9 @@
 Package: hydromad
-Version: 0.9-24
-Date: 2015-12-28
+Version: 0.9-25
+Date: 2016-03-16
 Title: Hydrological Model Assessment and Development
-Author: Felix Andrews <felix@nfrac.org>, Joseph Guillaume <joseph.guillaume@anu.edu.au>
-Maintainer: Joseph Guillaume <joseph.guillaume@anu.edu.au>
+Author: Felix Andrews <felix@nfrac.org>, Joseph Guillaume <josephguillaume@gmail.com>
+Maintainer: Joseph Guillaume <josephguillaume@gmail.com>
 Description: A modelling framework for environmental hydrology: water 
   balance accounting and flow routing in spatially aggregated catchments. 
   It supports simulation, estimation, assessment and visualisation of 
@@ -11,8 +11,8 @@ Description: A modelling framework for environmental hydrology: water
   models (such as IHACRES CMD, Sacramento), transfer function estimators
   (including SRIV - Simplified Refined Instrumental Variable), etc.
 Depends: R (>= 2.11.0), zoo (>= 1.6-3), lattice (>= 0.19-11), latticeExtra (>= 0.6-14), polynom, reshape
-Imports: car (>= 2.0-2), Hmisc, lattice, stats, utils, Rcpp
-Suggests: DEoptim, mgcv, chron, testthat, mco, cmaes, sensitivity,ggplot2,rsm,parallel,foreach,doRedis,ff
+Imports: car (>= 2.0-2), Hmisc, stats, utils, Rcpp
+Suggests: DEoptim, mgcv, chron, testthat, mco, cmaes, ppso, sensitivity,ggplot2,rsm,parallel,foreach,doRedis,ff,dream,playwith
 LinkingTo: Rcpp
 License: GPL (>= 2)
 URL: http://hydromad.catchment.org/

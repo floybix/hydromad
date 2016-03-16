@@ -36,8 +36,8 @@ evalParsTS <- function(par.matrix,object,
     }
   } else {
     ## Use disk
-    library(parallel)
-    library(ff)
+    if(!requireNamespace("parallel")) stop("package parallel is required for evalParsTS if filehash.name is not NULL and parallel$method is not 'foreach'")
+    if(!requireNamespace("ff")) stop("package ff is required for evalParsTS if filehash.name is not NULL and parallel$method is not 'foreach'")
     results=ff(vmode="double",dim=c(nrow(par.matrix),length.out),filename=filehash.name)
   }
   
