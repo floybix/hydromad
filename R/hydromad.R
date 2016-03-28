@@ -28,13 +28,28 @@ isFullySpecified <- function(object, ...)
     !is.list(coef(object, ..., warn = FALSE))
 
 fitted.hydromad <-
-    function(object, ..., U = FALSE, all = FALSE,
-             feasible.bounds = FALSE)
+    function(object, ..., U = FALSE, 
+             all = FALSE,
+             #TODO: change to include.warmup=FALSE - many locations
+             feasible.bounds = FALSE,             
+             incl.other.vars=FALSE)
 {
     if (is.null(object$routing))
         U <- TRUE
-    tmp <- if (U) object$U else object$fitted.values
-    if (feasible.bounds) {
+    if (!feasible.bounds) {
+      # Select either U or X
+      tmp <- if (U) object$U else object$fitted.values
+      # Return single column from  multivariate objects
+      if(is.matrix(tmp) && !incl.other.vars){
+        if(U){
+          if(!"U" %in% names(tmp)) stop("object$U is multivariate and incl.other.vars=F but column U is missing")
+          tmp<-tmp[,"U"]
+        } else {
+          if(!"X" %in% names(tmp)) stop("object$fitted.values is multivariate and incl.other.vars=F but column X is is missing")
+          tmp<-tmp[,"X"]
+        }
+      }
+    } else if (feasible.bounds) {
         if (is.null(object$feasible.fitted)) {
             stop("there is no estimate of the feasible bounds; try defineFeasibleSet()")
         }

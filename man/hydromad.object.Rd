@@ -22,7 +22,8 @@
        feasible.set, feasible.scores, glue.quantiles, and.rescale)
 
 \method{fitted}{hydromad}(object, ..., U = FALSE,
-       all = FALSE, feasible.bounds = FALSE)
+       all = FALSE, feasible.bounds = FALSE,
+       incl.other.vars=FALSE)
 
 \method{observed}{hydromad}(object, ..., select = "Q", all = FALSE)
 
@@ -85,6 +86,10 @@ isValidModel(object, ...)
     exists. Otherwise, the warmup period (specified as an argument to
     \code{\link{hydromad}} or \code{update}) is stripped off.
   }
+  \item{incl.other.vars}{
+    if \code{TRUE} and model returns a multivariate object (e.g. because of \code{return_components} or \code{return_state}), then return time series for all variables. Otherwise, return only the column named \code{X} or \code{U} (if \code{U=TRUE}). Raises an error if the column is missing.
+  }
+  
   \item{feasible.bounds}{
     if \code{TRUE}, then ensemble simulation bounds are extracted and
     returned. This only works if a \emph{feasible set} has been specified
