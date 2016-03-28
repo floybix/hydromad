@@ -54,6 +54,15 @@ test_that("formula works within functions",{
   data(HydroTestData)
   modx <- hydromad(HydroTestData, sma = "cmd", routing = "expuh",d = 200, f = 0.5, e = 0.1, tau_s = 10)
   
+  #Formula gives correct answer outside functions
+  expect_equal(objFunVal(modx,hmadstat("r.squared")),objFunVal(modx,~hmadstat("r.squared")(Q,X)))
+  
+  #Formula acknowledges collisions but overrides them with local values
+  X<-"X should not cause an error"
+  Q<-"Q should not cause an error"
+  DATA<-"DATA should not cause an error"
+  model<-"model should not cause an error"
+  expect_warning(objFunVal(modx,~hmadstat("r.squared")(Q,X)))
   expect_equal(objFunVal(modx,hmadstat("r.squared")),objFunVal(modx,~hmadstat("r.squared")(Q,X)))
   
   formula.in.function=function(w=1) objFunVal(modx,~w*hmadstat("r.squared")(Q,X,...))
@@ -61,7 +70,8 @@ test_that("formula works within functions",{
   expect_that(formula.in.function(), not(throws_error()))
   expect_equal(formula.in.function(),objFunVal(modx,hmadstat("r.squared")))
   
-  time.fun=system.time(replicate(200,objFunVal(modx,hmadstat("r.squared"))))
-  time.formula=system.time(replicate(200,objFunVal(modx,~hmadstat("r.squared")(Q,X,...))))
+  #Formula is less than 10% slower
+  time.fun=system.time(replicate(1e3,objFunVal(modx,hmadstat("r.squared"))))
+  time.formula=system.time(replicate(1e3,objFunVal(modx,~hmadstat("r.squared")(Q,X,...))))
   expect_less_than((time.formula[3]-time.fun[3])/time.fun[3],0.1)
 })

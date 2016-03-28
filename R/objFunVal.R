@@ -76,7 +76,16 @@ objFunVal.hydromad <-
         if (!isValidModel)
             return(NA_real_)
         if (inherits(obj, "formula")) {
-          val<-with(as.list(environment(obj)),eval(obj[[2]]))
+          #TODO: avoid converting whole environment to list
+          #[names(env) %in% all.vars(obj[[2]])]
+          env <- as.list(environment(obj))
+          if(any(c("X","U","Q","DATA","model") %in% names(env))){
+            colliding.vars=intersect(names(env),c("X","U","Q","DATA","model"))
+            warning(sprintf("Following variables appear to be defined by user: %s\n  objFunVal will use internally calculated values instead.",
+                            paste(colliding.vars,collapse=",")))
+            env<-env[!names(env) %in% c("X","U","Q","DATA","model")]
+          }
+          val<-with(env,eval(obj[[2]]))
         } else if (is.function(obj)) {
             assign(".", function(x) x, environment(obj))
             val <- obj(Q, X, ..., U = U, DATA = DATA, model = model)
