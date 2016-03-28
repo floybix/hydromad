@@ -36,9 +36,9 @@ evalParsTS <- function(par.matrix,object,
     }
   } else {
     ## Use disk
-    if(!requireNamespace("parallel")) stop("package parallel is required for evalParsTS if filehash.name is not NULL and parallel$method is not 'foreach'")
-    if(!requireNamespace("ff")) stop("package ff is required for evalParsTS if filehash.name is not NULL and parallel$method is not 'foreach'")
-    results=ff(vmode="double",dim=c(nrow(par.matrix),length.out),filename=filehash.name)
+    if(!require("parallel")) stop("package parallel is required for evalParsTS if filehash.name is not NULL and parallel$method is not 'foreach'")
+    if(!require("ff")) stop("package ff is required for evalParsTS if filehash.name is not NULL and parallel$method is not 'foreach'")
+    results=ff::ff(vmode="double",dim=c(nrow(par.matrix),length.out),filename=filehash.name)
   }
   
   ## Do runs, storing all ts
@@ -47,7 +47,7 @@ evalParsTS <- function(par.matrix,object,
          "foreach"={
            opts=hydromad.options()
            export=parallel$export
-           results <- foreach(p=iter(par.matrix,by="row"),
+           results <- foreach::foreach(p=iter(par.matrix,by="row"),
                               .packages=parallel$packages,
                               .inorder=TRUE,
                               .export=export,
@@ -64,10 +64,10 @@ evalParsTS <- function(par.matrix,object,
            }
          },
          "clusterApply"={
-           lapply(c("ff",parallel$packages),function(pkg) clusterCall(cl,library,pkg,character.only=TRUE))
-           if(length(parallel$export)>0) clusterExport(cl,parallel$export)
-           clusterExport(cl,c("object"),envir=environment())
-           parLapply(cl=cl,as.list(1:nrow(par.matrix)),
+           lapply(c("ff",parallel$packages),function(pkg) parallel::clusterCall(cl,library,pkg,character.only=TRUE))
+           if(length(parallel$export)>0) parallel::clusterExport(cl,parallel$export)
+           parallel::clusterExport(cl,c("object"),envir=environment())
+           parallel::parLapply(cl=cl,as.list(1:nrow(par.matrix)),
                      function(ip) {
                        thisMod <- update(object, newpars = par.matrix[ip,])
                        if (!isValidModel(thisMod)) return(NULL)

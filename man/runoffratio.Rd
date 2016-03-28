@@ -81,6 +81,6 @@ parsims <- mapply(val = parRanges, nm = names(parRanges),
 
 xyplot.list(parsims, superpose = TRUE, layout = c(1,NA),
             main = "Simple parameter perturbation example") +
-  layer(panel.lines(fitted(mod1), col = "grey", lwd = 2))
+  latticeExtra::layer(panel.lines(fitted(mod1), col = "grey", lwd = 2))
 }
 \keyword{models}

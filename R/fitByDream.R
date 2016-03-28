@@ -35,7 +35,7 @@ fitByDream <-
         if(!is.null(save)) save(pars,obj,thisMod)
         obj
     }
-    ans <- dream(do_dream, pars = parlist,
+    ans <- dream::dream(do_dream, pars = parlist,
                  func.type = "logposterior.density",
                  control = control)
     environment(ans$call)<-environment()

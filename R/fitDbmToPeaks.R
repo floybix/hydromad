@@ -71,7 +71,7 @@ fitDbmByGam <-
     bb <- pmax(Q - ar1 * lag(Q,-1), 0) / lag(P, qlag)
     ## TODO: use gam to find form of bb ~ Q
     if(!requireNamespace("mgcv")) stop("package mgcv is required for fitDbmByGam")
-    foo <- gam(bb ~ s(Q[-1]), subset = is.finite(bb))
+    foo <- mgcv::gam(bb ~ s(Q[-1]), subset = is.finite(bb))
     plot(foo)
     ## TODO: parameterise as power law
     bestModel$funevals <- 0

@@ -70,11 +70,16 @@ summary(mod0, breaks = "months")
 #summary(mod0, breaks = 3)
 
 allstats <- names(hydromad.stats())
+## Ignore r.sq.vartd because it requires event to be specified
+allstats<-setdiff(allstats,"r.sq.vartd")
 summary(mod0, stats = allstats)
 
 objFunVal(mod0, hmadstat("r.sq.log"))
 
-str(objFunVal(mod0, hydromad.stats()))
+hydromad_stats<- hydromad.stats()
+#Ignore r.sq.vartd because it requires event to be specified
+hydromad_stats$r.sq.vartd<-NULL
+str(objFunVal(mod0, hydromad_stats))
 
 }
 \keyword{ methods }

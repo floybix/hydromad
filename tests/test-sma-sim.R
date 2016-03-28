@@ -115,7 +115,6 @@ test_that("simhyd simulation is the same in R and C", {
     pureRsim <- predict(mod)
     hydromad.options(pure.R.code = FALSE)
     expect_that(Csim, equals(pureRsim))
-    plot(Csim)
   }
 })
 

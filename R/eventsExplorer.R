@@ -8,7 +8,7 @@ eventsExplorer <-
              ..., type = list(P = "s", "l"), xlab = NULL,
              xscale.components = xscale.components.subticks)
 {
-    if(!requireNamespace("playwith")) stop("package playwith is required for eventsExplorer")
+    if(!require("playwith")) stop("package playwith is required for eventsExplorer")
     title <- paste("eventsExplorer:", toString(deparse(substitute(Q)), width = 33))
     DATA <- Q
     if (!is.null(P))

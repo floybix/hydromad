@@ -42,7 +42,7 @@ initial_estimates: %s",
     if(!is.null(save)) save(pars,thisVal,thisMod)
     return(-thisVal)
   }
-  ans <- do.call("optim_dds",
+  ans <- do.call(ppso::optim_dds,
                  modifyList(control,
                             list(
                                  objective_function = do_dds,

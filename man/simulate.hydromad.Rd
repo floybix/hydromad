@@ -75,7 +75,7 @@ sim1 <- simulate(mod1, 144, sampletype = "all", FUN = objFunVal,
 levelplot(result ~ tw + f, sim1, cex = 2,
           panel = panel.levelplot.points,
           main = "R Squared (of sq.rt. data) over parameter space") +
-layer_(panel.2dsmoother(...))
+latticeExtra::layer(panel.2dsmoother(...),under=TRUE)
 
 ## dotty plots (list any number of parameters in formula)
 xyplot(result ~ tw + f, sim1, outer = TRUE)

@@ -10,7 +10,7 @@ runRSM <- function(modx,...,objective = hydromad.getOption("objective")){
       as.formula(sprintf("%s.c ~ (2*%s-(%f+%f))/(%f-%f)",var,var,max.var,min.var,max.var,min.var))
     })
   
-  evals <- ccd(as.formula(sprintf("~%s",paste(sprintf("%s.c",names(bounds)),collapse="+"))),
+  evals <- rsm::ccd(as.formula(sprintf("~%s",paste(sprintf("%s.c",names(bounds)),collapse="+"))),
                coding=coding,inscribed=TRUE,...)
 
   cat(sprintf("Running %d model evaluations\n",nrow(evals)))
@@ -19,7 +19,7 @@ runRSM <- function(modx,...,objective = hydromad.getOption("objective")){
 ################################################################################
   ## Estimate quadratic response surface
   form <- as.formula(sprintf("Y~SO(%s)",paste(sprintf("%s.c",names(bounds)),collapse=",")))
-  evals.rsm <- rsm(form, data=evals)
+  evals.rsm <- rsm::rsm(form, data=evals)
 
   return(evals.rsm)
 }

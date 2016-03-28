@@ -13,8 +13,8 @@ fitByNsga2<-function (MODEL, objective = hydromad.getOption("objective"),
         return(MODEL)
     }
     parlist <- parlist[!isfixed]
-    if (!isTRUE(hydromad.getOption("trace"))) 
-        control$trace <- FALSE
+#     if (!isTRUE(hydromad.getOption("trace"))) 
+#         control$trace <- FALSE
     lower <- sapply(parlist, min)
     upper <- sapply(parlist, max)
     bestModel <- MODEL
@@ -35,7 +35,7 @@ fitByNsga2<-function (MODEL, objective = hydromad.getOption("objective"),
 fn=do_nsga2, idim=length(parlist), odim=1,
         lower.bounds = lower, upper.bounds = upper
    ))
-    ans <- do.call("nsga2",args)
+    ans <- do.call(mco::nsga2,args)
     bestModel$funevals <- NA ## TODO
     bestModel$timing <- signif(proc.time() - start_time, 4)[1:3]
     bestModel$objective <- objective

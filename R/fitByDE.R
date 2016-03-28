@@ -10,7 +10,7 @@ fitByDE <-
              control = hydromad.getOption("de.control"))
 {
     if(!requireNamespace("DEoptim")) stop("package DEoptim is required for fitByDE")
-    control <- do.call("DEoptim.control", control)
+    control <- do.call(DEoptim::DEoptim.control, control)
     start_time <- proc.time()
     objective <- buildCachedObjectiveFun(objective, MODEL)
     parlist <- as.list(coef(MODEL, warn = FALSE))
@@ -44,7 +44,7 @@ fitByDE <-
         ## DEoptim does minimisation, so:
         return(- thisVal)
     }
-    ans <- DEoptim(do_de, lower = lower, upper = upper,
+    ans <- DEoptim::DEoptim(do_de, lower = lower, upper = upper,
                     control = control)
     bestModel$funevals <- ans$optim$nfeval
     bestModel$timing <- signif(proc.time() - start_time, 4)[1:3]

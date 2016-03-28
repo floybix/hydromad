@@ -93,9 +93,9 @@ c(streamflow = xyplot(mod),
   layout = c(1,2), y.same = TRUE)
 
 xyplot(residuals(mod)) +
-  layer(panel.tskernel(..., width = 90, c = 2, col = 1)) +
-  layer(panel.tskernel(..., width = 180, c = 2, col = 1, lwd = 2)) +
-  layer(panel.tskernel(..., width = 360, c = 2, lwd = 2))
+  latticeExtra::layer(panel.tskernel(..., width = 90, c = 2, col = 1)) +
+  latticeExtra::layer(panel.tskernel(..., width = 180, c = 2, col = 1, lwd = 2)) +
+  latticeExtra::layer(panel.tskernel(..., width = 360, c = 2, lwd = 2))
 
 qqmath(mod, scales = list(y = list(log = TRUE)), distribution = qnorm,
        type = c("g", "l"))

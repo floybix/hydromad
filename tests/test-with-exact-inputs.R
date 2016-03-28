@@ -106,4 +106,11 @@ test_that("SMA joint fitting methods work with exact inputs", {
     expect_that(summary(fitByDE(jspec, control = list(itermax = 4)))$r.squared > 0.98, is_true())
     set.seed(0)
     expect_that(summary(fitByDream(jspec, control = list(ndraw = 150)))$r.squared > 0.98, is_true())
+    set.seed(0)
+    #TODO: why is CMAES performing less well?
+    expect_that(summary(fitByCMAES(jspec, control = list(maxit = 20)))$r.squared > 0.96, is_true())
+    set.seed(0)
+    expect_that(summary(fitByDDS(jspec, control = modifyList(hydromad.getOption("dds.control"),list(max_number_function_calls = 150))))$r.squared > 0.98, is_true())
+    set.seed(0)
+    expect_that(summary(fitByNsga2(jspec, control = list(generations=2)))$r.squared > 0.98, is_true())
 })

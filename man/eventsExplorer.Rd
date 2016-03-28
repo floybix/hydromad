@@ -31,6 +31,7 @@ eventsExplorer(Q, P = NULL,
   \code{\link{xyplot.ts}}
 }
 \examples{
+\dontrun{
 if (interactive() && require("playwith")) {
 
 data(Queanbeyan)
@@ -45,7 +46,7 @@ eventsExplorer(Q = ts74$Q, P = ts74$P)
 
 #eventsExplorer(ts93$Q)
 
-}
+}}
 }
 \keyword{ ts }
 \keyword{ iplot }

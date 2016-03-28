@@ -63,13 +63,13 @@ parameterSets(par.ranges, samples,
 pars <- list(a = 1, b = 0:1, c = c(1,10), d = c(-2,-4,-8))
 
 set.seed(10)
-parameterSets(pars, 10, method = "random")
+hydromad::parameterSets(pars, 10, method = "random")
 
-parameterSets(pars, 10, method = "latin")
+hydromad::parameterSets(pars, 10, method = "latin")
 
-parameterSets(pars, 10, method = "all.combinations")
+hydromad::parameterSets(pars, 10, method = "all.combinations")
 
-parameterSets(pars, 20, method = "all.combinations")
+hydromad::parameterSets(pars, 20, method = "all.combinations")
 }
 \keyword{ utilities }
 

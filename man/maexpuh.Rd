@@ -64,6 +64,7 @@ maexpuh.sim(U, delay = 0, tau_s = 0, tau_q = 0, tau_3 = 0, v_s = 1,
   \code{\link{expuh}}
 }
 \examples{
+\dontrun{
   ## Pre and post filtered Xs
   Us[]=filter(U,rep(1/w_s,w_s),sides=1)
   Us[1:(w_s-1)] <- cumsum(U[1:(w_s-1)])/1:(w_s-1)
@@ -71,6 +72,6 @@ maexpuh.sim(U, delay = 0, tau_s = 0, tau_q = 0, tau_3 = 0, v_s = 1,
                       init = Xs_0)
   Xs[]=filter(Xstemp,rep(1/w_s,w_s),sides=1)
   Xs[1:(w_s-1)] <- cumsum(Xstemp[1:(w_s-1)])/1:(w_s-1)
-}
+}}
 \keyword{ ts }
 

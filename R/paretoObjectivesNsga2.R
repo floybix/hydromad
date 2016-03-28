@@ -29,7 +29,7 @@ paretoObjectivesNsga2<-function (MODEL, objective = hydromad.getOption("objectiv
                                   odim=length(objective),
                                   lower.bounds = lower, upper.bounds = upper
                                   ))
-    ans <- do.call("nsga2",args)
+    ans <- do.call(mco::nsga2,args)
     colnames(ans$par) <- names(parlist)
     MODEL$funevals <- NA ## TODO
     MODEL$timing <- signif(proc.time() - start_time, 4)[1:3]

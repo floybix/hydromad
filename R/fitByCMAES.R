@@ -30,7 +30,7 @@ fitByCMAES<-function (MODEL, objective = hydromad.getOption("objective"),
     }
     return(-thisVal)
   }
-  ans <- cma_es(initpars, do_cmaes, lower = lower, upper = upper, 
+  ans <- cmaes::cma_es(initpars, do_cmaes, lower = lower, upper = upper, 
                 control = control)
   if (ans$convergence != 0) {
     if (!isTRUE(hydromad.getOption("quiet"))) {
