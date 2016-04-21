@@ -23,7 +23,7 @@ fitBySCE(MODEL,
     See \code{\link{objFunVal}}.
   }
   \item{control}{
-    settings for the SCE algorithm. See \code{\link{SCEoptim}}.
+    settings for the SCE algorithm. See \code{\link{SCEoptim}}. Note that unlike SCEoptim, the objective function is maximised (\code{fnscale=-1}) by default.
   }
   \item{vcov}{
     if \code{vcov = TRUE}, the parameter variance-covariance matrix

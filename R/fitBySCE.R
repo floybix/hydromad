@@ -22,6 +22,8 @@ fitBySCE <-
         warning("all parameters are fixed, so can not fit")
         return(MODEL)
     }
+    ## Maximise by default
+    control=modifyList(list(fnscale=-1),control)
     ## remove any fixed parameters
     parlist <- parlist[!isfixed]
     if (isTRUE(hydromad.getOption("trace")))
@@ -30,18 +32,18 @@ fitBySCE <-
     upper <- sapply(parlist, max)
     initpars <- sapply(parlist, mean) ## TODO: allow sampling?
     bestModel <- MODEL
-    bestFunVal <- -Inf
+    bestFunVal <- Inf*control$fnscale
     do_sce <- function(pars) {
         thisMod <- update(MODEL, newpars = pars)
         if (!isValidModel(thisMod))
             return(NA)
         thisVal <- objFunVal(thisMod, objective = objective)
-        if (isTRUE(thisVal > bestFunVal)) {
+        if (isTRUE(thisVal*control$fnscale < bestFunVal*control$fnscale)) {
             bestModel <<- thisMod
             bestFunVal <<- thisVal
         }
-        ## SCEoptim does minimisation, so:
-        return(- thisVal)
+        ## We use fnscale, so SCEoptim deals with maximisation vs minimisation
+        return(thisVal)
     }
     ans <- SCEoptim(do_sce, initpars, lower = lower, upper = upper,
                     control = control)
