@@ -309,6 +309,6 @@ export(poweroid)
 
 ## Rcpp simhyd
 export(simhyd.sim,simhydrouting.sim)
-useDynLib(hydromad,hydromad_simhyd_sim)
+useDynLib(hydromad,"_hydromad_simhyd_sim")
 importFrom(Rcpp, sourceCpp)
 export(simhyd.ranges,simhydrouting.ranges)
