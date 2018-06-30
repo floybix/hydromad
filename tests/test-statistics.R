@@ -67,11 +67,11 @@ test_that("formula works within functions",{
   
   formula.in.function=function(w=1) objFunVal(modx,~w*hmadstat("r.squared")(Q,X,...))
   
-  expect_that(formula.in.function(), not(throws_error()))
+  expect_error(formula.in.function(), NA)
   expect_equal(formula.in.function(),objFunVal(modx,hmadstat("r.squared")))
   
   #Formula is less than 10% slower
   time.fun=system.time(replicate(1e3,objFunVal(modx,hmadstat("r.squared"))))
   time.formula=system.time(replicate(1e3,objFunVal(modx,~hmadstat("r.squared")(Q,X,...))))
-  expect_less_than((time.formula[3]-time.fun[3])/time.fun[3],0.1)
+  expect_lt((time.formula[3]-time.fun[3])/time.fun[3],0.1)
 })

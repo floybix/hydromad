@@ -84,9 +84,9 @@ buildCachedObjectiveFun <-
          },
          "r.sq.365" = function(Q, X, ...) {
              objfun <- .({
-                 Q365 <- rollmean(Q, 365, na.pad = TRUE)
+                 Q365 <- rollmean(Q, 365, fill=NA)
                  function(Q, X, ...) {
-                     nseStat(Q365, rollmean(X, 365, na.pad = TRUE), ...)
+                     nseStat(Q365, rollmean(X, 365, fill=NA), ...)
                  }
              })
              objfun(Q, X, ...)
