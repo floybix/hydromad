@@ -1,6 +1,6 @@
 Package: hydromad
-Version: 0.9-25
-Date: 2016-03-16
+Version: 0.9-26
+Date: 2018-07-01
 Title: Hydrological Model Assessment and Development
 Author: Felix Andrews <felix@nfrac.org>, Joseph Guillaume <josephguillaume@gmail.com>
 Maintainer: Joseph Guillaume <josephguillaume@gmail.com>
@@ -10,8 +10,8 @@ Description: A modelling framework for environmental hydrology: water
   flow response to time series of rainfall and other drivers. Includes 
   models (such as IHACRES CMD, Sacramento), transfer function estimators
   (including SRIV - Simplified Refined Instrumental Variable), etc.
-Depends: R (>= 2.11.0), zoo (>= 1.6-3), lattice (>= 0.19-11), latticeExtra (>= 0.6-14), polynom, reshape
-Imports: car (>= 2.0-2), Hmisc, stats, utils, Rcpp
+Depends: R (>= 2.5.0), zoo (>= 1.6-3), lattice (>= 0.19-11), latticeExtra (>= 0.6-14), polynom, reshape
+Imports: car (>= 2.0-2), Hmisc, stats, utils, Rcpp (>= 0.12.17)
 Suggests: DEoptim, mgcv, chron, testthat, mco, cmaes, ppso, sensitivity,ggplot2,rsm,parallel,foreach,doRedis,ff,dream,playwith
 LinkingTo: Rcpp
 License: GPL (>= 2)
