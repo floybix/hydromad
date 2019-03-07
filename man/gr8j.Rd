@@ -1,0 +1,155 @@
+\name{gr8j}
+\encoding{UTF-8}
+\alias{gr8j}
+\alias{gr8j.sim}
+\alias{gr8jrouting}
+\alias{gr8jrouting.sim}
+\title{ GR8J rainfall runoff model }
+\description{
+  GR8J model : GR8J is modified from GR4J to better represent long-term changes in both run-off
+  and sotrage and enable the model to account for changes in forest cover within a catchment resulting
+  (e.g. from land use change).   
+  A variant of the GR8J, termed the GR7J, is the same in all respects except that the Leaf Area Index 
+  (LAI) input and x_8 parameter are absent. 
+}
+\usage{
+gr8j.sim(DATA, x1, x5, x6, x7, etmult = 1, S_0 = 0.5,
+  return_state = FALSE,transformed=FALSE)
+
+gr8jrouting.sim(U, x2, x3, x4, R_0 = 0, split = 0.9,
+                return_components = FALSE,
+                epsilon = hydromad.getOption("sim.epsilon"),
+		transformed=FALSE)
+}
+\arguments{
+  \item{DATA}{time-series-like object with columns P (precipitation,
+    mm) and E (potential evapo-transpiration, mm).}
+  \item{U}{effective rainfall series.}
+  \item{x1}{ maximum capacity of the production store (mm). }
+  \item{x2}{ groundwater exchange coefficient (mm). }
+  \item{x3}{ one day ahead maximum capacity of the routing store (mm). }
+  \item{x4}{ time base of unit hydrograph UH1 (time steps). }
+  \item{x5}{ sensitivity for P_s. }
+  \item{x6}{ magnitude factor for E_s. }
+  \item{x7}{ shape factor for E_s. }
+  \item{x8}{ LAI shape factor for E_s. }
+  \item{LAI}{ LAI as time-series input}
+  \item{avLAI}{ average LAI, default it 1.6}
+  \item{etmult}{Multiplier for the \code{E} input data.}
+  \item{S_0}{Initial soil moisture level as fraction of \code{x1}.}
+  \item{R_0}{Initial groundwater reservoir level as fraction of
+\code{x3}.}
+  \item{split}{ Fraction to go into quick flow routing, usually fixed at 0.9. }
+  \item{return_state}{
+    to return the series U, S (storage) and ET (evapotranspiration).
+  }
+  \item{return_components}{
+    to return the series Xr, Xd and R (reservoir level).
+  }
+  \item{epsilon}{
+    values smaller than this in the output will be set to zero.
+  }
+  \item{transformed}{transform parameters before use to improve identifiability. They can be untransformed using \code{\link{gr4j.transformpar}}}
+}
+\details{
+ The default parameter ranges were taken from supporting information 
+  url{https://doi.org/10.1002/hyp.13282}
+}
+\value{
+  the simulated effective rainfall, a time series of the same length as
+  the input series.
+}
+\references{
+Grigg AH, Hughes JD. "Nonstationarity driven by multidecadal change 
+in catchment groundwater storage: A test of modifications to a common
+ rainfall–runoff model." \emph{Hydrological Process.} 2018;1–14.
+https://doi.org/10.1002/hyp.13282
+
+\url{http://www.cemagref.fr/webgr/Modelesgb/gr4j/fonctionnement_gr4jgb.htm}
+}
+\author{
+Justin Hughes \email{justin.hughes@csiro.au} and Lynn Seo \email{lynn.seo@gmail.com} 
+}
+\seealso{
+  \code{\link{?gr8j.sim}()}
+}
+\examples{
+## view default parameter ranges:
+str(c(hydromad.getOption("gr4j"),
+      hydromad.getOption("gr4jrouting")))
+
+data(HydroTestData)
+mod0 <- hydromad(HydroTestData, sma = "gr4j", routing = "gr4jrouting")
+mod0
+
+## example from
+## http://www.cemagref.fr/webgr/Scilab/CONT_EN/HELP_HYDROGR/c_GR4J.htm
+dat <-
+  cbind(P = c(0,0,0,0,0,0.04,0.59,0.03,0.01,0.16,0.37,8.76,2.65,
+          0.05,0.02,0.02,0.38,0.00,0.02,0.46,4.46,7.71,5.71,0.79,1.33),
+        E = c(0,0,0,0,0,0.24,0.24,0.24,0.24,0.24,0.25,0.25,0.26,
+          0.27,0.28,0.32,0.33,0.34,0.35,0.36,0.36,0.37,0.37,0.38,0.38))
+datz <- zoo(dat, as.Date("2000-01-01") + 1:nrow(dat))
+modz <- hydromad(datz, sma = "gr4j", routing = "gr4jrouting",
+    x1 = 665, x2 = 1.18, x3 = 90, x4 = 3.8, S_0 = 0.6, R_0 = 0.7)
+xyplot(predict(modz, return_state = TRUE, return_components = TRUE),
+       strip = FALSE, strip.left = TRUE)
+
+## simulate with some arbitrary parameter values
+mod1 <- update(mod0, x1 = 100, x2 = 20, x3 = 1, x4 = 10)
+## plot results with state variables
+testQ <- predict(mod1, return_state = TRUE)
+xyplot(cbind(HydroTestData[,1:2], gr4j = testQ))
+
+############################################
+## show effect of increase/decrease in each parameter
+parRanges <- c(hydromad.getOption("gr4j")[1],
+               hydromad.getOption("gr4jrouting"))
+parsims <- mapply(val = parRanges, nm = names(parRanges),
+  FUN = function(val, nm) {
+    lopar <- min(val)
+    hipar <- max(val)
+    names(lopar) <- names(hipar) <- nm
+    fitted(runlist(decrease = update(mod1, newpars = lopar),
+                   increase = update(mod1, newpars = hipar)))
+  }, SIMPLIFY = FALSE)
+
+xyplot.list(parsims, superpose = TRUE, layout = c(1,NA),
+            strip = FALSE, strip.left = TRUE,
+            main = "Simple parameter perturbation example") +
+  layer(panel.lines(fitted(mod1), col = "grey", lwd = 2))
+
+
+############################################
+# Example optimisation, using transformed parameters
+
+data(Cotter)
+x <- Cotter[1:1000]
+
+#Specify gr4j model
+mod0 <- hydromad(x, sma = "gr4j", routing = "gr4jrouting",transformed=TRUE)
+#Use transformed parameter ranges
+mod0 <- update(mod0,newpars=gr4j.transformpar(c(hydromad.getOption("gr4j"),
+                                                hydromad.getOption("gr4jrouting")
+                                                )))
+#Allow etmult to vary, because we're using temperature data instead of PET.
+mod0<-update(mod0,etmult=c(0.05,1.5))
+# Broaden a single parameter range, just as an example
+mod0<-update(mod0,x1=gr4j.transformpar(list(x1=c(100,5000)))[["x1"]])
+               
+mod0
+
+## now try to fit the free parameters
+set.seed(10)
+fit1 <- fitByOptim(mod0)
+
+fit1
+summary(fit1)
+xyplot(fit1)
+
+#Parameters in original parameter space
+gr4j.transformpar(coef(fit1),back=T)
+
+
+}
+\keyword{models}

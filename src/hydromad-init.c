@@ -13,6 +13,8 @@ extern void sma_awbm(void *, void *, void *, void *, void *, void *, void *, voi
 extern void sma_bucket(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 extern void sma_cmd(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 extern void sma_gr4j(void *, void *, void *, void *, void *, void *, void *, void *);
+extern void sma_gr7j(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
+extern void sma_gr8j(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 extern void sma_sac(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 extern void sma_sac_state(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 extern void sma_snow(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
@@ -32,6 +34,8 @@ static const R_CMethodDef CEntries[] = {
     {"sma_bucket",            (DL_FUNC) &sma_bucket,            13},
     {"sma_cmd",               (DL_FUNC) &sma_cmd,               11},
     {"sma_gr4j",              (DL_FUNC) &sma_gr4j,               8},
+	{"sma_gr7j",              (DL_FUNC) &sma_gr7j,              12},
+	{"sma_gr8j",              (DL_FUNC) &sma_gr8j,              15},
     {"sma_sac",               (DL_FUNC) &sma_sac,               14},
     {"sma_sac_state",         (DL_FUNC) &sma_sac_state,         32},
     {"sma_snow",              (DL_FUNC) &sma_snow,              12},

@@ -7,3 +7,4 @@ inst/doc/*.tex
 inst/doc/*.aux
 inst/doc/*.log
 web/index.html
+.Rproj.user
